@@ -1,0 +1,26 @@
+.foot-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+   
+ }
+
+ .custom-height {
+    // height: 100%; // Default height
+
+    @media (min-width: 576px) {
+        height: 25%; // Height for small screens and up
+    }
+
+    @media (min-width: 768px) {
+        height: 50%; // Height for medium screens and up
+    }
+
+    @media (min-width: 992px) {
+        height: 75%; // Height for large screens and up
+    }
+
+    @media (min-width: 1200px) {
+        height: 80%; // Height for extra-large screens and up
+    }
+}

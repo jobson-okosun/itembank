@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "choice-matrix.component.scss"
+    ],
+    "names": [],
+    "file": "choice-matrix.component.css"
+}

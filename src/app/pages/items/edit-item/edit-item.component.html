@@ -1,0 +1,184 @@
+<app-breadcrumbs
+  title="EDIT-QUESTION | {{ subjectName }}"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div *ngIf="item" class="row">
+  <div class="col-lg-4 col-sm-12">
+    <div class="d-flex align-items-center gap-2 my-2">
+      <!-- <button *ngIf="item.passageId" class="btn btn-sm btn-outline-primary mr-2" (click)="editPassage()">
+        <i class="ri-pencil-line align-middle me-2"></i>Edit passage
+      </button> -->
+      <button class="btn btn-outline-info" (click)="back()">
+        <i class="ri-arrow-left-line align-middle me-2"></i>Back
+      </button>
+    </div>
+  </div>
+  <div
+    class="col-lg-8 col-sm-12 d-flex justify-content-end float-end"
+    *ngIf="itemTrailInformation"
+  >
+    <div class="d-flex flex-row mx-2">
+      <span class="d-flex align-items-center text-muted" ngbTooltip="SUBJECT">
+        {{ itemTrailInformation.subjectName.toUpperCase() }}
+      </span>
+      <span
+        class="d-flex align-items-center text-muted"
+        *ngIf="itemTrailInformation.topicName"
+        ngbTooltip="TOPIC"
+      >
+        <i class="ri-arrow-right-s-line"></i
+        >{{ itemTrailInformation.topicName.toUpperCase() }}</span
+      >
+      <span
+        class="d-flex align-items-center text-muted"
+        *ngIf="itemTrailInformation.subtopicName"
+        ngbTooltip="SUBTOPIC"
+      >
+        <i class="ri-arrow-right-s-line"></i>
+        {{ itemTrailInformation.subtopicName.toUpperCase() }}</span
+      >
+    </div>
+  </div>
+  <!-- <div
+    class="col-lg-8 col-sm-12 d-flex justify-content-end float-end"
+    *ngIf="itemTrailInformation"
+  >
+    <div class="d-flex flex-row mx-2">
+      <span class="d-flex align-items-center text-muted" ngbTooltip="SUBJECT">
+        {{ itemTrailInformation.subjectName.toUpperCase() }}
+      </span>
+      <span
+        class="d-flex align-items-center text-muted"
+        *ngIf="itemTrailInformation.topicName"
+        ngbTooltip="TOPIC"
+      >
+        <i class="ri-arrow-right-s-line"></i
+        >{{ itemTrailInformation.topicName.toUpperCase() }}</span
+      >
+      <span
+        class="d-flex align-items-center text-muted"
+        *ngIf="itemTrailInformation.subtopicName"
+        ngbTooltip="SUBTOPIC"
+      >
+        <i class="ri-arrow-right-s-line"></i>
+        {{ itemTrailInformation.subtopicName.toUpperCase() }}</span
+      >
+    </div>
+  </div> -->
+</div>
+<div class="row" *ngIf="item">
+  <div class="col-lg-12">
+    <app-single-response
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Single Response'"
+      (savedItem)="saved($event)"
+    ></app-single-response>
+
+    <app-true-or-false
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'True or False'"
+      (savedItem)="saved($event)"
+    ></app-true-or-false>
+
+    <app-yes-or-no
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Yes or No'"
+      (savedItem)="saved($event)"
+    ></app-yes-or-no>
+
+    <app-passage-item
+      [formType]="formType"
+      *ngIf="formType === 'Passage'"
+      (savedItem)="saved($event)"
+    ></app-passage-item>
+
+    <app-multiple-response
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Multiple Response'"
+      (savedItem)="saved($event)"
+    ></app-multiple-response>
+
+    <app-choice-matrix
+      [formType]="formType"
+      [editData]="item"
+      (savedItem)="saved($event)"
+      *ngIf="formType === 'Choice Matrix'"
+    ></app-choice-matrix>
+
+    <app-rich-essay
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Rich Text Essay'"
+      (savedItem)="saved($event)"
+    ></app-rich-essay>
+
+    <app-cloze
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Cloze with Text'"
+      (savedItem)="saved($event)"
+    ></app-cloze>
+
+    <app-cloze-dropdown
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Cloze with dropdown'"
+      (savedItem)="saved($event)"
+    ></app-cloze-dropdown>
+
+    <app-ordering
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Ordering'"
+      (savedItem)="saved($event)"
+    ></app-ordering>
+
+    <app-matching
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Matching'"
+      (savedItem)="saved($event)"
+    ></app-matching>
+
+    <!-- <app-essay
+      [formType]="formType"
+      *ngIf="formType === 'Plain Text Essay'"
+    ></app-essay> -->
+
+    <app-create-item
+      *ngIf="formType === 'Numeric' || formType === 'Short Answer'"
+      [editData]="item"
+      [formType]="formType"
+      (savedItem)="saved($event)"
+    ></app-create-item>
+
+    <app-label-image-drag-drop
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Label Image with Drag and Drop'"
+      (savedItem)="saved($event)"
+    >
+    </app-label-image-drag-drop>
+
+    <app-label-image-dropdown
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Label Image with Dropdown'"
+      (savedItem)="saved($event)"
+    >
+    </app-label-image-dropdown>
+
+    <app-label-image-text
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Label Image with Text'"
+      (savedItem)="saved($event)"
+    >
+    </app-label-image-text>
+  </div>
+</div>

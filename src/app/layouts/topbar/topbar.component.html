@@ -1,0 +1,487 @@
+<header id="page-topbar">
+  <div class="layout-width">
+    <div class="navbar-header">
+      <div class="d-flex">
+        <!-- LOGO -->
+        <div class="navbar-brand-box horizontal-logo">
+          <a href="javascript:void(0);" class="logo logo-dark">
+            <span class="logo-sm">
+              <img src="assets/logo/EXPryLogoHor.png" alt="" height="22" />
+            </span>
+            <span class="logo-lg">
+              <img src="assets/logo/EXPryLogoHor.png" alt="" height="17" />
+            </span>
+          </a>
+
+          <a href="javascript:void(0);" class="logo logo-light">
+            <span class="logo-sm">
+              <img src="assets/logo/EXPryLogoHor.png" alt="" height="22" />
+            </span>
+            <span class="logo-lg">
+              <img src="assets/logo/EXPryLogoHor.png" alt="" height="17" />
+            </span>
+          </a>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
+          id="topnav-hamburger-icon"
+          (click)="toggleMobileMenu($event)"
+        >
+          <span class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </button>
+      </div>
+
+      <div class="d-flex align-items-center">
+        <div
+          class="dropdown d-md-none topbar-head-dropdown header-item"
+          ngbDropdown
+        >
+          <button
+            type="button"
+            class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
+            id="page-header-search-dropdown"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            ngbDropdownToggle
+          >
+            <i class="bx bx-search fs-22"   style="cursor: pointer"></i>
+          </button>
+          <div
+            class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+            aria-labelledby="page-header-search-dropdown"
+            ngbDropdownMenu
+          >
+            <form class="p-3">
+              <div class="form-group m-0">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search ..."
+                    aria-label="Recipient's username"
+                  />
+                  <button class="btn btn-primary" type="submit">
+                    <i class="mdi mdi-magnify"></i>
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Moved to Version 2 Implementation-->
+        <!-- <div class="dropdown topbar-head-dropdown ms-1 header-item" ngbDropdown>
+          <button
+            *ngIf="notifications"
+            type="button"
+            class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
+            id="page-header-notifications-dropdown"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            ngbDropdownToggle
+          >
+            <i class="bx bx-bell fs-22"></i>
+            <span
+              *ngIf="notifications.length > 0"
+              class="position-absolute topbar-badge fs-10 translate-middle badge rounded-pill bg-danger"
+              >{{ notifications.length
+              }}<span class="visually-hidden">notifications</span></span
+            >
+          </button>
+          <div
+            class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+            aria-labelledby="page-header-notifications-dropdown"
+            ngbDropdownMenu
+          >
+            <div class="dropdown-head bg-primary bg-pattern rounded-top">
+              <div class="p-3">
+                <div class="row align-items-center">
+                  <div class="col">
+                    <h6 class="m-0 fs-16 fw-semibold text-white">
+                      Notifications
+                    </h6>
+                  </div>
+                  <div class="col-auto dropdown-tabs">
+                    <span class="badge badge-soft-light fs-13">
+                      {{ notifications.length }} New</span
+                    >
+                  </div>
+                </div>
+              </div>
+
+              <div class="px-2 pt-2">
+                <ul
+                  ngbNav
+                  #nav="ngbNav"
+                  [activeId]="1"
+                  class="nav nav-tabs dropdown-tabs nav-tabs-custom"
+                  id="notificationItemsTab"
+                >
+                  <li [ngbNavItem]="1">
+                    <a ngbNavLink> All </a>
+                    <ng-template ngbNavContent>
+                      <div
+                        *ngIf="notifications.length == 0"
+                        class="tab-pane p-4"
+                        id="alerts-tab"
+                        role="tabpanel"
+                        aria-labelledby="alerts-tab"
+                      >
+                        <div class="w-25 w-sm-50 pt-3 mx-auto">
+                          <img
+                            src="assets/images/svg/bell.svg"
+                            class="img-fluid"
+                            alt="user-pic"
+                          />
+                        </div>
+                        <div class="text-center pb-5 mt-2">
+                          <h6 class="fs-18 fw-semibold lh-base">
+                            Hey! You have no new notifications
+                          </h6>
+                        </div>
+                      </div>
+                      <div
+                        *ngIf="notifications.length > 0"
+                        class="tab-pane fade show active py-2 ps-2"
+                        id="all-noti-tab"
+                        role="tabpanel"
+                      >
+                        <ngx-simplebar style="max-height: 300px">
+                          <div class="pe-2">
+                            <ng-container
+                              *ngFor="let notification of notifications"
+                            >
+                              <div
+                                class="text-reset notification-item d-block dropdown-item position-relative"
+                              >
+                                <div class="d-flex">
+                                  <div class="avatar-xs me-3">
+                                    <span
+                                      class="avatar-title rounded-circle fs-16"
+                                      [ngClass]="{
+                                        'text-danger':
+                                          notification.status == 'REJECTED',
+                                        'bg-soft-danger':
+                                          notification.status == 'REJECTED',
+                                        'text-success':
+                                          notification.status == 'ACCEPTED',
+                                        'bg-soft-success':
+                                          notification.status == 'ACCEPTED'
+                                      }"
+                                    >
+                                      <i
+                                        *ngIf="
+                                          notification.status == 'REJECTED'
+                                        "
+                                        class="bx bx-message-square-dots text-danger"
+                                      ></i>
+                                      <i
+                                        *ngIf="
+                                          notification.status == 'ACCEPTED'
+                                        "
+                                        class="bx bx-badge-check text-success"
+                                      ></i>
+                                    </span>
+                                  </div>
+                                  <div class="flex-1">
+                                    <a class="stretched-link">
+                                      <h6 class="mt-0 mb-2 fs-13 lh-base">
+                                        <b>{{ notification.moderator }}</b
+                                        >(
+                                        <span class="text-secondary">{{
+                                          notification.status | uppercase
+                                        }}</span
+                                        >)
+                                      </h6>
+                                      <span
+                                        >{{ notification.subjectName }} |
+                                        {{ notification.topicName }}
+                                        {{
+                                          notification.subtopicName
+                                            ? '|' + notification.subtopicName
+                                            : ''
+                                        }}</span
+                                      >
+                                      <span
+                                        *ngIf="notification.rejectReason"
+                                        class="text-muted"
+                                        [innerHTML]="notification.rejectReason"
+                                      ></span>
+                                    </a>
+                                    <p
+                                      class="mb-0 fs-11 fw-medium text-uppercase text-muted"
+                                    >
+                                      <span
+                                        ><i class="mdi mdi-clock-outline"></i> 2
+                                        {{
+                                          notification.messageTime | date
+                                        }}</span
+                                      >
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+
+                            <div class="my-3 text-center">
+                              <button
+                                type="button"
+                                (click)="viewAllNotifications()"
+                                class="btn btn-soft-success waves-effect waves-light"
+                              >
+                                View All Notifications
+                                <i class="ri-arrow-right-line align-middle"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </ngx-simplebar>
+                      </div>
+                    </ng-template>
+                  </li>
+                  <li *ngIf="approved.length > 0" [ngbNavItem]="2">
+                    <a ngbNavLink> Approved ({{ approved.length }}) </a>
+                    <ng-template ngbNavContent>
+                      <div
+                        class="tab-pane fade show active py-2 ps-2"
+                        id="all-noti-tab"
+                        role="tabpanel"
+                      >
+                        <ngx-simplebar style="max-height: 300px">
+                          <div class="pe-2">
+                            <ng-container *ngFor="let notification of approved">
+                              <div
+                                class="text-reset notification-item d-block dropdown-item position-relative"
+                              >
+                                <div class="d-flex">
+                                  <div class="avatar-xs me-3">
+                                    <span
+                                      class="avatar-title bg-soft-success text-info rounded-circle fs-16"
+                                    >
+                                      <i
+                                        class="bx bx-badge-check text-success"
+                                      ></i>
+                                    </span>
+                                  </div>
+                                  <div class="flex-1">
+                                    <a
+                                      href="javascript:void(0);"
+                                      class="stretched-link"
+                                    >
+                                      <h6 class="mt-0 mb-2 fs-13 lh-base">
+                                        <b>{{ notification.moderator }}</b>
+                                        (<span class="text-secondary">{{
+                                          notification.status | uppercase
+                                        }}</span
+                                        >)
+                                      </h6>
+                                    </a>
+                                    <span
+                                      >{{ notification.subjectName }} |
+                                      {{ notification.topicName }}
+                                      {{
+                                        notification.subtopicName
+                                          ? '|' + notification.subtopicName
+                                          : ''
+                                      }}</span
+                                    >
+                                    <p
+                                      class="mb-0 fs-11 fw-medium text-uppercase text-muted"
+                                    >
+                                      <span
+                                        ><i class="mdi mdi-clock-outline"></i>
+                                        {{
+                                          notification.messageTime | date
+                                        }}</span
+                                      >
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+
+                            <div class="my-3 text-center">
+                              <button
+                                type="button"
+                                (click)="viewAllNotifications()"
+                                class="btn btn-soft-success waves-effect waves-light"
+                              >
+                                View More
+                                <i class="ri-arrow-right-line align-middle"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </ngx-simplebar>
+                      </div>
+                    </ng-template>
+                  </li>
+                  <li *ngIf="rejected.length > 0" [ngbNavItem]="3">
+                    <a ngbNavLink> Rejected ({{ rejected.length }})</a>
+                    <ng-template ngbNavContent>
+                      <div
+                        class="tab-pane fade show active py-2 ps-2"
+                        id="all-noti-tab"
+                        role="tabpanel"
+                      >
+                        <ngx-simplebar style="max-height: 300px">
+                          <div class="pe-2">
+                            <ng-container *ngFor="let notification of rejected">
+                              <div
+                                class="text-reset notification-item d-block dropdown-item position-relative"
+                              >
+                                <div class="d-flex">
+                                  <div class="avatar-xs me-3">
+                                    <span
+                                      class="avatar-title bg-soft-danger text-danger rounded-circle fs-16"
+                                    >
+                                      <i class="bx bx-message-square-dots"></i>
+                                    </span>
+                                  </div>
+                                  <div class="flex-1">
+                                    <a class="stretched-link">
+                                      <h6 class="mt-0 mb-2 fs-13 lh-base">
+                                        <b>{{ notification.moderator }}</b
+                                        >(
+                                        <span class="text-secondary">{{
+                                          notification.status | uppercase
+                                        }}</span
+                                        >)
+                                      </h6>
+                                      <span
+                                        >{{ notification.subjectName }} |
+                                        {{ notification.topicName }}
+                                        {{
+                                          notification.subtopicName
+                                            ? '|' + notification.subtopicName
+                                            : ''
+                                        }}</span
+                                      >
+                                      <span
+                                        class="text-muted"
+                                        [innerHTML]="notification.rejectReason"
+                                      ></span>
+                                    </a>
+                                    <p
+                                      class="mb-0 fs-11 fw-medium text-uppercase text-muted"
+                                    >
+                                      <span
+                                        ><i class="mdi mdi-clock-outline"></i> 2
+                                        {{
+                                          notification.messageTime | date
+                                        }}</span
+                                      >
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </ng-container>
+
+                            <div class="my-3 text-center">
+                              <button
+                                type="button"
+                                (click)="viewAllNotifications()"
+                                class="btn btn-soft-success waves-effect waves-light"
+                              >
+                                View More
+                                <i class="ri-arrow-right-line align-middle"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </ngx-simplebar>
+                      </div>
+                    </ng-template>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="tab-content" id="notificationItemsTabContent">
+              <div class="tab-content text-muted">
+                <div [ngbNavOutlet]="nav"></div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="dropdown ms-sm-3 header-item topbar-user" *ngIf="currentUser" ngbDropdown>
+          <button
+            type="button"
+            class="btn"
+            id="page-header-user-dropdown"
+            (click)="(routeToProfile)"
+            data-bs-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            ngbDropdownToggle
+          >
+            <span class="d-flex align-items-center">
+              <img
+                class="rounded-circle header-profile-user"
+                src="assets/logo/profile.png"
+                alt="Header Avatar"
+              />
+              <span class="text-start ms-xl-2">
+                <span
+                  class="d-none d-xl-inline-block ms-1 fw-medium user-name-text"
+                  >{{
+                    currentUser.firstName.length <= 8
+                      ? currentUser.firstName
+                      : (currentUser.firstName.substring(0, 8) + '...'
+                        | titlecase)
+                  }}
+                  {{
+                    currentUser.firstName.length <= 8
+                      ? currentUser.lastName
+                      : (currentUser.lastName.substring(0, 8) + '...'
+                        | titlecase)
+                  }}</span
+                >
+                <span
+                  class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text"
+                  >{{
+                    currentUser.username.length <= 12
+                      ? currentUser.username
+                      : currentUser.username.substring(0, 12) + '...'
+                  }}</span
+                >
+                <span class="d-none d-xl-block ms-1 fs-12">{{
+                  currentUser.authorities[0]
+                }}</span>
+              </span>
+            </span>
+          </button>
+          <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+            <!-- item-->
+            <h6 class="dropdown-header">Welcome {{ currentUser.firstName }}</h6>
+            <a
+              class="dropdown-item"
+              routerLink="/examalpha/users/view/{{ currentUser.id }}"
+              ><i
+                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"
+              ></i>
+              <span class="align-middle">Profile</span></a
+            >
+            <a  class="dropdown-item" routerLink="/examalpha/settings"
+              ><i
+                class="ri-settings-5-fill text-muted fs-16 align-middle me-1"
+              ></i>
+              <span class="align-middle">Settings</span></a
+            >
+            <div class="dropdown-divider"></div>
+            <a  class="dropdown-item" (click)="logout()"
+              ><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle" data-key="t-logout">Logout</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

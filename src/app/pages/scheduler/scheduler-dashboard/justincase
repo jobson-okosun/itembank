@@ -1,0 +1,515 @@
+<div
+            class="p-3 d-flex mb-0 align-items-center justify-content-between"
+          >
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-3">
+                <div class="avatar-title bg-primary text-light rounded-3">
+                  {{ assessment.name.charAt(0) | uppercase }}
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  <a
+                    href="javascript:void(0);"
+                    class="text-body d-block"
+                    (click)="setCurrentAssessment(assessment)"
+                    routerLink="/examalpha/exams/{{
+                      assessment.id
+                    }}/exam-schedule"
+                    >{{ assessment.name }}</a
+                  >
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: lighter"
+                >
+                  {{ assessment.createdDate | date : "medium" }}
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex gap-4 justify-content-end">
+              <span class="fs-12 py-1 px-2" *ngIf="assessment.totalCenters">
+                <span class="border rounded-2">
+                  <i
+                    class="ri-check-double-line text-success p-2 align-middle"
+                  ></i>
+                </span>
+                Centers
+              </span>
+              <span
+                class="fs-12 py-1 px-2"
+                *ngIf="assessment.totalCenterAdmins"
+              >
+              <span class="border rounded-2">
+                <i
+                  class="ri-check-double-line text-success p-2 align-middle"
+                ></i>
+              </span>
+                Admins
+              </span>
+              <span
+                class="fs-12 p-1 py-1"
+                *ngIf="assessment.totalSectionsGroup"
+              >
+                <span class="border rounded-2">
+                  <i
+                    class="ri-check-double-line text-success p-2 align-middle"
+                  ></i>
+                </span>
+                Section Groups
+              </span>
+              <span
+                class="fs-12 px-1 py-1"
+                *ngIf="assessment.totalParticipants"
+              >
+                <span class="border rounded-2">
+                  <i
+                    class="ri-check-double-line text-success p-2 align-middle"
+                  ></i>
+                </span>
+
+                Participants
+              </span>
+
+              <!-- assessment status -->
+              <div>
+                <span
+                  class="text-capitalize rounded-2 fs-12"
+                  [ngClass]="{
+                    ' p-1 py-0 px-1  ': assessment.status === 'PUBLISHED',
+                    ' p-1 py-0 ': assessment.status === 'DRAFT'
+                  }"
+                  ><i
+                    *ngIf="assessment.status === 'DRAFT'"
+                    class="ri-draft-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.status === 'PUBLISHED'"
+                    class="ri-checkbox-circle-line align-bottom text-white"
+                  ></i>
+                </span>
+                <span class="fs-12">Status:</span>
+                <span
+                  class="text-capitalize fs-12"
+                  [ngClass]="{
+                    'text-success': assessment.status === 'PUBLISHED',
+                    'text-warning': assessment.status === 'DRAFT'
+                  }"
+                >
+                  {{ assessment.status }}</span
+                >
+              </div>
+
+              <div class="dropdown" ngbDropdown>
+                <a
+                  class="text-muted arrow-none"
+                  id="dropdownMenuLink1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                  ><i
+                    class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                    style="cursor: pointer"
+                  ></i
+                ></a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="dropdownMenuLink1"
+                  ngbDropdownMenu
+                >
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="setCurrentAssessment(assessment)"
+                      routerLink="/examalpha/schedule/{{
+                        assessment.id
+                      }}/exam-schedule"
+                      ><i class="bx bxs-edit align-bottom me-2 text-muted"></i>
+                      Manage Schedule</a
+                    >
+                  </li>
+                  <!-- <li>
+                    <a class="dropdown-item" href="javascript:void(0);"
+                      ><i class="ri-archive-line align-bottom me-2 text-muted"></i>
+                      Archive</a
+                    >
+                  </li> -->
+                  <!-- <li class="dropdown-divider"></li> -->
+                  <!-- <li>
+                      <a
+                        class="dropdown-item"
+                        routerLink="/examalpha/assessments/{{ assessment.id }}"
+                        data-bs-toggle="modal"
+                      >
+                        <i class="ri-group-line align-bottom me-2 text-muted"></i>
+                        Participants
+                      </a>
+                    </li> -->
+                  <!-- <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="setCurrentAssessment(assessment)"
+                      routerLink="/examalpha/exams/{{ assessment.id }}/results"
+                      data-bs-toggle="modal"
+                    >
+                      <i class="ri-survey-line align-bottom me-2 text-muted"></i>
+                      Results
+                    </a>
+                  </li> -->
+                  <!-- <li>
+                    <a
+                      class="dropdown-item"
+                      routerLink="/examalpha/exams/live-monitor"
+                      data-bs-toggle="modal"
+                    >
+                      <i class="ri-computer-line align-bottom me-2 text-muted"></i>
+                      Live Monitoring
+                    </a>
+                  </li> -->
+                  <!-- <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="setCurrentAssessment(assessment)"
+                      routerLink="/examalpha/exams/{{ assessment.id }}/grading"
+                      data-bs-toggle="modal"
+                    >
+                      <i
+                        class="ri-check-double-line align-bottom me-2 text-muted"
+                      ></i>
+                      Grading
+                    </a>
+                  </li> -->
+                  <!-- <li>
+                    <a
+                      *ngIf="assessment.status !== 'PUBLISHED'"
+                      class="dropdown-item"
+                      style="cursor: pointer"
+                      (click)="
+                        openPublishConfirmationModal(
+                          publishAssessmentConfirmationModal,
+                          assessment
+                        )
+                      "
+                      ><i class="bx bx-upload align-bottom me-2 text-muted"></i>
+                      Publish</a
+                    >
+                  </li> -->
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="border-top mx-3"></div>
+          <!-- <div class="card-body">
+            <div class="flex-shrink-0">
+              <ul class="ps-4 vstack gap-2" style="list-style-type: none">
+                <li>
+                  <span class="bg-primary p-1 text-white rounded-3 py-0">
+                    <i
+                      class="ri-send-plane-2-fill align-center"
+                      style="font-size: 11px"
+                    ></i>
+                  </span>
+                  Delivery Method:
+                  <span class="text-capitalize text-info"
+                    ><i
+                      *ngIf="assessment.deliveryMethod.includes('OFFLINE')"
+                      class="ri-cloud-off-line align-center"
+                    ></i>
+                    <i
+                      *ngIf="assessment.deliveryMethod == 'ONLINE'"
+                      class="ri-rss-line align-center"
+                    ></i>
+                    <i
+                      *ngIf="
+                        assessment.deliveryMethod == 'ONLINE_WITH_HUMAN_PROCTOR'
+                      "
+                      class="ri-user-shared-line align-bottom"
+                    ></i>
+                    {{ assessment.deliveryMethod }}</span
+                  >
+                </li>
+                <li>
+                  <span class="bg-primary p-1 py-0 rounded-3 text-white">
+                    <i class="las la-hourglass align-center"></i>
+                  </span>
+                  Duration:
+                  <span class="text-primary">
+                    {{ assessment.duration }} Minute(s).</span
+                  >
+                </li>
+                <li>
+                  <span class="bg-primary p-1 py-0 text-white rounded-3">
+                    <i class="ri-book-3-line align-bottom"></i>
+                  </span>
+                  Total Subjects:
+                  <span class="text-primary">
+                    {{ assessment.totalSections }}</span
+                  >
+                </li>
+  
+                <li></li>
+              </ul>
+            </div>
+          </div> -->
+          <div class="card-footer border-0">
+            <div class="">
+              <div
+                class="d-flex gap-4 align-items-center justify-content-evenly"
+              >
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-play-circle-line text-success"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Start Date
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.startDateTime | date : "medium" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-stop-circle-line text-danger"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        End Date
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.endDateTime | date : "medium" }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-book-3-line text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total subjects
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalSections }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center las la-hourglass align-center text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Duration
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.duration }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-send-plane-2-line text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Delivery method
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.deliveryMethod }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-top mx-3"></div>
+
+          <div class="card-footer border-0">
+            <div class="">
+              <div
+                class="d-flex gap-4 align-items-center justify-content-evenly"
+              >
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-home-2-line text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total centers
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalCenters }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-align-center text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total Section groups
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalSectionsGroup}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-group-line text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total Participants
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalParticipants }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-admin-line align-center text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total center admins
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalCenterAdmins }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="">
+                  <div class="d-flex align-items-center">
+                    <div class="avatar-xs flex-shrink-0 me-2">
+                      <div
+                        class="avatar-title border text-light bg-white rounded-3"
+                      >
+                        <i
+                          class="align-center ri-shield-user-line text-secondary"
+                        ></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                        Total active admins
+                      </h5>
+                      <p
+                        class="text-secondary p-0 m-0"
+                        style="font-size: 12px; font-weight: normal"
+                      >
+                        {{ assessment.totalActiveAdmins }}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>

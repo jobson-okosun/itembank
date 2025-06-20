@@ -1,0 +1,1138 @@
+<app-breadcrumbs
+  *ngIf="!assessmentActive"
+  title="{{ subjectName }} | PASSAGES ({{ totalPassages }})"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="loading_passages"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading passages...</span
+    >
+  </div>
+</div>
+
+<!-- <div
+  *ngIf="!loading_passages && loadingAllSubjects"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading subjects...</span
+    >
+  </div>
+</div> -->
+
+<div *ngIf="!loading_passages && !loadingAllSubjects" class="row">
+  <div class="col-lg-3 col-sm-12">
+    <div class="card">
+      <div class="card-header border-bottom-dashed">
+        <div class="mb-3"  *ngIf="!assessmentActive">
+          <label for="" class="form-label mt-2">Subjects</label>
+
+          <ng-select
+          class="custom"
+          [items]="allSubjects"
+          bindLabel="name"
+          bindValue="subjectId"
+          name="subject"
+          dropdownPosition="bottom"
+          [(ngModel)]="subjectId"
+          (change)="handleSubjectSelection($event)"
+        >
+          <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+            {{ item[i].name | uppercase }}
+          </ng-template>
+        </ng-select>
+
+          <!-- <select
+            #subjectRef
+            (change)="selectSubject(subjectRef.value)"
+            class="form-select form-select-md"
+            name=""
+            id=""
+          >
+            <option
+              *ngFor="let subject of allSubjects"
+              value="{{ subject.subjectId }}"
+              [selected]="subject.subjectId === subjectId"
+            >
+              {{ subject.name | uppercase }}
+            </option>
+          </select> -->
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary btn-label text-center waves-effect right waves-light w-100"
+        >
+          <i
+            title="NEW TOPIC"
+            *ngIf="currentUser.authorities.includes('ADMIN') && !_currentBlock"
+            (click)="openNewTopicModal(newTopicModal)"
+            class="ri-add-line label-icon align-middle fs-11 ms-2"
+          ></i>
+          {{ subjectName.toUpperCase() }}
+          <!-- Add Topic -->
+        </button>
+      </div>
+      <div class="card-body">
+        <div
+          *ngIf="loading_topics_tree"
+          class="d-flex align-items-center justify-content-center"
+          style="height: 60vh"
+        >
+          <div class="d-flex align-items-center gap-2">
+            <div class="spinner-border text-info fs-18" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+              >Loading topics...</span
+            >
+          </div>
+        </div>
+
+        <ngx-simplebar
+          *ngIf="!loading_topics_tree && passageTopics.length >= 0"
+          class="message-list-content mx-n4 px-4 message-list-scroll"
+        >
+          <div class="verti-sitemap dropdown" ngbDropdown>
+            <ul class="list-unstyled mb-0">
+              <li
+                class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                ngbDropdownToggle
+              >
+                Topics ({{ passageTopics.length }})
+              </li>
+              <li>
+                <div
+                  class="first-list"
+                  *ngFor="let topic of passageTopics; let i = index"
+                >
+                  <div
+                    class="list-wrap"
+                    #topicDrop="ngbDropdown"
+                    class="dropdown"
+                    ngbDropdown
+                  >
+                    <a
+                      [ngStyle]="{ cursor: 'pointer' }"
+                      (click)="getPassages(topic); setItemTrail(topic)"
+                      class="fw-small fs-11 text-primary dropdown arrow-none"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      ngbDropdownToggle
+                      ngbTooltip="{{ topic.topicName.toUpperCase() }}"
+                      placement="top"
+                      ><i class="ri-folder-line me-1 align-bottom"></i>
+                      {{ topic.topicName.toUpperCase() | slice : 0 : 25
+                      }}{{ topic.topicName.length > 25 ? "..." : "" }}</a
+                    ><span
+                      ngbTooltip="TOTAL PASSAGES"
+                      class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary"
+                      >{{ topic.totalPassages }}</span
+                    >
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </ngx-simplebar>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-9 col-sm-12">
+    <div class="card">
+      <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+          <div class="col-sm">
+            <div>
+              <h5 class="card-title mb-0">
+                List of Passages
+                <!-- <span *ngIf="subject" class="text-muted"
+                  >({{ subjectName | uppercase }})</span
+                > -->
+                <span *ngIf="selectedTopicName"
+                  >| {{ selectedTopicName | uppercase }}
+                  {{
+                    !loading_passages && !filterState
+                      ? "(" + passages.totalElements + ")"
+                      : "(" + filteredResult.totalElements + ")"
+                  }}</span
+                >
+              </h5>
+            </div>
+          </div>
+          <div class="col-sm-auto">
+            <div class="d-flex gap-2 hstack">
+              <button
+                *ngIf="
+                  selectedTopic &&
+                  !assessmentActive &&
+                  !loading_passages &&
+                  !currentUser.authorities.includes('MODERATOR') &&
+                  passages.content.length > 0
+                "
+                (click)="gotoNewPassage()"
+                class="btn btn-primary"
+              >
+                <i class="ri-add-line align-middle"></i>NEW PASSAGE
+              </button>
+              <div *ngIf="assessmentActive && selectedPassageIds.length >= 0">
+                <span class=""
+                  >{{ selectedPassageIds.length }} /
+                  {{ _currentBlock.totalQuestions }} passages selected</span
+                >
+              </div>
+              <button
+                type="button"
+                *ngIf="
+                  selectedTopic &&
+                  !assessmentActive &&
+                  !loading_passages &&
+                  passages.content.length > 0
+                "
+                ngbTooltip="{{ !showFilter ? 'Show Filter' : 'Hide Filter' }}"
+                class="{{
+                  !showFilter ? 'btn btn-secondary' : 'btn btn-danger'
+                }}"
+                (click)="showFilterOptions()"
+              >
+                <i
+                  class="{{
+                    !showFilter ? 'ri-equalizer-fill' : 'ri-close-line fs-14'
+                  }}"
+                ></i>
+                {{ !showFilter ? "Filter Passages" : "Hide Filter" }}
+              </button>
+              <!-- <div *ngIf="subject" class="flex-shrink-0">
+                <a><i class="ri-add-line mr-2"></i>New Passage</a>
+              </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- card header-->
+
+      <!-- Passage Filter form-->
+      <div
+        class="card-body border-bottom-dashed border-bottom bg-white"
+        *ngIf="showFilter"
+      >
+        <form
+          #passageFilterForm="ngForm"
+          (ngSubmit)="filterPassage(passageFilterForm)"
+        >
+          <div class="row g-3">
+            <div class="col-6">
+              <div class="search-box">
+                <input
+                  type="text"
+                  name="content"
+                  class="form-control"
+                  placeholder="Search for content"
+                  [(ngModel)]="newPassageFilter.stimulusSearchText"
+                />
+                <i class="ri-search-line search-icon"></i>
+              </div>
+            </div>
+            <!--end col-->
+
+            <div class="col-6">
+              <div class="search-box">
+                <input
+                  type="text"
+                  name="title"
+                  class="form-control"
+                  placeholder="Search for title"
+                  [(ngModel)]="newPassageFilter.referenceSearchText"
+                />
+                <i class="ri-search-line search-icon"></i>
+              </div>
+            </div>
+            <!--end col-->
+          </div>
+
+          <div class="row g-3">
+            <div class="col-2">
+              <div>
+                <label for="status">Status</label>
+                <select
+                  class="form-control"
+                  data-plugin="choices"
+                  data-choices
+                  data-choices-search-false
+                  name="status"
+                  [(ngModel)]="newPassageFilter.status"
+                >
+                  <option
+                    *ngFor="let status of passageStatus"
+                    value="{{ status }}"
+                  >
+                    {{ status }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div
+              *ngIf="!currentUser.authorities.includes('MODERATOR')"
+              class="col-sm-2"
+            >
+              <div>
+                <label for="itemType">Item Usage</label>
+                <select
+                  class="form-select"
+                  data-plugin="choices"
+                  data-choices
+                  data-choices-search-false
+                  name="itemUsed"
+                  [(ngModel)]="newPassageFilter.itemUsed"
+                >
+                  <option
+                    *ngFor="let itemUsage of itemUsages"
+                    value="{{ itemUsage }}"
+                  >
+                    {{ itemUsage }}
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-8">
+              <app-item-tag (sendTags)="recieveTag($event)"></app-item-tag>
+            </div>
+            <!--end col-->
+
+            <div class="d-flex justify-content-start gap-2">
+              <button
+                type="button"
+                (click)="clearFilter()"
+                class="align-items-center btn btn-danger"
+              >
+                <i class="ri-close-line me-2 align-middle"></i>Clear Filter
+              </button>
+              <button
+                type="submit"
+                class="align-items-center btn btn-secondary"
+              >
+                <i class="ri-equalizer-fill me-2 align-middle"></i>Apply Filter
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- End of passage Filter form-->
+
+      <div class="card-body">
+        <ngx-simplebar
+          class="message-list-content mx-n4 px-4 message-list-scroll"
+        >
+          <div class="live-preview">
+            <div
+              *ngIf="loading_passages"
+              class="d-flex align-items-center justify-content-center"
+              style="height: 60vh"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <div class="spinner-border text-info fs-18" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+                  >Loading passages...</span
+                >
+              </div>
+            </div>
+
+            <div
+              class="list-group"
+              *ngIf="
+                !loading_passages && passages && passages.content.length > 0 && !filterState
+              "
+            >
+              <a
+                class="list-group-item"
+                *ngFor="let passage of passages.content; let i = index"
+              >
+                <div class="row" style="height: fit-content">
+                  <div class="col-lg-12 col-sm-auto">
+                    <div
+                      class="d-flex flex-wrap mb-2 align-items-center justify-content-between"
+                    >
+                      <div>
+                        <h5 class="list-title fs-18 mb-1">
+                          {{ passage.reference }}
+                        </h5>
+                        <p class="list-text mb-0 fs-12">
+                          Author: {{ passage.authorDetails.authorName }}
+                        </p>
+                      </div>
+                      <div class="d-flex gap-2 float-end">
+                        <div class="list-text mb-0 fs-12">
+                          Created At:
+                          {{ passage.createdAt | date : "medium" }}
+                        </div>
+                        <div class="list-text mb-0 fs-12">
+                          Last Modified:
+                          {{ passage.modifiedAt | date : "medium" }}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <span
+                        >Passage :
+                        <div
+                          class="list-text mb-0"
+                          [innerHTML]="passage.stimulus"
+                        ></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex gap-1 align-items-end justify-content-between"
+                  >
+                    <div class="d-flex align-items-end">
+                      <span class="badge badge-soft-primary"
+                        >Total Questions: {{ passage.itemCount }}</span
+                      >
+
+                      <span
+                        class="badge mx-2"
+                        [ngClass]="{
+                          'badge-soft-success': passage.status == 'PUBLISHED',
+                          'badge-soft-warning':
+                            passage.status == 'DRAFT' ||
+                            passage.status == 'AWAITING_MODERATION'
+                        }"
+                        >Status: {{ passage.status }}</span
+                      >
+
+                      <span>
+                        <span
+                          style="cursor: pointer"
+                          class="ri-question-fill text-info"
+                          placement="top"
+                          data-bs-container="body"
+                          data-bs-toggle="popover"
+                          [ngbPopover]="tagsPopOver"
+                          popoverClass="popOverClass"
+                          triggers="mouseenter:mouseleave"
+                          class="badge mx-2 badge-soft-info"
+                          >Tags: {{ passage.itemTagDTOS.length }}</span
+                        >
+
+                        <ng-template #tagsPopOver>
+                          <ul>
+                            <li *ngFor="let tag of passage.itemTagDTOS">
+                              <span class="">{{
+                                tag.tagName | titlecase
+                              }}</span>
+                            </li>
+                          </ul>
+                        </ng-template>
+                      </span>
+                    </div>
+                    <!-- <button
+                        ngbTooltip="VIEW QUESTIONS"
+                        type="button"
+                        class="btn btn-sm btn-icon btn-outline-dark"
+                        (click)="viewPassageItems(passage.id)"
+                      >
+                        <i class="ri-eye-line"></i>
+                      </button> -->
+                    <div *ngIf="assessmentActive" class="form-check mt-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [disabled]="_existingPassageIds.includes(passage.id)"
+                        (change)="pickPassage(passage.id)"
+                        [checked]="
+                          selectedPassageIds.includes(passage.id) ||
+                          _existingPassageIds.includes(passage.id)
+                        "
+                        [hidden]="
+                          !selectedPassageIds.includes(passage.id) &&
+                          selectedPassageIds.length ===
+                            _currentBlock.totalQuestions
+                        "
+                      />
+                      <label
+                        (click)="pickPassage(passage.id)"
+                        [hidden]="
+                          (!selectedPassageIds.includes(passage.id) &&
+                            selectedPassageIds.length ===
+                              _currentBlock.totalQuestions) ||
+                          _existingPassageIds.includes(passage.id)
+                        "
+                        class="form-check-label"
+                      >
+                        {{
+                          selectedPassageIds.includes(passage.id)
+                            ? "selected"
+                            : "select passage"
+                        }}
+                      </label>
+                      <span
+                        class="text-muted"
+                        *ngIf="_existingPassageIds.includes(passage.id)"
+                      >
+                        already selected for exam
+                      </span>
+                    </div>
+                    <div
+                      *ngIf="!assessmentActive"
+                      class="d-flex gap-1 justify-content-end"
+                    >
+                      <a
+                        ngbTooltip="VIEW"
+                        (click)="setTrailInfo(passage)"
+                        routerLink="/examalpha/passages/subjects/{{
+                          subjectId
+                        }}/passage/{{ passage.id }}"
+                        type="button"
+                        class="btn btn-icon btn-outline-dark"
+                        ><i class="ri-eye-line"></i
+                      ></a>
+                      <button
+                        ngbTooltip="EDIT"
+                        type="button"
+                        class="btn btn-icon btn-outline-primary"
+                        (click)="editPassage(passage)"
+                      >
+                        <i class="ri-edit-line"></i>
+                      </button>
+                      <button
+                        *ngIf="currentUser.authorities.includes('ADMIN')"
+                        ngbTooltip="USAGE HISTORY"
+                        type="button"
+                        class="btn btn-icon btn-outline-info"
+                        (click)="
+                          openUsageHistoryModal(passage.id, passageUsageModal)
+                        "
+                      >
+                        <i class="ri-history-line"></i>
+                      </button>
+                      <button
+                        ngbTooltip="DELETE"
+                        type="button"
+                        (click)="
+                          openDeletePassageConfirmationModal(
+                            passage.id,
+                            deletePassageConfirmationModal
+                          )
+                        "
+                        class="btn btn-icon btn-outline-danger"
+                      >
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- <div *ngIf="passageItems" class="card-body">
+                    <div class="live-preview">
+                      <div class="list-group" *ngIf="passageItems.items">
+                        <h4 class="title">Questions</h4>
+                        <a
+                          style="color: #000"
+                          class="list-group-item"
+                          *ngFor="let item of passageItems.items; let i = index"
+                        >
+                          ITEMS
+                          <div class="row">
+                            <div>
+                              <app-preview
+                                *ngIf="item.type === 'MCQ'"
+                              ></app-preview>
+                              <app-matching-preview
+                                *ngIf="item.type === 'ASSOCIATION'"
+                              ></app-matching-preview>
+                              <app-ordering-preview
+                                *ngIf="item.type === 'ORDER_LIST'"
+                              ></app-ordering-preview>
+                              <app-rich-essay-preview
+                                *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+                              ></app-rich-essay-preview>
+                              <app-multiple-response-preview
+                                *ngIf="item.type === 'MRQ'"
+                              ></app-multiple-response-preview>
+                              <app-short-text-preview
+                                *ngIf="item.type === 'SHORT_TEXT'"
+                              ></app-short-text-preview>
+                              <app-yes-or-no-preview
+                                *ngIf="item.type === 'YES_NO'"
+                                [subjectName]="subjectName"
+                              ></app-yes-or-no-preview>
+                              <app-true-or-false-preview
+                                *ngIf="item.type === 'TRUE_FALSE'"
+                              ></app-true-or-false-preview>
+                              <app-cloze-dropdown-preview
+                                *ngIf="item.type === 'CLOZE_DROPDOWN'"
+                              ></app-cloze-dropdown-preview>
+                              <app-cloze-text-preview
+                                *ngIf="item.type === 'CLOZE_TEXT'"
+                              ></app-cloze-text-preview>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+              </a>
+            </div>
+
+            <div
+              class="list-group"
+              *ngIf="!loading_passages && filteredResult && filterState"
+            >
+              <a
+                class="list-group-item"
+                *ngFor="let passage of filteredResult.content; let i = index"
+              >
+                <div class="row" style="height: fit-content">
+                  <div class="col-lg-12 col-sm-auto">
+                    <div
+                      class="d-flex flex-wrap mb-2 align-items-center justify-content-between"
+                    >
+                      <div>
+                        <h5 class="list-title fs-18 mb-1">
+                          {{ passage.reference }}
+                        </h5>
+                        <p class="list-text mb-0 fs-12">
+                          Author: {{ passage.authorDetails.authorName }}
+                        </p>
+                      </div>
+                      <div class="d-flex gap-2 float-end">
+                        <div class="list-text mb-0 fs-12">
+                          Created At:
+                          {{ passage.createdAt | date : "medium" }}
+                        </div>
+                        <div class="list-text mb-0 fs-12">
+                          Last Modified:
+                          {{ passage.modifiedAt | date : "medium" }}
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <span
+                        >Passage :
+                        <div
+                          class="list-text mb-0"
+                          [innerHTML]="passage.stimulus"
+                        ></div
+                      ></span>
+                    </div>
+                  </div>
+                  <div
+                    class="d-flex gap-1 align-items-end justify-content-between"
+                  >
+                    <div class="d-flex align-items-end">
+                      <span class="badge badge-soft-primary"
+                        >Total Questions: {{ passage.itemCount }}</span
+                      >
+
+                      <span
+                        class="badge mx-2"
+                        [ngClass]="{
+                          'badge-soft-success': passage.status == 'PUBLISHED',
+                          'badge-soft-warning':
+                            passage.status == 'DRAFT' ||
+                            passage.status == 'AWAITING_MODERATION'
+                        }"
+                        >Status: {{ passage.status }}</span
+                      >
+
+                      <span>
+                        <span
+                          style="cursor: pointer"
+                          class="ri-question-fill text-info"
+                          placement="top"
+                          data-bs-container="body"
+                          data-bs-toggle="popover"
+                          [ngbPopover]="tagsPopOver"
+                          popoverClass="popOverClass"
+                          triggers="mouseenter:mouseleave"
+                          class="badge mx-2 badge-soft-info"
+                          >Tags: {{ passage.itemTagDTOS.length }}</span
+                        >
+
+                        <ng-template #tagsPopOver>
+                          <ul>
+                            <li *ngFor="let tag of passage.itemTagDTOS">
+                              <span class="">{{
+                                tag.tagName | titlecase
+                              }}</span>
+                            </li>
+                          </ul>
+                        </ng-template>
+                      </span>
+
+                      <span
+                        *ngIf="passageFilterOptions.itemUsed"
+                        class="badge badge-soft-secondary"
+                        >Item usage: {{ passage.itemUsed }}</span
+                      >
+                    </div>
+
+                    <!-- <button
+                        ngbTooltip="VIEW QUESTIONS"
+                        type="button"
+                        class="btn btn-sm btn-icon btn-outline-dark"
+                        (click)="viewPassageItems(passage.id)"
+                      >
+                        <i class="ri-eye-line"></i>
+                      </button> -->
+                    <div *ngIf="assessmentActive" class="form-check mt-1">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        (change)="pickPassage(passage.id)"
+                        [checked]="selectedPassageIds.includes(passage.id)"
+                        [hidden]="
+                          !selectedPassageIds.includes(passage.id) &&
+                          selectedPassageIds.length ===
+                            _currentBlock.totalQuestions
+                        "
+                      />
+                      <label
+                        [hidden]="
+                          !selectedPassageIds.includes(passage.id) &&
+                          selectedPassageIds.length ===
+                            _currentBlock.totalQuestions
+                        "
+                        class="form-check-label"
+                      >
+                        {{
+                          selectedPassageIds.includes(passage.id)
+                            ? "selected"
+                            : "select passage"
+                        }}
+                      </label>
+                    </div>
+                    <div
+                      *ngIf="!assessmentActive"
+                      class="d-flex gap-1 justify-content-end"
+                    >
+                      <a
+                        ngbTooltip="VIEW"
+                        (click)="setTrailInfo(passage)"
+                        routerLink="/examalpha/passages/subjects/{{
+                          subjectId
+                        }}/passage/{{ passage.id }}"
+                        type="button"
+                        class="btn btn-icon btn-outline-dark"
+                        ><i class="ri-eye-line"></i
+                      ></a>
+                      <button
+                        ngbTooltip="EDIT"
+                        type="button"
+                        class="btn btn-icon btn-outline-primary"
+                        (click)="editPassage(passage)"
+                      >
+                        <i class="ri-edit-line"></i>
+                      </button>
+                      <button
+                        *ngIf="currentUser.authorities.includes('ADMIN')"
+                        ngbTooltip="USAGE HISTORY"
+                        type="button"
+                        class="btn btn-icon btn-outline-info"
+                        (click)="gotoUsageHistory(passage.id)"
+                      >
+                        <i class="ri-history-line"></i>
+                      </button>
+                      <button
+                        ngbTooltip="DELETE"
+                        type="button"
+                        (click)="
+                          openDeletePassageConfirmationModal(
+                            passage.id,
+                            deletePassageConfirmationModal
+                          )
+                        "
+                        class="btn btn-icon btn-outline-danger"
+                      >
+                        <i class="ri-delete-bin-line"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- <div *ngIf="passageItems" class="card-body">
+                    <div class="live-preview">
+                      <div class="list-group" *ngIf="passageItems.items">
+                        <h4 class="title">Questions</h4>
+                        <a
+                          style="color: #000"
+                          class="list-group-item"
+                          *ngFor="let item of passageItems.items; let i = index"
+                        >
+                          ITEMS
+                          <div class="row">
+                            <div>
+                              <app-preview
+                                *ngIf="item.type === 'MCQ'"
+                              ></app-preview>
+                              <app-matching-preview
+                                *ngIf="item.type === 'ASSOCIATION'"
+                              ></app-matching-preview>
+                              <app-ordering-preview
+                                *ngIf="item.type === 'ORDER_LIST'"
+                              ></app-ordering-preview>
+                              <app-rich-essay-preview
+                                *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+                              ></app-rich-essay-preview>
+                              <app-multiple-response-preview
+                                *ngIf="item.type === 'MRQ'"
+                              ></app-multiple-response-preview>
+                              <app-short-text-preview
+                                *ngIf="item.type === 'SHORT_TEXT'"
+                              ></app-short-text-preview>
+                              <app-yes-or-no-preview
+                                *ngIf="item.type === 'YES_NO'"
+                                [subjectName]="subjectName"
+                              ></app-yes-or-no-preview>
+                              <app-true-or-false-preview
+                                *ngIf="item.type === 'TRUE_FALSE'"
+                              ></app-true-or-false-preview>
+                              <app-cloze-dropdown-preview
+                                *ngIf="item.type === 'CLOZE_DROPDOWN'"
+                              ></app-cloze-dropdown-preview>
+                              <app-cloze-text-preview
+                                *ngIf="item.type === 'CLOZE_TEXT'"
+                              ></app-cloze-text-preview>
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+                    </div>
+                  </div> -->
+                </div>
+              </a>
+            </div>
+
+            <div
+              *ngIf="
+                !loading_passages && !filterState && passages && passages.content.length < 1
+              "
+              class="d-flex flex-column justify-content-between align-items-center"
+            >
+              <img
+                src="assets/images/blank_pages/empty-state.png"
+                width="200"
+                height="200"
+                class=""
+              />
+              <h4 class="text-secondary fw-bold">No Passage(s) Found!</h4>
+              <a (click)="gotoNewPassage()" class="btn btn-outline-primary"
+                ><i class="ri-add-line me-2"></i>New Passage</a
+              >
+            </div>
+
+            <ng-container
+              *ngIf="!loading_passages && filterState && filteredResult"
+            >
+              <div
+                *ngIf="filteredResult.content.length < 1"
+                class="d-flex flex-column justify-content-between align-items-center my-2"
+              >
+                <img
+                  src="assets/images/blank_pages/empty-state.png"
+                  width="200"
+                  height="200"
+                  class=""
+                />
+                <h4 class="text-secondary fw-bold">
+                  No passage(s) found for filter!
+                </h4>
+                <a (click)="clearFilter()" class="btn btn-outline-danger"
+                  ><i class="ri-close-line me-2"></i>Clear Filter</a
+                >
+              </div>
+            </ng-container>
+          </div>
+        </ngx-simplebar>
+      </div>
+
+      <div
+        *ngIf="!loading_passages && passages && passages.content.length > 0"
+        class="card-footer"
+      >
+        <!-- Pagination-->
+        <p-paginator
+          [totalRecords]="passages.totalElements"
+          (onPageChange)="pageChange($event)"
+          [first]="0"
+          [rowsPerPageOptions]="[20, 30, 50]"
+          [rows]="20"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #newTopicModal let-modal>
+  <div class="modal-body p-4">
+    <form #newTopicForm="ngForm" (ngSubmit)="addNewTopic(newTopicForm)">
+      <h4 class="text-center mb-4">Add a new topic</h4>
+      <p class="text-muted text-center">
+        {{ subjectName.toUpperCase() }}
+      </p>
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <label for="name">Topic Name</label>
+        <input
+          type="text"
+          name="name"
+          class="form-control mb-3"
+          placeholder="Topic"
+          [(ngModel)]="newTopic.name"
+        />
+      </div>
+      <div class="d-flex gap-2 float-end mt-4">
+        <button
+          type="button"
+          class="btn btn-outline-danger d-flex gap-1 align-items-center"
+          data-bs-dismiss="modal"
+          (click)="modal.close('Close click')"
+        >
+          <i class="ri-close-line"></i>Close
+        </button>
+        <button
+          type="submit"
+          *ngIf="!submitted"
+          [disabled]="newTopic.name.length < 3"
+          class="btn btn-success d-flex gap-1 align-items-center"
+        >
+          <i class="ri-save-line"></i>Save
+        </button>
+        <ng-template [ngIf]="submitted">
+          <button
+            class="btn btn-outline-primary btn-load"
+            [disabled]="submitted"
+          >
+            <span class="d-flex align-items-center">
+              <span class="spinner-border flex-shrink-0" role="status">
+                <span class="visually-hidden">Saving...</span>
+              </span>
+              <span class="flex-grow-1 ms-2"> Saving... </span>
+            </span>
+          </button>
+        </ng-template>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #passageUsageModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">PASSAGE USAGE HISTORY</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div
+    class="modal-body px-5"
+    style="
+      height: 350px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <ng-container
+      *ngIf="
+        !loading_usage_history &&
+        passageUsageHistory &&
+        passageUsageHistory.length > 0
+      "
+    >
+      <div *ngFor="let usage of passageUsageHistory" class="profile-timeline">
+        <!--<div class="d-flex align-items-center">
+          <div class="flex-shrink-0 avatar-xs">
+            <div class="avatar-title rounded-circle 'bg-success'">
+              <i class="ri-file-line"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6 class="fs-15 mb-0 fw-semibold">
+              This passage was used in {{ usage.assessmentName }} -
+              <span class="fw-normal">{{
+                usage.usedAt | date : 'medium'
+              }}</span>
+            </h6>
+          </div>
+        </div> -->
+        <ngb-accordion
+          #acc="ngbAccordion"
+          activeIds="static-1"
+          [closeOthers]="true"
+        >
+          <ngb-panel id="static-1">
+            <ng-template ngbPanelTitle>
+              <a
+                class="accordion-button p-2 shadow-none"
+                data-bs-toggle="collapse"
+                href="javasccript:void(0;)"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0 avatar-xs">
+                    <div class="avatar-title rounded-circle 'bg-success'">
+                      <i class="ri-file-line"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="fs-15 mb-0 fw-semibold">
+                      This question was used in {{ usage.assessmentName }}
+                      <!-- <span class="fw-normal">{{
+                                usage.usedAt | date : 'medium'
+                              }}</span> -->
+                    </h6>
+                  </div>
+                </div>
+              </a>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div
+                id="collapseOne"
+                class="accordion-collapse collapse show"
+                aria-labelledby="headingOne"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body ms-2 ps-5 pt-0">
+                  <p class="text-muted">
+                    Used at {{ usage.usedAt | date : "medium" }}.
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+    </ng-container>
+
+    <div
+      class="p-2"
+      *ngIf="!loading_usage_history && passageUsageHistory.length < 1"
+    >
+      <div
+        class="d-flex flex-column justify-content-between align-items-center"
+      >
+        <img
+          src="assets/images/blank_pages/empty-state.png"
+          width="200"
+          height="200"
+          class=""
+        />
+        <h4 class="text-secondary fw-bold my-2">
+          This Passage has never been used for an exam!
+        </h4>
+      </div>
+    </div>
+
+    <div
+      *ngIf="loading_usage_history"
+      class="d-flex align-items-center justify-content-center"
+      style="height: 60vh"
+    >
+      <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border text-info fs-18" role="status">
+          <span class="visually-hidden">Loading passage usage history...</span>
+        </div>
+        <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+          >Loading passage usage history...</span
+        >
+      </div>
+    </div>
+    <!-- <p-paginator
+          *ngIf="
+            activityListPage &&
+            activityListPage.content.length > 0
+          "
+          [totalRecords]="activityListPage.totalElements"
+          (onPageChange)="activityListChange($event)"
+          [first]="page"
+          [rowsPerPageOptions]="[50, 70, 100]"
+          [rows]="50"
+          [showCurrentPageReport]="true"
+        >
+        </p-paginator> -->
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deletePassageConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to delete this Passage?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-primary"
+      >
+        No, Cancel
+      </button>
+      <!-- <button type="button" (click)="deletePassage()" class="btn btn-danger">
+        Yes, Delete It
+      </button> -->
+      <button
+        type="button"
+        (click)="deletePassage()"
+        *ngIf="!processing_delete"
+        class="btn btn-danger"
+      >
+        <!-- <i class="ri-save-line"></i> -->Yes, Delete It
+      </button>
+      <ng-template [ngIf]="processing_delete">
+        <button
+          class="btn btn-outline-danger btn-load"
+          [disabled]="processing_delete"
+        >
+          <span class="d-flex align-items-center">
+            <span class="spinner-border flex-shrink-0" role="status">
+              <span class="visually-hidden">Deleting...</span>
+            </span>
+            <span class="flex-grow-1 ms-2"> Deleting... </span>
+          </span>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>

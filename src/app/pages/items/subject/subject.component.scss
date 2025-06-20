@@ -1,0 +1,37 @@
+/* Parent container for buttons */
+.action-buttons {
+    gap: 10px; /* Add spacing between buttons */
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    flex-shrink: 0; /* Prevent buttons from shrinking */
+  }
+  
+  /* Styling for individual buttons */
+  button.btn {
+    flex: 0 0 auto; /* Prevent individual buttons from resizing */
+    min-width: 40px; /* Ensure buttons have consistent minimum width */
+    height: 40px; /* Uniform height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px; /* Adjust padding for a balanced look */
+  }
+  
+  button.btn-icon i {
+    font-size: 16px; /* Adjust icon size */
+  }
+  
+  /* Adjust wrapping behavior on smaller screens */
+  @media (max-width: 768px) {
+    .action-buttons {
+      justify-content: flex-start;
+      gap: 5px; /* Reduce spacing on small screens */
+    }
+  
+    .topic-container {
+      width: 100%; /* Let the topic occupy its own line */
+      margin-bottom: 10px; /* Add spacing */
+    }
+  }
+  

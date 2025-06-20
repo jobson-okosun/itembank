@@ -1,0 +1,32 @@
+<div class="customizer-setting d-none d-md-block">
+    <div class="btn-info btn-rounded shadow-lg btn btn-icon btn-lg p-2" data-bs-toggle="offcanvas"
+        data-bs-target="#theme-settings-offcanvas" aria-controls="theme-settings-offcanvas" (click)="toggleRightSidebar()">
+        <i ngbTooltip="HELP" class='ri-question-fill fs-22'></i>
+    </div>
+</div>
+
+<!-- Theme Settings -->
+<div
+  class="w-50 offcanvas offcanvas-end border-0"
+  tabindex="-1"
+  id="theme-settings-offcanvas"
+>
+  <div class="d-flex align-items-center p-3 offcanvas-header">
+    <h5 class="m-0 me-2">Quick Guide | {{ currentView }}</h5>
+
+    <button
+      type="button"
+      class="btn-close btn-close-dark ms-auto"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+      (click)="hide()"
+    ></button>
+  </div>
+  <div class="offcanvas-body px-3">
+    <div data-simplebar class="h-100">
+      <div class="card">
+        <div class="card-body" [innerHTML]="pageGuide"></div>
+      </div>
+    </div>
+  </div>
+</div>

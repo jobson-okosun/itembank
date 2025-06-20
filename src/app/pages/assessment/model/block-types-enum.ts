@@ -1,0 +1,4 @@
+export enum BlockTypesEnum {
+  PASSAGES = "PASSAGES",
+  SINGLE_QUESTIONS = "SINGLE_QUESTIONS"
+}

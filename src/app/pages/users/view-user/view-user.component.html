@@ -1,0 +1,1182 @@
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading user's detail...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading && userDetail">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card mt-n4 mx-n4 border-0">
+        <div class="bg-soft-primary">
+          <div class="card-body pb-0 px-4">
+            <div class="row mb-3">
+              <div class="col-md">
+                <div class="row align-items-center g-3">
+                  <div class="col-sm-12 col-md-auto">
+                    <div class="avatar-md">
+                      <div class="avatar-title bg-white rounded-circle">
+                        <!-- <img
+                          src="assets/images/brands/slack.png"
+                          alt=""
+                          class="avatar-xs"
+                        /> -->
+                        <h3 class="">
+                          {{ userDetail.username[0].toUpperCase()
+                          }}{{ userDetail.username.substring(1, 2) }}
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-12 col-md">
+                    <div>
+                      <h4 class="fw-bold text-capitalize">
+                        {{ userDetail.username }} -
+                        {{ userDetail.userRolesDTOList[0].role }}
+                      </h4>
+                      <div class="hstack gap-3 flex-wrap">
+                        <div>
+                          <a
+                            routerLink="/examalpha/users/edit/{{
+                              userDetail.id
+                            }}"
+                            [style]="{ color: 'black' }"
+                            ><i class="ri-pencil-fill align-bottom me-1"></i
+                            >Edit Information</a
+                          >
+                        </div>
+                        <div class="vr"></div>
+                        <div>
+                          Create Date :
+                          <span class="fw-medium">{{
+                            userDetail.createdAt | date
+                          }}</span>
+                        </div>
+                        <div class="vr"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <ul
+              ngbNav
+              #customNav="ngbNav"
+              [activeId]="1"
+              class="nav nav-tabs-custom border-bottom-0"
+              role="tablist"
+            >
+              <li
+                [ngbNavItem]="1"
+                class="nav-item"
+                (click)="fetchUserDetail(userId)"
+              >
+                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                  Overview
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="row">
+                    <div class="col-xl-9 col-lg-8">
+                      <div class="card">
+                        <div class="card-body">
+                          <div class="text-muted">
+                            <h6 class="mb-3 fw-semibold text-uppercase">
+                              User Details
+                            </h6>
+
+                            <ul class="ps-4 vstack gap-2">
+                              <li>
+                                Username:
+                                <span class="text-capitalize">{{
+                                  userDetail.username
+                                }}</span>
+                              </li>
+                              <li>Email: {{ userDetail.email }}</li>
+                              <li>Phone: {{ userDetail.phone }}</li>
+                              <li>
+                                Firstname:
+                                <span class="text-capitalize">{{
+                                  userDetail.firstName
+                                }}</span>
+                              </li>
+                              <li>
+                                Lastname:
+                                <span class="text-capitalize">{{
+                                  userDetail.lastName
+                                }}</span>
+                              </li>
+                              <li>
+                                Account status:
+                                <span class="text-capitalize">{{
+                                  userDetail.activated === true
+                                    ? "active"
+                                    : "inactive"
+                                }}</span>
+                              </li>
+                            </ul>
+
+                            <div class="pt-3 border-top border-top-dashed mt-4">
+                              <div class="row">
+                                <div class="col-lg-3 col-sm-6">
+                                  <div>
+                                    <p class="mb-2 text-uppercase fw-medium">
+                                      Create Date :
+                                    </p>
+                                    <h5 class="fs-15 mb-0">
+                                      {{ userDetail.createdAt | date }}
+                                    </h5>
+                                  </div>
+                                </div>
+
+                                <div class="col-lg-3 col-sm-6">
+                                  <div>
+                                    <p class="mb-2 text-uppercase fw-medium">
+                                      TOTAL SUBJECTS :
+                                    </p>
+                                    <div class="badge bg-success fs-12">
+                                      {{ userDetail.userSubjectsDTOS.length }}
+                                      Subjects
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                  <div>
+                                    <p class="mb-2 text-uppercase fw-medium">
+                                      Role :
+                                    </p>
+                                    <div
+                                      class="mx-1 badge bg-primary fs-12"
+                                      *ngFor="
+                                        let role of userDetail.userRolesDTOList
+                                      "
+                                    >
+                                      {{ role.role }}
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- end card body -->
+                      </div>
+                      <!-- end card -->
+                    </div>
+                    <!-- ene col -->
+                    <div class="col-xl-3 col-lg-4">
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title mb-4">Subjects</h5>
+                          <div class="d-flex flex-wrap gap-2 fs-16">
+                            <div
+                              class="badge fw-medium badge-soft-secondary"
+                              *ngFor="
+                                let subject of userDetail.userSubjectsDTOS
+                              "
+                            >
+                              {{ subject.subjectName.toUpperCase() }}
+                            </div>
+                          </div>
+                        </div>
+                        <!-- end card body -->
+                      </div>
+                      <!-- end card -->
+                    </div>
+                    <!-- end col -->
+                  </div>
+                  <!-- end row -->
+                </ng-template>
+              </li>
+              <li
+              *ngIf="currentUser.authorities.includes('AUTHOR')"
+                [ngbNavItem]="2"
+                class="nav-item"
+                (click)="fetchUserItemAnalysis(userId)"
+              >
+                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                  Questions
+                </a>
+                <ng-template ngbNavContent>
+                  <div class="card">
+                    <div class="card-body">
+                      <div class="d-flex align-items-center mb-4">
+                        <h5 class="card-title flex-grow-1">Items Created</h5>
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="table-responsive table-card">
+                            <table
+                              class="table table-borderless align-middle mb-0"
+                            >
+                              <thead class="table-light">
+                                <tr>
+                                  <th scope="col">Subject</th>
+                                  <th scope="col">Total Question(s)</th>
+                                  <th scope="col">Draft(s)</th>
+                                  <th scope="col">Awaiting_Moderation</th>
+                                  <th scope="col">Published</th>
+                                  <th scope="col">Rejected</th>
+                                  <!-- <th scope="col" style="width: 120px">
+                                    Action
+                                  </th> -->
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let data of userItemAnalysis">
+                                  <td>{{ data.subjectName | uppercase }}</td>
+                                  <td>{{ data.totalItems }}</td>
+                                  <td>{{ data.totalDrafts }}</td>
+                                  <td>{{ data.awaitingModeration }}</td>
+                                  <td>{{ data.totalPublished }}</td>
+                                  <td>{{ data.totalRejected }}</td>
+                                  <!-- <td>
+                                    <div class="dropdown" ngbDropdown>
+                                      <a
+                                        href="javascript:void(0);"
+                                        class="btn btn-soft-secondary btn-sm btn-icon arrow-none"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="true"
+                                        ngbDropdownToggle
+                                      >
+                                        <i class="ri-more-fill"></i>
+                                      </a>
+                                      <ul
+                                        class="dropdown-menu dropdown-menu-end"
+                                        ngbDropdownMenu
+                                      >
+                                        <li>
+                                          <a
+                                            class="dropdown-item"
+                                            href="javascript:void(0);"
+                                            ><i
+                                              class="ri-eye-fill me-2 align-bottom text-muted"
+                                            ></i
+                                            >view questions</a
+                                          >
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </td> -->
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- <div class="text-center mt-3">
+                            <a href="javascript:void(0);" class="text-primary"
+                              ><i
+                                class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"
+                              ></i>
+                              Load more
+                            </a>
+                          </div> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+              <li [ngbNavItem]="3" class="nav-item" (click)="fetchActivities()">
+                <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                  Activities
+                </a>
+                <ng-template ngbNavContent>
+                  <ng-container *ngIf="!loadingActivityList">
+                    <h4>Activities({{ activityListPage.totalElements }})</h4>
+                    <!-- Filter form-->
+                    <div class="card card-animate shadow-lg p-4 mb-3">
+                      <form
+                        #filterUserActivitiesForm="ngForm"
+                        (ngSubmit)="filterUserActivities()"
+                      >
+                        <div class="row g-3 mb-2">
+                          <div class="col-lg-4 col-sm-12">
+                            <div>
+                              <label for="email" class="form-label"
+                                >Activity Type</label
+                              >
+                              <select
+                                class="form-select"
+                                name="activityType"
+                                [(ngModel)]="
+                                  userActivityFilter.userActivityType
+                                "
+                              >
+                                <option
+                                  *ngFor="let activityType of activityTypes"
+                                  value="{{ activityType }}"
+                                >
+                                  {{ activityType.split("_").join(" ") }}
+                                </option>
+                              </select>
+                            </div>
+                          </div>
+                          <div class="col-lg-4 col-sm-12">
+                            <div>
+                              <label for="username" class="form-label"
+                                >startDate</label
+                              >
+                              <input
+                                class="form-control flatpickr-input"
+                                type="text"
+                                name="startDate"
+                                required
+                                mwlFlatpickr
+                                data-id="datetime"
+                                [type]="'datetime-local'"
+                                [altInput]="false"
+                                [enableTime]="true"
+                                [convertModelValue]="true"
+                                [altFormat]=""
+                                [dateFormat]="'Y-m-d H:i'"
+                                [(ngModel)]="userActivityFilter.startDate"
+                              />
+                            </div>
+                          </div>
+                          <div class="col-lg-4 col-sm-12">
+                            <div>
+                              <label for="username" class="form-label"
+                                >endDate</label
+                              >
+                              <input
+                                class="form-control flatpickr-input"
+                                type="text"
+                                name="endDate"
+                                required
+                                mwlFlatpickr
+                                data-id="datetime"
+                                [type]="'datetime-local'"
+                                [altInput]="false"
+                                [enableTime]="true"
+                                [convertModelValue]="true"
+                                [altFormat]=""
+                                [dateFormat]="'Y-m-d H:i'"
+                                [(ngModel)]="userActivityFilter.endDate"
+                              />
+                            </div>
+                          </div>
+
+                          <div
+                            class="col-lg-6 col-sm-12 d-flex align-items-end"
+                          >
+                            <div class="d-flex gap-2">
+                              <!-- <div class="col-6"> -->
+                              <button
+                                class="btn btn-danger"
+                                type="button"
+                                (click)="clearUserActivitiesFilter()"
+                              >
+                                <i class="ri-close-fill me-2 align-middle"></i>
+                                Clear Filter
+                              </button>
+                              <!-- </div> -->
+                              <!-- <div class="col-6"> -->
+                              <button class="btn btn-secondary" type="submit">
+                                <i
+                                  class="ri-equalizer-fill me-2 align-middle"
+                                ></i>
+                                Apply Filter
+                              </button>
+                              <!-- </div> -->
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div class="card">
+                      <div class="card-body">
+                        <ng-container
+                          *ngIf="
+                            activityListPage &&
+                            activityListPage.content.length > 0
+                          "
+                        >
+                          <div
+                            *ngFor="let activity of activityListPage.content"
+                            class="profile-timeline"
+                          >
+                            <ngb-accordion
+                              #acc="ngbAccordion"
+                              activeIds="static-1"
+                              [closeOthers]="true"
+                            >
+                              <ngb-panel id="static-1">
+                                <ng-template ngbPanelTitle>
+                                  <a
+                                    class="accordion-button p-2 shadow-none"
+                                    data-bs-toggle="collapse"
+                                    href="javasccript:void(0;)"
+                                    aria-expanded="true"
+                                    aria-controls="collapseOne"
+                                  >
+                                    <div class="d-flex align-items-center">
+                                      <div class="flex-shrink-0 avatar-xs">
+                                        <div
+                                          class="avatar-title rounded-circle"
+                                          [ngClass]="{
+                                            'bg-primary':
+                                              activity.userActivityType ===
+                                                activityTypes[0] ||
+                                              activity.userActivityType ===
+                                                activityTypes[9],
+                                            'bg-success':
+                                              activity.userActivityType ===
+                                                activityTypes[1] ||
+                                              activity.userActivityType ===
+                                                activityTypes[4] ||
+                                              activity.userActivityType ===
+                                                activityTypes[7] ||
+                                              activity.userActivityType ===
+                                                activityTypes[12],
+                                            'bg-warning':
+                                              activity.userActivityType ===
+                                                activityTypes[2] ||
+                                              activity.userActivityType ===
+                                                activityTypes[5],
+                                            'bg-danger':
+                                              activity.userActivityType ===
+                                                activityTypes[3] ||
+                                              activity.userActivityType ===
+                                                activityTypes[6] ||
+                                              activity.userActivityType ===
+                                                activityTypes[8] ||
+                                              activity.userActivityType ===
+                                                activityTypes[13] ||
+                                              activity.userActivityType ===
+                                                activityTypes[11],
+                                            'bg-secondary':
+                                              activity.userActivityType ===
+                                                activityTypes[9] ||
+                                              activity.userActivityType ===
+                                                activityTypes[10]
+                                          }"
+                                        >
+                                          <i
+                                            class=""
+                                            [ngClass]="{
+                                              'ri-login-box-line':
+                                                activity.userActivityType ===
+                                                activityTypes[0],
+                                              'ri-file-add-line':
+                                                activity.userActivityType ===
+                                                  activityTypes[1] ||
+                                                activity.userActivityType ===
+                                                  activityTypes[7],
+                                              'ri-edit-2-line':
+                                                activity.userActivityType ===
+                                                  activityTypes[2] ||
+                                                activity.userActivityType ===
+                                                  activityTypes[6],
+                                              'ri-delete-bin-3-line':
+                                                activity.userActivityType ===
+                                                  activityTypes[3] ||
+                                                activity.userActivityType ===
+                                                  activityTypes[8],
+                                              'ri-article-line':
+                                                activity.userActivityType ===
+                                                activityTypes[4],
+                                              'ri-edit-box-line':
+                                                activity.userActivityType ===
+                                                activityTypes[5],
+                                              'ri-file-copy-line':
+                                                activity.userActivityType ===
+                                                activityTypes[9],
+                                              'ri-file-transfer-line':
+                                                activity.userActivityType ===
+                                                activityTypes[10],
+                                              'ri-close-line':
+                                                activity.userActivityType ===
+                                                activityTypes[11],
+                                              'ri-check-double-line':
+                                                activity.userActivityType ===
+                                                activityTypes[12],
+                                              'ri-logout-box-line':
+                                                activity.userActivityType ===
+                                                activityTypes[13]
+                                            }"
+                                          ></i>
+                                        </div>
+                                      </div>
+                                      <div class="flex-grow-1 ms-3">
+                                        <h6 class="fs-15 mb-0 fw-semibold">
+                                          {{ activity.userActivityType }} -
+                                          <span class="fw-normal">{{
+                                            activity.activityDate
+                                              | date : "medium"
+                                          }}</span>
+                                        </h6>
+                                      </div>
+                                    </div>
+                                  </a>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                  <!-- LOGIN ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[0]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Logged in at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <!-- <h6 class="mb-1">
+                                        Seller has proccessed your order.
+                                      </h6>
+                                      <p class="text-muted mb-0">
+                                        Thu, 16 Dec 2021 - 5:48AM
+                                      </p> -->
+                                    </div>
+                                  </div>
+
+                                  <!-- CREATE_ITEM ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[1]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Created a new question
+                                        <a
+                                          style="cursor: pointer"
+                                          class="text-primary underline"
+                                          (click)="
+                                            fetchItem(
+                                              activity.itemId,
+                                              previewModal
+                                            )
+                                          "
+                                          >{{ activity.itemId }}</a
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <!-- EDIT_ITEM ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[2]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Edited a question
+                                        <a
+                                          style="cursor: pointer"
+                                          class="text-primary underline"
+                                          (click)="
+                                            fetchItem(
+                                              activity.itemId,
+                                              previewModal
+                                            )
+                                          "
+                                          >{{ activity.itemId }}</a
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }}
+                                        {{
+                                          activity.moderationStatus &&
+                                            "|" + activity.moderationStatus
+                                        }}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <!-- DELETE_ITEM ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[3]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Deleted a question
+                                        <span
+                                          style="cursor: pointer"
+                                          class="text-danger"
+                                          >{{ activity.itemId }}</span
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <!-- <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p> -->
+                                    </div>
+                                  </div>
+
+                                  <!-- CREATE_PASSAGE ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[4]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName + activity.lastName
+                                        }}
+                                        Created a new passage
+                                        <a
+                                          style="cursor: pointer"
+                                          class="text-primary underline"
+                                          (click)="
+                                            fetchPassage(
+                                              activity.passageId,
+                                              previewModal
+                                            )
+                                          "
+                                          >{{ activity.passageId }}</a
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <!-- <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p> -->
+                                    </div>
+                                  </div>
+
+                                  <!-- EDIT_PASSAGE ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[5]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName + activity.lastName
+                                        }}
+                                        Edited a passage
+                                        <a
+                                          style="cursor: pointer"
+                                          class="text-primary underline"
+                                          (click)="
+                                            fetchItem(
+                                              activity.passageId,
+                                              previewModal
+                                            )
+                                          "
+                                          >{{ activity.passageId }}</a
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <!-- <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p> -->
+                                    </div>
+                                  </div>
+
+                                  <!-- DELETE_PASSAGE ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[6]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Deleted a passage
+                                        <span
+                                          style="cursor: pointer"
+                                          class="text-danger"
+                                          >{{ activity.passageId }}</span
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic && activity.subtopic
+                                        }}
+                                      </h6>
+                                      <!-- <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p> -->
+                                    </div>
+                                  </div>
+
+                                  <!-- ADD_ITEM_TO_PASSAGE ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[7]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName + activity.lastName
+                                        }}
+                                        Created a new passage question
+                                        <a
+                                          style="cursor: pointer"
+                                          class="text-primary underline"
+                                          (click)="
+                                            fetchItem(
+                                              activity.itemId,
+                                              previewModal
+                                            )
+                                          "
+                                          >{{ activity.itemId }}</a
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <!-- DELETE_PASSAGE_TO_ITEM ACTIVITY TYPE-->
+                                  <div
+                                    *ngIf="
+                                      activity.userActivityType ===
+                                      activityTypes[8]
+                                    "
+                                    id="collapseOne"
+                                    class="accordion-collapse collapse show"
+                                    aria-labelledby="headingOne"
+                                    data-bs-parent="#accordionExample"
+                                  >
+                                    <div class="accordion-body ms-2 ps-5 pt-0">
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.firstName +
+                                            " " +
+                                            activity.lastName
+                                        }}
+                                        Deleted a passage question
+                                        <span
+                                          style="cursor: pointer"
+                                          class="text-danger"
+                                          >{{ activity.itemId }}</span
+                                        >
+                                        at
+                                      </h6>
+                                      <p class="text-muted">
+                                        {{
+                                          activity.activityDate
+                                            | date : "medium"
+                                        }}.
+                                      </p>
+
+                                      <h6 class="mb-1">
+                                        {{
+                                          activity.subject +
+                                            "|" +
+                                            activity.topic
+                                        }}
+                                        {{
+                                          activity.subtopic &&
+                                            "|" + activity.subtopic
+                                        }}
+                                      </h6>
+                                      <!-- <p class="text-muted mb-0">
+                                        {{ activity.itemType }} |
+                                        {{ activity.itemStatus }} |
+                                        {{ activity.moderationStatus }}
+                                      </p> -->
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </ngb-panel>
+                            </ngb-accordion>
+                          </div>
+                        </ng-container>
+
+                        <div
+                          class="p-2"
+                          *ngIf="
+                            activityListPage &&
+                            activityListPage.content.length < 1
+                          "
+                        >
+                          <div
+                            class="d-flex flex-column justify-content-between align-items-center"
+                          >
+                            <img
+                              src="assets/images/blank_pages/empty-state.png"
+                              width="200"
+                              height="200"
+                              class=""
+                            />
+                            <h4 class="text-secondary fw-bold my-2">
+                              This user has no activity log(s)!
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
+                      <!--end card-body-->
+
+                      <p-paginator
+                        *ngIf="
+                          activityListPage &&
+                          activityListPage.content.length > 0
+                        "
+                        [totalRecords]="activityListPage.totalElements"
+                        (onPageChange)="activityListChange($event)"
+                        [first]="page"
+                        [rowsPerPageOptions]="[50, 70, 100]"
+                        [rows]="50"
+                        [showCurrentPageReport]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                      >
+                      </p-paginator>
+                    </div>
+                    <!--end card-->
+                  </ng-container>
+
+                  <div
+                    *ngIf="loadingActivityList"
+                    class="d-flex align-items-center justify-content-center"
+                    style="height: 60vh"
+                  >
+                    <div class="d-flex align-items-center gap-2">
+                      <div class="spinner-border text-info fs-18" role="status">
+                        <span class="visually-hidden"
+                          >Loading User Activities...</span
+                        >
+                      </div>
+                      <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+                        >Loading User Activities...</span
+                      >
+                    </div>
+                  </div>
+                </ng-template>
+              </li>
+            </ul>
+          </div>
+          <!-- end card body -->
+        </div>
+      </div>
+      <!-- end card -->
+    </div>
+    <!-- end col -->
+  </div>
+  <!-- end row -->
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="tab-content text-muted">
+        <div [ngbNavOutlet]="customNav"></div>
+      </div>
+    </div>
+    <!-- end col -->
+  </div>
+  <!-- end row -->
+</div>
+
+<ng-template #previewModal let-modal>
+  <div class="modal-header px-5">
+    <h3 class="modal-title">{{ currentPreview }} Preview</h3>
+    <div>
+      <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close"
+        (click)="modal.close('Close click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div
+    class="p-5 modal-body"
+    style="
+      height: 420px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <div class="card-body">
+      <div *ngIf="currentPreview === 'Question' && item">
+        <app-preview
+          *ngIf="item.type === 'MCQ'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-preview>
+        <app-matching-preview
+          *ngIf="item.type === 'ASSOCIATION'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-matching-preview>
+        <app-ordering-preview
+          *ngIf="item.type === 'ORDER_LIST'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-ordering-preview>
+        <app-rich-essay-preview
+          *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-rich-essay-preview>
+        <app-multiple-response-preview
+          *ngIf="item.type === 'MRQ'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-multiple-response-preview>
+        <app-short-text-preview
+          *ngIf="item.type === 'SHORT_TEXT'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-short-text-preview>
+        <app-yes-or-no-preview
+          *ngIf="item.type === 'YES_NO'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-yes-or-no-preview>
+        <app-true-or-false-preview
+          *ngIf="item.type === 'TRUE_FALSE'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-true-or-false-preview>
+        <app-cloze-dropdown-preview
+          *ngIf="item.type === 'CLOZE_DROPDOWN'"
+          [previewData]="item"
+          [component]="'usage-history'"
+        ></app-cloze-dropdown-preview>
+        <app-cloze-text-preview
+          *ngIf="item.type === 'CLOZE_TEXT'"
+          [previewData]="item"
+          [component]="'usage-history'"
+          (closeOuterModal)="modal.close('Close click')"
+        ></app-cloze-text-preview>
+        <app-choice-matrix-preview
+          *ngIf="item.type === 'CHOICE_MATRIX'"
+          [previewData]="item"
+          [component]="'usage-history'"
+          (closeOuterModal)="modal.close('Close click')"
+        ></app-choice-matrix-preview>
+      </div>
+      <div *ngIf="currentPreview === 'Passage' && passage">
+        <app-passage-preview [previewData]="passage"></app-passage-preview>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<app-rightsidebar
+  [currentView]="'Manage User'"
+  [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar>

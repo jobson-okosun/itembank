@@ -1,0 +1,788 @@
+<app-breadcrumbs
+  title="RECYCLE"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading questions...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading" class="row">
+  <div class="col-lg-3 col-sm-12">
+    <div class="card">
+      <div class="card-header border-bottom-dashed">
+        <div class="btn btn-primary w-100">{{ subject.toUpperCase() }}</div>
+      </div>
+      <div class="card-body">
+        <ngx-simplebar
+          class="message-list-content mx-n4 px-4 message-list-scroll"
+        >
+          <div class="verti-sitemap dropdown" ngbDropdown>
+            <ul class="list-unstyled mb-0">
+              <li
+                class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                ngbDropdownToggle
+              >
+                Topics ({{ recycleTopicsTree.topics.length }})
+              </li>
+              <li>
+                <div
+                  class="first-list"
+                  *ngFor="let topic of recycleTopicsTree.topics; let i = index"
+                >
+                  <div class="profile-timeline">
+                    <!-- <ngb-accordion #acc="ngbAccordion">
+                      <ngb-panel id="{{ 'static-' + i }}">
+                        <ng-template ngbPanelTitle> -->
+                    <a
+                      class="accordion-button p-2 shadow-none"
+                      data-bs-toggle="collapse"
+                      (click)="showTopicDetails(topic)"
+                      aria-expanded="true"
+                      aria-controls="collapseOne"
+                    >
+                      <div class="list-wrap" class="dropdown" ngbDropdown>
+                        <a
+                          [ngStyle]="{ cursor: 'pointer' }"
+                          class="fw-small fs-11 text-primary dropdown arrow-none"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          ngbDropdownToggle
+                          ngbTooltip="{{ topic.topicName.toUpperCase() }}"
+                          placement="bottom"
+                          ><i class="ri-folder-line me-1 align-bottom"></i>
+                          {{ topic.topicName.toUpperCase() | slice : 0 : 25
+                          }}{{ topic.topicName.length > 25 ? '...' : '' }}</a
+                        ><span
+                          ngbTooltip="TOTAL ITEMS"
+                          class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary"
+                          >{{ topic.totalItems }}</span
+                        >
+                      </div>
+                    </a>
+                    <!-- </ng-template> -->
+                    <!-- <ng-template ngbPanelContent> -->
+                    <div
+                      *ngFor="let subtopic of topic.subtopics; let i = index"
+                      class="dropdown"
+                      #drop="ngbDropdown"
+                      ngbDropdown
+                    >
+                      <ul class="second-list list-unstyled">
+                        <li>
+                          <a
+                            [ngStyle]="{ cursor: 'pointer' }"
+                            (click)="showTopicDetails(topic, subtopic)"
+                            class="dropdown arrow-none fs-11 d-flex gap-1 align-items-center"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            ngbDropdownToggle
+                            ngbTooltip="{{
+                              subtopic.subtopicName.toUpperCase()
+                            }}"
+                            ><i class="ri-folder-line"></i
+                            >{{
+                              subtopic.subtopicName.toUpperCase()
+                                | slice : 0 : 20
+                            }}{{ subtopic.subtopicName.length > 20 ? '...' : ''
+                            }}<span
+                              ngbTooltip="TOTAL ITEMS"
+                              class="position-absolute top-50 start-0 translate-middle badge rounded-pill bg-primary"
+                              >{{ subtopic.totalItems }}</span
+                            ></a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <!-- </ng-template>
+                      </ngb-panel>
+                    </ngb-accordion> -->
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </ngx-simplebar>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-9 col-sm-12">
+    <div class="card">
+      <!-- Header-->
+      <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+          <div class="col-sm d-flex justify-content-between align-items-center">
+            <div>
+              <h5 class="card-title mb-0">
+                Items List
+                <span *ngIf="currentTopicName || currentSubtopicName">
+                  |
+                  {{
+                    currentSubtopicName ? currentSubtopicName : currentTopicName
+                  }}
+                  ({{ itemsPage && itemsPage.content.length }})</span
+                >
+              </h5>
+            </div>
+            <div class="d-flex gap-2">
+              <!-- Restoration button to restore selected questions-->
+              <button
+                class="btn btn-primary btn-sm"
+                *ngIf="
+                  currentUser.authorities.includes('ADMIN') &&
+                  restoredItemDetails.itemIds.length > 0;
+                "
+                ngbTooltip="RESTORE QUESTIONS"
+                title="Restore all selected questions"
+                (click)="restoreSelectedItem()"
+              >
+                <i class="ri-refresh-line align-middle me-2"></i>Restore Selected
+              </button>
+
+              <!-- Restoration button to restore questions in selected topic-->
+              <button
+                class="btn btn-primary btn-sm"
+                *ngIf="
+                  currentUser.authorities.includes('ADMIN') &&
+                  currentTopicName &&
+                  !currentSubtopicName && restoredItemDetails.itemIds.length == 0
+                "
+                ngbTooltip="RESTORE QUESTIONS"
+                title="Restore all questions in this topic"
+                (click)="restoreItemsInTopic()"
+              >
+                <i class="ri-refresh-line align-middle me-2"></i>Restore All
+              </button>
+
+              <!-- Restoration button to restore questions in selected subtopic-->
+              <button
+                class="btn btn-primary btn-sm"
+                *ngIf="
+                  currentUser.authorities.includes('ADMIN') &&
+                  currentSubtopicName && restoredItemDetails.itemIds.length == 0
+                "
+                ngbTooltip="RESTORE QUESTIONS"
+                title="Restore all questions in this subtopic"
+                (click)="restoreQuestionsInSubTopic()"
+              >
+                <i class="ri-refresh-line align-middle me-2"></i>Restore All
+              </button>
+              <!-- <button
+                    *ngIf="
+                      currentUser.authorities.includes('ADMIN')
+                    "
+                    class="btn btn-warning btn-icon btn-sm"
+                    ngbTooltip="ADD SUBTOPIC"
+                    (click)="
+                      openNewSubTopicModal(newSubTopicModal, clickedTopic)
+                    "
+                  >
+                    <i class="ri-draft-line"></i>
+                  </button>
+                  <button
+                    *ngIf="
+                      !clickedTopic.subtopicName &&
+                      currentUser.authorities.includes('ADMIN')
+                    "
+                    class="btn btn-info btn-icon btn-sm"
+                    ngbTooltip="EDIT TOPIC"
+                    (click)="
+                      openRenameTopicModal(renameTopicModal, clickedTopic)
+                    "
+                  >
+                    <i class="ri-pencil-line"></i>
+                  </button> -->
+              
+                  <!-- Filter button to display filter forms-->
+              <button
+                type="submit"
+                ngbTooltip="{{
+                  !showFilter ? 'Filter Options' : 'Hide Options'
+                }}"
+                class="{{
+                  !showFilter
+                    ? 'btn btn-outline-secondary'
+                    : 'btn btn-outline-danger'
+                }} btn-sm"
+                (click)="showFilters()"
+              >
+                <i
+                  class="{{
+                    !showFilter ? 'ri-equalizer-fill' : 'ri-close-line fs-14'
+                  }}"
+                ></i>{{!showFilter ? 'Filter' : 'Hide Filter'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items List and Filter Options-->
+      <ngx-simplebar
+        class="message-list-content mx-n4 px-4 message-list-scroll"
+      >
+        <!-- Filter form-->
+        <div
+          *ngIf="showFilter"
+          class="card-body border-bottom-dashed border-bottom sticky-top bg-white"
+        >
+          <form
+            #filterForm="ngForm"
+            (ngSubmit)="!filterForm.invalid && filter(filterForm)"
+          >
+            <div ngModelGroup="filterInformation">
+              <div class="row g-3 mb-2">
+                <div class="col-sm-4">
+                  <label for="content">Content</label>
+                  <div class="search-box">
+                    <i class="ri-search-line search-icon"></i>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="stimulus"
+                      placeholder="Search content"
+                      [(ngModel)]="filterInformation.stimulusSearchText"
+                      ngModel
+                    />
+                  </div>
+                </div>
+                <!--end col-->
+
+                <div class="col-sm-4">
+                  <label for="title">Title</label>
+                  <div class="search-box">
+                    <input
+                      type="text"
+                      name="title"
+                      class="form-control"
+                      placeholder="Search for title"
+                      [(ngModel)]="filterInformation.referenceSearchText"
+                    />
+                    <i class="ri-search-line search-icon"></i>
+                  </div>
+                </div>
+                <!--end col-->
+
+                <div class="col-sm-4">
+                  <app-item-topic
+                    [label]="'Topic'"
+                    (sendTags)="recieveTags($event)"
+                  ></app-item-topic>
+                </div>
+                <!-- end col-->
+              </div>
+              <div class="row g-3">
+                <div class="col-sm-3">
+                  <div>
+                    <label for="status">Status</label>
+                    <select
+                      class="form-control"
+                      data-plugin="choices"
+                      data-choices
+                      data-choices-search-false
+                      name="status"
+                      [(ngModel)]="filterInformation.status"
+                    >
+                      <option *ngFor="let status of passageStatus">
+                        {{ status }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-sm-3">
+                  <div>
+                    <label for="passage">Passage</label>
+                    <select
+                      class="form-control"
+                      data-plugin="choices"
+                      data-choices
+                      data-choices-search-false
+                      name="passage"
+                      [(ngModel)]="filterInformation.hasPassage"
+                    >
+                      <option value="true" selected>Yes</option>
+                      <option value="false">No</option>
+                    </select>
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-sm-3">
+                  <div>
+                    <label for="difficulty">Difficulty Level</label>
+                    <select
+                      class="form-control"
+                      data-plugin="choices"
+                      data-choices
+                      data-choices-search-false
+                      name="difficulty"
+                      [(ngModel)]="filterInformation.difficultyLevel"
+                    >
+                      <option *ngFor="let difficulty of difficultyLevel">
+                        {{ difficulty }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-sm-3">
+                  <div>
+                    <label for="itemType">Item Type</label>
+                    <select
+                      class="form-control"
+                      data-plugin="choices"
+                      data-choices
+                      data-choices-search-false
+                      name="itemType"
+                      [(ngModel)]="filterInformation.itemType"
+                    >
+                      <option *ngFor="let type of itemType">
+                        {{ type }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <!--end col-->
+              </div>
+              <div class="row-g3">
+                <div class="col-sm-auto">
+                  <button type="submit" class="btn btn-secondary mt-2">
+                    <i class="ri-equalizer-fill"></i>Apply Filter
+                  </button>
+                </div>
+                <!--end col-->
+              </div>
+              <!--end row-->
+            </div>
+          </form>
+        </div>
+
+        <!-- <div class="card-body">
+          <div class="live-preview">
+            <div class="list-group" *ngIf="itemsPage">
+              <a
+                class="list-group-item"
+                *ngFor="let item of itemsPage.content; let i = index"
+              >
+                <div
+                  class="row item-size"
+                  [ngClass]="{
+                    'item-size-expand': item.showFullItem === true
+                  }"
+                >
+                  <div class="col-lg-10 col-sm-auto">
+                    <div
+                      class="d-flex flex-wrap mb-2 align-items-center justify-content-between"
+                    >
+                      <div>
+                        <h5 class="list-title fs-18 mb-1">
+                          {{ item.reference }}
+                        </h5>
+                        <p class="list-text mb-0 fs-12">
+                          Author: {{ item.authorDetails.authorName }}
+                        </p>
+                      </div>
+                      <div class="d-flex gap-2 float-end">
+                        <div class="list-text mb-0 fs-12">
+                          date created: 23-11-2022
+                        </div>
+                        <div class="list-text mb-0 fs-12">
+                          last modified: 23-11-2022
+                        </div>
+                      </div>
+                    </div>
+                    <div *ngIf="item.showFullItem === false">
+                      <span
+                        >Question :
+                        <div class="list-text mb-0" [innerHTML]="item.stimulus">
+                          {{ item.stimulus | slice : 0 : 50 }}
+                        </div></span
+                      >
+
+                      <div class="d-flex gap-1 mt-3">
+                        <span
+                          title="ITEM TYPE"
+                          class="d-flex align-items-center badge badge-soft-success"
+                        >
+                          <i class="ri-list-check-2 fs-12"></i>
+                          :
+                          <div class="fs-12">
+                            {{ item.type }}
+                          </div>
+                        </span>
+                        <span
+                          title="ITEM STATUS"
+                          class="d-flex align-items-center badge badge-soft-primary"
+                        >
+                          <i class="ri-upload-cloud-2-line fs-12"></i>
+                          :
+                          <div class="fs-12">
+                            {{ item.itemStatus }}
+                          </div>
+                        </span>
+                        <span
+                          title="DIFFICULTY LEVEL"
+                          class="d-flex align-items-center badge badge-soft-danger"
+                        >
+                          <i class="ri-line-height fs-12"></i>:
+                          <div class="fs-12">
+                            {{ item.difficultyLevel }}
+                          </div>
+                        </span>
+                        <span
+                          title="LAST USED"
+                          class="d-flex align-items-center badge badge-soft-dark"
+                        >
+                          <i class="ri-calendar-event-line fs-12"></i>:
+                          <div class="fs-12">Nov 17, 2022</div>
+                        </span>
+                        <span
+                          title="LIFE SPAN"
+                          class="d-flex align-items-center badge badge-soft-primary"
+                        >
+                          <i class="ri-recycle-line fs-12"></i>:
+                          <div class="fs-12">3 months</div>
+                        </span>
+                      </div>
+
+                      <div class="mt-2">
+                        <button type="button" class="btn btn-sm btn-primary">
+                          <i class="ri-recycle-line"></i>Recycle Now
+                        </button>
+                      </div>
+                    </div>
+                    <div *ngIf="item.showFullItem === true">
+                      <app-preview [previewData]="previewData"></app-preview>
+                    </div>
+                  </div>
+                  <div
+                    class="col-lg-2 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size"
+                  >
+                    <div
+                      class="badge badge-soft-primary fs-12"
+                      style="width: fit-content"
+                    >
+                      <i class="bx bxs-purchase-tag fs-12"></i>Tag
+                    </div>
+                    <div
+                      *ngFor="let tag of item.itemTagDTOS; let i = index"
+                      class="fs-12"
+                    >
+                      {{ tag.tagName | slice : 0 : 50 }}
+                    </div>
+                    <div class="">
+                      <div>
+                        <a
+                          *ngIf="!item.showFullItem"
+                          (click)="preview(item, i)"
+                          class="btn btn-sm btn-outline-success"
+                          >preview</a
+                        >
+                        <a
+                          *ngIf="item.showFullItem"
+                          (click)="hidePreview(item, i)"
+                          class="btn btn-sm btn-outline-success"
+                          >hide preview</a
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div> -->
+
+        <div class="card-body">
+          <div class="live-preview">
+            <div
+              class="list-group"
+              *ngIf="itemsPage && itemsPage.content.length > 0"
+            >
+              <a
+                style="color: #000"
+                class="list-group-item"
+                *ngFor="let item of itemsPage.content; let i = index"
+              >
+                <div
+                  class="row"
+                  [ngClass]="{
+                    'item-size': item.showFullItem === false,
+                    'item-size-expand': item.showFullItem === true
+                  }"
+                >
+                  <!-- ITEM DETAILS-->
+                  <div class="col-lg-10 col-sm-auto">
+                    <div
+                      class="d-flex flex-wrap align-items-center justify-content-between"
+                    >
+                      <div>
+                        <h5 class="list-title fs-18 mb-1">
+                          {{ item.reference }}
+                        </h5>
+                        <p class="list-text mb-0 fs-12">
+                          Author: {{ item.authorDetails.authorName }}
+                        </p>
+                      </div>
+                      <div class="d-flex gap-2 float-end">
+                        <div class="list-text mb-0 fs-12">
+                          date created: {{ item.createdAt | date }}
+                        </div>
+                        <div
+                          *ngIf="item.modifiedAt !== 0"
+                          class="list-text mb-0 fs-12"
+                        >
+                          last modified: {{ item.modifiedAt | date }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- PREVIEW AND DELETE BUTTONS-->
+                  <div
+                    class="col-lg-2 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size px-2"
+                  >
+                    <div class="d-flex gap-2">
+                      <a
+                        *ngIf="item.showFullItem === false"
+                        (click)="preview(item, i)"
+                        class="btn btn-sm btn-outline-success"
+                        ><span *ngIf="!item.showingPreviewLoader">preview</span
+                        ><i
+                          *ngIf="item.showingPreviewLoader"
+                          _ngcontent-urx-c230=""
+                          class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"
+                        ></i
+                      ></a>
+                      <a
+                        *ngIf="item.showFullItem === true"
+                        (click)="hidePreview(item, i)"
+                        class="btn btn-sm btn-outline-success"
+                        >hide</a
+                      >
+                      <!-- <button
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        (click)="restoreSelectedItem(item.itemId)"
+                      >
+                        <i
+                          ngbTooltip="RESTORE"
+                          placement="bottom"
+                          class="ri-refresh-line"
+                        ></i>
+                      </button> -->
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div *ngIf="item.showFullItem === false">
+                    <!-- QUESTION -->
+                    <span
+                      >Question :
+                      <div class="list-text mb-0" [innerHTML]="item.stimulus">
+                        {{ item.stimulus | slice : 0 : 50 }}
+                      </div></span
+                    >
+
+                    <!-- DIFFICULTY, TAGS, SCORE, ITEMTYPE etc-->
+                    <div class="d-flex justify-content-between mt-3">
+                      <div class="d-flex gap-1">
+                        <span
+                          title="QUESTION TYPE"
+                          class="d-flex align-items-center"
+                          style="cursor: pointer"
+                        >
+                          <i class="ri-list-check-2"></i>
+                          :
+                          <div class="badge badge-soft-success fs-10">
+                            {{ item.type }}
+                          </div>
+                        </span>
+                        <span
+                          title="QUESTION STATUS"
+                          class="d-flex align-items-center"
+                          style="cursor: pointer"
+                        >
+                          <i class="ri-upload-cloud-2-line"></i>
+                          :
+                          <div class="badge badge-soft-primary fs-10">
+                            {{ item.itemStatus }}
+                          </div>
+                        </span>
+                        <span
+                          title="DIFFICULTY LEVEL"
+                          class="d-flex align-items-center"
+                          style="cursor: pointer"
+                        >
+                          <i class="ri-line-height"></i>:
+                          <div class="badge badge-soft-danger fs-10">
+                            {{ item.difficultyLevel }}
+                          </div>
+                        </span>
+                        <span
+                          *ngIf="item.passageDetails.passageId"
+                          title="PASSAGE"
+                          class="d-flex align-items-center"
+                          style="cursor: pointer"
+                        >
+                          <i class="ri-article-line"></i>:
+                          <div class="badge badge-soft-info fs-10">
+                            PASSAGE QUESTION
+                          </div>
+                        </span>
+                        <ng-container>
+                          <span
+                            style="cursor: pointer"
+                            [ngbPopover]="tagsTemplate"
+                            triggers="mouseenter:mouseleave"
+                            placement="top"
+                            ><i class="bx bx-purchase-tag fs-10"></i>:
+                            <div class="badge badge-soft-primary fs-10">
+                              TAGS ({{ item.itemTagDTOS.length }})
+                            </div></span
+                          >
+
+                          <ng-template #tagsTemplate>
+                            <ul
+                              style="list-style-type: none"
+                              *ngIf="item.itemTagDTOS.length > 0"
+                            >
+                              <li
+                                *ngFor="
+                                  let tag of item.itemTagDTOS;
+                                  let i = index
+                                "
+                              >
+                                <a class="fs-10">
+                                  {{ tag.tagName | slice : 0 : 50 | uppercase }}
+                                </a>
+                              </li>
+                            </ul>
+                            <p *ngIf="item.itemTagDTOS.length < 1">No Tag(s)</p>
+                          </ng-template>
+                        </ng-container>
+                        <span
+                          title="ALLOCATED SCORE"
+                          class="d-flex align-items-center"
+                          style="cursor: pointer"
+                        >
+                          <!-- <i class="ri-article-line"></i> -->
+                          <div class="badge badge-soft-secondary fs-10">
+                            {{ item.score }} Mark(s)
+                          </div>
+                        </span>
+                      </div>
+                      <div
+                        class="d-flex gap-2"
+                        *ngIf="itemsPage.content.length > 0"
+                      >
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          (change)="selectQuestionId(item.itemId, i)"
+                          [checked]="
+                            restoredItemDetails.itemIds.includes(item.itemId)
+                          "
+                        />
+                        <label
+                        (click)="selectQuestionId(item.itemId, i)"
+                          *ngIf="
+                            !restoredItemDetails.itemIds.includes(item.itemId)
+                          "
+                          class="text-muted"
+                          >select question</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ITEM PREVIEWS-->
+                  <div *ngIf="item.showFullItem === true">
+                    <app-preview
+                      *ngIf="item.type === 'MCQ'"
+                      [previewData]="previewData"
+                    ></app-preview>
+                    <app-matching-preview
+                      *ngIf="item.type === 'ASSOCIATION'"
+                      [previewData]="previewData"
+                    ></app-matching-preview>
+                    <app-ordering-preview
+                      *ngIf="item.type === 'ORDER_LIST'"
+                      [previewData]="previewData"
+                    ></app-ordering-preview>
+                    <app-rich-essay-preview
+                      *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+                      [previewData]="previewData"
+                    ></app-rich-essay-preview>
+                    <app-multiple-response-preview
+                      *ngIf="item.type === 'MRQ'"
+                      [previewData]="previewData"
+                    ></app-multiple-response-preview>
+                    <app-short-text-preview
+                      *ngIf="item.type === 'SHORT_TEXT'"
+                      [previewData]="previewData"
+                    ></app-short-text-preview>
+                    <app-yes-or-no-preview
+                      *ngIf="item.type === 'YES_NO'"
+                      [previewData]="previewData"
+                    ></app-yes-or-no-preview>
+                    <app-true-or-false-preview
+                      *ngIf="item.type === 'TRUE_FALSE'"
+                      [previewData]="previewData"
+                    ></app-true-or-false-preview>
+                    <app-cloze-dropdown-preview
+                      *ngIf="item.type === 'CLOZE_DROPDOWN'"
+                      [previewData]="previewData"
+                    ></app-cloze-dropdown-preview>
+                    <app-cloze-text-preview
+                      *ngIf="item.type === 'CLOZE_TEXT'"
+                      [previewData]="previewData"
+                    ></app-cloze-text-preview>
+                  </div>
+                </div>
+              </a>
+              <p-paginator
+                [totalRecords]="itemsPage.totalElements"
+                #paginator
+                (onPageChange)="onPageChange($event)"
+                [first]="1"
+                [rowsPerPageOptions]="[20, 30, 50]"
+                [rows]="20"
+                [showCurrentPageReport]="true"
+              >
+              </p-paginator>
+            </div>
+
+            <div
+              *ngIf="!itemsPage || itemsPage.content.length < 1"
+              class="d-flex flex-column align-items-center justify-content-center"
+            >
+              <i
+                class="ri-recycle-fill text-muted align-middle"
+                style="font-size: 60px"
+              ></i
+              ><br />
+              <p class="text-muted fs-24">No Questions Undergoing Recycling</p>
+            </div>
+          </div>
+        </div>
+        <!-- end card-body -->
+      </ngx-simplebar>
+    </div>
+    <!-- end card -->
+  </div>
+</div>

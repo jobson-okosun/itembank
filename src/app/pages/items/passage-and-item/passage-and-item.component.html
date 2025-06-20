@@ -1,0 +1,949 @@
+<app-breadcrumbs
+  title="{{ itemTrail.subjectName }} | {{ itemTrail.topicName }}"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<button
+  type="button"
+  class="btn btn-soft-primary  mb-2"
+  (click)="goBack()"
+>
+  <div class="d-flex align-items-center gap-2">
+    <i class="ri-arrow-left-line"></i>
+    <span>Back</span>
+  </div>
+</button>
+<div
+  *ngIf="loading && !passage"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Passage & Questions...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading && passage">
+  <div class="d-flex justify-content-between">
+    <div>
+      <p>Author: {{ passage.passage.author }}</p>
+    </div>
+    <div class="d-flex">
+      <p class="text-muted">
+        created At: {{ passage.passage.createAt | date : "medium" }}
+      </p>
+      <!-- <i class="ri-layout-row-fill fs-20" (click)="setVerticalRender()"></i>
+    <i class="ri-layout-column-fill fs-20" (click)="setHorizontalRender()"></i> -->
+    </div>
+  </div>
+
+  <div>
+    <div *ngIf="horizontalRender">
+      <div class="row">
+        <div class="col-xl-6 card">
+          <div class="card-body">
+            <div class="d-flex align-items-center justify-content-between">
+              <h3>{{ passage.passage.reference }}</h3>
+            </div>
+            <div [innerHTML]="passage.passage.stimulus | htmlSanitizer"></div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+          <h3>Questions</h3>
+          <button
+            type="button"
+            class="btn btn-soft-primary btn-sm"
+            (click)="addQuestionToPassage()"
+          >
+            <i class="ri-add-line"></i>Add Question
+          </button>
+        </div>
+        <div class="col-xl-6 card">
+          <div class="card-body">
+            <div *ngFor="let item of items; let i = index">
+              <div [innerHTML]="item.stimulus | htmlSanitizer" class="fs-16">
+                {{ item.stimulus | htmlSanitizer }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="verticalRender">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <h3>{{ passage.passage.reference }}</h3>
+          </div>
+          <div [innerHTML]="passage.passage.stimulus"></div>
+        </div>
+      </div>
+      <ng-container>
+        <div class="d-flex align-items-center justify-content-between my-2">
+          <h4>Questions ({{ passage.items.length }})</h4>
+          <button
+            *ngIf="
+              passage.items.length > 0 &&
+              !currentUser.authorities.includes('MODERATOR')
+            "
+            type="button"
+            class="btn btn-soft-primary"
+            (click)="addQuestionToPassage()"
+          >
+            <i class="ri-add-line"></i>Add Question
+          </button>
+        </div>
+        <hr />
+        <div *ngIf="passage.items.length < 1" class="col-xl-12 card">
+          <div class="card-body">
+            <div
+              class="d-flex flex-column justify-content-center align-items-center"
+            >
+              <img
+                src="assets/images/blank_pages/empty-state.png"
+                width="200"
+                height="200"
+                class="my-2"
+              />
+              <h4 class="text-secondary fw-bold my-2">
+                No Question(s) Found in Passage!
+              </h4>
+              <button
+                type="button"
+                class="btn btn-soft-primary"
+                (click)="addQuestionToPassage()"
+              >
+                <i class="ri-add-line"></i>Add Question
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="passage.items.length > 0">
+          <ng-container *ngFor="let item of items; let i = index">
+            <!-- <button
+              *ngIf="!assessmentActive"
+              (click)="
+                openDeletePassageConfirmationModal(
+                  item.id,
+                  deletePassageConfirmationModal
+                )
+              "
+              title="DELETE QUESTION"
+              ngbTooltip="DELETE QUESTION"
+              class="btn btn-icon btn-sm btn-outline-danger my-2"
+            >
+              <i class="ri-delete-bin-line"></i>  
+            </button> -->
+            <div *ngIf="item.type === 'MCQ'" class="mb-4">
+              <app-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-preview>
+              <!-- <div class="d-flex justify-content-between gap-2">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div *ngFor="let option of item.options; let j = index">
+                <div class="px-4 d-flex flex-wrap gap-2">
+                  <span>({{ optionLabels[j] }})</span>
+                  <input
+                    class="form-check-input"
+                    id="form-radio-right5"
+                    type="radio"
+                    name="label{{ i }}"
+                    value="{{ j }}"
+                    [checked]="
+                      item.scoringOption.answers[0] === j + '' &&
+                      item.showAnswer == true
+                    "
+                  />
+                  <span [innerHTML]="option.label"></span>
+                </div>
+              </div>
+              <div class="d-flex gap-2">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'YES_NO'" class="mb-4">
+              <app-yes-or-no-preview
+                [previewData]="item"
+                [component]="'passageItem'"
+                (reload)="ngOnInit()"
+              ></app-yes-or-no-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div *ngFor="let option of item.options; let j = index">
+                <div class="px-4 d-flex flex-wrap gap-2">
+                  <span>({{ optionLabels[j] }})</span>
+                  <input
+                    class="form-check-input"
+                    id="form-radio-right5"
+                    type="radio"
+                    name="label{{ i }}"
+                    value="{{ j }}"
+                    [checked]="
+                      item.scoringOption.answers[0] === j + '' &&
+                      item.showAnswer == true
+                    "
+                  />
+                  <span [innerHTML]="option.label"></span>
+                </div>
+              </div>
+              <div class="d-flex gap-3">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'TRUE_FALSE'" class="mb-4">
+              <app-true-or-false-preview
+                [previewData]="item"
+                [component]="'passageItem'"
+                (reload)="ngOnInit()"
+              ></app-true-or-false-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div *ngFor="let option of item.options; let j = index">
+                <div class="px-4 d-flex flex-wrap gap-2">
+                  <span>({{ optionLabels[j] }})</span>
+                  <input
+                    class="form-check-input"
+                    id="form-radio-right5"
+                    type="radio"
+                    name="label{{ i }}"
+                    value="{{ j }}"
+                    [checked]="
+                      item.scoringOption.answers[0] === j + '' &&
+                      item.showAnswer == true
+                    "
+                  />
+                  <span [innerHTML]="option.label"></span>
+                </div>
+              </div>
+              <div class="d-flex gap-3">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'MRQ'" class="mb-4">
+              <app-multiple-response-preview
+                [previewData]="item"
+                [component]="'passageItem'"
+                (reload)="ngOnInit()"
+              ></app-multiple-response-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div *ngFor="let option of item.options; let j = index">
+                <div class="px-4 d-flex flex-wrap gap-2">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="label{{ i }}"
+                    value="{{ j }}"
+                    [checked]="
+                      item.showAnswer == true &&
+                      item.scoringOption.answers.includes(j + '')
+                    "
+                  />
+                  <span [innerHTML]="option.label"></span>
+                </div>
+              </div>
+              <div class="d-flex gap-4">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'CHOICE_MATRIX'" class="mb-4">
+              <app-choice-matrix-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-choice-matrix-preview>
+            </div>
+
+            <div *ngIf="item.type === 'SHORT_TEXT'" class="mb-4">
+              <app-short-text-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-short-text-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-2">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div [innerHTML]="item.stimulus"></div>
+                  </div>
+                </div>
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 align-items-center">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div>
+              <div *ngIf="item.showAnswer" class="row my-2">
+                <div class="col-12">
+                  <p
+                    class="d-flex align-items-center bg-soft-success p-2 rounded-md w-100"
+                  >
+                    {{ item.scoringOption.answers[0] }}
+                  </p>
+                </div>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'ESSAY_RICH_TEXT'" class="mb-4">
+              <app-rich-essay-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-rich-essay-preview>
+              <!-- <div class="d-flex">
+                <div class="d-flex gap-2">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+                    <div [innerHTML]="item.stimulus"></div>
+                  </div>
+                </div>
+                <div
+                  class="d-flex gap-2 align-items-center justify-content-end"
+                >
+                  <span
+                    *ngIf="!assessmentActive"
+                    (click)="editItem(item)"
+                    title="EDIT QUESTION"
+                    ngbTooltip="EDIT QUESTION"
+                    class="d-flex align-items-center"
+                    style="cursor: pointer"
+                  >
+                    <i
+                      class="ri-pencil-line text-primary me-1 align-middle"
+                    ></i>
+                    <div class="text-primary fs-12">EDIT</div>
+                  </span>
+                  <span
+                    *ngIf="!assessmentActive"
+                    (click)="
+                      openDeletePassageConfirmationModal(
+                        item.id,
+                        deletePassageConfirmationModal
+                      )
+                    "
+                    title="DELETE QUESTION"
+                    ngbTooltip="DELETE QUESTION"
+                    class="d-flex align-items-center"
+                    style="cursor: pointer"
+                  >
+                    <i
+                      class="ri-delete-bin-line text-danger me-1 align-middle"
+                    ></i>
+                    <div class="text-danger fs-12">DELETE</div>
+                  </span>
+                  
+                </div>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'ASSOCIATION'" class="mb-4">
+              <app-matching-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-matching-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label fs-12">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-xl-5 col-md-5">
+                  <div
+                    #listOne="cdkDropList"
+                    cdkDropList
+                    (cdkDropListDropped)="onDrop($event)"
+                    class="list-group"
+                  >
+                    <div
+                      *ngFor="let stem of item.stems"
+                      [innerHTML]="stem"
+                      class="list-group-item mt-2"
+                    >
+                      {{ stem }}
+                    </div>
+                  </div>
+                </div>
+
+                
+                <div class="col-xl-2 col-md-2 my-auto px-2">
+                  <ng-container *ngFor="let stem of item.stems">
+                    <div
+                      class="d-flex align-items-center justify-content-between mb-2"
+                      style="height: 46px"
+                    >
+                      <div
+                        style="
+                          width: 200px;
+                          height: 5px;
+                          background-color: #000;
+                          border-radius: 10px;
+                        "
+                      ></div>
+                    </div>
+                  </ng-container>
+                </div>
+
+                <div *ngIf="!item.showAnswer" class="col-xl-5 col-md-5">
+                  <div
+                    #listTwo="cdkDropList"
+                    class="list-group list-group"
+                    cdkDropList
+                    (cdkDropListDropped)="onDrop($event)"
+                  >
+                    <div
+                      class="move list-group-item mb-2 move-cursor"
+                      *ngFor="let opt of item.options"
+                      [innerHTML]="opt.label"
+                      [cdkDragData]="opt"
+                      cdkDrag
+                    >
+                      {{ opt }}
+                    </div>
+                  </div>
+                </div>
+
+                <div *ngIf="item.showAnswer" class="col-xl-5 col-md-5">
+                  <div
+                    #listTwo="cdkDropList"
+                    class="list-group list-group"
+                    cdkDropList
+                    (cdkDropListDropped)="onDrop($event)"
+                  >
+                    <div
+                      class="move list-group-item mb-2 move-cursor"
+                      *ngFor="
+                        let ans of item.scoringOption.answers;
+                        let i = index
+                      "
+                      [innerHTML]="item.options[i].label"
+                      [cdkDragData]="ans"
+                      cdkDrag
+                    ></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 align-items-center my-2">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'ORDER_LIST'" class="mb-4">
+              <app-ordering-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-ordering-preview>
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <p-orderList
+                [value]="
+                  item.showAnswer == true
+                    ? item.scoringOption.answers
+                    : item.options
+                "
+                [listStyle]="{ 'max-height': '30rem' }"
+                [dragdrop]="true"
+              >
+                <ng-template let-option pTemplate="item">
+                  <div
+                    [innerHTML]="item.showAnswer ? option : option.label"
+                  ></div>
+                </ng-template>
+              </p-orderList>
+
+              <div class="d-flex gap-2 align-items-center my-2">
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="editItem(item)"
+                  title="EDIT QUESTION"
+                  ngbTooltip="EDIT QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-pencil-line text-primary me-1 align-middle"
+                  ></i>
+                  <div class="text-primary fs-12">EDIT</div>
+                </span>
+                <span
+                  *ngIf="!assessmentActive"
+                  (click)="
+                    openDeletePassageConfirmationModal(
+                      item.id,
+                      deletePassageConfirmationModal
+                    )
+                  "
+                  title="DELETE QUESTION"
+                  ngbTooltip="DELETE QUESTION"
+                  class="d-flex align-items-center"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="ri-delete-bin-line text-danger me-1 align-middle"
+                  ></i>
+                  <div class="text-danger fs-12">DELETE</div>
+                </span>
+              </div> -->
+            </div>
+
+            <div *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'" class="mb-4">
+              <app-label-image-drag-drop-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-label-image-drag-drop-preview>
+            </div>
+
+            <div *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'" class="mb-4">
+              <app-label-image-dropdown-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-label-image-dropdown-preview>
+            </div>
+
+            <div *ngIf="item.type === 'CLOZE_TEXT_IMAGE'" class="mb-4">
+              <app-label-image-text-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              >
+              </app-label-image-text-preview>
+            </div>
+
+            <div *ngIf="item.type === 'CLOZE_TEXT'" class="mb-4">
+              <!-- <div class="d-flex justify-content-between">
+                <div class="d-flex gap-1">
+                  <span class="fs-16">{{ i + 1 }}.</span>
+                  <p [innerHTML]="item.stimulus" class="fs-16">
+                    {{ item.stimulus }}
+                  </p>
+                </div>
+
+                <div class="form-check mt-1">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="showAnswer"
+                    [checked]="item.showAnswer"
+                    (change)="check(item)"
+                  />
+                  <label class="form-check-label">
+                    {{ item.showAnswer ? 'Hide Answer' : 'Show Answer' }}
+                  </label>
+                </div>
+              </div>
+
+              <ngx-simplebar style="height: 420px">
+                <div class="row pt-3 pb-3">
+                  <div class="col d-flex">
+                    <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+                      <ng-container
+                        *ngFor="let item of clozeRenderArray; let i = index"
+                      >
+                        <span
+                          [innerHTML]="item.text"
+                          class="fw-normal"
+                        ></span
+                        ><span>
+                          <input
+                            class="form-control-sm col-2 mt-0 m-2"
+                            *ngIf="item.inputBox == true"
+                            aria-label=".form-control-sm"
+                            #inputBoxRef
+                            value="{{
+                              item.showAnswer
+                                ? item.scoringOption.answers[i]
+                                : ''
+                            }}"
+                            [disabled]
+                          />
+                        </span>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </ngx-simplebar> -->
+              <app-cloze-text-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-cloze-text-preview>
+            </div>
+
+            <div *ngIf="item.type === 'CLOZE_DROPDOWN'" class="mb-4">
+              <app-cloze-dropdown-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-cloze-dropdown-preview>
+            </div>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #deletePassageConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to delete this Question?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        No, Cancel
+      </button>
+      <button
+        type="button"
+        (click)="deletePassageItem()"
+        class="btn btn-danger"
+        *ngIf="!processing_delete"
+      >
+        Yes, Delete It
+      </button>
+      <ng-template [ngIf]="processing_delete">
+        <button
+          class="btn btn-outline-danger btn-load"
+          [disabled]="processing_delete"
+        >
+          <span class="d-flex align-items-center">
+            <span class="spinner-border flex-shrink-0" role="status">
+              <span class="visually-hidden">Deleting...</span>
+            </span>
+            <span class="flex-grow-1 ms-2"> Deleting... </span>
+          </span>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>

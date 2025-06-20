@@ -1,0 +1,72 @@
+<div class="card card-body" style="height: 62vh">
+  <div class="text-primary d-flex justify-content-between">
+    <span class="fw-bold py-lg-2"
+      >Question {{ currentQuestionNumber + 1 }}</span
+    >
+    <app-revisit-button
+      [questionNumber]="currentQuestionNumber"
+    ></app-revisit-button>
+  </div>
+  <div class="row">
+    <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+      <div [innerHTML]="getCurrentQuestion().stimulus">
+        {{ getCurrentQuestion().stimulus }}
+      </div>
+    </div>
+  </div>
+
+  <ngx-simplebar style="height: 40vh; overflow-x: hidden">
+    <div class="row">
+      <div class="col-xl-12">
+        <div class="table-responsive">
+          <table class="table table-bordered align-middle table-nowrap mb-0">
+            <thead>
+              <tr>
+                <th></th>
+                <th
+                  scope="col"
+                  *ngFor="
+                    let option of getCurrentQuestion().options;
+                    let i = index
+                  "
+                  [innerHTML]="option.label"
+                >
+                  {{ option.label }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let stem of getCurrentQuestion().stems; let i = index"
+              >
+                <td class="fw-medium" [innerHTML]="stem">
+                  {{ stem }}
+                </td>
+                <td
+                  *ngFor="
+                    let option of getCurrentQuestion().options;
+                    let j = index
+                  "
+                >
+                  <input
+                    class="form-check-input"
+                    id="form-radio-{{ i }}-{{ j }}"
+                    type="radio"
+                    name="stem_{{ i }}"
+                    value="{{ option.value }}"
+                    [checked]="
+                      getCurrentQuestion().responses[i] === option.value
+                    "
+                    (change)="optionSelected(option.value, $event, i)"
+                    name="stem_{{ i }}"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- end col -->
+    </div>
+  </ngx-simplebar>
+</div>

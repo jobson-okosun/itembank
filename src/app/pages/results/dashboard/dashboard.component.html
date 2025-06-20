@@ -1,0 +1,901 @@
+<app-breadcrumbs
+  title="REPORTS | {{ assessmentName }} | RESULT"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card card-animate rounded">
+      <div class="px-4 card-body">
+        <div class="my-2 d-flex justify-content-between">
+          <div class="d-flex">
+            <h3 class="modal-title">{{ assessmentName | uppercase }}</h3>
+          </div>
+          <!-- <div>
+            <h5 class="modal-title">
+              <i class="ri-group-fill me-2 align-middle"></i>Participants
+              <span class="badge bg-secondary rounded-pill">100</span>
+            </h5>
+          </div> -->
+        </div>
+
+        <div class="row d-flex justify-content-between mb-4">
+          <div
+            class="col-sm-12 col-lg-6 d-flex flex-wrap align-items-center text-primary fs-12"
+            style="cursor: pointer"
+          >
+            <i class="ri-checkbox-blank-fill mx-1 fs-5"></i>Exam Delivery:
+            &nbsp; <span class="fs-12"> ON_PREMISE_WITH SECURE_BROWSER</span>
+          </div>
+          <div
+            class="col-sm-12 col-lg-6 d-flex gap-5 fs-12 text-secondary justify-content-end"
+            style="cursor: pointer"
+          >
+            <div>
+              <i
+                class="ri-play-fill text-white fs-5 align-middle mx-1 border rounded py-1 px-1 bg-success"
+              ></i>
+              <span class="text-secondary fs-12">25th Oct, 2023: 10:15AM </span>
+            </div>
+            <div>
+              <i
+                class="ri-stop-fill fs-5 text-white align-middle mx-1 border rounded py-1 px-1 bg-danger"
+              ></i
+              ><span class="text-secondary fs-12">
+                25th Oct, 2023: 01:15PM
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards section-->
+        <div class="row mb-4">
+          <div class="col-xxl-2 col-lg-2 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span
+                    class="px-2 py-1 avatar-title bg-soft-secondary rounded-2 fs-4"
+                  >
+                    <i class="ri-group-fill text-secondary"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Participants<br /><span class="fs-14 fw-bold">100</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-2 col-lg-2 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span
+                    class="px-2 py-1 avatar-title bg-soft-primary rounded-2 fs-4"
+                  >
+                    <i class="ri-timer-fill text-primary"></i>
+                  </span>
+                </div>
+                <div
+                  class="d-flex align-items-center flex-grow-1 overflow-hidden"
+                >
+                  <span class="fs-14">
+                    started<br /><span class="fs-14 fw-bold">100</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-2 col-lg-2 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="p-2 avatar-title bg-soft-success rounded-2 fs-4">
+                    <i class="bx bxs-send text-success"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Submitted<br /><span class="fs-14 fw-bold">20</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-2 col-lg-2 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span
+                    class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4"
+                  >
+                    <!-- <i class="bx bxs-hand text-danger"></i> -->
+                    <i class="ri-pause-circle-fill text-danger"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Suspended<br /><span class="fs-14 fw-bold">30</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xxl-2 col-lg-2 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="p-2 avatar-title bg-soft-warning rounded-2 fs-4">
+                    <i class="bx bxs-user-x text-warning"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Absentees<br /><span class="fs-14 fw-bold">20</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end card body -->
+  </div>
+  <!-- end card-->
+</div>
+
+<div class="card card-animate">
+  <div class="card-header">
+    <div class="row d-flex justify-content-between">
+      <div class="col-sm-12 col-lg-8 d-flex align-items-center gap-2">
+        <i
+          class="ri-pie-chart-fill fs-5 text-primary align-middle mx-1 border rounded px-1 bg-soft-primary"
+        ></i>
+        <h4 class="modal-title">Overall Performance (All Subjects)</h4>
+      </div>
+      <div class="col-sm-12 col-lg-4 d-flex justify-content-end gap-2">
+        <span
+          class="btn btn-outline-primary"
+          (click)="openExamSelectionModal(selectExamModal)"
+          triggers="mouseenter:mouseleave"
+          style="cursor: pointer"
+          popoverTitle="Compare Exams"
+          ngbPopover="This allows you import exams into the current exam and you can analyze and compare both examination results and statistics"
+        >
+          Compare
+        </span>
+        <select class="form-select">
+          <option value="" selected>Filter By Section</option>
+        </select>
+        <button class="btn btn-icon btn-soft-info px-2">
+          <i class="ri-information-fill align-middle fs-4"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-xxl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="card card-animate">
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+              <h4 class="modal-title">
+                {{ currentPerformanceGraph }}
+              </h4>
+
+              <div class="dropdown" ngbDropdown>
+                <button
+                  class="btn btn-icon dropdown arrow-none"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                >
+                  <i class="ri-more-2-fill fs-18"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="changeGraph('Average Score')"
+                      ><i
+                        class="bx bx-doughnut-chart align-bottom me-2 text-muted"
+                      ></i>
+                      avg score</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="changeGraph('Score Distribution Chart')"
+                      ><i
+                        class="bx bx-line-chart align-bottom me-2 text-muted"
+                      ></i
+                      >score distribution
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="changeGraph('Time vs Score Chart')"
+                      ><i
+                        class="bx bx-scatter-chart align-bottom me-2 text-muted"
+                      ></i>
+                      time vs score</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <hr />
+            <!-- Score average display-->
+            <div
+              *ngIf="currentPerformanceGraph == 'Average Score'"
+              class="d-flex flex-column"
+            >
+              <div
+                class="p-4 card card-animate"
+                style="position: relative; cursor: pointer"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <div>
+                    <div class="avatar-sm me-3">
+                      <span
+                        style="background-color: #fff"
+                        class="avatar-title border-success rounded-circle fw-bold text-dark"
+                      >
+                        <img
+                          style="position: absolute; left: 12px"
+                          src="assets/images/avg-circle.png"
+                          width="70"
+                          height="70"
+                        />
+                        62.5%
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="title fw-bold">Percentage Average Score</span>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="p-4 card card-animate"
+                style="position: relative; cursor: pointer"
+              >
+                <div class="d-flex align-items-center gap-2">
+                  <div>
+                    <div class="avatar-sm me-3">
+                      <span
+                        style="background-color: #fff"
+                        class="avatar-title rounded-circle fw-bold text-dark"
+                      >
+                        <img
+                          style="position: absolute; left: 12px"
+                          src="assets/images/raw-avg.png"
+                          width="65"
+                          height="70"
+                        />
+                        70.5%
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="title fw-bold">Raw Average Score</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Score Distribution graph-->
+            <div *ngIf="currentPerformanceGraph == 'Score Distribution Chart'">
+              <apx-chart
+                [series]="scoreDistributionChart.series"
+                [chart]="scoreDistributionChart.chart"
+                [markers]="scoreDistributionChart.markers"
+                [dataLabels]="scoreDistributionChart.dataLabels"
+                [stroke]="scoreDistributionChart.stroke"
+                [colors]="scoreDistributionChart.colors"
+                [title]="scoreDistributionChart.title"
+                [xaxis]="scoreDistributionChart.xaxis"
+                [yaxis]="scoreDistributionChart.yaxis"
+              ></apx-chart>
+            </div>
+
+            <!-- Time vs score graph-->
+            <div *ngIf="currentPerformanceGraph == 'Time vs Score Chart'">
+              <apx-chart
+                [series]="timeScoreChart.series"
+                [chart]="timeScoreChart.chart"
+                [xaxis]="timeScoreChart.xaxis"
+                [yaxis]="timeScoreChart.yaxis"
+                [colors]="timeScoreChart.colors"
+              ></apx-chart>
+            </div>
+          </div>
+          <!-- end card-body -->
+          <!-- end card-body -->
+        </div>
+      </div>
+
+      <div class="col-xxl-6 col-lg-6 col-md-12 col-sm-12">
+        <div class="card card-animate">
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+              <h4 class="modal-title">Exam Obscurities</h4>
+              <div class="d-flex gap-2">
+                <button class="btn btn-icon btn-sm">
+                  <i class="ri-information-fill me-2 fs-18"></i>
+                </button>
+              </div>
+            </div>
+            <hr />
+            <ngx-simplebar
+              style="max-height: 220px"
+              class="message-list-content mx-n4 px-4 message-list-scroll"
+            >
+              <div class="row">
+                <div class="col-xxl-12 col-lg-12 pointer">
+                  <div class="card card-animate">
+                    <div class="p-2 d-flex align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-3 flex-shrink-0">
+                          <span class="avatar-title bg-success rounded-2">
+                            <i class="ri-timer-fill fs-22"></i>
+                          </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="fs-20 fw-bold">100</span>
+                          <span class="vr"></span>
+                        </div>
+                      </div>
+                      <div
+                        class="d-flex align-items-center flex-grow-1 overflow-hidden mx-3"
+                      >
+                        <span class="fs-14"> compensatory time</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-12 col-lg-12 pointer">
+                  <div class="card card-animate">
+                    <div class="p-2 d-flex align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-3 flex-shrink-0">
+                          <span class="avatar-title bg-danger rounded-2">
+                            <i class="ri-stop-circle-fill fs-22"></i>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center gap-2">
+                        <span class="fs-20 fw-bold">100</span>
+                        <span class="vr"></span>
+                      </div>
+                      <div
+                        class="d-flex align-items-center flex-grow-1 overflow-hidden mx-3"
+                      >
+                        <span class="fs-14"> Timed-out</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-12 col-lg-12 pointer">
+                  <div class="card card-animate">
+                    <div class="p-2 d-flex align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-3 flex-shrink-0">
+                          <span class="avatar-title bg-warning rounded-2">
+                            <i class="ri-exchange-fill fs-22"></i>
+                          </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="fs-20 fw-bold">100</span>
+                          <span class="vr"></span>
+                        </div>
+                      </div>
+                      <div
+                        class="d-flex align-items-center flex-grow-1 overflow-hidden mx-3"
+                      >
+                        <span class="fs-14"> System swaps<br /> </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-xxl-12 col-lg-12 pointer">
+                  <div class="card card-animate">
+                    <div class="p-2 d-flex align-items-center">
+                      <div class="d-flex align-items-center">
+                        <div class="avatar-sm me-3 flex-shrink-0">
+                          <span class="avatar-title bg-primary rounded-2">
+                            <i class="bx bx-revision fs-22"></i>
+                          </span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                          <span class="fs-20 fw-bold">100</span>
+                          <span class="vr"></span>
+                        </div>
+                      </div>
+                      <div
+                        class="d-flex align-items-center flex-grow-1 overflow-hidden mx-3"
+                      >
+                        <span class="fs-14"> Re-logins </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ngx-simplebar>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <div class="card card-animate">
+          <div class="card-body">
+            <div class="d-flex justify-content-between mb-2">
+              <h4 class="modal-title">Question Analysis</h4>
+              <div class="d-flex gap-2">
+                <div>
+                  <select class="form-select">
+                    <option value="" selected>Filter By Section</option>
+                  </select>
+                </div>
+                <!-- <button class="btn btn-icon btn-sm">
+                  <i class="ri-information-fill me-2 fs-18"></i>
+                </button> -->
+                <a
+                  class="btn btn-link text-primary fs-12 text-underline"
+                  routerLink="/examalpha/exams/reports/{{
+                    assessmentId
+                  }}/results/transcript"
+                  >view transcript</a
+                >
+              </div>
+            </div>
+            <hr />
+            <div class="d-flex flex-wrap gap-2">
+              <ng-container *ngFor="let g of grade; let i = index">
+                <div class="d-flex flex-column gap-1">
+                  <div
+                    class="pass"
+                    triggers="mouseenter:mouseleave"
+                    style="cursor: pointer"
+                    [popoverTitle]="'Question ' + (i + 1)"
+                    [ngbPopover]="passedQuestionPopover"
+                  >
+                    {{ g.pass }}
+                  </div>
+                  <div
+                    class="fail"
+                    triggers="mouseenter:mouseleave"
+                    style="cursor: pointer"
+                    [popoverTitle]="'Question ' + (i + 1)"
+                    [ngbPopover]="failedQuestionPopover"
+                  >
+                    {{ g.fail }}
+                  </div>
+                  <p>{{ i + 1 }}</p>
+                </div>
+                <br *ngIf="i + 1 / 100 === 1" />
+
+                <ng-template #passedQuestionPopover>
+                  <div class="d-flex gap-2">
+                    <i class="ri-circle-fill text-success fs-4"></i>
+                    <span class="fs-12"> Passed: {{ g.pass }}</span>
+                  </div>
+                </ng-template>
+
+                <ng-template #failedQuestionPopover>
+                  <div class="d-flex gap-2">
+                    <i class="ri-circle-fill text-danger fs-4"></i>
+                    <span class="fs-12"> Failed: {{ g.fail }}</span>
+                  </div>
+                </ng-template>
+              </ng-container>
+            </div>
+            <div>
+              <p class="fw-bold text-secondary text-center">Questions</p>
+            </div>
+            <!-- <div>
+              <apx-chart
+                [series]="questionAnalysisChart.series"
+                [chart]="questionAnalysisChart.chart"
+                [dataLabels]="questionAnalysisChart.dataLabels"
+                [plotOptions]="questionAnalysisChart.plotOptions"
+                [responsive]="questionAnalysisChart.responsive"
+                [xaxis]="questionAnalysisChart.xaxis"
+                [legend]="questionAnalysisChart.legend"
+                [fill]="questionAnalysisChart.fill"
+                [colors]="questionAnalysisChart.colors"
+              ></apx-chart>
+            </div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div>
+  <div class="card card-animate">
+    <div class="card-header">
+      <div class="d-flex justify-content-between">
+        <h3 class="modal-title">
+          Participants List ({{ participants.length }})
+        </h3>
+        <div>
+          <select class="form-select">
+            <option value="" selected>Filter By Section</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <p-table
+        #dt
+        [value]="participants"
+        dataKey="id"
+        [rowHover]="true"
+        [rows]="20"
+        responsiveLayout="scroll"
+        styleClass="p-datatable-gridlines"
+        [scrollable]="true"
+        [showCurrentPageReport]="true"
+        [rowsPerPageOptions]="[20, 30, 50]"
+        responsiveLayout="scroll"
+        [paginator]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pFrozenColumn pSortableColumn="name" style="min-width: 180px">
+              Fullname<p-sortIcon field="name"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="name"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pFrozenColumn pSortableColumn="avg" style="min-width: 150px">
+              Avg. Score %<p-sortIcon field="avg"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="avg"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pFrozenColumn pSortableColumn="score" style="min-width: 150px">
+              Raw Score<p-sortIcon field="score"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="score"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pSortableColumn="startTime" style="min-width: 150px">
+              Time Spent<p-sortIcon field="startTime"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="startTime"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pFrozenColumn style="min-width: 200px">
+              Sections
+              <p-columnFilter
+                type="text"
+                field="score"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <!-- <ng-container *ngFor="let section of sections">
+              <th style="min-width: 200px">
+                {{ section | uppercase }}
+              </th>
+            </ng-container> -->
+            <th pSortableColumn="center" style="min-width: 100px">
+              Center<p-sortIcon field="center"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="center"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pSortableColumn="attempted" style="min-width: 100px">
+              Attempted<p-sortIcon field="attempted"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="attempted"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pSortableColumn="infractions" style="min-width: 100px">
+              Infractions <p-sortIcon field="infractions"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="infractions"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pSortableColumn="systemSwap" style="min-width: 150px">
+              System Swap <p-sortIcon field="infractions"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="infractions"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th pSortableColumn="status" style="min-width: 100px">
+              Status<p-sortIcon field="status"></p-sortIcon>
+              <p-columnFilter
+                type="text"
+                field="status"
+                display="menu"
+              ></p-columnFilter>
+            </th>
+            <th style="min-width: 100px">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-participant>
+          <tr>
+            <td pFrozenColumn style="min-width: 180px">
+              {{ participant.name | titlecase }}
+            </td>
+            <td pFrozenColumn style="min-width: 150px">
+              {{ participant.avg }}
+            </td>
+            <td pFrozenColumn style="min-width: 150px">
+              {{ participant.score }}
+            </td>
+            <td style="min-width: 150px">
+              <span
+                triggers="mouseenter:mouseleave"
+                class="badge badge-soft-primary fs-12"
+                style="cursor: pointer"
+                [ngbPopover]="timerPopOver"
+                popoverTitle="Start to Finish"
+              >
+                {{ participant.duration }}
+              </span>
+              <ng-template #timerPopOver>
+                <div class="d-flex justify-content-between">
+                  <span class="badge badge-soft-success fs-10">{{
+                    participant.startTime
+                  }}</span>
+                  <span class="badge badge-soft-danger fs-10">{{
+                    participant.endTime
+                  }}</span>
+                </div>
+              </ng-template>
+            </td>
+            <!-- <ng-container
+              *ngFor="let section of participant.sections; let i = index"
+            >
+              <td style="min-width: 200px">
+                <div
+                  class="d-flex border rounded-2"
+                  style="width: 100%; height: 16px; background-color: aliceblue"
+                  [ngbPopover]="sectionPercentageBarPopOver"
+                  placement="right"
+                  triggers="mouseenter:mouseleave"
+                >
+                  <div
+                    class="bg-success text-center"
+                    [ngStyle]="{
+                      width: section.analysis.percentagePass + '%',
+                      padding: '5px'
+                    }"
+                  >
+                    {{ section.analysis.percentagePass }}%
+                  </div>
+                  <div
+                    class="bg-danger text-center"
+                    [ngStyle]="{
+                      width: section.analysis.percentageFail + '%',
+                      padding: '5px'
+                    }"
+                  >
+                    {{ section.analysis.percentageFail }}%
+                  </div>
+                </div>
+                <ng-template #sectionPercentageBarPopOver>
+                  <div>
+                    <p>
+                      {{ section.analysis.percentagePass }}% of questions were
+                      answered correctly
+                    </p>
+                    <ul>
+                      <li>Correct: {{ section.analysis.percentagePass }}</li>
+                      <li>Incorrect: {{ section.analysis.percentageFail }}</li>
+                      <li>AutScore: No</li>
+                      <li>Marked: Yes</li>
+                    </ul>
+                  </div>
+                </ng-template>
+              </td>
+            </ng-container> -->
+            <td style="min-width: 200px">
+              <div class="d-flex flex-column gap-2">
+                <div
+                  class="d-flex section-bar"
+                  [ngbPopover]="sectionPercentageBarPopOver"
+                  triggers="mouseenter:mouseleave"
+                  *ngFor="let section of participant.sections"
+                >
+                  <div
+                    class="text-center success-bar"
+                    [ngStyle]="{
+                      width: section.analysis.percentagePass + '%',
+                      padding: '5px'
+                    }"
+                  >
+                    {{ section.analysis.percentagePass }}%
+                  </div>
+                  <div
+                    class="text-center failed-bar"
+                    [ngStyle]="{
+                      width: section.analysis.percentageFail + '%',
+                      padding: '5px'
+                    }"
+                  >
+                    {{ section.analysis.percentageFail }}%
+                  </div>
+
+                  <ng-template #sectionPercentageBarPopOver>
+                    <div>
+                      <p>
+                        {{ section.analysis.percentagePass }}% of questions were
+                        answered correctly
+                      </p>
+                      <ul>
+                        <li>Correct: {{ section.analysis.percentagePass }}</li>
+                        <li>
+                          Incorrect: {{ section.analysis.percentageFail }}
+                        </li>
+                        <li>AutScore: No</li>
+                        <li>Marked: Yes</li>
+                      </ul>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </td>
+            <td style="min-width: 100px">
+              {{ participant.center }}
+            </td>
+            <td style="min-width: 100px">
+              {{ participant.attempted }}
+            </td>
+            <td style="min-width: 100px">
+              {{ participant.infractions }}
+            </td>
+            <td style="min-width: 150px">
+              {{ participant.systemSwaps }}
+            </td>
+            <td style="min-width: 100px">
+              <span
+                class="badge rounded-pill"
+                [ngClass]="{
+                  'badge-soft-danger': participant.status === 'umarked',
+                  'badge-soft-warning': participant.status === 'in progress',
+                  'badge-soft-success': participant.status === 'completed'
+                }"
+                >{{ participant.status }}</span
+              >
+            </td>
+            <td style="min-width: 100px">
+              <div class="dropdown" ngbDropdown>
+                <button
+                  class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                >
+                  <i class="ri-more-fill"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      routerLink="/examalpha/exams/reports/{{
+                        assessmentId
+                      }}/results/{{ participantId }}/result"
+                      ><i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                      view result
+                    </a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item"
+                      ><i
+                        class="ri-file-download-fill align-bottom me-2 text-muted"
+                      ></i>
+                      download result</a
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item"
+                      ><i
+                        class="ri-download-cloud-fill align-bottom me-2 text-muted"
+                      ></i>
+                      download transcript</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
+
+<ng-template #selectExamModal let-modal>
+  <div class="d-flex justify-content-between align-items-center card-header">
+    <h4 class="modal-title">Select Exam(s) to Compare</h4>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div
+    class="modal-body"
+    style="
+      height: 250px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="exam" />
+      <label class="form-check-label" for="shuffleItems"> JAMB 2017 </label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="exam" />
+      <label class="form-check-label" for="shuffleItems"> JAMB 2018 </label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="exam" />
+      <label class="form-check-label" for="shuffleItems"> JAMB 2019 </label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="exam" />
+      <label class="form-check-label" for="shuffleItems">
+        MULTILENT EXAMS
+      </label>
+    </div>
+
+    <div class="form-check mb-2">
+      <input class="form-check-input" type="checkbox" name="exam" />
+      <label class="form-check-label" for="shuffleItems"> NMCN EXAM </label>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary d-flex gap-1 align-items-center">
+        <i class="ri-add-fill"></i>Add Exam(s)
+      </button>
+    </div>
+  </div>
+</ng-template>

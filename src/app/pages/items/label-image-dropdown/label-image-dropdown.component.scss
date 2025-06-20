@@ -1,0 +1,178 @@
+.position-pointer{
+  position: relative;
+  
+}
+
+/* div{
+  padding: 20px;
+} */
+
+.textbox-pointer{
+  height: 35px;
+  outline: none;
+  border: 1px solid black;
+  padding-left: 15px;
+}
+
+.drag-container{
+  /* width: 2400px; */
+  max-width: 800px;
+  height: 500px;
+  position: relative;
+}
+
+.position-pointer::after{
+  content: "";
+  display: block;
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-left: 1px solid black;
+  border-right: 0px solid black;
+  border-top: 0px solid black;
+  border-bottom: 1px solid black;
+  color: #FFF;
+  top: -10%;
+  left: 2%;
+  transform: rotate(45deg);
+  margin-left: -16px;
+  background-color: #fff;
+}
+
+// .container {
+//   position: relative;
+//   width: 100%;
+//   max-width: 600px;
+//   margin: 0 auto;
+
+// }
+
+// .image {
+// //   width: 100%;
+// //   height: 100%;
+// //   object-fit: block; 
+// // }
+
+.draggable-label {
+  position: absolute;
+  cursor: grab;
+  // background-color: rgba(255, 255, 255, 0.5);
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.3s ease;
+  width: 15vw; /* Adjust width as needed */
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between pointer and controls */
+}
+
+
+
+// .pointer {
+//   width: 8px;
+//   height: 8px;
+//   background-color: red;
+//   border-radius: 50%;
+//   position: absolute;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   z-index: 1;
+//   // flex-shrink: 0; /* Prevent shrinking */
+// }
+
+
+
+@media (max-width: 768px) {
+  .draggable-label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .draggable-label {
+    font-size: 12px;
+  }
+}
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* Same as the image width */
+  height: 400px; /* Same as the image height */
+  margin: auto;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  aspect-ratio: 16 / 9; 
+  
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
+}
+
+
+// 
+
+
+.draggable-label {
+  position: absolute;
+  display: flex; /* Align items horizontally */
+  align-items: center; /* Vertically center the elements */
+  gap: 10px; /* Space between pointer and controls */
+  // background-color: rgba(255, 255, 255, 0.8);
+  // border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pointer {
+  flex-shrink: 0; /* Prevent shrinking of pointer */
+ 
+  // background-color: #3498db;
+  // border: 2px solid white;
+  // border-radius: 50%;
+  // box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+
+  width: 31px;
+  height: 54px;
+  // border-left: 1px solid #3b82f6;
+  // border-right: 0px solid #3b82f6;
+  // border-top: 0px solid #3b82f6;
+  // border-bottom: 1px solid #3b82f6;
+  background-image: url(/assets/images/svg/left-arrow.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.controls {
+  display: flex;
+  flex-direction: row; /* Horizontal alignment for select, input, and buttons */
+  gap: 5px; /* Space between controls */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  width: 15vw;
+  margin-bottom: 77px;
+}
+
+select,
+input {
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+

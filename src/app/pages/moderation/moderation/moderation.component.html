@@ -1,0 +1,164 @@
+<app-breadcrumbs
+  title="MODERATION"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading subjects...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="subjects.length > 0 && !loading">
+  <div class="row mb-3 pb-1">
+    <div class="col-12">
+      <div
+        class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
+      >
+        <div class="flex-grow-1">
+          <h4 class="fs-16 mb-1">List of all Subjects</h4>
+        </div>
+        <div class="d-flex gap-2 mt-lg-0">
+          <div class="search-box ms-2">
+            <input
+              type="text"
+              name="searchTerm"
+              class="form-control"
+              placeholder="Search..."
+              [(ngModel)]="searchSubject"
+              (ngModelChange)="filterSubjects()"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
+          <app-rightsidebar
+            [currentView]="'Moderation Subjects'"
+            (settingsButtonClicked)="onSettingsButtonClicked()"
+          ></app-rightsidebar>
+        </div>
+      </div>
+      <!-- end card header -->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+
+  <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6" *ngFor="let subject of subjects">
+      <div class="card">
+        <div class="card-body p-2">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 me-3">
+              <div class="avatar-sm">
+                <div class="avatar-title bg-light text-primary rounded fs-24">
+                  {{ subject.subjectName[0].toUpperCase() }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex-grow-1 overflow-hidden">
+              <h5 class="fs-16 mb-1">
+                <a class="text-body text-truncate d-block">{{
+                  subject.subjectName.toUpperCase()
+                }}</a>
+              </h5>
+              <div class="d-flex gap-1 align-items-center mt-2">
+                <div ngbTooltip="NO OF TOPICS" class="d-flex">
+                  <span
+                    *ngIf="subject.moderationId !== null"
+                    class="d-flex align-items-center badge badge-soft-success fs-14"
+                    ><i class="ri-check-fill"></i>moderation enabled</span
+                  >
+                  <!--   Topics:
+              </div> -->
+                  <!-- <div ngbTooltip="NO OF ITEMS" class="d-flex">
+                  In Review:<span
+                    class="d-flex align-items-center badge badge-soft-info fs-14"
+                    ><i class="ri-file-list-line"></i
+                    >{{ subject.totalItems }}</span
+                  >
+                </div> -->
+                  <!-- <div ngbTooltip="NO OF USED ITEMS" class="d-flex">
+                Used:<span
+                  class="d-flex align-items-center badge badge-soft-success fs-14"
+                  ><i class="ri-check-double-line"></i
+                  >{{ subject.usedCount }}</span
+                >
+              </div> -->
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex-shrink-0 ms-2"
+              *ngIf="currentUser.authorities.includes('ADMIN')"
+            >
+              <div class="d-flex gap-1">
+                <div class="dropdown" ngbDropdown>
+                  <button
+                    class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="ri-more-fill"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        (click)="enableDisableModerationActionCall(subject)"
+                        ><i
+                          *ngIf="subject.moderationId === null"
+                          class="ri-check-line align-bottom me-2 text-muted"
+                        ></i>
+                        {{
+                          subject.moderationId !== null
+                            ? 'disable moderation'
+                            : 'enable moderation'
+                        }}</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- <div class="form-check form-switch form-switch-right form-switch-md">
+              <label for="toggle-button" class="form-label text-muted">Show Code</label>
+              <input class="form-check-input code-switcher" type="checkbox" id="toggle-button" (click)="ShowCode($event)">
+            </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+  </div>
+</div>
+
+<div
+  *ngIf="subjects.length == 0 && !loading"
+  class="d-flex flex-column justify-content-center align-items-center"
+>
+  <img
+    src="assets/images/blank_pages/empty-pg.png"
+    width="300"
+    height="300"
+    class="my-2"
+  />
+  <div
+    class="d-flex flex-column gap-3 justify-content-center align-items-center"
+  >
+    <h4 class="text-secondary fw-bold">No Subject Found!</h4>
+    <a routerLink="/examalpha/subjects" class="btn btn-outline-primary"
+      >Go to Create Subject</a
+    >
+  </div>
+</div>

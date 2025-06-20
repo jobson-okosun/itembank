@@ -1,0 +1,540 @@
+<app-breadcrumbs
+  title="EXAMS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="!assessments"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Exams...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="assessments" class="row">
+  <div class="d-flex justify-content-between mb-2">
+    <h5 class="card-title mb-0 flex-grow-1">
+      List of all Exams({{ assessments.content.length }})
+    </h5>
+    <div class="d-flex gap-2">
+      <a routerLink="/examalpha/exams/templates" class="btn btn-soft-success"
+        ><i class="ri-pages-line align-bottom me-1"></i>Exam Templates</a
+      >
+      <a
+        (click)="openNewAssessmentModal(newAssessmentModal)"
+        class="btn btn-primary"
+        ><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a
+      >
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!loading && assessments.content.length > 0" class="row">
+  <ng-container *ngFor="let assessment of assessments.content">
+    <div class="col-sm-12 col-lg-6">
+      <div class="card">
+        <div class="card-header d-flex mb-0 align-items-center">
+          <h6 class="fs-15 text-truncate flex-grow-1">
+            <a
+              (click)="setCurrentAssessment(assessment)"
+              routerLink="/examalpha/exams/{{ assessment.id }}"
+              >{{ assessment.name }}</a
+            >
+          </h6>
+          <div class="dropdown" ngbDropdown>
+            <a
+              class="text-muted arrow-none"
+              id="dropdownMenuLink1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              ngbDropdownToggle
+              ><i
+                class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                style="cursor: pointer"
+              ></i
+            ></a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="dropdownMenuLink1"
+              ngbDropdownMenu
+            >
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="setCurrentAssessment(assessment)"
+                  routerLink="/examalpha/exams/{{ assessment.id }}"
+                  ><i class="bx bxs-edit align-bottom me-2 text-muted"></i>
+                  Manage Exam</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" href="javascript:void(0);"
+                  ><i class="ri-archive-line align-bottom me-2 text-muted"></i>
+                  Archive</a
+                >
+              </li>
+              <li class="dropdown-divider"></li>
+              <!-- <li>
+                  <a
+                    class="dropdown-item"
+                    routerLink="/examalpha/assessments/{{ assessment.id }}"
+                    data-bs-toggle="modal"
+                  >
+                    <i class="ri-group-line align-bottom me-2 text-muted"></i>
+                    Participants
+                  </a>
+                </li> -->
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="setCurrentAssessment(assessment)"
+                  routerLink="/examalpha/reports/{{ assessment.id }}/results"
+                  data-bs-toggle="modal"
+                >
+                  <i class="ri-survey-line align-bottom me-2 text-muted"></i>
+                  Results
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/examalpha/monitor"
+                  data-bs-toggle="modal"
+                >
+                  <i class="ri-computer-line align-bottom me-2 text-muted"></i>
+                  Live Monitoring
+                </a>
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="setCurrentAssessment(assessment)"
+                  routerLink="/examalpha/exams/{{ assessment.id }}/grading"
+                  data-bs-toggle="modal"
+                >
+                  <i
+                    class="ri-check-double-line align-bottom me-2 text-muted"
+                  ></i>
+                  Grading
+                </a>
+              </li>
+              <!-- <li>
+                <a
+                  *ngIf="assessment.status !== 'PUBLISHED'"
+                  class="dropdown-item"
+                  style="cursor: pointer"
+                  (click)="
+                    openPublishConfirmationModal(
+                      publishAssessmentConfirmationModal,
+                      assessment
+                    )
+                  "
+                  ><i class="bx bx-upload align-bottom me-2 text-muted"></i>
+                  Publish</a
+                >
+              </li> -->
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="flex-shrink-0">
+            <ul class="ps-4 vstack gap-2" style="list-style-type: none">
+              <li>
+                Status:
+                <span
+                  class="text-capitalize"
+                  [ngClass]="{
+                    'text-success': assessment.status === 'PUBLISHED',
+                    'text-warning': assessment.status === 'DRAFT'
+                  }"
+                  ><i
+                    *ngIf="assessment.status === 'DRAFT'"
+                    class="ri-draft-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.status === 'PUBLISHED'"
+                    class="ri-checkbox-circle-fill align-bottom"
+                  ></i>
+                  {{ assessment.status }}</span
+                >
+              </li>
+              <li>
+                Delivery Method:
+                <span class="text-capitalize text-info"
+                  ><i
+                    *ngIf="assessment.deliveryMethod.includes('OFFLINE')"
+                    class="ri-cloud-off-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.deliveryMethod == 'ONLINE'"
+                    class="ri-rss-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="
+                      assessment.deliveryMethod == 'ONLINE_WITH_HUMAN_PROCTOR'
+                    "
+                    class="ri-user-shared-line align-bottom"
+                  ></i>
+                  {{ assessment.deliveryMethod }}</span
+                >
+              </li>
+              <li>
+                Duration:
+                <span class="text-primary"
+                  ><i class="ri-timer-line align-bottom"></i>
+                  {{ assessment.duration }} Minute(s).</span
+                >
+              </li>
+              <li>
+                Total Sections:
+                <span class="text-primary"
+                  ><i class="ri-layout-grid-line align-bottom"></i>
+                  {{ assessment.totalSections }}</span
+                >
+              </li>
+              <li>
+                Created At:
+                <span class="text-primary"
+                  ><i class="ri-calendar-event-line align-bottom"></i>
+                  {{ assessment.createdDate | date : "medium" }}</span
+                >
+              </li>
+              <li>
+                <div class="d-flex gap-2">
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalCenters"
+                    >Centers
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalCenterAdmins"
+                    >Admins
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalSectionsGroup"
+                    >Section Groups
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalParticipants"
+                    >Participants
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer border-top-dashed">
+          <div class="d-flex justify-content-between">
+            <div class="fs-12 flex-grow-1">
+              Start Date:
+              <span class="fs-12 text-secondary"
+                ><i class="ri-time-line align-bottom"></i>
+                {{ assessment.startDateTime | date : "medium" }}</span
+              >
+            </div>
+            <div class="fs-12 flex-grow-1">
+              End Date:
+              <span class="fs-12 text-secondary"
+                ><i class="ri-time-line align-bottom"></i>
+                {{ assessment.endDateTime | date : "medium" }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-body-->
+    </div>
+  </ng-container>
+</div>
+
+<div
+  *ngIf="!loading && assessments.content.length < 1"
+  class="d-flex flex-column justify-content-between align-items-center"
+>
+  <img
+    src="assets/images/blank_pages/empty-state.png"
+    width="200"
+    height="200"
+    class="my-2"
+  />
+  <div
+    class="d-flex flex-column gap-3 justify-content-center align-items-center"
+  >
+    <h4 class="text-secondary fw-bold">No Exam Found!</h4>
+    <a
+      (click)="openNewAssessmentModal(newAssessmentModal)"
+      class="btn btn-outline-primary"
+      ><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading && assessments.totalElements > 0">
+  <p-paginator
+    [totalRecords]="assessments.totalElements"
+    (onPageChange)="onPageChange($event)"
+    [first]="0"
+    [rowsPerPageOptions]="[5, 10, 20]"
+    [rows]="5"
+    [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+  >
+  </p-paginator>
+</div>
+
+<ng-template #newAssessmentModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">CREATE NEW EXAM</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-5">
+    <form
+      #newAssessmentForm="ngForm"
+      (ngSubmit)="
+        newAssessmentForm.valid && createNewAssessment(newAssessmentForm)
+      "
+    >
+      <div>
+        <div class="">
+          <label for="subjectName" class="label"
+            >Exam Name <span class="text-danger">*</span></label
+          >
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Name of Exam"
+            required
+            [(ngModel)]="newAssessment.name"
+          />
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-12">
+            <label class="form-label"
+              >Exam Description <span class="text-danger">*</span></label
+            >
+            <textarea
+              placeholder="Give a brief description of the exam..."
+              [minLength]="200"
+              [maxlength]="1000"
+              rows="3"
+              cols="100vw"
+              class="form-control"
+              name="description"
+              [(ngModel)]="newAssessment.description"
+              required
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6">
+            <label class="form-label"
+              >Exam Start Date <span class="text-danger">*</span></label
+            >
+            <input
+              class="form-control flatpickr-input"
+              type="text"
+              name="assessmentStartDate"
+              required
+              mwlFlatpickr
+              name="calendar"
+              data-id="datetime"
+              [type]="'datetime-local'"
+              [altInput]="false"
+              [enableTime]="true"
+              [convertModelValue]="true"
+              [altFormat]=""
+              [dateFormat]="'Y-m-d H:i'"
+              [(ngModel)]="newAssessment.startDate"
+            />
+          </div>
+        
+
+          <div class="col-6">
+            <label class="form-label"
+              >Exam End Date <span class="text-danger">*</span></label
+            >
+            <input
+              class="form-control flatpickr-input"
+              type="text"
+              required
+              name="assessmentEndDate"
+              name="calendar"
+              mwlFlatpickr
+              [type]="'datetime-local'"
+              [altInput]="false"
+              [enableTime]="true"
+              [convertModelValue]="true"
+              [altFormat]=""
+              [dateFormat]="'Y-m-d H:i'"
+              [(ngModel)]="newAssessment.endDate"
+            />
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6">
+            <label for="deliveryMethod" class="label"
+              >Exam Delivery Method <span class="text-danger">*</span></label
+            >
+            <select
+              class="form-select"
+              data-plugin="choices"
+              data-choices
+              data-choices-search-false
+              name="deliveryMethod"
+              [(ngModel)]="newAssessment.deliveryMethod"
+              required
+            >
+              <option
+                *ngFor="let method of deliveryMethods"
+                value="{{ method }}"
+              >
+                {{ method }}
+              </option>
+            </select>
+          </div>
+
+          <div class="col-6">
+            <label for="subjectName" class="label"
+              >Exam Duration <span class="text-danger">*</span></label
+            >
+            <input
+              type="number"
+              min="5"
+              name="duration"
+              class="form-control mb-3"
+              placeholder="Exam duration in minutes"
+              required
+              [(ngModel)]="newAssessment.duration"
+              required
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer flex justify-end py-2 gap-3">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-danger"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click'); newAssessmentForm.reset()"
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        *ngIf="!submitted"
+        (click)="createNewAssessment(newAssessmentForm)"
+        [disabled]="
+          newAssessmentForm.invalid ||
+          newAssessment.startDate.toString().trim() === '' ||
+          newAssessment.endDate.toString().trim() === ''
+        "
+        class="btn btn-primary"
+      >
+        Save
+      </button>
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-primary btn-load"
+        disabled
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Saving...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Saving... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #publishAssessmentConfirmationModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">CONFIRM PUBLISH</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-5">
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to publish this Assessment?<br />
+        <span class="text-center">This action cannot be reversed.</span>
+      </p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        No, Cancel
+      </button>
+      <button
+        type="button"
+        (click)="publishAssessment()"
+        class="btn btn-primary"
+        [disabled]="submitted"
+      >
+        <span *ngIf="!submitted">Yes, Publish</span>
+
+        <span *ngIf="submitted" class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Publishing...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Publishing... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<app-rightsidebar
+  [currentView]="'Assessments'"
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar>

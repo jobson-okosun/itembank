@@ -1,0 +1,173 @@
+<form
+  *ngIf="preview === false"
+  #itemForm="ngForm"
+  (ngSubmit)="savePassage(itemForm)"
+>
+  <div class="row mb-1">
+    <div class="col-lg-4 col-sm-12">
+      <div class="d-flex gap-2">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-info"
+          (click)="back()"
+        >
+          <i class="ri-arrow-left-line align-middle me-2"></i>Back
+        </button>
+        <h4 class="title">
+          {{ passageEdit ? 'Edit Passage' : 'New Passage' }}
+        </h4>
+      </div>
+    </div>
+    <div
+      class="col-lg-8 col-sm-12 d-flex justify-content-end float-end"
+      *ngIf="passageTrail"
+    >
+      <div class="d-flex flex-row mx-2">
+        <span class="d-flex align-items-center text-muted" ngbTooltip="SUBJECT">
+          {{ passageTrail.subjectName.toUpperCase() }}
+        </span>
+        <span
+          class="d-flex align-items-center text-muted"
+          *ngIf="passageTrail.topicName"
+          ngbTooltip="TOPIC"
+        >
+          <i class="ri-arrow-right-s-line"></i
+          >{{ passageTrail.topicName.toUpperCase() }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="mb-5">
+        <div class="d-flex flex-wrap gap-2 float-end">
+          <button
+            type="button"
+            class="btn btn-outline-success waves-effect waves-light"
+            (click)="doPreview(itemForm)"
+            [disabled]="!passage.stimulus"
+          >
+            Preview
+          </button>
+
+          <!-- <button
+            *ngIf="passageEdit"
+            type="button"
+            class="btn btn-primary waves-effect waves-light"
+            (click)="updatePassage()"
+          >
+            Save
+          </button> -->
+          <div *ngIf="passageEdit" class="btn-group" role="group" ngbDropdown>
+            <button
+              id="btnGroupDrop2"
+              type="button"
+              class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              ngbDropdownToggle
+            >
+              Save <i class="mdi mdi-chevron-down"></i>
+            </button>
+            <ul
+              class="dropdown-menu"
+              aria-labelledby="btnGroupDrop2"
+              ngbDropdownMenu
+            >
+              <li>
+                <a class="dropdown-item" (click)="updatePassage()">Save</a>
+              </li>
+              <li *ngIf="passageEdit.itemStatus !== 'PUBLISHED'">
+                <a class="dropdown-item" (click)="updatePassage('draft')"
+                  >Save as draft</a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div *ngIf="!passageEdit" class="btn-group" role="group" ngbDropdown>
+            <button
+              id="btnGroupDrop1"
+              type="button"
+              class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              ngbDropdownToggle
+            >
+              Save <i class="mdi mdi-chevron-down"></i>
+            </button>
+            <ul
+              class="dropdown-menu"
+              aria-labelledby="btnGroupDrop1"
+              ngbDropdownMenu
+            >
+              <li>
+                <a class="dropdown-item" (click)="savePassage(itemForm)"
+                  >Save</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" (click)="savePassageAsDraft(itemForm)"
+                  >Save as draft</a
+                >
+              </li>
+              <!-- <li>
+                <a
+                  class="dropdown-item"
+                  (click)="savePassageAndAddQuestion(itemForm)"
+                  >Save and new</a
+                >
+              </li> -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="autoSizingInputGroup">Title</label>
+        <input
+          type="text"
+          name="reference"
+          class="form-control"
+          placeholder="Title"
+          [(ngModel)]="passage.reference"
+        />
+      </div>
+      <div class="mb-3">
+        <label>Passage</label>
+        <editor
+          name="stimulus"
+          #stimulus="ngModel"
+          [(ngModel)]="passage.stimulus"
+          [init]="{
+            base_url: '/tinymce',
+            height: 200,
+            menubar: true,
+            plugins: ['table quickbars lists autoresize charmap'],
+            quickbars_insert_toolbars: false,
+            branding: false,
+            toolbar:
+              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | superscript subscript charmap'
+          }"
+        ></editor>
+      </div>
+
+      <div class="row gy-4">
+        <div class="col-12">
+          <app-item-tag
+            (sendTags)="recieveTags($event)"
+            [recievedTag]="passage.itemTagsDTOS"
+          ></app-item-tag>
+        </div>
+      </div>
+    </div>
+    <!--end row-->
+  </div>
+  <!-- end card -->
+</form>
+
+<app-passage-preview
+  *ngIf="preview === true"
+  (returnPreviewData)="returnData($event)"
+  [previewData]="previewData"
+></app-passage-preview>

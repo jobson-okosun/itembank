@@ -1,0 +1,129 @@
+<div *ngIf="selectedSubject === undefined">
+  <app-breadcrumbs
+    title="TAGS | {{ currentTag | uppercase }}"
+    [breadcrumbItems]="breadCrumbItems"
+  ></app-breadcrumbs>
+
+  <div
+    *ngIf="allSubjects.length == 0"
+    class="d-flex align-items-center justify-content-center"
+    style="height: 60vh"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+        >Loading tag subjects...</span
+      >
+    </div>
+  </div>
+
+  <div *ngIf="!loading">
+    <div class="row mb-3 pb-1">
+      <div class="col-12">
+        <div
+          class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
+        >
+          <div class="flex-grow-1">
+            <h4 class="fs-16 mb-1">
+              List of All Subjects with {{ currentTag | titlecase }} ({{
+                allSubjects.length
+              }})
+            </h4>
+          </div>
+        </div>
+        <!-- end card header -->
+      </div>
+      <!--end col-->
+    </div>
+    <!--end row-->
+  </div>
+
+  <div *ngIf="!loading && allSubjects.length > 0">
+    <div class="row">
+      <div
+        class="col-xxl-4 col-lg-6 col-md-6 col-sm-12"
+        *ngFor="let subject of allSubjects"
+      >
+        <div class="card">
+          <div class="card-body p-2">
+            <div class="d-flex align-items-center">
+              <div class="flex-shrink-0 me-3">
+                <div class="avatar-sm">
+                  <div class="avatar-title bg-light text-primary rounded fs-24">
+                    {{ subject.name[0].toUpperCase() }}
+                  </div>
+                </div>
+              </div>
+              <div class="flex-grow-1 overflow-hidden">
+                <h5 class="fs-16 mb-1">
+                  <a class="text-body text-truncate d-block">{{
+                    subject.name.toUpperCase()
+                  }}</a>
+                </h5>
+                <div class="d-flex gap-1 align-items-center mt-2">
+                  Questions:<span
+                    title="No of Items"
+                    class="d-flex gap-1 align-items-center badge badge-soft-info fs-12"
+                    ><i class="ri-file-list-line"></i
+                    >{{ subject.totalItems }}</span
+                  >
+                </div>
+              </div>
+              <div class="flex-shrink-0 ms-2">
+                <div class="d-flex gap-1">
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      ngbDropdownToggle
+                    >
+                      <i class="ri-more-fill"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                      <li>
+                        <a
+                          class="dropdown-item"
+                          (click)="setSubjectId(subject)"
+                          routerLink="/examalpha/tags/{{ tagId }}/subject/{{
+                            subject.subjectId
+                          }}/tag-analysis"
+                          ><i
+                            class="ri-eye-fill align-bottom me-2 text-muted"
+                          ></i>
+                          Tag Analysis</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && allSubjects.length < 1">
+    <div class="d-flex flex-column justify-content-between align-items-center">
+      <img
+        src="assets/images/blank_pages/empty-state.png"
+        width="200"
+        height="200"
+        class="my-2"
+      />
+      <div
+        class="d-flex flex-column gap-3 justify-content-center align-items-center"
+      >
+        <h4 class="text-secondary fw-bold my-2">No Subject(s) Found!</h4>
+        <a routerLink="/examalpha/subjects" class="btn btn-outline-primary"
+          ><i class="ri-add-line me-2"></i>Go to Subject</a
+        >
+      </div>
+    </div>
+  </div>
+</div>

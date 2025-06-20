@@ -1,0 +1,36 @@
+<!-- <editor
+  name="stimulus"
+  #stimulus="ngModel"
+  [(ngModel)]="itemStimulus"
+  [init]="{
+    branding: false,
+    base_url: '/tinymce',
+    height: 200,
+    suffix: '.min',
+    menubar: true,
+    plugins: 'table quickbars lists autoresize charmap paste code eqneditor',
+    paste_preprocess: preProcess,
+    setup: setup,
+    quickbars_insert_toolbars: false,
+    toolbar:
+      'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
+  }"
+></editor>
+
+<button class="btn btn-primary" (click)="viewInnerHtml()">view</button>
+
+{{ itemStimulus }}
+
+ -->
+
+
+ <editor
+name="stimulus"
+id="abc"
+#stimulus="ngModel"
+[(ngModel)]="editData.stimulus"
+[init]="option"
+(onInit)="logEditor($event)"
+></editor>
+
+{{editData.stimulus}}

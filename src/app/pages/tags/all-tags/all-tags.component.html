@@ -1,0 +1,313 @@
+<app-breadcrumbs
+  title="TAGS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<!-- Loading Spinner -->
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading tags...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading && tagsPage">
+  <div class="row mb-3 pb-1">
+    <div class="col-12">
+      <div
+        class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
+      >
+        <div class="flex-grow-1">
+          <h4 class="fs-16 mb-1">
+            List of all Tags ({{ tagsPage && tagsPage.totalElements }})
+          </h4>
+        </div>
+        <div class="d-flex gap-2 mt-lg-0">
+          <div class="search-box ms-2">
+            <input
+              type="text"
+              name="searchTerm"
+              class="form-control"
+              placeholder="Search..."
+              [(ngModel)]="searchTag"
+              (ngModelChange)="search()"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
+          <button
+            type="button"
+            (click)="addTag(newTagModal)"
+            class="btn btn-soft-primary"
+            *ngIf="currentUser.authorities.includes('ADMIN')"
+          >
+            <i class="ri-add-circle-line align-middle me-1"></i> Create Tag
+          </button>
+        </div>
+      </div>
+      <!-- end card header -->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+
+  <div *ngIf="tagsPage.content.length > 0" class="row">
+    <div
+      class="col-lg-4 col-md-6 col-sm-6"
+      *ngFor="let tag of tagsPage.content"
+    >
+      <div class="card">
+        <div class="card-body p-2">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 me-3">
+              <div class="avatar-sm">
+                <div class="avatar-title bg-light text-primary rounded fs-24">
+                  <!-- <i class="ri-folder-zip-line"></i> -->
+                  {{ tag.tagName ? tag.tagName[0].toUpperCase() : '--' }}
+                </div>
+              </div>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <h5 class="fs-13 mb-1">
+                <a
+                  class="text-body text-truncate d-block"
+                  style="cursor: pointer"
+                  (click)="viewTag(tag.tagId)"
+                  >{{ tag.tagName.toUpperCase() }}</a
+                >
+              </h5>
+              <div title="Total Items">
+                <span>Total Questions :</span> {{ tag.itemCount }}
+              </div>
+            </div>
+            <div class="flex-shrink-0 ms-2">
+              <div class="d-flex gap-1">
+                <div class="dropdown" ngbDropdown>
+                  <button
+                    class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="ri-more-fill"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <li>
+                      <a
+                        class="dropdown-item"
+                        (click)="viewTag(tag)"
+                        routerLink="/examalpha/tags/{{ tag.tagId }}"
+                        ><i
+                          class="ri-eye-fill align-bottom me-2 text-muted"
+                        ></i>
+                        View</a
+                      >
+                    </li>
+                    <li *ngIf="currentUser.authorities.includes('ADMIN')">
+                      <a
+                      style="cursor: pointer"
+                        class="dropdown-item"
+                        (click)="renameTag(renameTagModal, tag)"
+                        ><i
+                          class="ri-pencil-fill align-bottom me-2 text-muted"
+                        ></i>
+                        Rename</a
+                      >
+                    </li>
+                    <!-- <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="confirmDelete(tag.tagName)"
+                      ><i
+                        class="ri-delete-bin-fill align-bottom me-2 text-muted"
+                      ></i>
+                      Delete</a
+                    >
+                  </li> -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+
+    <p-paginator
+      [totalRecords]="tagsPage.totalElements"
+      #paginator
+      (onPageChange)="onPageChange($event)"
+      [first]="0"
+      [rowsPerPageOptions]="[50, 70, 100]"
+      [rows]="50"
+      [pageLinkSize]="5"
+      [showCurrentPageReport]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    >
+    </p-paginator>
+    <!--end row-->
+  </div>
+
+  <div *ngIf="tagsPage.content.length < 1">
+    <div class="d-flex flex-column justify-content-between align-items-center">
+      <img
+        src="assets/images/blank_pages/empty-pg.png"
+        width="300"
+        height="300"
+        class="my-2"
+      />
+      <h4 class="text-secondary fw-bold">No Subject Found!</h4>
+    </div>
+  </div>
+</div>
+
+<ng-template #newTagModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">CREATE NEW TAG</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-5">
+    <form #newTagForm="ngForm" (ngSubmit)="createTag(newTagForm)" novalidate>
+      <div>
+        <div class="">
+          <label for="tagName" class="label">Tag Name</label>
+          <input
+            type="text"
+            name="tagName"
+            class="form-control mb-3"
+            placeholder="Tag Name"
+            required
+            [(ngModel)]="newTag.tagName"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-danger"
+        data-bs-dismiss="modal"
+        (click)="closeModal()"
+      >
+      <i class="ri-close-line align-middle me-2"></i>Close
+      </button>
+      <button
+        type="button"
+        (click)="createTag(newTagForm)"
+        *ngIf="!submitted"
+        class="btn btn-success"
+        data-bs-dismiss="modal"
+      >
+        <i class="ri-save-line align-middle me-2"></i>Save
+      </button>
+
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-primary btn-load"
+        [disabled]="submitted"
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Saving...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Saving... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #renameTagModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">RENAME TAG</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-5">
+    <form
+      #renameTagForm="ngForm"
+      (ngSubmit)="updateTagName(renameTagForm)"
+      novalidate
+    >
+      <div>
+        <div class="">
+          <label for="subjectName" class="label">Tag name</label>
+          <input
+            type="text"
+            name="tagName"
+            class="form-control mb-3"
+            placeholder="Enter Tag name"
+            required
+            [(ngModel)]="newTag.tagName"
+          />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="hstack gap-2 justify-content-end">
+      <button
+        type="button"
+        class="btn btn-danger"
+        data-bs-dismiss="modal"
+        (click)="closeModal()"
+      >
+        <i class="ri-close-fill align-middle me-2"></i>Close
+      </button>
+      <button
+        *ngIf="!submitted"
+        type="button"
+        (click)="updateTagName(renameTagForm)"
+        class="btn btn-primary"
+        data-bs-dismiss="modal"
+      >
+        <i class="ri-save-fill align-middle me-2"></i>Save
+      </button>
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-primary btn-load"
+        [disabled]="submitted"
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Saving...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Saving... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<app-rightsidebar
+  [currentView]="'Tags'"
+  [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar>

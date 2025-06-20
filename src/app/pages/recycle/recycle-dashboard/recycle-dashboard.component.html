@@ -1,0 +1,457 @@
+<app-breadcrumbs
+  title="RECYCLE"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading subjects...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="subjects.length > 0 && !loading">
+  <div class="row mb-3 pb-1">
+    <div class="col-12">
+      <div
+        class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
+      >
+        <div class="flex-grow-1">
+          <h4 class="fs-16 mb-1">List of all Subjects</h4>
+        </div>
+        <div class="d-flex gap-2 mt-lg-0">
+          <div class="search-box ms-2">
+            <input
+              type="text"
+              name="searchTerm"
+              class="form-control"
+              placeholder="Search..."
+              [(ngModel)]="searchSubject"
+              (ngModelChange)="filterSubjects()"
+            />
+            <i class="ri-search-line search-icon"></i>
+          </div>
+          <app-rightsidebar
+            [currentView]="'Moderation Subjects'"
+            (settingsButtonClicked)="onSettingsButtonClicked()"
+          ></app-rightsidebar>
+        </div>
+      </div>
+      <!-- end card header -->
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+
+  <div class="row">
+    <div class="col-lg-4 col-md-6 col-sm-6" *ngFor="let subject of subjects">
+      <div class="card">
+        <div class="card-body p-2">
+          <div class="d-flex align-items-center">
+            <div class="flex-shrink-0 me-3">
+              <div class="avatar-sm">
+                <div class="avatar-title bg-light text-primary rounded fs-24">
+                  {{ subject.subjectName[0] | uppercase }}
+                </div>
+              </div>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <h5 class="fs-16 mb-1">
+                <a class="text-body text-truncate d-block">{{
+                  subject.subjectName | uppercase
+                }}</a>
+              </h5>
+              <div
+                *ngIf="subject.recycleId"
+                class="d-flex gap-1 align-items-center mt-2"
+              >
+                In Recycle:<span
+                  title="No of Items in Recycle"
+                  class="d-flex gap-1 align-items-center badge badge-soft-success fs-12"
+                  ><i class="ri-file-list-line"></i
+                  >{{ subject.itemsInBin }}</span
+                >
+              </div>
+            </div>
+            <div class="flex-shrink-0 ms-2">
+              <div class="d-flex gap-1">
+                <div class="dropdown" ngbDropdown>
+                  <button
+                    (click)="fetchSubjectRecycle(subject)"
+                    class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i class="ri-settings-4-line" ngbTooltip="Settings"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <li
+                      style="cursor: pointer"
+                      *ngIf="subject.recycleId === null"
+                    >
+                      <a
+                        class="dropdown-item"
+                        (click)="openModal(recyclePolicyModal, subject)"
+                        ><i
+                          class="ri-add-line align-bottom me-2 text-muted"
+                        ></i>
+                        add policy</a
+                      >
+                    </li>
+                    <li style="cursor: pointer" *ngIf="subject.recycleId">
+                      <a
+                        class="dropdown-item"
+                        (click)="openEditPolicyModal(editRecyclePolicyModal)"
+                        ><i
+                          class="ri-edit-line align-bottom me-2 text-muted"
+                        ></i>
+                        edit policy</a
+                      >
+                    </li>
+                    <li style="cursor: pointer" *ngIf="subject.recycleId">
+                      <a
+                        (click)="
+                          openDeleteRecyclePolicyConfirmationModal(
+                            deleteRecyclePolicyModal,
+                            subject
+                          )
+                        "
+                        class="dropdown-item"
+                        ><i
+                          class="ri-delete-bin-2-line align-bottom me-2 text-muted"
+                        ></i>
+                        delete policy</a
+                      >
+                    </li>
+                    <!-- <li>
+                      <a
+                        class="dropdown-item"
+                        (click)="restoreAllItemsInSubject(subject)"
+                        ><i
+                          class="ri-refresh-line align-middle me-2 text-muted"
+                        ></i>
+                        restore questions</a
+                      >
+                    </li> -->
+                    <div class="dropdown-divider"></div>
+                    <li *ngIf="subject.recycleId">
+                      <a
+                        class="dropdown-item"
+                        routerLink="/examalpha/recycle/{{
+                          subject.subjectName
+                        }}/{{ subject.subjectId }}"
+                        ><i
+                          class="ri-eye-line align-bottom me-2 text-muted"
+                        ></i>
+                        view questions</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+  </div>
+</div>
+
+<!-- <div *ngIf="subjects.length == 0 && !loading">
+  <div
+    class="card d-flex flex-column align-items-center justify-content-center h-100"
+  >
+    <img
+      src="/assets/images/blank_pages/folder_image_1.PNG"
+      alt=""
+      width="100"
+      height="100"
+    />
+    <h3 class="title">Oops!...Looks like you are yet to create a subject.</h3>
+  </div>
+</div> -->
+
+<div
+  *ngIf="subjects.length == 0 && !loading"
+  class="d-flex flex-column justify-content-center align-items-center"
+>
+  <img
+    src="assets/images/blank_pages/empty-pg.png"
+    width="300"
+    height="300"
+    class="my-2"
+  />
+  <div
+    class="d-flex flex-column gap-3 justify-content-center align-items-center"
+  >
+    <h4 class="text-secondary fw-bold">No Subject Found!</h4>
+    <a routerLink="/examalpha/subjects" class="btn btn-outline-primary"
+      ><i class="ri-add-line me-2"></i>Go to Create Subject</a
+    >
+  </div>
+</div>
+
+<ng-template #recyclePolicyModal [showModal] let-modal>
+  <div class="modal-header">
+    <h3 class="text-center mb-4">Create Recycle Policy</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-4">
+    <form #recycleForm="ngForm" (ngSubmit)="savePolicy(recycleForm)">
+      <p class="text-muted text-center">
+        SUBJECT: {{ selectedSubject.subjectName | uppercase }}
+      </p>
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <label>Add items to recycle after</label>
+        <div class="col-xl-2 col-md-2 col-sm-2">
+          <input
+            type="number"
+            min="1"
+            max="10"
+            placeholder="1"
+            class="form-control"
+            name="maxUsageCount"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.maxUsageCount"
+          />
+        </div>
+        usage(s).
+      </div>
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <label>Recycle used questions after</label>
+        <div class="col-xl-2 col-md-2 col-sm-2">
+          <input
+            type="number"
+            min="1"
+            placeholder="60"
+            class="form-control"
+            name="lifespan"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.lifeSpan"
+          />
+        </div>
+        <div class="col-xl-3 col-md-3 col-sm-3">
+          <select
+            name="duration"
+            class="form-control"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.recycleDuration"
+          >
+            <option *ngFor="let duration of durations" value="{{ duration }}">
+              {{ duration + "(s)"}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 float-end mt-4">
+      <button
+        type="button"
+        class="btn btn-danger d-flex gap-1 align-items-center"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        <i class="ri-close-line"></i>Close
+      </button>
+      <button
+        type="button"
+        *ngIf="!submitted"
+        (click)="savePolicy(recycleForm)"
+        class="btn btn-primary d-flex gap-1 align-items-center"
+      >
+        <i class="ri-save-line"></i>Create Policy
+      </button>
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-primary btn-load"
+        [disabled]="submitted"
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Creating Policy...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Creating Policy... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editRecyclePolicyModal [showModal] let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Edit Recycle Policy</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-4">
+    <form #recycleForm="ngForm" (ngSubmit)="updatePolicy(recycleForm)">
+      <p class="text-muted text-center">
+        SUBJECT: {{ selectedSubject.subjectName | uppercase }}
+      </p>
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <label>Recycle used items after</label>
+        <div class="col-xl-2 col-md-2 col-sm-2">
+          <input
+            type="number"
+            min="1"
+            placeholder="60"
+            class="form-control"
+            name="lifeSpan"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.lifeSpan"
+          />
+        </div>
+        <div class="col-xl-3 col-md-3 col-sm-3">
+          <select
+            name="duration"
+            class="form-select"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.recycleDuration"
+          >
+            <option selected disabled>Choose period</option>
+            <option *ngFor="let duration of durations" value="{{ duration }}">
+              {{ duration }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+        <label>Add questions to recycle after</label>
+        <div class="col-xl-2 col-md-2 col-sm-2">
+          <input
+            type="number"
+            min="1"
+            max="10"
+            placeholder="1"
+            class="form-control"
+            name="maxUsageCount"
+            required
+            ngModel
+            [(ngModel)]="newRecyclePolicy.maxUsageCount"
+          />
+        </div>
+        usage(s).
+      </div>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 float-end mt-4">
+      <button
+        type="button"
+        class="btn btn-danger d-flex gap-1 align-items-center"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        <i class="ri-close-line"></i>Close
+      </button>
+      <button
+        type="button"
+        *ngIf="!submitted"
+        (click)="updatePolicy(recycleForm)"
+        class="btn btn-primary d-flex gap-1 align-items-center"
+      >
+        <i class="ri-save-line"></i>Save
+      </button>
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-primary btn-load"
+        [disabled]="submitted"
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Updating Policy...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Updating Policy... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteRecyclePolicyModal [showModal] let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Delete Recycle Policy</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-4">
+    <form #recycleForm="ngForm" (ngSubmit)="updatePolicy(recycleForm)">
+      <p class="text-muted text-center">
+        Are you sure you want to delete this recycle policy?<br />
+        <span>This action cannot be reversed.</span>
+      </p>
+    </form>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 float-end">
+      <button
+        type="button"
+        class="btn btn-secondary d-flex gap-1 align-items-center"
+        data-bs-dismiss="modal"
+        (click)="modal.close('Close click')"
+      >
+        <i class="ri-close-line"></i>No, Cancel
+      </button>
+      <button
+        type="button"
+        *ngIf="!submitted"
+        (click)="deleteRecyclePolicy()"
+        class="btn btn-danger d-flex gap-1 align-items-center"
+      >
+        <i class="ri-delete-bin-2-line"></i>Yes, Delete it.
+      </button>
+      <button
+        *ngIf="submitted"
+        class="btn btn-outline-danger btn-load"
+        [disabled]="submitted"
+      >
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Deleting Policy...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Deleting Policy... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>

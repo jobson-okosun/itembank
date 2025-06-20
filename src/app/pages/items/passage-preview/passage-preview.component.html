@@ -1,0 +1,36 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <h4>{{ previewData.reference ? previewData.reference : "Preview" }}</h4>
+      <div class="d-flex flex-wrap">
+        <button
+          type="button"
+          class="btn btn-sm btn-primary float-end"
+          (click)="edit()"
+        >
+          <i class="ri-pencil-line label-icon align-middle fs-14 me-2"></i>Edit
+        </button>
+      </div>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <div [innerHTML]="previewData.stimulus | htmlSanitizer">
+          {{ previewData.stimulus | htmlSanitizer }}
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="row">
+      <div>
+        <editor
+          [init]="{
+            height: 700,
+            menubar: true}"
+          initialValue=""
+        ></editor>
+      </div>
+    </div> -->
+  </div>
+</div>

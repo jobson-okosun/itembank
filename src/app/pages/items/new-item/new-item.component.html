@@ -1,0 +1,187 @@
+<app-breadcrumbs
+  title="{{ passageWorkflow ? 'NEW PASSAGE QUESTION' : 'NEW QUESTION' }} | {{ itemTrailInformation.subjectName }}"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row">
+  <div class="row">
+    <div class="d-flex align-items-center gap-2 col-lg-4 col-sm-12 my-2">
+      <button class="btn mb-2 btn-outline-info" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>Back
+      </button>
+      <!-- <h3 class="card-title">
+        {{ selectedItemType }} | <span class="text-muted">{{ formType }}</span>
+      </h3> -->
+    </div>
+    <div
+      class="col-lg-8 col-sm-12 d-flex justify-content-end float-end"
+      *ngIf="itemTrailInformation"
+    >
+      <div class="d-flex flex-row mx-2">
+        <span class="d-flex align-items-center text-muted" ngbTooltip="SUBJECT">
+          {{ itemTrailInformation.subjectName.toUpperCase() }}
+        </span>
+        <span
+          class="d-flex align-items-center text-muted"
+          *ngIf="itemTrailInformation.topicName"
+          ngbTooltip="TOPIC"
+        >
+          <i class="ri-arrow-right-s-line"></i
+          >{{ itemTrailInformation.topicName.toUpperCase() }}</span
+        >
+        <span
+          class="d-flex align-items-center text-muted"
+          *ngIf="itemTrailInformation.subtopicName"
+          ngbTooltip="SUBTOPIC"
+        >
+          <i class="ri-arrow-right-s-line"></i>
+          {{ itemTrailInformation.subtopicName.toUpperCase() }}</span
+        >
+      </div>
+      <a
+        *ngIf="currentActivity === 'addingNewItem'"
+        style="cursor: pointer"
+        (click)="goBackToAssessment()"
+        style="margin-right: -1.5rem"
+        class="my-1 btn btn-danger btn-xs-sm"
+        >Back To Assessment</a
+      >
+    </div>
+  </div>
+
+  <div class="col-lg-3">
+    <app-item-type
+      *ngIf="paramsObject; else newItemView"
+      (sendFormType)="setFormType($event)"
+      (sendItemType)="setItemType($event)"
+    ></app-item-type
+    ><!-- This is the template that is displayed when you are editing an existing question-->
+
+    <ng-template #newItemView
+      ><!-- This is the template that is displayed when a brand new question is being created-->
+      <app-item-type
+        (sendFormType)="setFormType($event)"
+        (sendItemType)="setItemType($event)"
+      ></app-item-type>
+    </ng-template>
+  </div>
+
+  <div class="col-lg-9">
+    <app-single-response
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Single Response'"
+      (savedItem)="saved($event)"
+    ></app-single-response>
+
+    <app-true-or-false
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'True or False'"
+      (savedItem)="saved($event)"
+    ></app-true-or-false>
+
+    <app-yes-or-no
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Yes or No'"
+      (savedItem)="saved($event)"
+    
+    ></app-yes-or-no>
+
+    <app-passage-item
+      [formType]="formType"
+      *ngIf="formType === 'Passage'"
+      (savedItem)="saved($event)"
+    ></app-passage-item>
+
+    <app-multiple-response
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Multiple Response'"
+      (savedItem)="saved($event)"
+    ></app-multiple-response>
+
+    <app-choice-matrix
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Choice Matrix'"
+    ></app-choice-matrix>
+
+    <app-rich-essay
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Rich Text Essay'"
+      (savedItem)="saved($event)"
+    ></app-rich-essay>
+
+    <app-cloze
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Cloze with Text'"
+      (savedItem)="saved($event)"
+    ></app-cloze>
+
+    <app-cloze-dropdown
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Cloze with dropdown'"
+      (savedItem)="saved($event)"
+    ></app-cloze-dropdown>
+
+    <app-ordering
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Ordering'"
+      (savedItem)="saved($event)"
+    ></app-ordering>
+
+    <app-matching
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Matching'"
+      (savedItem)="saved($event)"
+    ></app-matching>
+
+    <app-label-image-text
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Label Image with Text'"
+      (savedItem)="saved($event)"
+    ></app-label-image-text>
+
+    <app-label-image-dropdown
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Label Image with Dropdown'"
+      (savedItem)="saved($event)"
+    ></app-label-image-dropdown>
+
+    <app-label-image-drag-drop
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Label Image with Drag and Drop'"
+      (savedItem)="saved($event)"
+    ></app-label-image-drag-drop>
+
+    <!-- <app-essay
+      [formType]="formType"
+      *ngIf="formType === 'Plain Text Essay'"
+    ></app-essay> -->
+
+    <app-create-item
+      *ngIf="formType === 'Numeric' || formType === 'Short Answer'"
+      [formType]="formType"
+      (savedItem)="saved($event)"
+    ></app-create-item>
+  </div>
+</div>
+
+<app-rightsidebar
+  [currentView]="'New Question'"
+  [pageGuide]=""
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar>
+
+
+

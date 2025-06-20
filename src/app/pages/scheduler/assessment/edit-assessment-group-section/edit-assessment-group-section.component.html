@@ -1,0 +1,401 @@
+<!-- <div class="mx-n4 mt-n4">
+  <div class="profile-wid-bg profile-setting-img">
+    <div class="overlay-content"></div>
+  </div>
+</div> -->
+<app-breadcrumbs
+  title="EDIT SECTION GROUP"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="fetchingGroupParticipants || fetchingGroupDetails"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading group details...</span
+    >
+  </div>
+</div>
+
+<div class="row" *ngIf="!fetchingGroupParticipants && !fetchingGroupDetails">
+  <div class="col-12">
+    <!-- <div class="card mt-n5">
+        <div class="card-body p-4">
+          <div class="text-center">
+            <h5 class="fs-16 mb-1">{{ groupName }}</h5>
+            
+          </div>
+        </div>
+      </div> -->
+    <!--end card-->
+
+    <div class="card">
+      <div class="flex-grow-1">
+        <h5 class="card-title mb-0 card-header">Section Group</h5>
+      </div>
+      <div class="card-body">
+        <!-- <div class="d-flex justify-content-start">
+            <button class="btn btn-sm btn-soft-primary mb-3" (click)="goBack()">
+              <i class="ri-arrow-left-s-line align-bottom"></i>
+            </button>
+          </div> -->
+
+        <div *ngIf="sectionGroupDetails && !fetchingGroupDetails">
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Name:</label>
+                  <input
+                    class="form-control"
+                    value="{{ sectionGroupDetails.groupName }}"
+                    type="text"
+                    [(ngModel)]="sectionGroupDetails.groupName"
+                    name="groupName"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Section(s):</label>
+                  <ng-select
+                    [items]="Sections"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [(ngModel)]="sectionGroupDetails.sections"
+                    name="sections"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 
+            <div class="d-flex gap-2 mb-2 align-content-center align-items-center" *ngFor="let condition of conditions; let i =index;">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    </select>
+     
+                <span class="fs-6 text-secondary">contains</span>
+    
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    </select>
+                <button class="btn btn-sm btn-soft-danger" (click)="removeCondition(i)"><i class="ri-delete-bin-line align-bottom align-middle"></i></button>
+               
+            </div> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
+        <button
+          class="btn btn-primary m-3"
+          *ngIf="!processingEdit"
+          (click)="save()"
+        >
+          Save
+        </button>
+
+        <ng-template [ngIf]="processingEdit">
+          <button class="btn btn-primary btn-load m-3" [disabled]="processingEdit">
+            <span class="d-flex align-items-center">
+              <span class="spinner-border flex-shrink-0" role="status">
+                <span class="visually-hidden">Saving...</span>
+              </span>
+              <span class="flex-grow-1 ms-2"> Saving... </span>
+            </span>
+          </button>
+        </ng-template>
+      </div>
+    </div>
+
+    <!--end card-->
+  </div>
+</div>
+
+<ng-template #editParticipantModal let-modal>
+  <div
+    *ngIf="fetchingParticipantForEdit"
+    class="d-flex align-items-center justify-content-center"
+    style="height: 60vh"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+        >Loading participant info...</span
+      >
+    </div>
+  </div>
+
+  <ng-container *ngIf="participantForEdit && !fetchingParticipantForEdit">
+    <div class="modal-header">
+      <h2>Edit Participant Details</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="" class="form-label">Center ID</label>
+            <input
+              type="text"
+              class="form-control"
+              name="centerId"
+              disabled
+              value="{{ participantForEdit.centerId }}"
+            />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="" class="form-label">Group Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="centerId"
+              disabled
+              value="{{ participantForEdit.groupName }}"
+            />
+          </div>
+        </div>
+        <div class="col-6 mb-2">
+          <label class="form-check-label" for="Suspended">
+            Suspended :
+            <span
+              *ngIf="!participantForEdit.suspended"
+              class="badge badge-outline-success"
+              >{{ participantForEdit.suspended }}</span
+            >
+            <span
+              *ngIf="participantForEdit.suspended"
+              class="badge badge-outline-danger"
+              >{{ participantForEdit.suspended }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <form
+        [formGroup]="form"
+        *ngIf="participantForEdit"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="row">
+          <div
+            *ngFor="let key of keys(participantForEdit.fields)"
+            class="col-6 mb-3"
+          >
+            <div>
+              <label [for]="participantForEdit.fields[key].field_id">{{
+                participantForEdit.fields[key].field_name
+              }}</label>
+              <input
+                *ngIf="participantForEdit.fields[key].field_type === 'TEXTBOX'"
+                [formControlName]="participantForEdit.fields[key].field_name"
+                [id]="participantForEdit.fields[key].field_id"
+                type="text"
+                class="form-control"
+                [placeholder]="participantForEdit.fields[key].field_name"
+              />
+              <select
+                *ngIf="participantForEdit.fields[key].field_type === 'SELECT'"
+                [formControlName]="participantForEdit.fields[key].field_name"
+                [id]="participantForEdit.fields[key].field_id"
+                class="form-control"
+              >
+                <option
+                  *ngFor="
+                    let option of participantForEdit.fields[key].field_values
+                  "
+                  [value]="option"
+                  [selected]="
+                    participantForEdit.fields[key].field_value === option
+                  "
+                >
+                  {{ option }}
+                </option>
+              </select>
+
+              <input
+                *ngIf="participantForEdit.fields[key].field_type === 'CALENDAR'"
+                class="form-control flatpickr-input"
+                [placeholder]="participantForEdit.fields[key].field_name"
+                type="text"
+                name="calendar"
+                required
+                mwlFlatpickr
+                data-id="datetime"
+                [type]="'date'"
+                [altInput]="false"
+                [enableTime]="false"
+                [convertModelValue]="true"
+                [altFormat]=""
+                [dateFormat]="'Y-m-d H:i'"
+                [(ngModel)]="dateToEdit"
+                [formControlName]="participantForEdit.fields[key].field_name"
+              />
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-4">
+            <span class="btn btn-danger" (click)="cancel()">Close</span>
+            <button
+              type="submit"
+              [disabled]="processingEdit"
+              class="btn btn-primary"
+            >
+              <span *ngIf="!processingEdit">Submit</span>
+              <span *ngIf="processingEdit">Processing...</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer"></div>
+  </ng-container>
+</ng-template>
+
+<ng-template #moveParticipantToGroupModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Move to new section group</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <ng-container>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="contactInput" class="form-label"
+                  >Section Name</label
+                >
+
+                <ng-select
+                  class="custom"
+                  [items]="assessmentSectionGroups.sectionGroups"
+                  bindLabel="groupName"
+                  bindValue="id"
+                  name="section"
+                  dropdownPosition="bottom"
+                  [(ngModel)]="sectionGroupIdToMoveParticipantsTo"
+                >
+                  <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+                    {{ item[i].subjectName | uppercase }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="moveParticipantsToAnotherSectionGroup()"
+                  [disabled]="!sectionGroupIdToMoveParticipantsTo"
+                >
+                  Move
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #moveParticipantToCenterModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Move To:</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Center Name</label>
+
+              <ng-select
+                class="custom"
+                [items]="centers.centers"
+                bindLabel="centerName"
+                bindValue="id"
+                name="center"
+                dropdownPosition="bottom"
+                [(ngModel)]="centerIdToMoveParticipantsTo"
+              >
+                <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+                  {{ item[i].centerName | uppercase }}
+                </ng-template>
+              </ng-select>
+              <!-- <select
+                *ngIf="centers"
+                class="form-select mb-3"
+                aria-label=".form-select-lg example"
+                [(ngModel)]="centerIdToMoveParticipantsTo"
+                name="centerId"
+              >
+                <option selected>Open this select menu</option>
+                <option
+                  value="{{ center.id }}"
+                  *ngFor="let center of centers.centers"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select> -->
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="moveParticipantToAnotherCenter()"
+              >
+                Move
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>

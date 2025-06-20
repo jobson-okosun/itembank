@@ -1,0 +1,553 @@
+<app-breadcrumbs
+  title="{{ assessmentDetails.assessmentName }} | REGISTRATION FIELD SETTINGS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="fetchingRegField"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading reg fields...</span
+    >
+  </div>
+</div>
+
+<div class="card" *ngIf="!fetchingRegField && fields">
+  <!-- <h5 class="card-header">Custom Fields</h5> -->
+
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-sm btn-soft-primary mb-3" (click)="goBack()">
+        <i class="ri-arrow-left-s-line align-middle"></i>
+        Go Back
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-light btn-sm mb-3"
+        placement="left"
+        ngbPopover="These are the fields your candidates will see in the process of registration"
+      >
+        <i class="ri-information-line text-primary"></i>
+      </button>
+    </div>
+    <div class="table-responsive p-0">
+      <table class="table table-sm mb-0 table-bordered">
+        <thead>
+          <tr>
+            <!-- <th scope="col"></th> -->
+            <th scope="col">Field Name</th>
+            <th scope="col">Type</th>
+            <th scope="col" style="width: 70px">Order</th>
+            <th scope="col" style="width: 70px">Unique</th>
+
+            <th scope="col" style="width: 110px">Show on Table</th>
+            <th scope="col" style="width: 70px">Mandatory</th>
+            <th scope="col" style="width: 80px">Login</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let field of fields; let fieldIndex = index">
+            <!-- Field Name Input -->
+            <td>
+              <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="fields[fieldIndex].name"
+                [disabled]="field.id !== ''"
+                placeholder="Enter field name"
+              />
+            </td>
+
+            <!-- Field Type Dropdown -->
+            <td>
+              <select
+                class="form-select mb-3"
+                [(ngModel)]="fields[fieldIndex].type_"
+                [disabled]="field.id !== ''"
+                (change)="checkSelectType(fieldIndex, field.type_)"
+              >
+                <option disabled>Select Field Type</option>
+                <option
+                  *ngFor="let fieldType of fieldTypes"
+                  [value]="fieldType"
+                >
+                  {{ fieldType }}
+                </option>
+              </select>
+
+              <!-- Options for SELECT Type -->
+              <div *ngIf="field.type_ === 'SELECT'">
+                <div
+                  *ngFor="
+                    let fieldValue of field.values;
+                    let valueIndex = index;
+                    trackBy: trackByIndex
+                  "
+                  class="d-flex gap-3 justify-content-center mb-2"
+                >
+                  <input
+                    [(ngModel)]="fields[fieldIndex].values[valueIndex]"
+                    class="form-control form-control-sm"
+                    placeholder="Input option"
+                    type="text"
+                  />
+                  <button
+                    (click)="
+                      deleteSelectOption(
+                        field.id,
+                        field.values[valueIndex],
+                        fieldIndex,
+                        valueIndex
+                      )
+                    "
+                    class="btn btn-sm btn-soft-danger"
+                  >
+                    <i class="ri-delete-bin-line align-bottom align-middle"></i>
+                  </button>
+                </div>
+                <button
+                  *ngIf="field.id === ''"
+                  class="btn btn-sm w-100 btn-soft-primary mt-2"
+                  (click)="addSelectOption(fieldIndex)"
+                >
+                  Add Option
+                </button>
+                <button
+                  *ngIf="field.id !== ''"
+                  class="btn btn-sm w-100 btn-soft-primary mt-2"
+                  (click)="openNewValueModal(newOptionModal)"
+                >
+                  Add Option
+                </button>
+              </div>
+            </td>
+
+            <!-- Placement Input -->
+            <td>
+              <input
+                type="number"
+                min="1"
+                class="form-control"
+                [(ngModel)]="fields[fieldIndex].placement"
+                [disabled]="field.id !== ''"
+                placeholder="Enter placement"
+              />
+            </td>
+
+            <!-- Other Checkboxes -->
+            <td>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="fields[fieldIndex].unique"
+                [disabled]="field.id !== ''"
+              />
+            </td>
+            <td>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="fields[fieldIndex].display"
+                [disabled]="field.id !== ''"
+              />
+            </td>
+            <td>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="fields[fieldIndex].mandatory"
+                [disabled]="field.id !== ''"
+               
+              />
+            </td>
+            <td>
+              <!-- Replace the login checkbox input with this updated version -->
+              <input
+                class="form-check-input"
+                type="checkbox"
+                [(ngModel)]="fields[fieldIndex].login"
+                (ngModelChange)="handleLoginChange(fieldIndex, $event)"
+                [disabled]="field.id !== ''"
+              />
+
+              <div>
+                <span
+                  href="javascript:void(0)"
+                  (click)="openConfirmationModal(disableLoginConfirmationModal)"
+                   style="text-decoration: underline;"
+                  class="text-danger underline"
+                  *ngIf="fields[fieldIndex].login &&  fields[fieldIndex].id"
+                
+                >
+                  remove login field
+                </span>
+              </div>
+
+              <ng-container>
+                <div
+                (click)="openConfirmationModal(enableLoginConfirmationModal)"
+                  class="text-danger underline "
+                  style="text-decoration: underline;"
+                  *ngIf="
+                    !fields[fieldIndex].login &&
+                    fields[fieldIndex].mandatory &&
+                    fields[fieldIndex].unique &&
+                    fields[fieldIndex].id
+                  "
+                >
+                  add login field
+                </div>
+              </ng-container>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <button
+                *ngIf="field.id === ''"
+                [disabled]="addingRegField"
+                class="btn btn-soft-primary btn-sm"
+                (click)="saveField(fieldIndex)"
+                class="btn btn-soft-primary btn-sm"
+              >
+                <span *ngIf="!addingRegField"> Save</span>
+                <span
+                  *ngIf="addingRegField"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              </button>
+
+              <button
+                *ngIf="field.id !== ''"
+                class="btn btn-soft-primary btn-sm"
+                (click)="openEditModal(editModal)"
+              >
+                Edit
+              </button>
+              <button
+                class="btn btn-soft-danger btn-sm"
+                (click)="openConfirmationModal(deleteConfirmationModal)"
+                [disabled]="
+                  ['first name', 'last name', 'email'].includes(
+                    field.name.toLowerCase()
+                  )
+                "
+              >
+                <i class="ri-delete-bin-line align-bottom align-middle"></i>
+              </button>
+            </td>
+            <ng-template #deleteConfirmationModal let-modal>
+              <div class="modal-body text-center p-5">
+                <div class="mt-4">
+                  <h4 class="mb-3">
+                    Are you sure you want to delete this field?
+                  </h4>
+                  <p class="text-muted mb-4">This action cannot be reverted</p>
+                  <div class="hstack gap-2 justify-content-center">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                      (click)="modal.close('Close click')"
+                    >
+                      Close
+                    </button>
+                    <button
+                      [disabled]="processingDelete"
+                      class="btn btn-danger"
+                      (click)="deleteField(field.id, fieldIndex)"
+                    >
+                      <span *ngIf="!processingDelete">Yes, Delete</span>
+                      <span *ngIf="processingDelete">Processing...</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+
+            <ng-template #enableLoginConfirmationModal let-modal>
+              <div class="modal-body text-center p-5">
+                <div class="mt-4">
+                  <h4 class="mb-3">
+                    Are you sure you want to enable login field?
+                  </h4>
+                  <p class="text-muted mb-4">This action cannot be reverted</p>
+                  <div class="hstack gap-2 justify-content-center">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                      (click)="modal.close('Close click')"
+                    >
+                      Close
+                    </button>
+                    <button
+                      [disabled]="processingRemoval"
+                      class="btn btn-danger"
+                      (click)="removeLoginField(field.id, false)"
+                    >
+                      <span *ngIf="!processingRemoval">Yes, Enable</span>
+                      <span *ngIf="processingRemoval">Processing...</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+            <ng-template #disableLoginConfirmationModal let-modal>
+              <div class="modal-body text-center p-5">
+                <div class="mt-4">
+                  <h4 class="mb-3">
+                    Are you sure you want to disable login field?
+                  </h4>
+                  <p class="text-muted mb-4">This action cannot be reverted</p>
+                  <div class="hstack gap-2 justify-content-center">
+                    <button
+                      type="button"
+                      class="btn btn-light"
+                      data-bs-dismiss="modal"
+                      (click)="modal.close('Close click')"
+                    >
+                      Close
+                    </button>
+                    <button
+                      [disabled]="processingRemoval"
+                      class="btn btn-danger"
+                      (click)="removeLoginField(field.id, true)"
+                    >
+                      <span *ngIf="!processingRemoval">Yes, Disable</span>
+                      <span *ngIf="processingRemoval">Processing...</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+
+            <!-- add single select option modal -->
+            <ng-template #newOptionModal role="document" let-modal>
+              <div class="card">
+                <h5 class="card-header">Add new option</h5>
+                <div class="card-body">
+                  <form action="javascript:void(0);">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <label for="contactInput" class="form-label"
+                            >Option</label
+                          >
+                          <input #optionRef class="form-control" type="text" />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                          <button
+                            type="submit"
+                            class="btn btn-primary"
+                            (click)="
+                              addRegistrationFieldValue(
+                                field.id,
+                                optionRef.value
+                              )
+                            "
+                          >
+                            Add
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-soft-danger"
+                            (click)="cancel()"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </form>
+                </div>
+              </div>
+            </ng-template>
+
+            <!-- edit reg field modal -->
+
+            <ng-template #editModal role="document" let-modal>
+              <div class="card">
+                <h5 class="card-header">Edit Registration Field</h5>
+                <div class="card-body">
+                  <form action="javascript:void(0);">
+                    <div class="row">
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <label for="contactInput" class="form-label"
+                            >Field name</label
+                          >
+                          <input
+                            #fieldNameRef
+                            value="{{ field.name }}"
+                            class="form-control"
+                            type="text"
+                            [disabled]="
+                              field.name.toLowerCase() === 'first name' ||
+                              field.name.toLowerCase() === 'last name' ||
+                              field.name.toLowerCase() === 'firstname' ||
+                              field.name.toLowerCase() === 'lastname' ||
+                              field.name.toLowerCase() === 'email'
+                            "
+                          />
+                        </div>
+                      </div>
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <label for="contactInput" class="form-label"
+                            >Placement</label
+                          >
+                          <input
+                            #placementRef
+                            value="{{ field.placement }}"
+                            class="form-control"
+                            type="number"
+                          />
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <div class="d-flex gap-3">
+                            <label for="contactInput" class="form-label"
+                              >Show on table</label
+                            >
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="{{ field.display }}"
+                                id="responsivetableCheck03"
+                                [checked]="field.display"
+                                #displayRef
+                                [disabled]="
+                                  field.name.toLowerCase() === 'first name' ||
+                                  field.name.toLowerCase() === 'last name' ||
+                                  field.name.toLowerCase() === 'firstname' ||
+                                  field.name.toLowerCase() === 'lastname' ||
+                                  field.name.toLowerCase() === 'email'
+                                "
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <div class="d-flex gap-3">
+                            <label for="contactInput" class="form-label"
+                              >Is login field</label
+                            >
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="{{ field.login }}"
+                                id="responsivetableCheck03"
+                                [checked]="field.login"
+                                #isLoginRef
+                                (change)="handleLoginChange(fieldIndex, isLoginRef.checked)"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="mb-3">
+                          <div class="d-flex gap-3">
+                            <label for="contactInput" class="form-label"
+                              >Is Mandatory</label
+                            >
+                            <div class="form-check">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="responsivetableCheck03"
+                                [checked]="field.mandatory"
+                                #mandatoryRef
+                                [disabled]="
+                                  field.name.toLowerCase() === 'first name' ||
+                                  field.name.toLowerCase() === 'last name' ||
+                                  field.name.toLowerCase() === 'firstname' ||
+                                  field.name.toLowerCase() === 'lastname' ||
+                                  field.name.toLowerCase() === 'email'
+                                "
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                          <button
+                            type="submit"
+                            class="btn btn-primary"
+                            [disabled]="processingFieldEdit"
+                            (click)="
+                              editRegistrationField(
+                                field.id,
+                                fieldNameRef.value,
+                                placementRef.value,
+                                displayRef.checked,
+                                isLoginRef.checked,
+                                mandatoryRef.checked
+                              )
+                            "
+                          >
+                            <span *ngIf="!processingFieldEdit"> Edit</span>
+                            <span *ngIf="processingFieldEdit"
+                              >Processing...</span
+                            >
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-soft-danger"
+                            (click)="cancel()"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </form>
+                </div>
+              </div>
+            </ng-template>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between m-4">
+    <button
+      [disabled]="!canAddField()"
+      class="btn btn-primary btn-sm w-100"
+      (click)="addField()"
+    >
+      Add Field
+    </button>
+    <!-- <button class="btn btn-soft-primary btn-sm">Save</button> -->
+  </div>
+</div>

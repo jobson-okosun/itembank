@@ -1,0 +1,21 @@
+/* You can add global styles to this file, and also import other style files */
+@import "node_modules/angular-notifier/styles";
+@import "~@ng-select/ng-select/themes/default.theme.css";
+
+li{
+    cursor: pointer!important
+}
+
+a{
+    cursor: pointer!important;
+}
+
+body {
+    --keyboard-zindex: 1000000; /* Adjust the value to ensure it's higher than TinyMCE modal */
+  }
+
+  .math-expression {
+    display: inline-block;
+    cursor: pointer;
+  }
+

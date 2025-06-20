@@ -1,0 +1,203 @@
+.full-height {
+    // max-height: fit-content;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.foot-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+   
+ }
+ .bg{
+    background: #25a0e2;
+    background: linear-gradient(to top, #105378, #25a0e2);
+ }
+
+ .ui-paginator .ui-paginator-pages .ui-paginator-page{ 
+    min-width: 2.5em !important; 
+    }
+
+    exam-card-footer {
+       
+        height: 100px;
+        bottom: 0;
+        width: 100%;
+        left: 0;
+    }
+
+    .dropdown-toggle::after {
+        display:none;
+    }
+
+//   .floating-nav-btn .left-float .left-float-text:hover{
+//         visibility: visible;
+//     }
+
+// .hover-button {
+//     position: relative;
+//     color: white;
+//     padding: 10px 20px;
+//     border: none;
+//     border-radius: 5px;
+//     cursor: pointer;
+//   }
+
+//   .hover-text {
+//     display: none;
+//   }
+  
+//   .hover-button:hover .hover-text {
+//     display: block;
+//   }
+
+
+
+.p-paginator .p-paginator-pages .p-paginator-page  {
+    
+  
+    margin: 1px!important;
+    min-width: 2rem!important;
+    height: 2rem!important;
+    color: #25a0e2!important;
+    
+}
+.p-paginator .p-paginator-first, .p-paginator .p-paginator-prev, .p-paginator .p-paginator-next, .p-paginator .p-paginator-last {
+    min-width: 2rem!important;
+    height: 2rem!important; 
+}
+
+.p-paginator .p-paginator-first:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover{
+    background-color: #c5dfec!important;
+    color: white!important;
+}
+.p-paginator .p-paginator-first:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-prev:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-next:not(.p-disabled):not(.p-highlight):hover, .p-paginator .p-paginator-last:not(.p-disabled):not(.p-highlight):hover{
+    background-color: #c5dfec!important;
+    color: white!important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page .p-highlight{
+    background-color: #25a0e2!important;
+    color: white!important;
+    border-radius: 19%!important;
+}
+
+.pi-angle-right:before {
+    color: #25a0e2!important;
+}
+.pi-angle-left:before {
+    color: #25a0e2!important;
+}
+
+.pi-angle-double-left:before {
+    color: #25a0e2!important;
+    
+}
+.pi-angle-double-right:before {
+    color: #25a0e2!important;
+    
+}
+
+.p-paginator{
+    padding: 0px!important;
+    flex-wrap: nowrap!important;
+}
+
+
+.display {
+    border: 1px solid lightgray;
+    width: 100px;
+    height: 20px;
+    text-align: right;
+    margin-bottom: 15px;
+  }
+  
+  .num-buttons {
+    display: grid;
+    /* height: 300px; */
+    width: 100%;
+    justify-items: center;
+    grid-template-columns: 33px 33px 33px;
+    grid-template-rows: 30px 30px 30px 30px;
+    grid-template-areas: 
+      ". . ."
+      ". . ."
+      ". . ."
+      ". center .";
+      
+  }
+  
+  .button-0 {
+    grid-area: center
+  }
+  
+  .operator-buttons {
+    display: grid;
+    width: 100%;
+    justify-items: center;
+    grid-template-columns: 25px 25px 25px 25px;
+  }
+  
+  .equals {
+    margin-top: 25px;
+    width: 100px;
+    height: 25px;
+    background-color: yellow;
+    color: black;
+    text-align: center;
+  }
+
+  p-paginator .p-paginator-pages .p-paginator-page {
+    background-color: transparent;
+    border: 0 none;
+      border-top-color: currentcolor;
+      border-right-color: currentcolor;
+      border-bottom-color: currentcolor;
+      border-left-color: currentcolor;
+    color: #6c757d;
+    min-width: 3rem;
+    height: 3rem;
+    margin: 0.143rem;
+    transition: box-shadow 0.2s;
+    border-radius: 25%;
+  }
+
+  .img-thumbnail {
+    padding: 0.25rem;
+    
+    background-color: var(--vz-body-bg);
+    border-radius: 0.25rem;
+    max-width: 100%;
+    height: auto;
+  
+  }
+  
+  .rounded-circle {
+      border-radius: 29% !important;
+    }
+
+
+@media only screen and (min-width: 393px) {
+  .assessment-name{
+    margin-left: 12px!important;
+  }
+
+  
+  // .exam-card-footer{
+  //   position: relative;
+  // }
+}
+
+/* Medium devices such as tablets (768px and up) */
+@media only screen and (min-width: 768px) {
+
+  .assessment-name{
+    margin-left: 12px!important;
+  }
+
+  // .exam-card-footer{
+  //   position: relative;
+  // }
+
+}

@@ -1,0 +1,131 @@
+<div>
+  <!--Logo upload-->
+  <div class="mb-3">
+    <label class="form-label">
+      Logo<span
+        class=""
+        ngbPopover="upload the company logo. Images will be resized to 250 x 100, if the provided logo is above."
+        placement="right"
+        triggers="mouseenter:mouseleave"
+        ><i class="ri-question-fill align-middle me-2 mx-2"></i
+      ></span>
+    </label>
+    <div class="d-flex align-items-center-end gap-2">
+      <input type="file" name="file" accept="image" hidden #logoFile />
+      <div
+        class="bg-soft-secondary d-flex flex-column justify-content-center align-items-center"
+        style="width: 250px; height: 100px"
+      >
+        <span class="text-muted fs-18 fw-bold"> 250 x 100</span
+        ><i class="ri-image-fill text-muted me-2 align-middle fs-1"></i>
+      </div>
+      <div class="d-flex align-items-end">
+        <button
+          class="btn btn-icon btn-sm btn-primary"
+          (click)="logoFile.click()"
+        >
+          <i class="ri-camera-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--Icon upload-->
+  <div class="mb-3">
+    <label class="form-label">
+      Square Icon<span
+        class=""
+        ngbPopover="upload the company icon. The recommended size for the icon is 64 x 64."
+        placement="right"
+        triggers="mouseenter:mouseleave"
+        ><i class="ri-question-fill align-middle me-2 mx-2"></i
+      ></span>
+    </label>
+    <div class="d-flex align-items-center-end gap-2">
+      <input type="file" name="file" accept="image" hidden #iconFile />
+      <div
+        class="bg-soft-secondary d-flex flex-column justify-content-center align-items-center"
+        style="width: 64px; height: 64px"
+      >
+        <span class="text-muted fs-12 fw-bold"> 64 x 64</span
+        ><i class="ri-landscape-fill text-muted me-2 align-middle fs-4"></i>
+      </div>
+      <div class="d-flex align-items-end">
+        <button
+          class="btn btn-sm btn-icon btn-primary"
+          (click)="iconFile.click()"
+        >
+          <i class="ri-camera-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--Favicon upload-->
+  <div class="mb-3">
+    <label class="form-label">
+      Favicon<span
+        class=""
+        ngbPopover="upload the company favicon. The recommended size for the favicon is 32 x 32."
+        placement="right"
+        triggers="mouseenter:mouseleave"
+        ><i class="ri-question-fill align-middle me-2 mx-2"></i
+      ></span>
+    </label>
+    <div class="d-flex align-items-center-end gap-2">
+      <input type="file" name="file" accept="image" hidden #faviconFile />
+      <div
+        class="bg-soft-secondary d-flex flex-column justify-content-center align-items-center"
+        style="width: 32px; height: 32px"
+      >
+        <i class="ri-landscape-fill text-muted me-2 align-middle fs-6"></i>
+      </div>
+      <div class="d-flex align-items-end">
+        <button
+          class="btn btn-sm btn-icon btn-primary"
+          (click)="faviconFile.click()"
+        >
+          <i class="ri-camera-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!--Primary Color Picker-->
+  <div class="row mb-3">
+    <label class="form-label">
+      Primary color<span
+        class=""
+        ngbPopover="Pick the primary color of the company. This will be used in the customization of the application's look and feel."
+        placement="right"
+        triggers="mouseenter:mouseleave"
+        ><i class="ri-question-fill align-middle me-2 mx-2"></i
+      ></span>
+    </label>
+    <input
+      type="color"
+      class="form-control form-control-color w-100"
+      id="colorPicker"
+      value="#6404DD"
+    />
+  </div>
+
+  <!--Secondary Color Picker-->
+  <div class="row mb-3">
+    <label class="form-label">
+      Secondary color<span
+        class=""
+        ngbPopover="Pick the secondary color of the company. This will be used in the customization of the application's look and feel."
+        placement="right"
+        triggers="mouseenter:mouseleave"
+        ><i class="ri-question-fill align-middle me-2 mx-2"></i
+      ></span>
+    </label>
+    <input
+      type="color"
+      class="form-control form-control-color w-100"
+      id="colorPicker"
+      value="#008000"
+    />
+  </div>
+</div>

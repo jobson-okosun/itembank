@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "cloze-dropdown.component.scss"
+    ],
+    "names": [],
+    "file": "cloze-dropdown.component.css"
+}

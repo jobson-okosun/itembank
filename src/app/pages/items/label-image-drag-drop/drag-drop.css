@@ -1,0 +1,33 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+#container {
+    width: 80vw;
+    height: 80vh;
+    position: relative;
+    background-image: url('/src/assets/images/server-error.png'); /* Replace 'your-image.jpg' with the path to your image */
+    background-size: contain;   /* Make sure the image is scaled to fit within the container */
+    background-position: center; /* Center the image within the container */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+    overflow: hidden;
+    border: 2px solid #000;
+}
+
+.card {
+    width: 10vw;
+    height: 10vh;
+    position: absolute;
+    background-color: rgba(255, 0, 0, 0.8);
+    cursor: pointer;
+}

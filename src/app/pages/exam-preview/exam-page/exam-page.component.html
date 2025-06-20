@@ -1,0 +1,1233 @@
+<ng-container *ngIf="!currentSectionData  && !currentCandidateData">
+
+  <div class="d-flex justify-content-center align-items-center" style="height:60vh">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading questions...</span>
+    </div>
+  </div>
+</ng-container>
+
+<div *ngIf="currentSectionData  && currentCandidateData" style="font-size: {{ fontSize }}">
+  <div class="full-height">
+    <div class="d-flex text-secondary justify-content-between">
+      <div class="d-none d-md-block">
+        <div
+          class="d-flex justify-content-between mx-2 align-items-center mt-2"
+        >
+          <!-- <div class="m-lg-2 m-sm-0">
+            <p class="m-0 fw-medium user-name-text">
+              <img
+                alt="exam-alpha-logo"
+                height="18"
+                src="/assets/images/exam-alpha-logo/EXPryLogoHor.png"
+              />
+            </p>
+           
+          </div> -->
+
+          <!-- <div
+            *ngIf="currentCandidateData.passport"
+            class="avatar-sm d-none d-md-block"
+          >
+            <img
+              alt="passport"
+              class="img-thumbnail rounded-circle"
+              [src]="currentCandidateData.passport"
+              style="width: 58px; height: 58px"
+            />
+          </div> -->
+          <div class="m-lg-2 m-sm-0">
+            <p class="m-0 fw-medium text-black">
+              CANDIDATE NAME
+            </p>
+            <p class="m-0 user-name-sub-text fs-12">
+             Login field
+            </p>
+          </div>
+          <!-- <div class="vr border border-white"></div> -->
+        </div>
+      </div>
+
+      <div class="d-flex assessment-name justify-content-center mt-3">
+        <p class="m-0 text-black fs-16 fw-bold">
+          {{ assessmentName }}
+        </p>
+      </div>
+      <div class="d-flex justify-content-center align-items-center gap-2 mx-3">
+        <div class="">
+          <div class="d-flex align-items-center justify-content-center gap-1">
+            <!-- <p class="mb-0">
+                      {{ currentPaper }} of
+                      {{ papers.length }}''
+                    </p> -->
+            <!-- sections -->
+
+            <div class="d-flex gap-2 align-center align-items-center sections">
+              <!-- <select
+                #sectionNameRef
+                (change)="captureSectionAndSetQuestion(sectionNameRef.value)"
+                class="form-select form-select-sm border border-1 rounded-2"
+              >
+                <option *ngFor="let section of sections">
+                  {{ section }}
+                </option>
+              </select> -->
+
+              <!--            font size settings -->
+              <div
+                [ngbTooltip]="'Font settings '"
+                triggers="mouseenter:mouseleave"
+                class="d-none d-md-block"
+                ngbDropdown
+              >
+                <div
+                  class="btn btn-md border"
+                  data-bs-toggle="dropdown"
+                  ngbDropdownToggle
+                >
+                  Aa
+                </div>
+
+                <div class="dropdown-menu p-2" ngbDropdownMenu>
+                  <div class="d-flex justify-content-center">
+                    <div class="mb-2">
+                      <span class="text-primary text-center fs-16"
+                        >Font Size</span
+                      >
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button
+                        (click)="setFontSize(fontsEnum.SMALL)"
+                        class="btn btn-sm"
+                        [ngClass]="{
+                          'btn-primary': fontSize === '12px!important',
+                          'btn-outline-primary': fontSize !== '12px!important'
+                        }"
+                        type="button"
+                      >
+                        <span style="font-size: 12px !important">Aa</span>
+                      </button>
+                      <button
+                        (click)="setFontSize(fontsEnum.NORMAL)"
+                        class="btn btn-sm"
+                        [ngClass]="{
+                          'btn-primary': fontSize === '16px!important',
+                          'btn-outline-primary': fontSize !== '16px!important'
+                        }"
+                        type="button"
+                      >
+                        <span style="font-size: 15px !important">Aa</span>
+                      </button>
+                      <button
+                        (click)="setFontSize(fontsEnum.LARGE)"
+                        class="btn btn-sm"
+                        [ngClass]="{
+                          'btn-primary': fontSize === '20px!important',
+                          'btn-outline-primary': fontSize !== '20px!important'
+                        }"
+                        type="button"
+                      >
+                        <span style="font-size: 20px !important">Aa</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- show instruction button-->
+              <!-- <button
+                [ngbTooltip]="'Exam Instruction'"
+                triggers="mouseenter:mouseleave"
+                (click)="showInstruction()"
+                aria-controls="instructionSideBar"
+                class="btn btn-md border text-primary align-items-center d-none d-md-block"
+                data-bs-target="#instructionSideBar"
+                data-bs-toggle="offcanvas"
+                type="button"
+              >
+                <svg
+                  fill="none"
+                  height="14"
+                  viewBox="0 0 4 14"
+                  width="4"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    clip-rule="evenodd"
+                    d="M3.52535 3.59323C3.22244 3.89614 2.84708 4.0476 2.39929 4.0476C1.95149 4.0476 1.57613 3.89614 1.27322 3.59323C0.970305 3.29031 0.818848 2.91496 0.818848 2.46716C0.818848 2.01936 0.970305 1.644 1.27322 1.34109C1.57613 1.03818 1.95149 0.886719 2.39929 0.886719C2.84708 0.886719 3.22244 1.03818 3.52535 1.34109C3.82827 1.644 3.97972 2.01936 3.97972 2.46716C3.97972 2.91496 3.82827 3.29031 3.52535 3.59323ZM3.46331 13.3887C3.17708 13.6749 2.8224 13.8181 2.39929 13.8181C1.97617 13.8181 1.6215 13.6749 1.33526 13.3887C1.04902 13.1025 0.905901 12.7478 0.905901 12.3247V7.65711C0.905901 7.23398 1.04902 6.8793 1.33526 6.59309C1.6215 6.30685 1.97617 6.16373 2.39929 6.16373C2.8224 6.16373 3.17708 6.30685 3.46331 6.59309C3.74955 6.8793 3.89267 7.23398 3.89267 7.65711V12.3247C3.89267 12.7478 3.74955 13.1025 3.46331 13.3887Z"
+                    fill="#0CAECA"
+                    fill-rule="evenodd"
+                  />
+                  <path
+                    d="M3.52535 3.59323C3.22244 3.89614 2.84708 4.0476 2.39929 4.0476C1.95149 4.0476 1.57613 3.89614 1.27322 3.59323C0.970305 3.29031 0.818848 2.91496 0.818848 2.46716C0.818848 2.01936 0.970305 1.644 1.27322 1.34109C1.57613 1.03817 1.95149 0.886719 2.39929 0.886719C2.84708 0.886719 3.22244 1.03817 3.52535 1.34109C3.82827 1.644 3.97973 2.01936 3.97973 2.46716C3.97973 2.91496 3.82827 3.29031 3.52535 3.59323Z"
+                    fill="#0CAECA"
+                  />
+                </svg>
+          
+              </button> -->
+
+              <!-- QUESTION PROGRESS DROPDOWN (ATTEMPTED, NOT ATTEMPTED) -->
+              <!-- <div
+                [ngbTooltip]="'Question progress'"
+                triggers="mouseenter:mouseleave"
+                class=""
+                ngbDropdown
+              >
+                <button
+                  (click)="fetchProgressUpdates()"
+                  class="mx-2 btn border text-primary btn-md d-none d-md-block"
+                  data-bs-toggle="dropdown"
+                  ngbDropdownToggle
+                  #dropDownRef
+                >
+                  <svg
+                    fill="none"
+                    height="14"
+                    viewBox="0 0 14 14"
+                    width="14"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M9.52973 7.66102L6.43218 4.56347C6.3593 4.49059 6.30767 4.41163 6.2773 4.3266C6.24693 4.24157 6.23175 4.15046 6.23175 4.05328C6.23175 3.95611 6.24693 3.865 6.2773 3.77997C6.30767 3.69494 6.3593 3.61598 6.43218 3.5431L9.52973 0.445547C9.60262 0.372663 9.68157 0.321038 9.76661 0.290669C9.85164 0.260301 9.94274 0.245117 10.0399 0.245117C10.1371 0.245117 10.2282 0.260301 10.3132 0.290669C10.3983 0.321038 10.4772 0.372663 10.5501 0.445547L13.6477 3.5431C13.7205 3.61598 13.7722 3.69494 13.8025 3.77997C13.8329 3.865 13.8481 3.95611 13.8481 4.05328C13.8481 4.15046 13.8329 4.24157 13.8025 4.3266C13.7722 4.41163 13.7205 4.49059 13.6477 4.56347L10.5501 7.66102C10.4772 7.73391 10.3983 7.78553 10.3132 7.8159C10.2282 7.84627 10.1371 7.86145 10.0399 7.86145C9.94274 7.86145 9.85164 7.84627 9.76661 7.8159C9.68157 7.78553 9.60262 7.73391 9.52973 7.66102ZM0.0913086 5.9847V1.61168C0.0913086 1.40518 0.161155 1.23208 0.300849 1.09239C0.440542 0.952695 0.613641 0.882849 0.820144 0.882849H5.19316C5.39966 0.882849 5.57276 0.952695 5.71246 1.09239C5.85215 1.23208 5.922 1.40518 5.922 1.61168V5.9847C5.922 6.1912 5.85215 6.3643 5.71246 6.504C5.57276 6.64369 5.39966 6.71354 5.19316 6.71354H0.820144C0.613641 6.71354 0.440542 6.64369 0.300849 6.504C0.161155 6.3643 0.0913086 6.1912 0.0913086 5.9847ZM7.37967 13.2731V8.90004C7.37967 8.69354 7.44951 8.52044 7.58921 8.38075C7.7289 8.24105 7.902 8.17121 8.1085 8.17121H12.4815C12.688 8.17121 12.8611 8.24105 13.0008 8.38075C13.1405 8.52044 13.2104 8.69354 13.2104 8.90004V13.2731C13.2104 13.4796 13.1405 13.6527 13.0008 13.7924C12.8611 13.932 12.688 14.0019 12.4815 14.0019H8.1085C7.902 14.0019 7.7289 13.932 7.58921 13.7924C7.44951 13.6527 7.37967 13.4796 7.37967 13.2731ZM0.0913086 13.2731V8.90004C0.0913086 8.69354 0.161155 8.52044 0.300849 8.38075C0.440542 8.24105 0.613641 8.17121 0.820144 8.17121H5.19316C5.39966 8.17121 5.57276 8.24105 5.71246 8.38075C5.85215 8.52044 5.922 8.69354 5.922 8.90004V13.2731C5.922 13.4796 5.85215 13.6527 5.71246 13.7924C5.57276 13.932 5.39966 14.0019 5.19316 14.0019H0.820144C0.613641 14.0019 0.440542 13.932 0.300849 13.7924C0.161155 13.6527 0.0913086 13.4796 0.0913086 13.2731Z"
+                      fill="#0CAECA"
+                    />
+                  </svg>
+                </button>
+
+                <div
+                  class="dropdown-menu-xl-end dropdown-menu-xl p-1 mx-3"
+                  style="width: 721px"
+                  ngbDropdownMenu
+                >
+                  <ngx-simplebar class="mx-n4 px-4">
+                    <div class="row">
+                      <div class="col-lg-6">
+                        <h6 class="mt-2 mx-2">
+                          All sections:
+                        
+                        </h6>
+                        <ul class="">
+                          <li
+                            style="cursor: pointer"
+                            class="bg-soft-primary p-2 m-2 rounded-1"
+                            *ngFor="let section of getSectionProgress()"
+                            (click)="getSectionOverview(section.sectionName)"
+                          >
+                            {{ section.sectionName }}: ({{
+                              section.attemptedQuestions.length
+                            }}
+                            / {{ section.totalQuestions }})
+                          </li>
+                        </ul>
+                      </div>
+                      <div class="col-lg-6 col-md-12 col-sm-12">
+                     
+                        <div class="card">
+                          <div class="card-body">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                             
+                              <div class="">
+                                <div class="card-body p-1">
+                                
+                                  <ul
+                                    #Light="ngbNav"
+                                    [activeId]="1"
+                                    class="nav nav-pills nav-custom nav-custom-light mb-3"
+                                    ngbNav
+                                  >
+                                    <li [ngbNavItem]="1">
+                                      <a ngbNavLink> All </a>
+                                      <ng-template ngbNavContent>
+                                        <ngx-simplebar style="height: 100px">
+                                          <div
+                                            class="d-flex gap-2 flex-grow-0 flex-wrap"
+                                          >
+                                            <ng-container
+                                              *ngFor="
+                                                let questionNumber of questionNumbers;
+                                                let i = index
+                                              "
+                                            >
+                                              <button
+                                                (click)="navigateTo(i)"
+                                                [class]="
+                                                  getClassObject(questionNumber)
+                                                "
+                                                class="btn btn-sm"
+                                              >
+                                                {{ questionNumber }}
+                                              </button>
+                                            </ng-container>
+                                          </div>
+                                        </ngx-simplebar>
+                                      </ng-template>
+                                    </li>
+                                    <li [ngbNavItem]="2">
+                                      <a ngbNavLink> Attempted </a>
+                                      <ng-template ngbNavContent>
+                                        <ngx-simplebar style="height: 100px">
+                                          <div
+                                            class="d-flex gap-2 flex-grow-0 flex-wrap"
+                                          >
+                                            <ng-container
+                                              *ngFor="
+                                                let questionNumber of attemptedQuestionsNumbers
+                                              "
+                                            >
+                                              <button
+                                                (click)="
+                                                  navigateTo(questionNumber)
+                                                "
+                                                class="btn btn-success border-primary btn-sm"
+                                              >
+                                                {{ questionNumber + 1 }}
+                                              </button>
+                                            </ng-container>
+                                          </div>
+                                          <p
+                                            *ngIf="
+                                              !attemptedQuestionsNumbers.length
+                                            "
+                                          >
+                                            No Attempted Question Yet
+                                          </p>
+                                        </ngx-simplebar>
+                                      </ng-template>
+                                    </li>
+                                    <li [ngbNavItem]="3">
+                                      <a ngbNavLink> Unattempted </a>
+                                      <ng-template ngbNavContent>
+                                        <ngx-simplebar style="height: 100px">
+                                          <div
+                                            class="d-flex gap-2 flex-grow-0 flex-wrap"
+                                          >
+                                            <ng-container
+                                              *ngFor="
+                                                let unAttemptedQuestionNumber of unAttemptedQuestionNumbers
+                                              "
+                                            >
+                                              <button
+                                                (click)="
+                                                  navigateTo(
+                                                    unAttemptedQuestionNumber
+                                                  )
+                                                "
+                                                class="btn btn-danger border-danger btn-sm"
+                                              >
+                                                {{
+                                                  unAttemptedQuestionNumber + 1
+                                                }}
+                                              </button>
+                                            </ng-container>
+                                          </div>
+                                        </ngx-simplebar>
+                                      </ng-template>
+                                    </li>
+                                    <li [ngbNavItem]="4">
+                                      <a ngbNavLink> Revisit </a>
+                                      <ng-template ngbNavContent>
+                                        <ngx-simplebar style="height: 100px">
+                                          <div
+                                            class="d-flex gap-2 flex-grow-0 flex-wrap"
+                                          >
+                                            <ng-container
+                                              *ngFor="
+                                                let questionNumber of questionNumbersForRevisit
+                                              "
+                                            >
+                                              <button
+                                                (click)="
+                                                  navigateTo(questionNumber)
+                                                "
+                                                class="btn btn-warning btn-sm"
+                                              >
+                                                {{ questionNumber + 1 }}
+                                              </button>
+                                            </ng-container>
+                                          </div>
+                                        </ngx-simplebar>
+                                      </ng-template>
+                                    </li>
+                                  </ul>
+                                  <div class="tab-content text-muted">
+                                    <div [ngbNavOutlet]="Light"></div>
+                                    <span>
+                                      <i
+                                        class="ri-checkbox-blank-circle-fill me-1 align-bottom text-success"
+                                        style="font-size: 12px"
+                                      ></i>
+                                      <span style="font-size: 12px"
+                                        >Attempted({{
+                                          attemptedQuestionsNumbers.length
+                                        }})</span
+                                      >
+                                    </span>
+                                    <span>
+                                      <i
+                                        class="ri-checkbox-blank-circle-fill me-1 align-bottom text-danger mx-2"
+                                        style="font-size: 12px"
+                                      ></i>
+                                      <span style="font-size: 12px"
+                                        >Unattempted({{
+                                          unAttemptedQuestionNumbers.length
+                                        }})</span
+                                      >
+                                    </span>
+                                    <span>
+                                      <i
+                                        class="ri-checkbox-blank-circle-fill me-1 align-bottom text-warning mx-2"
+                                        style="font-size: 12px"
+                                      ></i>
+                                      <span style="font-size: 12px"
+                                        >Revisit({{
+                                          questionNumbersForRevisit.length
+                                        }})</span
+                                      >
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </ngx-simplebar>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        <!-- full screen toggle -->
+        <div
+          [ngbTooltip]="'Full screen'"
+          triggers="mouseenter:mouseleave"
+          class="d-none d-md-block"
+        >
+          <i
+            (click)="fullscreen()"
+            class="ri-fullscreen-line"
+            style="cursor: pointer"
+          ></i>
+        </div>
+        <!-- exam timer -->
+        <!-- <div
+          [ngbTooltip]="'Exam time'"
+          triggers="mouseenter:mouseleave"
+          class="border p-2 rounded-1 text-black"
+          style="font-size: 12px"
+        >
+          <div class="">
+            <i class="ri-timer-line align-bottom"></i>
+
+            <span class="">
+              {{
+                timeDisplay.mins < 10
+                  ? "0" + timeDisplay.mins
+                  : timeDisplay.mins
+              }}
+              :
+              {{
+                timeDisplay.secs < 10
+                  ? "0" + timeDisplay.secs
+                  : timeDisplay.secs
+              }}
+            </span>
+          </div>
+        </div> -->
+
+        <!-- auto save -->
+        <!-- <div
+          class="border p-2 rounded-2 text-black d-none d-md-block"
+          style="font-size: 12px"
+        >
+          <i class="ri-cloud-line align-middle"></i>
+          {{
+            lastAutoSaveTimeSec < 10 && lastAutoSaveTimeSec !== 0
+              ? "0" + lastAutoSaveTimeSec
+              : lastAutoSaveTimeSec
+          }}
+          sec ago
+        </div> -->
+
+        <!-- end exam button -->
+        <!-- <div
+          [ngbTooltip]="'End exam'"
+          triggers="mouseenter:mouseleave"
+          *ngIf="canEndExam()"
+        >
+          <button
+            (click)="endExam(unattemptedQuestionsModal)"
+            class="btn btn-danger shadow-lg btn-md"
+          >
+            End exam
+          </button>
+        </div> -->
+      </div>
+
+      <!-- </div> -->
+
+      <!-- <div class="col"> -->
+      <!-- <div class="exam-name d-flex justify-content-center">
+              <div class="d-flex border rounded-1 bg-primary text-white p-1 btn-sm">
+                <p class="mb-0 fw-medium user-name-text">BIOLOGY 121</p>
+              </div>
+            </div> -->
+
+      <!-- </div> -->
+      <!-- <div class="col">
+            <div class="timer d-flex justify-content-end">
+              <div class="mx-2">
+                <button (click)="confirm()" class="btn btn-outline-danger p-1">
+                  End exam
+                </button>
+              </div>
+  
+              <div
+                class="col-xl-3 col-lg-4 p-1 col-sm-6 d-flex justify-content-center gap-1 align-items-center rounded-3 text-center bg-success"
+              >
+                <i class="ri-timer-line align-bottom text-white"></i>
+                <span class="text-white">
+                  00: <span *ngIf="timeLeft >= 10">{{ timeLeft }}</span>
+                  <span *ngIf="timeLeft < 10"> 0{{ timeLeft }} </span></span
+                >
+              </div>
+            </div>
+            <div
+              class="d-flex justify-content-end px-0 btn-sm align-items-center text-center"
+            >
+              <p class="card p-2">
+                Attemted {{ attemptedQuestionsNumbers.length }} of {{ itemsLength }}
+              </p>
+            </div>
+          </div> -->
+    </div>
+
+    <!-- question and answer section -->
+    <div class="mx-1 p-1">
+      <!-- PAGINATION FOR SMALLER SCREEN SIZE -->
+      <!-- <div class="border border-2 rounded d-sm-none mt-2">
+            <p-paginator
+              [rows]="1"
+              [totalRecords]="itemsLength"
+              [pageLinkSize]="2"
+              #paginator
+            >
+            </p-paginator>
+          </div> -->
+      <ngx-simplebar style="width: 25rem">
+        <div class="mb-2 d-block d-md-none d-sm-none mt-3">
+          <div class="d-flex gap-3">
+            <ng-container
+              *ngFor="let questionNumber of questionNumbers; let i = index"
+            >
+              <button
+                (click)="navigateTo(i)"
+                [class]="getClassObject(questionNumber)"
+                class="btn btn-sm"
+              >
+                {{ questionNumber }}
+              </button>
+            </ng-container>
+            <!-- <span
+              (click)="navigateTo(questionNumber - 1)"
+              *ngFor="let questionNumber of questionNumbers"
+              [ngClass]="{
+                'btn btn-primary btn-sm':
+                  attemptedQuestionsNumbers.includes(questionNumber),
+                'btn btn-outline-secondary btn-sm':
+                  !attemptedQuestionsNumbers.includes(questionNumber)
+              }"
+            >
+              {{ questionNumber }}
+            </span> -->
+          </div>
+        </div>
+      </ngx-simplebar>
+      <div class="border-top p-0 mb-0"></div>
+
+      <!-- mobile dropdown for sections -->
+      <div
+        class="d-flex d-block d-md-none d-sm-none mb-2 justify-content-between"
+      >
+        <div class="mx-3 mt-2">
+          <div class="row">
+            <div class="d-flex align-items-center">
+              <div class="col-12">
+                <div class="w-100">
+                  <!-- Content for the left div -->
+                  <select
+                    #sectionNameRef
+                    (change)="
+                      getCandidateDataForSection(assessmentId, sectionNameRef.value)
+                    "
+                    class="form-select form-select-sm border border-1 w-100 rounded-2"
+                  >
+                    <option
+
+                    value="{{section.id}}"
+                      [selected]="
+                        section.name.toLowerCase() ===
+                        this.currentSectionName.toLowerCase()
+                      "
+                      *ngFor="let section of sections; let sectionIndex = index"
+                    >
+                      {{ section.name }}
+                    </option>
+                  </select>
+
+                  <div class="progress">
+                    <div
+                      class="progress-bar progress-bar-striped progress-bar-animated"
+                      role="progressbar"
+                      aria-valuenow="75"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style="width: 75%"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <button
+          (click)="dropDownRef.click()"
+          class="border border-top-0 rounded-2 btn btn-sm px-3"
+        >
+          <i class="ri ri-arrow-drop-down-line fs-5"></i>
+        </button> -->
+      </div>
+
+      <div class="mx-3 d-none d-lg-block d-sm-block d-md-block mt-2">
+        <div class="row">
+          <div class="d-flex align-items-center">
+            <div class="col-2">
+              <div class="w-100">
+                <!-- Content for the left div -->
+                <select
+                  #sectionNameRef1
+                  (change)="getCandidateDataForSection(assessmentId, sectionNameRef1.value)"
+                  class="form-select form-select-sm border border-1 rounded-2"
+                >
+                  <option
+                  value="{{section.id}}"
+                    [selected]="
+                      section.name.toLowerCase() ===
+                      this.currentSectionName.toLowerCase()
+                    "
+                    *ngFor="let section of sections"
+                  >
+                    {{ section.name }}
+                  </option>
+                </select>
+                <div
+                  class="progress my-2"
+                  [ngbTooltip]="
+                    'Section progress (' +
+                    getAttemptedQuestionPecentage() +
+                    '%)'
+                  "
+                  triggers="mouseenter:mouseleave"
+                >
+                  <div
+                    class="progress-bar progress-bar-striped bg-success progress-bar-animated"
+                    role="progressbar"
+                    style="width: {{ getAttemptedQuestionPecentage() }}%"
+                  ></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-8 text-center">
+              <!-- <div class="d-flex justify-content-center"> -->
+              <!-- <div class="d-none d-lg-block d-sm-block d-md-block p-1">
+                <p-paginator
+                  #paginator
+                  (click)="onPageLinkClick()"
+                  (onPageChange)="onPageChange($event)"
+                  [pageLinkSize]="10"
+                  [rows]="1"
+                  [totalRecords]="itemsLength"
+                >
+                </p-paginator>
+              </div> -->
+              <!-- </div> -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <ng-container *ngIf="!loadingSectionQuestions">
+
+
+        <app-true-or-false
+        *ngIf="currentQuestion.item_type === itemTypes.TRUE_FALSE"
+      ></app-true-or-false>
+
+      <app-yes-or-no *ngIf="currentQuestion.item_type === itemTypes.YES_NO">
+      </app-yes-or-no>
+
+      <app-standard-choice
+        *ngIf="currentQuestion.item_type === itemTypes.MCQ"
+      ></app-standard-choice>
+
+      <app-multiple-response
+        *ngIf="currentQuestion.item_type === itemTypes.MRQ"
+      ></app-multiple-response>
+
+      <app-essay-with-short-text
+        *ngIf="currentQuestion.item_type === itemTypes.SHORT_TEXT"
+      ></app-essay-with-short-text>
+
+      <app-essay-with-rich-text
+        *ngIf="currentQuestion.item_type === itemTypes.ESSAY_RICH_TEXT"
+      ></app-essay-with-rich-text>
+
+      <app-classify-by-ordering
+        *ngIf="currentQuestion.item_type === itemTypes.ORDER_LIST"
+      ></app-classify-by-ordering>
+
+      <app-classify-by-matching
+        *ngIf="currentQuestion.item_type === itemTypes.ASSOCIATION"
+      ></app-classify-by-matching>
+
+      <app-cloze-with-text
+        *ngIf="currentQuestion.item_type === itemTypes.CLOZE_TEXT"
+      ></app-cloze-with-text>
+
+      <app-cloze-with-drop-down
+        *ngIf="currentQuestion.item_type === itemTypes.CLOZE_DROPDOWN"
+      ></app-cloze-with-drop-down>
+
+      <!-- new item types -->
+
+      <app-cloze-image-with-text
+        *ngIf="currentQuestion.item_type === itemTypes.CLOZE_TEXT_IMAGE"
+      ></app-cloze-image-with-text>
+
+      <app-cloze-image-with-dropdown
+        *ngIf="currentQuestion.item_type === itemTypes.CLOZE_DROPDOWN_IMAGE"
+      ></app-cloze-image-with-dropdown>
+
+      <app-cloze-image-with-drag-drop
+        *ngIf="currentQuestion.item_type === itemTypes.IMAGE_DRAG_AND_DROP"
+      ></app-cloze-image-with-drag-drop>
+
+      <app-choice-matrix
+        *ngIf="currentQuestion.item_type === itemTypes.CHOICE_MATRIX"
+      ></app-choice-matrix>
+      </ng-container>
+      
+      <ng-container *ngIf="loadingSectionQuestions">
+
+        <div class="d-flex justify-content-center align-items-center" style="height:60vh">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <!-- footer -->
+      <!-- <div class="border-top"></div> -->
+
+      <div
+        class="button-container justify-content-center  mx-5"
+      >
+        <div class="row  align-center">
+          <div class=" col-3 d-flex flex-column align-items-start">
+            <ng-container *ngIf="sections.length > 1">
+              <button
+                *ngIf="isOnfirstQuestionOfSection()"
+                (click)="prevSection()"
+                class="btn btn-primary border-0 px-4"
+                id="prev-section"
+                style="background-color: #25a0e2; width: fit-content"
+                type="button"
+              >
+                Previous Section
+              </button>
+            </ng-container>
+
+            <!-- Previous Question Button -->
+            <button
+              *ngIf="!isOnfirstQuestionOfSection()"
+              (click)="previousQuestion()"
+              [disabled]="currentQuestionNumber === 0"
+              class="btn btn-primary border-0 px-4"
+              id="previous-question"
+              style="background-color: #25a0e2; width: fit-content"
+              type="button"
+            >
+              Previous
+            </button>
+
+            <p class="fw-bolder bg-white text-primary m-0" style="font-size: 12px">
+              {{ currentSectionName }}: Attempted
+              {{ attemptedQuestionsNumbers.length }} of {{ itemsLength }}
+            </p>
+          </div>
+          <!-- Previous Section Button -->
+
+          <!-- Question pagination -->
+          <div class="col-6">
+            <div class="d-none d-lg-block d-sm-block d-md-block p-1">
+              <p-paginator
+                #paginator
+                (click)="onPageLinkClick()"
+                (onPageChange)="onPageChange($event)"
+                [pageLinkSize]="3"
+              
+                [rows]="1"
+                [totalRecords]="itemsLength"
+              >
+              </p-paginator>
+            </div>
+          </div>
+
+          <div class="col-3 d-flex flex-column align-items-end">
+            <!-- Next Question Button -->
+            <button
+              *ngIf="currentQuestionNumber + 1 < itemsLength"
+              (click)="nextQuestion()"
+              class="btn btn-primary border-0 px-4"
+              id="next-question"
+              style="background-color: #25a0e2; width: fit-content"
+              type="button"
+            >
+              Next
+            </button>
+
+            <!-- End Exam Button (Only One Section) -->
+            <button
+              *ngIf="
+                currentQuestionNumber + 1 === itemsLength &&
+                sections.length === 1
+              "
+              class="btn btn-primary border-0 px-4"
+              id="end-exam"
+              style="width: fit-content"
+              type="button"
+              disabled
+            >
+              Next
+            </button>
+
+            <!-- Next Section / End Exam Button -->
+            <ng-container *ngIf="sections.length > 1">
+              <button
+                *ngIf="
+                  currentQuestionNumber + 1 === itemsLength && !onLastSection
+                "
+                (click)="gotoNextSection()"
+                class="btn btn-primary border-0"
+                id="next-section"
+                style="background-color: #25a0e2; width: fit-content"
+                type="button"
+              >
+                Next Section
+              </button>
+
+              <button
+                *ngIf="
+                  currentQuestionNumber + 1 === itemsLength && onLastSection
+                "
+                class="btn btn-primary border-0 px-4"
+                id="end-exam"
+                style="width: fit-content"
+                type="button"
+                disabled
+              >
+                Next
+              </button>
+            </ng-container>
+
+            <!-- Attempted Text -->
+            <p
+              class="fw-bolder bg-white text-primary text-center m-0"
+              style="font-size: 12px"
+            >
+              All Sections: Attempted
+              {{ totalAttemptedQuestionInAllSections }} of
+              {{ totalQuestionsInAllSections }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div
+        class="d-flex attempt-container justify-content-center align-items-center mb-3"
+      >
+        <div class="d-flex justify-content-between">
+          <p
+            class="fw-bolder bg-white text-primary text-center"
+            style="font-size: 12px"
+          >
+            All Sections: Attempted {{ totalAttemptedQuestionInAllSections }} of
+            {{ totalQuestionsInAllSections }}
+          </p>
+        </div>
+      </div> -->
+
+      <!-- <div class="d-flex justify-content-between">
+        <p
+          class="fw-bolder bg-white text-primary text-center"
+          style="font-size: 12px"
+        >
+          {{ currentSectionName }}: Attempted
+          {{ attemptedQuestionsNumbers.length }} of {{ itemsLength }}
+        </p>
+
+          <p
+            class="fw-bolder bg-white text-primary text-center"
+            style="font-size: 12px"
+          >
+            All Sections: Attempted {{ totalAttemptedQuestionInAllSections }} of
+            {{ totalQuestionsInAllSections }}
+          </p>
+      </div> -->
+
+      <!-- <div class="d-lg-block d-none d-sm-none d-md-block">
+        <div
+          class="d-flex exam-card-footer justify-content-between align-items-center text-secondary p-3 mt-auto"
+          style="
+            font-size: 11px;
+          
+            bottom: 0;
+            width: 100%;
+            /* height: 60px;
+            line-height: 60px; */
+          "
+        >
+          <div class="d-flex gap-2">
+            <span>Exam Alpha Offline Assessment &copy; 2025</span>
+
+            <i
+              *ngIf="!isOffline"
+              class="ri-wifi-fill text-success align-bottom"
+            ></i>
+            <i
+              *ngIf="isOffline"
+              class="ri-wifi-fill text-secondary align-bottom"
+            ></i>
+
+            <i
+              *ngIf="autoSaveResponse && autoSaveResponse.auto_saved !== true"
+              class="ri-wifi-fill text-danger align-bottom"
+            ></i>
+          </div>
+
+          <div class="d-flex gap-5 flex-wrap">
+            <span>Need Help? Contact us: (+234) 4323032020</span>
+            <span>(+234) 4323032020</span>
+          </div>
+
+          <span>
+            <span class="mx-1" style="font-size: 9px"> Powered By </span>
+            <img
+              alt="exam-alpha-logo"
+              src="/assets/images/exam-alpha-logo/EXPryLogoHor.png"
+              style="height: 13px"
+          /></span>
+        </div>
+      </div> -->
+    </div>
+
+    <!-- <div class="floating-nav-btn d-flex justify-content-between my-auto mx-2">
+        <button
+          class="btn left-float btn-primary btn-sm hover-button"
+          (click)="previousQuestion()"
+          [disabled]="currentQuestionNumber == 0"
+          [ngClass]="{ invisible: currentQuestionNumber == 0 }"
+        >
+          <i class="ri-arrow-left-s-line"></i>
+  
+        </button>
+  
+        <button
+          class="btn btn-primary btn-sm"
+          (click)="nextQuestion()"
+          [disabled]="currentQuestionNumber + 1 == itemsLength"
+          [ngClass]="{ invisible: currentQuestionNumber + 1 == itemsLength }"
+        >
+          <i class="ri-arrow-right-s-line"></i>
+        </button>
+      </div> -->
+
+    <!-- <footer
+        class="d-flex justify-content-start align-items-center align-content-center card-footer foot-bar"
+      >
+        <img
+          src="/assets/images/multilent-logo.png"
+          alt="multilent-logo"
+          style="height: 30px"
+        />
+  
+        <div class="col d-flex justify-content-end gap-3">
+  
+        </div>
+      </footer> -->
+  </div>
+
+  <!-- INSTRUCTION SIDE BAR -->
+
+  <div
+    class="offcanvas offcanvas-end border-0"
+    id="instructionSideBar"
+    tabindex="-1"
+  >
+    <div class="p-4 d-flex flex-column h-100">
+      <div class="pb-1">
+        <div class="row">
+          <div class="col">
+            <div
+              class="d-flex justify-content-between align-center align-items-center"
+            >
+              <div class="d-flex g-1">
+                <h5 class="text-primary">Instruction</h5>
+                <i class="ri-information-line text-primary"></i>
+              </div>
+
+              <button
+                (click)="hideSideBar()"
+                class="btn btn-soft-primary btn-icon btn-sm fs-16"
+                type="button"
+              >
+                <i class="ri-close-fill align-bottom"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ngx-simplebar class="mx-n4 px-4" style="height: 80vh">
+        <div class="mt-4 mb-3">
+          <div class="row">
+            <div class="col-xxl-6">
+              <div class="card" style="height: 50rem">
+                <div class="card-body">
+                  <!-- Nav tabs -->
+                  <ul
+                    #Bordered="ngbNav"
+                    [activeId]="1"
+                    class="nav nav-tabs nav-tabs-custom nav-primary nav-justified mb-3"
+                    ngbNav
+                  >
+                    <li [ngbNavItem]="1">
+                      <a ngbNavLink> {{ currentSectionName }} Instruction </a>
+                      <ng-template ngbNavContent>
+                        <div class="d-flex">
+                          <div class="flex-grow-1 ms-2">
+                            <div [innerHTML]="getSectionInstruction()"></div>
+                            <!-- <ol>
+                              <li class="mb-2 text-muted">
+                                Make sure that the picture and the exam number on
+                                the computer screen are yours. if they are not
+                                yours report to the supervisor.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                The examination consists of
+                                <strong>100 OBJECTIVE</strong> questions and you
+                                are expected to answer all questions.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                The duration of the examination is
+                                <strong>1 hour</strong> (60 minutes) and you can
+                                attempt the questions in any order you wish.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If you are not familiar with the use of a computer
+                                mouse, use the
+                                <strong
+                                  ><q>A</q>,<q>B</q>,<q>C</q>,<q>D</q></strong
+                                >
+                                buttons on the keyboard to
+                                <strong>select an answer</strong> and use the
+                                <strong><q>N</q> & <q>P</q></strong> buttons on
+                                the keyboard to navigate to
+                                <strong> Next and Previous question</strong>
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If you are familiar with the mouse you can select,
+                                answers to the next questions by clicking on the
+                                option, and you can move to any question by
+                                clicking the question number at the bottom of the
+                                page.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                You are free to skip a question and come back to
+                                it later.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                Once a candidate submits his/her exam, it is not
+                                possible to go back or undo the submission.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If your time is up, the examination will submit
+                                itself and you will be logged out.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                Click the <strong>Start Exam Button</strong> to
+                                begin your examination.
+                              </li>
+                            </ol> -->
+                          </div>
+                        </div>
+                      </ng-template>
+                    </li>
+                    <li [ngbNavItem]="2">
+                      <a ngbNavLink> Exam Instruction </a>
+                      <ng-template ngbNavContent>
+                        <div class="d-flex">
+                          <div class="flex-grow-1 ms-2">
+                            <div [innerHTML]="getExamInstruction()"></div>
+                            <!-- <ol>
+                              <li class="mb-2 text-muted">
+                                Make sure that the picture and the exam number on
+                                the computer screen are yours. if they are not
+                                yours report to the supervisor.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                The examination consists of
+                                <strong>100 OBJECTIVE</strong> questions and you
+                                are expected to answer all questions.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                The duration of the examination is
+                                <strong>1 hour</strong> (60 minutes) and you can
+                                attempt the questions in any order you wish.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If you are not familiar with the use of a computer
+                                mouse, use the
+                                <strong
+                                  ><q>A</q>,<q>B</q>,<q>C</q>,<q>D</q></strong
+                                >
+                                buttons on the keyboard to
+                                <strong>select an answer</strong> and use the
+                                <strong><q>N</q> & <q>P</q></strong> buttons on
+                                the keyboard to navigate to
+                                <strong> Next and Previous question</strong>
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If you are familiar with the mouse you can select,
+                                answers to the next questions by clicking on the
+                                option, and you can move to any question by
+                                clicking the question number at the bottom of the
+                                page.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                You are free to skip a question and come back to
+                                it later.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                Once a candidate submits his/her exam, it is not
+                                possible to go back or undo the submission.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                If your time is up, the examination will submit
+                                itself and you will be logged out.
+                              </li>
+                              <li class="mb-2 text-muted">
+                                Click the <strong>Start Exam Button</strong> to
+                                begin your examination.
+                              </li>
+                            </ol> -->
+                          </div>
+                        </div>
+                      </ng-template>
+                    </li>
+                  </ul>
+                  <!-- Tab panes -->
+                  <div class="tab-content text-muted">
+                    <div [ngbNavOutlet]="Bordered"></div>
+                  </div>
+                </div>
+                <!-- end card-body -->
+              </div>
+              <!-- end card -->
+            </div>
+          </div>
+        </div>
+      </ngx-simplebar>
+    </div>
+  </div>
+</div>
+
+<ng-template #unattemptedQuestionsModal let-modal>
+  <div class="modal-body text-center p-5">
+    <div class="mt-4 pt-4">
+      <h4>Uh oh, Are you sure you want to end this exam?</h4>
+      <p class="text-muted">
+        You have not attempted questions in the following sections
+      </p>
+
+      <span
+        *ngFor="
+          let unAttemptedQuestionNumbersInSection of unAttemptedQuestionNumbersInAllSections
+        "
+        class="text-start"
+      >
+        <ul>
+          <li
+            *ngIf="
+              unAttemptedQuestionNumbersInSection.unattemptedQuestion.length !==
+              0
+            "
+          >
+            {{ unAttemptedQuestionNumbersInSection.sectionName }} :
+            <span>
+              {{ unAttemptedQuestionNumbersInSection.unattemptedQuestion }}
+            </span>
+          </li>
+        </ul>
+      </span>
+      <!-- Toogle to second dialog -->
+      <button
+        (click)="
+          this.displayConfirmationWindowOnSubmission()
+            ? confirm()
+            : doEndExam(false)
+        "
+        class="btn btn-warning"
+        data-bs-dismiss="modal"
+        data-bs-target="#secondmodal"
+        data-bs-toggle="modal"
+      >
+        Continue
+      </button>
+    </div>
+  </div>
+</ng-template>
+<!-- Second modal dialog -->
+<ng-template #toggleSecondModal let-modal>
+  <div class="modal-body text-center p-5">
+    <div class="mt-4 pt-3">
+      <h4 class="mb-3">Follow-Up Email</h4>
+      <p class="text-muted mb-4">
+        Hide this modal and show the first with the button below Automatically
+        Send your invitees a follow -Up email.
+      </p>
+      <div class="hstack gap-2 justify-content-center">
+        <button
+          class="btn btn-soft-danger"
+          data-bs-dismiss="modal"
+          data-bs-target="#firstmodal"
+          data-bs-toggle="modal"
+        >
+          Back to First
+        </button>
+        <button
+          (click)="modal.close('Close click')"
+          class="btn btn-light"
+          data-bs-dismiss="modal"
+          type="button"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

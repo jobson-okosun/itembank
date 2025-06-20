@@ -1,0 +1,492 @@
+<div *ngIf="userDetail">
+  <div class="position-relative mx-n4 mt-n4">
+    <div class="profile-wid-bg profile-setting-img">
+      <!-- <img src="assets/images/profile-bg.jpg" class="profile-wid-img" alt="" /> -->
+      <div class="overlay-content">
+        <div class="text-end p-3">
+          <!-- <div class="p-0 ms-auto rounded-circle profile-photo-edit">
+          <input
+            id="profile-foreground-img-file-input"
+            type="file"
+            class="profile-foreground-img-file-input"
+          />
+          <label
+            for="profile-foreground-img-file-input"
+            class="profile-photo-edit btn btn-light"
+          >
+            <i class="ri-image-edit-line align-bottom me-1"></i> Change Cover
+          </label>
+        </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3">
+      <div class="card mt-n5">
+        <div class="card-body p-4">
+          <div class="text-center">
+            <div
+              class="profile-user position-relative d-inline-block mx-auto mb-4"
+            >
+              <div class="d-flex justify-content-center mb-4">
+                <div class="image-placeholder bg-soft-primary rounded-circle">
+                  <h3 class="">
+                    {{ userDetail.firstName[0].toUpperCase()
+                    }}{{ userDetail.lastName[0].toUpperCase() }}
+                  </h3>
+                  <!-- <p class="text-center text-secondary">
+                    {{ userDetail.username }}
+                  </p> -->
+                </div>
+              </div>
+              <h5 class="fs-16 mb-1 text-capitalize">
+                {{ userDetail.firstName }} {{ userDetail.lastName }}
+              </h5>
+              <p class="text-muted mb-1" *ngIf="userDetail.username">
+                ({{ userDetail.username }})
+              </p>
+              <ng-container
+                *ngFor="let user of userDetail.userRolesDTOList; let i = index"
+              >
+                <span class="text-primary mb-0">
+                  {{ user.role
+                  }}{{
+                    userDetail.userRolesDTOList.length - i === 1 ? "" : ","
+                  }}
+                </span>
+              </ng-container>
+            </div>
+            <div>
+              <span
+                class="badge badge-border p-2"
+                [ngClass]="{
+                  'badge-soft-success': userDetail.activated,
+                  'badge-soft-danger': !userDetail.activated
+                }"
+                >{{ userDetail.activated ? "Active" : "Inactive" }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-->
+    </div>
+    <!--end col-->
+    <div class="col-lg-9">
+      <div class="card mt-lg-n5">
+        <div class="card-header">
+          <ul
+            ngbNav
+            #customNav="ngbNav"
+            [activeId]="1"
+            class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
+            role="tablist"
+          >
+            <li [ngbNavItem]="1" class="nav-item">
+              <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                <i class="fas fa-home"></i>
+                Personal Details
+              </a>
+              <ng-template ngbNavContent>
+                <form
+                  #updateUserDetailForm="ngForm"
+                  (ngSubmit)="updateUserDetails(updateUserDetailForm)"
+                  novalidate
+                >
+                  <div class="row">
+                    <div *ngIf="userDetail.username" class="col-12">
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Username</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="username"
+                          id="username"
+                          placeholder="Enter username"
+                          value="{{ userDetail.username }}"
+                          [(ngModel)]="userDetail.username"
+                          [disabled]="
+                            !currentUser.authorities.includes('ADMIN')
+                          "
+                        />
+                      </div>
+                    </div>
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label for="firstName" class="form-label"
+                          >First Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="firstnameInput"
+                          name="firstName"
+                          placeholder="Enter your firstname"
+                          value="{{ userDetail.firstName }}"
+                          [(ngModel)]="userDetail.firstName"
+                        />
+                      </div>
+                    </div>
+                    <!--end col-->
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label for="lastName" class="form-label"
+                          >Last Name</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="lastnameInput"
+                          name="lastName"
+                          placeholder="Enter your lastname"
+                          value="{{ userDetail.lastName }}"
+                          [(ngModel)]="userDetail.lastName"
+                        />
+                      </div>
+                    </div>
+                    <!--end col-->
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label for="phone" class="form-label"
+                          >Phone Number</label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          name="phone"
+                          id="phone"
+                          placeholder="Enter your phone number"
+                          value="{{ userDetail.phone }}"
+                          [(ngModel)]="userDetail.phone"
+                        />
+                      </div>
+                    </div>
+                    <!--end col-->
+                    <div class="col-lg-6">
+                      <div class="mb-3">
+                        <label for="email" class="form-label"
+                          >Email Address</label
+                        >
+                        <input
+                          type="email"
+                          class="form-control"
+                          name="email"
+                          id="email"
+                          placeholder="Enter your email"
+                          value="{{ userDetail.email }}"
+                          [(ngModel)]="userDetail.email"
+                        />
+                      </div>
+                    </div>
+                    <!--end col-->
+                    <!-- <div class="col-lg-12">
+                      <div class="mb-3">
+                        <label for="inputRole" class="form-label"
+                          >Role
+                          <span [ngStyle]="{ color: 'red' }">*</span></label
+                        >
+                        <ng-select
+                          [items]="roles$ | async"
+                          [multiple]="false"
+                          bindLabel="role"
+                          name="role"
+                          [(ngModel)]="roles"
+                        >
+                        </ng-select> -->
+                    <!-- <select
+                          name="role"
+                          id="role"
+                          class="form-control"
+                          [(ngModel)]="userDetail.userRolesDTOList[0].role"
+                        >
+                          <option
+                            *ngFor="let role of roles$ | async"
+                            value="{{ role.role }}"
+                            [selected]="
+                              role.role === userDetail.userRolesDTOList[0].role
+                            "
+                          >
+                            {{ role.role }}
+                          </option>
+                        </select> -->
+                    <!-- </div>
+                    </div> -->
+                    <!--end col-->
+                    <div class="col-lg-12">
+                      <div class="hstack gap-2 justify-content-end">
+                        <button
+                          *ngIf="!updating"
+                          type="button"
+                          (click)="updateUserDetails()"
+                          class="btn btn-primary"
+                        >
+                          Update
+                        </button>
+                        <button
+                          *ngIf="updating"
+                          class="btn btn-outline-primary btn-load"
+                          [disabled]="updating"
+                        >
+                          <span class="d-flex align-items-center">
+                            <span
+                              class="spinner-border flex-shrink-0"
+                              role="status"
+                            >
+                              <span class="visually-hidden">Saving...</span>
+                            </span>
+                            <span class="flex-grow-1 ms-2"> Saving... </span>
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          (click)="cancel()"
+                          class="btn btn-danger"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                    <!--end col-->
+                  </div>
+                  <!--end row-->
+                </form>
+              </ng-template>
+            </li>
+            <!-- <li [ngbNavItem]="2" class="nav-item">
+              <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                <i class="far fa-user"></i>
+                Change Password
+              </a>
+              <ng-template ngbNavContent>
+                <form
+                  #changePasswordForm="ngForm"
+                  (ngSubmit)="changeUserPassword()"
+                >
+                  <div class="row g-2">
+                    <div class="col-lg-4">
+                      <div>
+                        <label for="oldPassword" class="form-label"
+                          >Old Password*</label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="oldpasswordInput"
+                          name="oldPassword"
+                          placeholder="Enter current password"
+                          [(ngModel)]="newPassword.oldPassword"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                      <div>
+                        <label for="newPassword" class="form-label"
+                          >New Password*</label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="newpasswordInput"
+                          name="newPassword"
+                          placeholder="Enter new password"
+                          [(ngModel)]="newPassword.newPassword"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                      <div>
+                        <label for="confirmPassword" class="form-label"
+                          >Confirm Password*</label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="confirmpasswordInput"
+                          name="confirmPassword"
+                          placeholder="Confirm password"
+                          [(ngModel)]="confirmation"
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                      <div class="text-end">
+                        <button
+                          type="submit"
+                          (click)="changeUserPassword()"
+                          class="btn btn-success"
+                        >
+                          Change Password
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </ng-template>
+            </li> -->
+            <li
+              *ngIf="
+                currentUser.authority === 'ADMIN' && userDetail.role !== 'ADMIN'
+              "
+              [ngbNavItem]="2"
+              class="nav-item"
+            >
+              <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                <i class="far fa-envelope"></i>
+                Subjects
+              </a>
+              <ng-template ngbNavContent>
+                <form
+                  #assignNewTagToUserForm="ngForm"
+                  (ngSubmit)="addSubjectToUser()"
+                  novalidate
+                >
+                  <div id="newlink">
+                    <div id="1">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="mb-3">
+                            <!-- <app-item-topic [label]="'Subjects'" (sendSubjects)="recieveSubjects($events)"></app-item-topic> -->
+                            <label
+                              for="choices-multiple-default"
+                              class="form-label"
+                              >Add/Remove User Subjects
+                            </label>
+                            <ng-select
+                              class="custom"
+                              [items]="subjects"
+                              [multiple]="true"
+                              bindLabel="subjectName"
+                              name="subject"
+                              [(ngModel)]="selectedSubjects"
+                              (change)="viewDeselected($event)"
+                            >
+                              <ng-template ng-optgroup-tmp let-item="item">
+                                {{ item[0].subjectName | uppercase }}
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                        </div>
+                        <!--end col-->
+                      </div>
+                      <!--end row-->
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
+                    <div class="d-flex gap-2 justify-content-end">
+                      <button
+                        *ngIf="!updating"
+                        type="button"
+                        (click)="addSubjectToUser()"
+                        class="btn btn-success"
+                      >
+                        Update Subject(s)
+                      </button>
+                      <button
+                        *ngIf="updating"
+                        class="btn btn-outline-success btn-load"
+                        [disabled]="updating"
+                      >
+                        <span class="d-flex align-items-center">
+                          <span
+                            class="spinner-border flex-shrink-0"
+                            role="status"
+                          >
+                            <span class="visually-hidden">Saving...</span>
+                          </span>
+                          <span class="flex-grow-1 ms-2"> Saving... </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                  <!--end col-->
+                </form>
+              </ng-template>
+            </li>
+            <!-- <li
+              *ngIf="roles.includes('MODERATOR')"
+              [ngbNavItem]="3"
+              class="nav-item"
+            >
+              <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                <i class="far fa-envelope"></i>
+                Moderation Levels
+              </a>
+              <ng-template ngbNavContent>
+                <form
+                  #editUserModerationLevelForm="ngForm"
+                  (ngSubmit)="editUserModerationLevels()"
+                  novalidate
+                >
+                  <div id="newlink">
+                    <div id="1">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="mb-3">
+                            <app-item-topic [label]="'Subjects'" (sendSubjects)="recieveSubjects($events)"></app-item-topic>
+                            <label
+                              for="choices-multiple-default"
+                              class="form-label"
+                              >Moderation Level
+                            </label>
+                            <ng-select
+                              [items]="subjects"
+                              [multiple]="true"
+                              bindLabel="subjectName"
+                              name="subject"
+                              [(ngModel)]="selectedSubjects"
+                            >
+                              <ng-template ng-optgroup-tmp let-item="item">
+                                {{ item[0].subjectName | uppercase }}
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-sm btn-success">
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </ng-template>
+            </li> -->
+          </ul>
+        </div>
+        <div class="card-body p-4">
+          <div class="tab-content">
+            <div [ngbNavOutlet]="customNav"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end col-->
+  </div>
+  <!--end row-->
+</div>
+
+<ng-template #confirmDelete *ngIf="updating" let-modal>
+  <div class="modal-body p-5">
+    <div>
+      <h4 class="text-center">
+        Are you sure you want to remove the following subjects from this user?
+      </h4>
+      <ul class="ps-4 vstack gap-2" *ngFor="let item of deselectedSubjects">
+        <li>{{ item }}</li>
+      </ul>
+    </div>
+  </div>
+</ng-template>

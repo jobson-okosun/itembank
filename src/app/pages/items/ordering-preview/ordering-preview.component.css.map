@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,eAAe,CAAA;EACb,KAAK,EAAE,OAAO;EACd,MAAM,EAAE,WAAW;CACpB;;AAED,AAAA,UAAU,CAAA;EACR,KAAK,EAAC,OAAO;EACb,MAAM,EAAE,IAAI;EACZ,SAAS,EAAE,IAAI;EACf,OAAO,EAAE,IAAI;CACd",
+    "sources": [
+        "ordering-preview.component.scss"
+    ],
+    "names": [],
+    "file": "ordering-preview.component.css"
+}

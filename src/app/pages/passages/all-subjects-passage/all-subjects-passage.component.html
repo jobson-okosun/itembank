@@ -1,0 +1,278 @@
+<app-breadcrumbs
+  title="PASSAGES"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row mb-3 pb-1">
+  <div class="col-12">
+    <div
+      class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
+    >
+      <div class="flex-grow-1">
+        <h4 class="fs-16 mb-1">
+          List of all Subjects ({{ allSubjects.length }})
+        </h4>
+      </div>
+      <div class="mt-lg-0">
+        <button
+          type="button"
+          (click)="addSubjectModal(newSubjectModal)"
+          class="btn btn-sm btn-soft-primary float-end"
+        >
+          <i class="ri-add-circle-line align-middle me-1"></i> New Subject
+        </button>
+      </div>
+    </div>
+    <!-- end card header -->
+  </div>
+  <!--end col-->
+</div>
+<!--end row-->
+
+<div class="row" *ngIf="allSubjects">
+  <div
+    class="col-xxl-4 col-lg-6 col-md-6 col-sm-6"
+    *ngFor="let subject of allSubjects"
+  >
+    <div class="card">
+      <div class="card-body p-2">
+        <div class="d-flex align-items-center">
+          <div class="flex-shrink-0 me-3">
+            <div class="avatar-sm">
+              <div class="avatar-title bg-light text-primary rounded fs-24">
+                <!-- <i class="ri-folder-zip-line"></i> -->
+                {{ subject.name[0].toUpperCase() }}
+              </div>
+            </div>
+          </div>
+          <div class="flex-grow-1 overflow-hidden">
+            <h5 class="fs-16 mb-1">
+              <a class="text-body text-truncate d-block">{{ subject.name.toUpperCase() }}</a>
+            </h5>
+            <div class="d-flex gap-1 align-items-center mt-2">
+              <!-- Topics:<span
+                title="No of Topics"
+                class="d-flex gap-1 align-items-center badge badge-soft-primary fs-12"
+                ><i class="ri-folder-line"></i>{{ subject.topicCount }}</span
+              > -->
+              Questions:<span
+                title="No of Items"
+                class="d-flex gap-1 align-items-center badge badge-soft-info fs-12"
+                ><i class="ri-file-list-line"></i>{{ subject.totalItems }}</span
+              >
+              <!-- Used:<span
+                title="No of Used Items"
+                class="d-flex gap-1 align-items-center badge badge-soft-success fs-12"
+                ><i class="ri-file-list-line"></i>{{ subject.usedCount }}</span
+              > -->
+            </div>
+          </div>
+          <div class="flex-shrink-0 ms-2">
+            <div class="d-flex gap-1">
+              <div class="dropdown" ngbDropdown>
+                <button
+                  class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                >
+                  <i class="ri-more-fill"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                  <!-- <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="addTopicModal(newTopicModal, subject)"
+                      ><i class="ri-add-line align-bottom me-2 text-muted"></i>
+                      add topic</a
+                    >
+                  </li> -->
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="setSubjectId(subject)"
+                      routerLink="/itembank/passages/subjects/{{ subject.name }}"
+                      ><i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                      View</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="renameSubjectModal(editSubjectModal, subject)"
+                      ><i
+                        class="ri-pencil-fill align-bottom me-2 text-muted"
+                      ></i>
+                      Rename</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--end card-->
+  </div>
+</div>
+
+<ng-template #newSubjectModal let-modal>
+  <div class="modal-body p-5">
+    <form
+      #newSubjectForm="ngForm"
+      (ngSubmit)="addSubject(newSubjectForm); newSubjectForm.reset()"
+      novalidate
+    >
+      <div>
+        <h4 class="text-center">Add a new subject</h4>
+        <div class="mt-4">
+          <label for="subjectName" class="label">Subject Name</label>
+          <input
+            type="text"
+            name="subjectName"
+            class="form-control mb-3"
+            placeholder="Subject"
+            required
+            [ngModel]="newSubject.name"
+            (ngModelChange)="newSubject.name = $event.toUpperCase()"
+          />
+        </div>
+
+        <div class="hstack gap-2 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            data-bs-dismiss="modal"
+            (click)="modal.close('Close click')"
+          >
+            Close
+          </button>
+          <button type="submit" *ngIf="!submitted" class="btn btn-primary" data-bs-dismiss="modal">
+            Submit
+          </button>
+          <ng-template [ngIf]="submitted">
+            <button class="btn btn-outline-primary btn-load" [disabled]="!submitted">
+              <span class="d-flex align-items-center">
+                <span class="spinner-border flex-shrink-0" role="status">
+                  <span class="visually-hidden">Saving...</span>
+                </span>
+                <span class="flex-grow-1 ms-2"> Saving... </span>
+              </span>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #newTopicModal let-modal>
+  <div class="modal-body p-5">
+    <form #newTopicForm="ngForm" (ngSubmit)="addTopic(newTopicForm)" novalidate>
+      <div>
+        <h4 class="text-center">Add a new topic</h4>
+        <p class="text-muted text-center">
+          {{ currentSubject.name.toUpperCase() }}
+        </p>
+        <div class="mt-4">
+          <label for="subjectName" class="label">Topic Name</label>
+          <input
+            type="text"
+            name="topicName"
+            class="form-control mb-3"
+            placeholder="Topic"
+            required
+            [(ngModel)]="newTopic.name"
+          />
+        </div>
+
+        <div class="hstack gap-2 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-outline-danger d-flex gap-1 align-items-center"
+            data-bs-dismiss="modal"
+            (click)="modal.close('Close click')"
+          >
+            <i class="ri-close-line"></i>Close
+          </button>
+          <button
+          *ngIf="!submitted"
+            type="submit"
+            class="btn btn-primary d-flex gap-1 align-items-center"
+            data-bs-dismiss="modal"
+          >
+            <i class="ri-save-line"></i>Save
+          </button>
+          <ng-template [ngIf]="submitted">
+            <button class="btn btn-outline-primary btn-load" [disabled]="!submitted">
+              <span class="d-flex align-items-center">
+                <span class="spinner-border flex-shrink-0" role="status">
+                  <span class="visually-hidden">Saving...</span>
+                </span>
+                <span class="flex-grow-1 ms-2"> Saving... </span>
+              </span>
+            </button>
+          </ng-template>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #editSubjectModal let-modal>
+  <div class="modal-body p-5">
+    <form
+      #editSubjectForm="ngForm"
+      (ngSubmit)="renameSubject(editSubjectForm)"
+      novalidate
+    >
+      <div>
+        <h4 class="text-center">Rename Subject</h4>
+        <p class="text-muted text-center">
+          {{ currentSubject.name.toUpperCase() }}
+        </p>
+        <div class="mt-4">
+          <label for="subjectName" class="label">Subject Name</label>
+          <input
+            type="text"
+            name="subjectName"
+            class="form-control mb-3"
+            placeholder="Subject"
+            required
+            [ngModel]="currentSubject.name.toUpperCase()"
+            (ngModelChange)="currentSubject.name = $event.toUpperCase()"
+          />
+        </div>
+
+        <div class="mt-4">
+          <label for="subjectName" class="label">Subject Code</label>
+          <input
+            type="text"
+            name="subjectCode"
+            class="form-control mb-3"
+            placeholder="Subject Code"
+            required
+            [ngModel]="currentSubject.subjectCode"
+            (ngModelChange)="currentSubject.subjectCode = $event.toUpperCase()"
+          />
+        </div>
+
+        <div class="hstack gap-2 justify-content-end">
+          <button
+            type="button"
+            class="btn btn-outline-danger"
+            data-bs-dismiss="modal"
+            (click)="modal.close('Close click')"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-template>

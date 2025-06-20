@@ -1,0 +1,190 @@
+<app-breadcrumbs
+  title="EXAM TEMPLATES"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<ng-container *ngIf="templates; else alternative">
+  <div class="row my-4">
+    <div class="col-xl-12">
+      <div class="d-flex gap-3 align-items-center">
+        <button class="btn btn-outline-info" (click)="goBack()">
+          <div class="d-flex align-items-center">
+            <i class="ri-arrow-left-line"></i>
+            <span>Back</span>
+          </div>
+        </button>
+        <h5 class="card-title mb-0">
+          List of all templates ({{ templates.content.length }})
+        </h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6" *ngFor="let template of templates.content">
+      <div class="card">
+        <div class="card-header mb-0">
+          <div class="d-flex">
+            <h6 class="fs-15 text-truncate flex-grow-1">
+              <a
+                (click)="setCurrentTemplate(template.name)"
+                routerLink="/examalpha/exams/templates/{{ template.id }}"
+                >{{ template.name }}</a
+              >
+            </h6>
+            <div class="dropdown" ngbDropdown>
+              <a
+                class="text-muted arrow-none"
+                id="dropdownMenuLink1"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+                ngbDropdownToggle
+                ><i
+                  class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                  style="cursor: pointer"
+                ></i
+              ></a>
+              <ul
+                class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="dropdownMenuLink1"
+                ngbDropdownMenu
+              >
+                <li>
+                  <a
+                    (click)="setCurrentTemplate(template.name)"
+                    class="dropdown-item"
+                    routerLink="/examalpha/exams/templates/{{ template.id }}"
+                    ><i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                    View</a
+                  >
+                </li>
+                <li>
+                  <a
+                    (click)="
+                      openDeleteTemplateConfirmationModal(
+                        deleteTemplateConfirmationModal,
+                        template
+                      )
+                    "
+                    class="dropdown-item"
+                    href="javascript:void(0);"
+                    ><i
+                      class="ri-delete-bin-2-line align-bottom me-2 text-muted"
+                    ></i>
+                    Delete</a
+                  >
+                </li>
+                <!-- <li class="dropdown-divider"></li> -->
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="flex-shrink-0">
+            <ul class="ps-4 vstack gap-2" style="list-style-type: none">
+              <li>
+                Sections:
+                <span class="text-capitalize">
+                  <i class="ri-checkbox-circle-fill align-bottom"></i>
+                  {{ template.sectionCount }}</span
+                >
+              </li>
+              <li>
+                Delivery Method:
+                <span class="text-capitalize text-info"
+                  ><i
+                    *ngIf="template.deliveryMethod.includes('ON_PREMISE')"
+                    class="ri-cloud-off-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="template.deliveryMethod.includes('PROCTORING')"
+                    class="ri-user-shared-line align-bottom"
+                  ></i>
+                  {{ template.deliveryMethod }}</span
+                >
+              </li>
+              <li>
+                Duration:
+                <span class="text-primary"
+                  ><i class="ri-timer-line align-bottom"></i>
+                  {{ template.duration }} Minute(s).</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer border-top-dashed">
+          <div class="d-flex">
+            <div class="fs-12 flex-grow-1">
+              Created At:
+              <span class="text-secondary"
+                ><i class="ri-time-line align-bottom"></i>
+                {{ template.createdAt | date : "medium" }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-body-->
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #alternative>
+  <div
+    *ngIf="!templates"
+    class="d-flex align-items-center justify-content-center"
+    style="height: 60vh"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+        >Loading exam templates...</span
+      >
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deleteTemplateConfirmationModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm Delete Action</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body p-5">
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to delete this Template?<br />
+        <span> This action cannot be reversed</span>
+      </p>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-primary"
+      >
+        No, Cancel
+      </button>
+      <button
+        [disabled]="submitted"
+        type="button"
+        (click)="deleteAssessmentTemplate()"
+        class="btn btn-danger"
+      >
+        Yes, Delete It
+      </button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,17 @@
+<div class="form-check">
+  <label
+    [ngbTooltip]="isDisplayAnswerForCurrentQuestion() ? 'Hide answer' : 'Show answer'"
+    triggers="mouseenter:mouseleave"
+    class="p-lg-2 btn btn-sm mt-1"
+    style="padding: 3px !important; cursor: pointer"
+  >
+    <input
+      type="checkbox"
+      class="form-check-input"
+      [checked]="isDisplayAnswerForCurrentQuestion()"
+      (change)="toggleShowAnswer()"
+      style="margin-right: 5px"
+    />
+    {{ isDisplayAnswerForCurrentQuestion() ? "Hide answer" : "Show answer" }}
+  </label>
+</div>

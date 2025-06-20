@@ -1,0 +1,623 @@
+<div class="auth-page-wrapper pt-1">
+  <!-- auth page bg -->
+  <div
+    class="auth-one-bg-position auth-one-bg auth-bg-cover"
+    id="auth-particles"
+  >
+    <div class="bg-overlay"></div>
+
+    <div class="shape">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.1"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 1440 120"
+      >
+        <path
+          d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"
+        ></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- auth page content -->
+  <div class="auth-page-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center mt-sm-5 text-white-50">
+            <!-- <div>
+                  <a routerLink="/" class="d-inline-block auth-logo">
+                    <img
+                      src="assets/images/exam-alpha-logo/EXWhiteHor.png"
+                      alt=""
+                      height="30"
+                    />
+                  </a>
+                </div> -->
+            <p class="mt-3 fs-15 fw-medium">
+              <!-- Premium Admin & Dashboard Template -->
+            </p>
+          </div>
+        </div>
+      </div>
+      <!-- end row -->
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-7 col-xl-9">
+          <div
+            class="card shadow"
+            style="min-height: 500px; border-radius: 15px"
+          >
+            <div class="card-body p-3">
+              <div class="text-center">
+                <div class="text-white-50">
+                  <div>
+                    <a routerLink="/" class="d-inline-block auth-logo">
+                      <img
+                        src="assets/logo/EXPryLogoHor.png"
+                        alt=""
+                        height="20"
+                      />
+                    </a>
+                  </div>
+                </div>
+                <h6 class="text-secondary fw-bold mt-3 text-uppercase">
+                  Sign up to ExamAlpha
+                </h6>
+                <p class="text-muted">Fill up the form to continue</p>
+                <!-- <lord-icon
+                                          src="https://cdn.lordicon.com/rhvddzym.json"
+                                          trigger="loop"
+                                          colors="primary:#00bd9d"
+                                          class="avatar-xl">
+                                      </lord-icon> -->
+              </div>
+
+              <div class="p-2">
+                <form
+                  [formGroup]="SignupForm"
+                  #form
+                  (ngSubmit)="onSubmit(SignupForm)"
+                >
+                  <div class="row">
+                    <div class="col-6 mb-4">
+                      <label for="firstName" class="form-label"
+                        >Firstname <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="firstName"
+                        placeholder="Enter firstname"
+                        required
+                        formControlName="firstName"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['firstName'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">Please enter firstname</div>
+                    </div>
+                    <div class="col-6 mb-4">
+                      <label for="lastName" class="form-label"
+                        >Lastname <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="lastName"
+                        placeholder="Enter lastname"
+                        required
+                        formControlName="lastName"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['lastName'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">Please enter lastname</div>
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label for="email" class="form-label"
+                        >Email <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="email"
+                        placeholder="Enter email address"
+                        required
+                        formControlName="email"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['email'].errors
+                        }"
+                      />
+                      <!-- <div class="invalid-feedback">Please enter email</div> -->
+                      <div class="invalid-feedback" align="left">
+                        <div>Email is required</div>
+                      </div>
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label for="username" class="form-label"
+                        >Username <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        placeholder="Enter username"
+                        required
+                        formControlName="username"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['username'].errors
+                        }"
+                      />
+                      <!-- <div class="invalid-feedback">Please enter username</div> -->
+                      <div class="invalid-feedback" align="left">
+                        <div>Email is required</div>
+                      </div>
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label for="password" class="form-label"
+                        >Password <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password"
+                        placeholder="Enter password"
+                        required
+                        formControlName="password"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['password'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">Password is required!</div>
+                      <!-- <div class="invalid-feedback" align="left">
+                                <div>Email is required</div>
+                              </div> -->
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label for="passwordConfirmation" class="form-label"
+                        >Confirm Password
+                        <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="passwordConfirmation"
+                        placeholder="Confirm password"
+                        required
+                        formControlName="passwordConfirmation"
+                        [ngClass]="{
+                          'is-invalid':
+                            submitted && f['passwordConfirmation'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        Password Confirmation is required!
+                      </div>
+                    </div>
+                    <div class="col-12 mb-4">
+                      <label for="organizationName" class="form-label"
+                        >organization <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="organizationName"
+                        placeholder="Enter Name of Organization"
+                        required
+                        formControlName="organizationName"
+                        [ngClass]="{
+                          'is-invalid':
+                            submitted && f['organizationName'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        Please enter the name of your organization
+                      </div>
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label class="form-label">Industry</label>
+                      <select
+                        class="form-select form-select-md"
+                        formControlName="industry"
+                        id=""
+                        required
+                        [ngClass]="{
+                          'is-invalid': submitted && f['industry'].errors
+                        }"
+                      >
+                        <option disabled selected>Select one</option>
+                        <option
+                          *ngFor="let industry of industries"
+                          value="{{ industry }}"
+                        >
+                          {{ industry }}
+                        </option>
+                        <!-- <option value="">Istanbul</option>
+                        <option value="">Jakarta</option> -->
+                      </select>
+
+                      <!-- <div class="invalid-feedback" align="left">
+                                <div>Email is required</div>
+                              </div> -->
+                    </div>
+                    <div class="mb-4 col-6">
+                      <label for="phoneNumber" class="form-label"
+                        >Phone <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="phoneNumber"
+                        placeholder="Enter phone number"
+                        required
+                        formControlName="phoneNumber"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['phoneNumber'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        Phone number is required!
+                      </div>
+                    </div>
+
+                    <div class="mb-4 col-6">
+                      <label class="form-label">Country</label>
+                      <select
+                        class="form-select form-select-md"
+                        id=""
+                        (change)="setStates()"
+                        formControlName="country"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['country'].errors
+                        }"
+                        required
+                      >
+                        <option disabled selected>Select one</option>
+                        <option
+                          class="text-uppercase"
+                          *ngFor="let country of countries"
+                          value="{{ country.country }}"
+                        >
+                          {{ country.country }}
+                        </option>
+                        <!-- <option value="">Istanbul</option>
+                        <option value="">Jakarta</option> -->
+                      </select>
+
+                      <div class="invalid-feedback" align="left">
+                        <div>Country is required!</div>
+                      </div>
+                    </div>
+
+                    <div class="mb-4 col-6">
+                      <label class="form-label">State</label>
+                      <select
+                        class="form-select form-select-md"
+                        id=""
+                        formControlName="state"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['state'].errors
+                        }"
+                        required
+                      >
+                        <option disabled selected>Select one</option>
+                        <option
+                          class="text-uppercase"
+                          *ngFor="let state of states"
+                          value="{{ state | uppercase }}"
+                        >
+                          {{ state }}
+                        </option>
+                        <!-- <option value="">Istanbul</option>
+                        <option value="">Jakarta</option> -->
+                      </select>
+
+                      <div class="invalid-feedback" align="left">
+                        <div>State is required!</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4">
+                    <button
+                      class="btn btn-success w-100"
+                      type="submit"
+                      (click)="onSubmit(form)"
+                      [disabled]="processing === true"
+                    >
+                      {{
+                        processing === false ? 'Sign Up' : 'Creating Account...'
+                      }}
+                    </button>
+                  </div>
+                </form>
+                <!-- end form -->
+
+                <div class="mt-4 text-center">
+                  <p class="mb-0">
+                    Already have an account ?
+                    <a
+                      routerLink="/auth/sign-in"
+                      class="fw-semibold text-primary text-decoration-underline"
+                    >
+                      Signin</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6 col-xl-5">
+            <div class="card mt-2">
+              <div class="card-body p-4">
+                <div class="text-center mt-2">
+                  <h5 class="text-primary">Create Account</h5>
+                  <p class="text-muted">Get your own account now.</p>
+                </div>
+
+                <div class="p-2 mt-4">
+                  <form
+                    [formGroup]="SignupForm"
+                    #form
+                    (ngSubmit)="onSubmit(SignupForm)"
+                  >
+                    <div class="row">
+                      <div class="col-xl-6 mb-3">
+                        <label for="firstName" class="form-label"
+                          >Firstname <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="firstName"
+                          placeholder="Enter firstname"
+                          required
+                          formControlName="firstName"
+                          [ngClass]="{
+                            'is-invalid': submitted && f['firstName'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">
+                          Please enter firstname
+                        </div>
+                      </div>
+
+                      <div class="col-xl-6 mb-3">
+                        <label for="lastName" class="form-label"
+                          >Lastname <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="lastName"
+                          placeholder="Enter lastname"
+                          required
+                          formControlName="lastName"
+                          [ngClass]="{
+                            'is-invalid': submitted && f['lastName'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">
+                          Please enter lastname
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xl-6 mb-3">
+                        <label for="email" class="form-label"
+                          >Email <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="email"
+                          class="form-control"
+                          id="email"
+                          placeholder="Enter email address"
+                          required
+                          formControlName="email"
+                          [ngClass]="{
+                            'is-invalid': submitted && f['email'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">Please enter email</div>
+                      </div>
+
+                      <div class="col-xl-6 mb-3">
+                        <label for="phoneNumber" class="form-label"
+                          >Phone <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="phoneNumber"
+                          placeholder="Enter phone number"
+                          required
+                          formControlName="phoneNumber"
+                          [ngClass]="{
+                            'is-invalid': submitted && f['phoneNumber'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">
+                          Please enter phone number
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-3">
+                      <label for="username" class="form-label"
+                        >Username <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="username"
+                        placeholder="Enter username"
+                        required
+                        formControlName="username"
+                        [ngClass]="{
+                          'is-invalid': submitted && f['username'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">Please enter username</div>
+                    </div>
+
+                    <div class="row">
+                      <div class="col-xl-6 mb-2">
+                        <label for="password" class="form-label"
+                          >Password <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="password"
+                          placeholder="Enter password"
+                          required
+                          formControlName="password"
+                          [ngClass]="{
+                            'is-invalid': submitted && f['password'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">
+                          Please enter password
+                        </div>
+                      </div>
+
+                      <div class="col-xl-6 mb-2">
+                        <label for="passwordConfirmation" class="form-label"
+                          >Confirm Password
+                          <span class="text-danger">*</span></label
+                        >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="passwordConfirmation"
+                          placeholder="Confirm password"
+                          required
+                          formControlName="passwordConfirmation"
+                          [ngClass]="{
+                            'is-invalid':
+                              submitted && f['passwordConfirmation'].errors
+                          }"
+                        />
+                        <div class="invalid-feedback">
+                          Please enter password
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="mb-2">
+                      <label for="organizationName" class="form-label"
+                        >organization <span class="text-danger">*</span></label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="organizationName"
+                        placeholder="Enter Name of Organization"
+                        required
+                        formControlName="organizationName"
+                        [ngClass]="{
+                          'is-invalid':
+                            submitted && f['organizationName'].errors
+                        }"
+                      />
+                      <div class="invalid-feedback">
+                        Please enter the name of your organization
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <p class="mb-0 fs-12 text-muted fst-italic">
+                        By signing up you agree to our
+                        <a
+                          href=""
+                          class="text-primary text-decoration-underline fst-normal fw-medium"
+                          >Terms of Use</a
+                        >
+                      </p>
+                    </div>
+
+                    <div class="mt-4">
+                      <button
+                        class="btn btn-success w-100"
+                        type="submit"
+                        [disabled]="processing === true"
+                      >
+                        {{
+                          processing === false
+                            ? 'Sign Up'
+                            : 'Creating Account...'
+                        }}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+
+                <div class="mt-5 text-center">
+                  <p class="mb-0">
+                    Already have an account ?
+                    <a
+                      routerLink="/authenticate/sign-in"
+                      class="fw-semibold text-primary text-decoration-underline"
+                    >
+                      Signin</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          
+        </div> -->
+
+        <!-- <div
+                class="alert alert-borderless alert-warning text-center mb-2 mx-2"
+                role="alert"
+              >
+                You've been given the role of an AUTHOR🤩!
+              </div> -->
+      </div>
+    </div>
+
+    <!-- <div class="mt-4 text-center">
+                <p class="mb-0">
+                  Wait, I remember my password...
+                  <a
+                    routerLink="/auth/signin/basic"
+                    class="fw-semibold text-primary text-decoration-underline"
+                  >
+                    Click here
+                  </a>
+                </p>
+              </div> -->
+  </div>
+
+  <!-- </div> -->
+  <!-- end auth page content -->
+
+  <!-- footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <p class="mb-0 text-primary">
+              &copy; {{ year }} ExamAlpha. Crafted with
+              <i class="mdi mdi-heart text-danger"></i> by Multilent
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- end Footer -->
+  <!-- </div> -->
+  <!-- end auth-page-wrapper -->
+</div>
+<!-- </div> -->

@@ -1,0 +1,63 @@
+.pointer {
+  cursor: pointer;
+}
+
+.pass {
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background-color: green;
+}
+
+.pass:hover{
+  opacity: .5;
+}
+
+.fail {
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background-color: red;
+}
+
+.fail:hover{
+  opacity: .5;
+}
+
+.section-bar {
+  cursor: pointer;
+  width: 170px; 
+  height: 30px; 
+  color: #fff;
+}
+
+.success-bar {
+  background-color: green;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.success-bar:hover {
+  opacity: .5;
+}
+
+.failed-bar {
+  background-color: red;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+.failed-bar:hover {
+  opacity: .5;
+}
+
+.vr {
+  width: 1px;
+  height: 35px;
+}

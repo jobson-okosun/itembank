@@ -1,0 +1,163 @@
+<app-breadcrumbs
+  title="EDIT PARTICIPANT"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="fetchingParticipantForEdit"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading participant info...</span
+    >
+  </div>
+</div>
+
+<ng-container *ngIf="participantForEdit && !fetchingParticipantForEdit">
+  <!-- <div class="modal-header">
+    <h2>Edit Participant Details</h2>
+  </div> -->
+  <button class="btn btn-outline-primary m-2" (click)="goBack()">
+    <i class="ri ri-arrow-left-line align-center align-bottom"></i>
+    Back
+  </button>
+
+  <div class="card card-body">
+    <div class="row">
+      <div class="col-6">
+        <div class="mb-3">
+          <label for="" class="form-label">Center ID</label>
+          <input
+            type="text"
+            class="form-control"
+            name="centerId"
+            disabled
+            value="{{ participantForEdit.centerId }}"
+          />
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="mb-3">
+          <label for="" class="form-label">Group Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="centerId"
+            disabled
+            value="{{ participantForEdit.groupName }}"
+          />
+        </div>
+      </div>
+      <div class="col-6 mb-2">
+        <div class="form-check">
+          <label class="form-check-label" for="suspended"> Suspended </label>
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [disabled]="true"
+            [checked]="participantForEdit.suspended"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="border-top mb-3"></div>
+
+    <form [formGroup]="form" *ngIf="participantForEdit" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div
+          *ngFor="let key of keys(participantForEdit.fields)"
+          class="col-6 mb-3"
+        >
+          <div>
+            <label [for]="participantForEdit.fields[key].field_id">{{
+              participantForEdit.fields[key].field_name
+            }}</label>
+            <input
+              *ngIf="participantForEdit.fields[key].field_type === 'TEXTBOX'"
+              [formControlName]="participantForEdit.fields[key].field_name"
+              [id]="participantForEdit.fields[key].field_id"
+              type="text"
+              class="form-control"
+              [placeholder]="participantForEdit.fields[key].field_name"
+            />
+            <select
+              *ngIf="participantForEdit.fields[key].field_type === 'SELECT'"
+              [formControlName]="participantForEdit.fields[key].field_name"
+              [id]="participantForEdit.fields[key].field_id"
+              class="form-control"
+            >
+              <option
+                *ngFor="
+                  let option of participantForEdit.fields[key].field_values
+                "
+                [value]="option"
+                [selected]="
+                  participantForEdit.fields[key].field_value === option
+                "
+              >
+                {{ option }}
+              </option>
+            </select>
+
+            <input
+              *ngIf="participantForEdit.fields[key].field_type === 'CALENDAR'"
+              class="form-control flatpickr-input"
+              [placeholder]="participantForEdit.fields[key].field_name"
+              type="text"
+              name="calendar"
+              required
+              mwlFlatpickr
+              data-id="datetime"
+              [type]="'date'"
+              [altInput]="false"
+              [enableTime]="false"
+              [convertModelValue]="true"
+              [altFormat]=""
+              [dateFormat]="'Y-m-d'"
+              [(ngModel)]="dateToEdit"
+              [formControlName]="participantForEdit.fields[key].field_name"
+            />
+          </div>
+        </div>
+
+        <!-- <div class="col-6">
+          <div class="mb-3">
+            <label for="" class="form-label">Batch</label>
+            <select
+              #batchRef
+              (change)="captureBatch(batchRef.value)"
+              class="form-select form-select-md"
+              name=""
+              id=""
+            >
+              <option selected disabled>Select batch</option>
+              <option
+                [selected]="batch.id === participantForEdit.batch_id"
+                *ngFor="let batch of batches"
+                value="{{ batch.id }}"
+              >
+                {{ batch.name }}
+              </option>
+            </select>
+          </div>
+        </div> -->
+        <div class="d-flex justify-content-end gap-4">
+          <button
+            type="submit"
+            [disabled]="processingEdit"
+            class="btn btn-primary"
+          >
+            <span *ngIf="!processingEdit">Submit</span>
+            <span *ngIf="processingEdit">Processing...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</ng-container>

@@ -1,0 +1,1147 @@
+<div
+  *ngIf="processingFetchCenterAdmin"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading center admins...</span
+    >
+  </div>
+</div>
+
+<div
+  class="row"
+  *ngIf="!processingFetchCenterAdmin && centerAdminDashboardData"
+>
+  <div class="col-lg-6 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>ADMINS</h4>
+      <h3>{{ centerAdminDashboardData.total_admins }}</h3>
+    </div>
+  </div>
+  <div class="col-lg-6 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>SUSPENDED</h4>
+      <h3>{{ centerAdminDashboardData.total_suspended }}</h3>
+    </div>
+  </div>
+</div>
+
+<div class="" *ngIf="centerAdmins && !processingFetchCenterAdmin">
+  <div class="d-flex justify-content-between align-items-center gap-3 mb-2">
+    <div class="d-flex gap-3 align-items-center">
+      <div class="input-group" style="width: 60%">
+        <select
+          (change)="onCenterAdminFieldChange(selectedFieldRef.value)"
+          #selectedFieldRef
+          class="form-select form-select-sm"
+          name="searchField"
+        >
+          <option disabled [selected]="!isFilter">Filter by</option>
+          <option
+            *ngFor="let searchableField of searchableFields"
+            value="{{ searchableField }}"
+            [selected]="searchableField === selectedField"
+          >
+            {{ searchableField | uppercase }}
+          </option>
+        </select>
+
+        <select
+          *ngIf="
+            selectedField.toLowerCase() === 'suspended' ||
+            selectedField.toLowerCase() === 'active'
+          "
+          (change)="
+            searchValue = selectedFieldRef.value; filterCenterAdminByField()
+          "
+          #selectedFieldRef
+          class="form-select form-select-md form-control"
+          name="searchField"
+        >
+          <option disabled [selected]="!isFilter">Filter by</option>
+          <option>TRUE</option>
+          <option>FALSE</option>
+        </select>
+
+        <ng-container
+          *ngIf="
+            selectedField.toLowerCase() !== 'suspended' &&
+            selectedField.toLowerCase() !== 'active'
+          "
+        >
+          <input
+            [(ngModel)]="searchValue"
+            type="text"
+            class="form-control"
+            placeholder="Search value.."
+            name="searchValue"
+          />
+          <button
+            class="btn btn-sm btn-success"
+            (click)="filterCenterAdminByField()"
+            [disabled]="!selectedField || !searchValue"
+          >
+            Search
+          </button>
+        </ng-container>
+      </div>
+
+      <!-- <button
+        class="btn btn-sm btn-primary"
+        style="cursor: pointer; width: 40%"
+        *ngIf="selectedField || searchValue || isFilter"
+        (click)="clearSearch()"
+      >
+        <i class="ri-eraser-line"></i>
+        Clear Filter
+      </button> -->
+
+      <button
+        *ngIf="selectedField || searchValue || isFilter"
+        class="btn btn-danger"
+        type="button"
+        (click)="clearSearch()"
+        
+      >
+        <i class="ri-close-fill me-2 align-middle"></i> Clear Filter
+      </button>
+
+      <!-- <div>
+        <button class="btn btn-primary btn-sm">Move selected</button>
+      </div> -->
+    </div>
+    <!-- <h5 *ngIf="centerAdmins">Admins({{ centerAdmins.total }})</h5> -->
+
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-soft-primary waves-effect waves-light btn-label"
+        (click)="openUnassignedAdministratorModal(addAdministratorModal, 'xl')"
+      >
+        <i class="ri-user-add-line align-bottom text-center label-icon"></i>
+        Add Administrator
+      </button>
+
+      <button
+        class="btn btn-soft-success waves-effect waves-light btn-label"
+        (click)="file = undefined; openModal(importAdministratorModal)"
+      >
+        <i class="ri-file-download-line label-icon align-bottom"></i> Import
+        Administrators
+      </button>
+
+      <!-- <button
+        type="button"
+        class="btn btn-light btn-sm"
+        placement="left"
+        ngbPopover="This are all the centers taking this assessment"
+      >
+        <i class="ri-information-line text-primary"></i>
+      </button> -->
+    </div>
+  </div>
+  <div class="mt-1">
+    <h5>List of All Center Admins</h5>
+    <div class="live-preview">
+      <div class="row">
+        <div class="table-responsive">
+          <ngx-simplebar style="height: 45vh">
+            <div class="card-body">
+              <div class="row">
+                <div class="mt-1 card card-animate p-0">
+                  <p-table
+                    [value]="centerAdmins.centerAdmins"
+                    styleClass="p-datatable-customers"
+                    [rowHover]="true"
+                    responsiveLayout="scroll"
+                    #dt1
+                    dataKey="id"
+                  >
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th pSortableColumn="first_name">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            FIRST NAME
+                            <p-sortIcon field="first_name"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="first_name"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+                        <th pSortableColumn="last_name">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            LAST NAME
+                            <p-sortIcon field="last_name"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="last_name"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+                        <!-- <th pSortableColumn="lastName">
+                              <div
+                                class="flex justify-content-between align-items-center"
+                              >
+                                LASTNAME
+                                <p-sortIcon field="lastName"></p-sortIcon>
+                                <p-columnFilter
+                                  type="text"
+                                  field="lastName"
+                                  display="menu"
+                                  class="ml-auto"
+                                ></p-columnFilter>
+                              </div>
+                            </th> -->
+                        <th pSortableColumn="email">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            EMAIL
+                            <p-sortIcon field="email"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="email"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+
+                        <th pSortableColumn="phoneNumber">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            PHONE
+                            <p-sortIcon field="phoneNumber"></p-sortIcon>
+                            <!-- <p-columnFilter
+                          type="text"
+                          field="capacity"
+                          display="menu"
+                          class="ml-auto"
+                        ></p-columnFilter> -->
+                          </div>
+                        </th>
+                        <!-- <th pSortableColumn="address">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            ADDRESS
+                            <p-sortIcon field="address"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="address"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+                        <th pSortableColumn="state">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            STATE
+                            <p-sortIcon field="state"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="state"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th> -->
+                        <th pSortableColumn="id">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            CENTER ID
+                            <p-sortIcon field="id"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="22"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+
+                        <!-- <th pSortableColumn="status">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            STATUS
+                            <p-sortIcon field="status"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="status"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th> -->
+
+                        <th pSortableColumn="suspended">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            SUSPENDED
+                            <p-sortIcon field="suspended"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="suspended"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+                        <th>
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            ACTIONS
+                          </div>
+                        </th>
+                      </tr>
+                    </ng-template>
+                    >
+                    <ng-template
+                      pTemplate="body"
+                      let-administrator
+                      let-rowIndex="rowIndex"
+                    >
+                      <tr>
+                        <td>
+                          <div
+                            class="d-flex justify-content-start align-items-center"
+                          >
+                            <div class="flex-grow-3 ms-2">
+                              {{ administrator.first_name }}
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>
+                          <div
+                            class="d-flex justify-content-start align-items-center"
+                          >
+                            <div class="flex-grow-3 ms-2">
+                              {{ administrator.last_name }}
+                            </div>
+                          </div>
+                        </td>
+                        <!-- <td>
+                              <div
+                                class="d-flex justify-content-start align-items-center"
+                              >
+                                <div class="flex-grow-3 ms-2">
+                                  {{ administrator.lastName }}
+                                </div>
+                              </div>
+                            </td> -->
+                        <td>{{ administrator.email }}</td>
+
+                        <td>{{ administrator.phone }}</td>
+                        <!-- <td> 
+                      <div *ngFor="let section of c.sections">
+                        <span style="margin-right: 1px;" class=" badge badge-soft-primary">{{section}}</span> 
+      
+                      </div>
+                     
+                      
+                    </td> -->
+
+                        <!-- <td>
+                          {{ administrator.address }}
+                        </td>
+                        <td>
+                          {{ administrator.state }}
+                        </td> -->
+                        <td>
+                          {{ administrator.centerIdString }}
+                        </td>
+
+                        <!-- <td>
+                          <div class="form-check form-switch">
+                            <input
+                              class="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id="flexSwitchCheckChecked"
+                              [checked]="administrator.enabled"
+                              disabled
+                            />
+                            <label
+                              class="form-check-label"
+                             
+                            ></label>
+                          </div>
+                         
+                        </td> -->
+
+                        <td>
+                          <span
+                            class="badge badge-border"
+                            [ngClass]="{
+                              'badge-soft-danger':
+                                administrator.suspended == true,
+                              'badge-soft-success':
+                                administrator.suspended == false
+                            }"
+                            >{{ administrator.suspended ? "YES" : "NO" }}</span
+                          >
+                        </td>
+                        <td>
+                          <div class="dropdown" ngbDropdown>
+                            <button
+                              class="btn btn-soft-secondary btn-sm dropdown arrow-none"
+                              type="button"
+                              data-bs-toggle="dropdown"
+                              aria-expanded="false"
+                              ngbDropdownToggle
+                              (click)="stopPropagation($event)"
+                            >
+                              <i class="ri-more-fill align-middle"></i>
+                            </button>
+                            <ul
+                              class="dropdown-menu dropdown-menu-end"
+                              ngbDropdownMenu
+                              (click)="stopPropagation($event)"
+                            >
+                              <!-- <li>
+                                    <a
+                                      class="dropdown-item"
+                                      href="javascript:void(0);"
+                                      ><i
+                                        class="ri-swap-line me-2 align-middle"
+                                      ></i
+                                      >Change center</a
+                                    >
+                                  </li> -->
+
+                              <li
+                                *ngIf="administrator.suspended === false"
+                                (click)="openModal(confirmationModal)"
+                              >
+                                <a
+                                  class="dropdown-item"
+                                  href="javascript:void(0);"
+                                  ><i
+                                    class="ri-pause-circle-line me-2 align-middle"
+                                  ></i
+                                  >Suspend</a
+                                >
+                              </li>
+
+                              <li
+                                *ngIf="administrator.suspended === true"
+                                (click)="openModal(confirmationModal)"
+                              >
+                                <a
+                                  class="dropdown-item"
+                                  href="javascript:void(0);"
+                                  ><i
+                                    class="ri-play-circle-line me-2 align-middle"
+                                  ></i
+                                  >Resume</a
+                                >
+                              </li>
+
+                              <!-- <li
+                                (click)="
+                                  openEditAdminModal(
+                                    editAdministratorModal,
+                                    rowIndex
+                                  )
+                                "
+                              >
+                                <a
+                                  class="dropdown-item"
+                                  href="javascript:void(0);"
+                                  ><i
+                                    class="ri-edit-2-line me-2 align-middle"
+                                  ></i
+                                  >Edit
+                                </a>
+                              </li> -->
+                              <li class="dropdown-divider"></li>
+                            </ul>
+                          </div>
+
+                          <ng-template #confirmationModal let-modal>
+                            <div class="modal-body text-center p-5">
+                              <div class="mt-4">
+                                <h4 class="mb-3">
+                                  Are you sure you want to
+                                  {{
+                                    administrator.suspended
+                                      ? "Resume"
+                                      : "Suspend"
+                                  }}
+                                  center admin?
+                                </h4>
+                                <!-- <p class="text-muted mb-4">This action cannot be reverted</p> -->
+                                <div
+                                  class="hstack gap-2 justify-content-center"
+                                >
+                                  <button
+                                    type="button"
+                                    class="btn btn-light"
+                                    data-bs-dismiss="modal"
+                                    (click)="modal.close('Close click')"
+                                  >
+                                    Close
+                                  </button>
+                                  <button
+                                    [disabled]="processingSuspendResume"
+                                    class="btn btn-danger"
+                                    (click)="
+                                      suspendOrResumeAdmin(
+                                        administrator.id,
+                                        !administrator.suspended
+                                      )
+                                    "
+                                  >
+                                    <span *ngIf="!processingSuspendResume"
+                                      >Yes,
+                                      {{
+                                        administrator.suspended
+                                          ? "Resume"
+                                          : "Suspend"
+                                      }}</span
+                                    >
+                                    <span *ngIf="processingSuspendResume"
+                                      >Processing...</span
+                                    >
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          </ng-template>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </p-table>
+                </div>
+                <!--end col-->
+              </div>
+              <!--end row-->
+            </div>
+          </ngx-simplebar>
+        </div>
+        <!--end col-->
+      </div>
+      <!--end row-->
+    </div>
+  </div>
+</div>
+<ng-container *ngIf="centerAdmins">
+  <p-paginator
+    [rows]="5"
+    [totalRecords]="centerAdmins && centerAdmins.total"
+    (onPageChange)="onCenterAdminPageChange($event)"
+    [first]="1"
+    [rowsPerPageOptions]="[5, 10, 15]"
+    [pageLinkSize]="5"
+    [showCurrentPageReport]="true"
+  >
+  </p-paginator
+></ng-container>
+
+<ng-template #editAdministratorModal role="document" let-modal>
+  <div class="">
+    <div class="card-body">
+      <h3 class="mb-3">Edit Administrator</h3>
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter  first name"
+                [(ngModel)]="centerAdminDataToEdit.firstName"
+                name="firstName"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Last name</label>
+              <input
+                class="form-control"
+                placeholder="Enter Last name"
+                [(ngModel)]="centerAdminDataToEdit.lastName"
+                name="lastName"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                name="email"
+                type="email"
+                class="form-control"
+                placeholder="Enter email"
+                [(ngModel)]="centerAdminDataToEdit.email"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input
+                name="phone"
+                type="text"
+                class="form-control"
+                placeholder="Enter phone number"
+                [(ngModel)]="centerAdminDataToEdit.phone"
+              />
+            </div>
+          </div>
+          <!-- <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input
+                name="address"
+                type="text"
+                class="form-control"
+                placeholder="Enter  address"
+                [(ngModel)]="centerAdminDataToEdit.address"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">State</label>
+              <input
+                name="state"
+                type="text"
+                class="form-control"
+                placeholder="Enter  state"
+                [(ngModel)]="centerAdminDataToEdit.state"
+              />
+            </div>
+          </div> -->
+          <!-- <div class="col-lg-6">
+              <div class="mb-3">
+                <label class="form-label">center ID</label>
+                <input
+                  #centerIdRef
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter center id"
+                />
+              </div>
+            </div> -->
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Center</label>
+
+              <select disabled #centerIdRef class="form-select">
+                <option disabled>Select center</option>
+                <option
+                  [selected]="
+                    centerAdminDataToEdit.centerId === center.centerId
+                  "
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="editCenterAdmin(centerAdminDataToEdit.id)"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #addAdministratorModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Unassigned Administrator(s)</h5>
+    <div class="card-body">
+      <!-- <form
+        action="javascript:void(0);"
+        #addAdminstratorForm="ngForm"
+        (ngSubmit)="addAdministrator(addAdminstratorForm)"
+      >
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input
+                #firstNameRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  first name"
+                ngModel
+                name="firstName"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Last name</label>
+              <input
+                #lastNameRef
+                type="email"
+                class="form-control"
+                placeholder="Enter Last name"
+                ngModel
+                name="lastName"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                #emailRef
+                type="email"
+                class="form-control"
+                placeholder="Enter email"
+                ngModel
+                name="email"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input
+                #phoneRef
+                type="text"
+                class="form-control"
+                placeholder="Enter phone number"
+                ngModel
+                name="phone"
+                required
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input
+                #addressRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  address"
+                name="address"
+                required
+                ngModel
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">State</label>
+              <input
+                #stateRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  state"
+                name="state"
+                required
+                ngModel
+              />
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Center</label>
+
+              <select
+                #centerIdRef
+                ngModel
+                name="center"
+                required
+                class="form-select"
+              >
+                <option selected disabled>Select center</option>
+                <option
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                *ngIf="!processingAddAdministrator"
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="!addAdminstratorForm.valid"
+              >
+                Add Administrator
+              </button>
+
+              <button
+                *ngIf="processingAddAdministrator"
+                class="btn btn-primary"
+              >
+                Proccessing...
+              </button>
+              <a class="btn btn-soft-danger" (click)="cancel()"> Cancel </a>
+            </div>
+          </div>
+        </div>
+      </form> -->
+      <div class="" *ngIf="unAssignedCenterAdmins">
+        <div class="">
+          <div class="live-preview">
+            <div class="row">
+              <div class="table-responsive">
+                <ngx-simplebar style="height: 45vh">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="mt-1">
+                        <p-table
+                          [value]="unAssignedCenterAdmins.admins"
+                          [tableStyle]="{ 'min-width': '55rem' }"
+                          styleClass="p-datatable-customers"
+                          [rowHover]="true"
+                          #dt1
+                          dataKey="id"
+                        >
+                          <ng-template pTemplate="header">
+                            <tr>
+                              <th pSortableColumn="firstName">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  FIRST NAME
+                                  <p-sortIcon field="firstName"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="firstName"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="lastName">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  LAST NAME
+                                  <p-sortIcon field="lastName"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="lastName"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="email">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  EMAIL
+                                  <p-sortIcon field="email"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="email"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="username">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  USERNAME
+                                  <p-sortIcon field="username"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="username"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="phoneNumber">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  PHONE
+                                  <p-sortIcon field="phoneNumber"></p-sortIcon>
+                                  <!-- <p-columnFilter
+                                type="text"
+                                field="capacity"
+                                display="menu"
+                                class="ml-auto"
+                              ></p-columnFilter> -->
+                                </div>
+                              </th>
+
+                              <th></th>
+                            </tr>
+                          </ng-template>
+                          >
+                          <ng-template
+                            pTemplate="body"
+                            let-administrator
+                            let-rowIndex="rowIndex"
+                          >
+                            <tr>
+                              <td>
+                                <div
+                                  class="d-flex justify-content-start align-items-center"
+                                >
+                                  <div class="flex-grow-3 ms-2">
+                                    {{ administrator.first_name }}
+                                  </div>
+                                </div>
+                              </td>
+                              <!-- <td>
+                                    <div
+                                      class="d-flex justify-content-start align-items-center"
+                                    >
+                                      <div class="flex-grow-3 ms-2">
+                                        {{ administrator.lastName }}
+                                      </div>
+                                    </div>
+                                  </td> -->
+                              <td>{{ administrator.last_name }}</td>
+
+                              <td>{{ administrator.email }}</td>
+                              <td>{{ administrator.username }}</td>
+                              <!-- <td> 
+                            <div *ngFor="let section of c.sections">
+                              <span style="margin-right: 1px;" class=" badge badge-soft-primary">{{section}}</span> 
+            
+                            </div>
+                           
+                            
+                          </td> -->
+
+                              <td>
+                                {{ administrator.phone }}
+                              </td>
+
+                              <td>
+                                <button
+                                  class="btn btn-sm btn-success"
+                                  (click)="
+                                    openListCentersModal(
+                                      listCentersModal,
+                                      administrator.id
+                                    )
+                                  "
+                                >
+                                  Assign
+                                </button>
+                              </td>
+                            </tr>
+                          </ng-template>
+                        </p-table>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </div>
+                </ngx-simplebar>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        *ngIf="fetchingUnassignedAdmin && !unAssignedCenterAdmins"
+        class="d-flex align-items-center justify-content-center"
+        style="height: 60vh"
+      >
+        <div class="d-flex align-items-center gap-2">
+          <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+            >Loading unassigned admins...</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end card-body">
+    <button class="btn btn-danger" (click)="cancel()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #importAdministratorModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Administrators</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        (click)="downloadTemplateForAdminUpload()"
+        [disabled]="processingTemplateDownload == true"
+      >
+        <!-- Download Template <i class="ri-download-cloud-2-line align-bottom"></i> -->
+
+        <span>
+          <!-- Border spinner -->
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Admin File upload</h5>
+            <p class="text-muted">Add Admin File.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="uploadAdmins()"
+                [disabled]="proccessingAdminUpload == true || !file"
+              >
+                Import
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #listCentersModal>
+  <div class="">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Select center</h5>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <div class="mb-3">
+              <label for="" class="form-label">Center</label>
+              <select
+                #centerIdRef
+                class="form-select form-select-md"
+                (change)="captureCenterId(centerIdRef.value)"
+              >
+                <option selected disabled>Select center</option>
+                <option
+                  value="{{ center.id }}"
+                  *ngFor="let center of allCenters"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                [disabled]="processingAdminAssignment"
+                type="submit"
+                class="btn btn-primary"
+                (click)="assignAdminToCenter()"
+              >
+                <span *ngIf="!processingAdminAssignment"> Assign</span>
+                <span *ngIf="processingAdminAssignment"> Processing...</span>
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>

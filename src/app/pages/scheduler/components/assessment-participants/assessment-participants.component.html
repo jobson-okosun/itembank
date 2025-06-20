@@ -1,0 +1,1489 @@
+<div
+  *ngIf="processingFetchParticipants"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading participants...</span
+    >
+  </div>
+</div>
+
+<div
+  class="row"
+  *ngIf="!processingFetchParticipants && participantDashboardData"
+>
+  <div class="col-lg-4 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>PARTICIPANTS</h4>
+      <h3>{{ participantDashboardData.total_parts }}</h3>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>SUSPENDED</h4>
+      <h3>{{ participantDashboardData.total_suspended }}</h3>
+    </div>
+  </div>
+  <div class="col-lg-4 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>BATCHES</h4>
+      <h3>{{ participantDashboardData.batches.length }}</h3>
+    </div>
+  </div>
+  <!-- <div class="col-lg-4 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+    >
+      <h4>COMPLETED</h4>
+      <h3>{{ participantDashboardData.total_completed }}</h3>
+    </div>
+  </div> -->
+</div>
+
+<div
+  class=""
+  *ngIf="data && tableContents && tableHeaders && !processingFetchParticipants"
+>
+  <ng-container>
+    <div class="">
+      <div class="live-preview">
+        <div class="">
+          <div class="">
+            <div
+              class="d-flex gap-3 card-body justify-content-between align-items-center"
+            >
+              <div
+                class="input-group"
+                style="width: 35%"
+                [ngStyle]="{
+                  width: isSearch ? '27%' : !isSearch ? '35%' : null
+                }"
+              >
+                <select
+                  (change)="onSearchFieldChange(selectedField.value)"
+                  #selectedField
+                  class="form-select form-select-sm"
+                  name="searchField"
+                >
+                  <option disabled [selected]="!isSearch">Search by</option>
+                  <option
+                    *ngFor="let searchableField of searchableFields"
+                    value="{{ searchableField }}"
+                    [selected]="
+                      searchParticipantPayload.searchField === searchableField
+                    "
+                  >
+                    {{
+                      searchableField
+                        .replaceAll("_", " ")
+                        .replaceAll("REG", "REGISTRATION")
+                    }}
+                  </option>
+                </select>
+
+                <select
+                  *ngIf="searchParticipantPayload.searchField === 'BATCH'"
+                  (change)="
+                    searchParticipantPayload.batchId = batchRef.value;
+                    searchParticipant()
+                  "
+                  class="form-select form-select-md"
+                  #batchRef
+                >
+                  <option selected disabled>Select Batch</option>
+                  <option
+                    *ngFor="let batch of batches"
+                    [selected]="searchParticipantPayload.batchId === batch.id"
+                    value="{{ batch.id }}"
+                  >
+                    {{ batch.name }}
+                  </option>
+                </select>
+
+                <input
+                  *ngIf="
+                    searchParticipantPayload.searchField != 'REG_DATE' &&
+                    searchParticipantPayload.searchField != 'REG_FIELD_DATE' &&
+                    searchParticipantPayload.searchField != 'BATCH'
+                  "
+                  [(ngModel)]="searchParticipantPayload.searchValue"
+                  type="text"
+                  class="form-control"
+                  placeholder="Search value.."
+                  name="searchValue"
+                />
+
+                <input
+                  *ngIf="
+                    searchParticipantPayload.searchField === 'REG_DATE' ||
+                    searchParticipantPayload.searchField === 'REG_FIELD_DATE'
+                  "
+                  class="form-control flatpickr-input"
+                  [placeholder]="'Select Date Range'"
+                  type="text"
+                  name="calendar"
+                  required
+                  mwlFlatpickr
+                  data-id="datetime"
+                  [type]="'date'"
+                  [altInput]="false"
+                  [enableTime]="false"
+                  [convertModelValue]="false"
+                  [altFormat]=""
+                  [dateFormat]="'Y-m-d'"
+                  [(ngModel)]="dateRange"
+                  [mode]="'range'"
+                />
+                <button
+                  *ngIf="searchParticipantPayload.searchField !== 'BATCH'"
+                  [disabled]="!canPerformSearch()"
+                  class="btn btn-sm btn-success"
+                  (click)="searchParticipant()"
+                >
+                  Search
+                </button>
+              </div>
+
+              <button
+                *ngIf="isSearch"
+                class="btn btn-danger"
+                type="button"
+                (click)="clearSearch()"
+                style="width: 13%"
+              >
+                <i class="ri-close-fill me-2 align-middle"></i> Clear Filter
+              </button>
+
+              <!-- <div>
+                  <button class="btn btn-primary btn-sm">Move selected</button>
+                </div> -->
+
+              <div class="d-flex align-items-center justify-content-end">
+                <!-- <div>
+                  <h5>Participants({{ data.total }})</h5>
+                </div> -->
+
+                <div class="d-flex justify-content-end gap-2">
+                  <div>
+                    <button
+                      class="btn btn-soft-success waves-effect waves-light btn-label"
+                      (click)="goToRegFieldSettingsPage()"
+                    >
+                      <i
+                        class="ri-list-settings-line label-icon align-bottom"
+                      ></i>
+                      Registration Field Settings
+                    </button>
+                  </div>
+
+                  <div>
+                    <button
+                      class="btn btn-soft-primary waves-effect waves-light btn-label"
+                      (click)="
+                        selectedSectionGroupToAddParticipant = '';
+                        selectedCentedId = '';
+                        openModal(addParticipantModal)
+                      "
+                    >
+                      <i
+                        class="ri-user-add-line label-icon align-bottom text-center"
+                      ></i>
+                      Add Participant
+                    </button>
+                  </div>
+
+                  <div>
+                    <div class="btn-group d-flex" ngbDropdown>
+                      <button
+                        class="btn btn-soft-info waves-effect waves-light btn-label dropdown-toggle"
+                        type="button"
+                        id="defaultDropdown"
+                        data-bs-toggle="dropdown"
+                        data-bs-auto-close="true"
+                        aria-expanded="false"
+                        ngbDropdownToggle
+                      >
+                        <i
+                          class="ri-list-settings-line label-icon align-bottom"
+                        ></i>
+                        Advance Option
+                      </button>
+                      <ul
+                        class="dropdown-menu"
+                        ngbDropdownMenu
+                        aria-labelledby="defaultDropdown"
+                      >
+                        <li
+                          (click)="
+                            file = undefined; openModal(importParticipantModal)
+                          "
+                        >
+                          <a class="dropdown-item" href="javascript:void(0);">
+                            <i class="ri-file-download-line align-bottom"></i>
+                            Import Participants</a
+                          >
+                        </li>
+                        <li
+                          (click)="
+                            passportFile = undefined;
+                            openModal(uploadPassportModal)
+                          "
+                        >
+                          <a class="dropdown-item" href="javascript:void(0);">
+                            <i class="ri-image-line align-bottom"></i>
+                            Upload Passports</a
+                          >
+                        </li>
+                        <li>
+                          <a class="dropdown-item" href="javascript:void(0);">
+                            <i class="ri-send-plane-line align-bottom"></i>
+                            Email Exam Schedule</a
+                          >
+                        </li>
+
+                        <!-- <li><a class="dropdown-item" href="javascript:void(0);">Menu item</a></li> -->
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="d-flex justify-content-start bg-light align-items-center"
+              *ngIf="selectedParticipants.length !== 0"
+            >
+              <div class="m-3">
+                <div class="btn-group d-flex" ngbDropdown>
+                  <button
+                    class="btn btn-outline-primary waves-effect waves-light btn-label dropdown-toggle"
+                    type="button"
+                    id="defaultDropdown"
+                    data-bs-toggle="dropdown"
+                    data-bs-auto-close="true"
+                    aria-expanded="false"
+                    ngbDropdownToggle
+                  >
+                    <i
+                      class="ri-list-settings-line label-icon align-bottom"
+                    ></i>
+                    Batch Actions
+                  </button>
+                  <ul
+                    class="dropdown-menu"
+                    ngbDropdownMenu
+                    aria-labelledby="defaultDropdown"
+                  >
+                    <li
+                      (click)="
+                        centerIdToMoveParticipantsTo = undefined;
+                        openModal(moveParticipantToCenterModal)
+                      "
+                    >
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="ri-user-location-line align-bottom"></i>
+                        Move to new center
+                      </a>
+                    </li>
+                    <li
+                      (click)="
+                        sectionGroupIdToMoveParticipantsTo = undefined;
+                        openModal(moveParticipantToGroupModal)
+                      "
+                    >
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="ri-user-shared-2-line align-bottom"></i>
+                        Move to new group
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="ri-send-plane-line align-bottom"></i>
+                        Email Exam Schedule</a
+                      >
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- <select
+                  #selectedMoveOptionRef
+                  (change)="captureMoveOption(selectedMoveOptionRef.value)"
+                  class="form-select form-select-md"
+                  name=""
+                  id=""
+                >
+                  <option selected  disabled>Actions</option>
+                  <option (click)="openModal(moveParticipantModal)">
+                    Move to new Group
+                  </option>
+                  <option>Move to new center</option>
+                  <option>Email assessment schedule</option>
+                </select> -->
+              </div>
+
+              <span>{{ selectedParticipants.length }} selected</span>
+              <!-- <button
+                class="btn btn-sm btn-primary"
+                (click)="
+                  selectedMoveOption = ''; openModal(moveParticipantModal)
+                "
+              >
+                Move selected
+              </button> -->
+            </div>
+
+            <h5>List of All Participants</h5>
+            <ngx-simplebar>
+              <div class="card-body">
+                <div class="row">
+                  <div class="mt-1 card card-animate p-0">
+                    <p-table
+                      [value]="tableContents"
+                      [rowHover]="true"
+                      responsiveLayout="scroll"
+                      #dt1
+                      dataKey="id"
+                      [scrollable]="true"
+                    >
+                      <ng-template pTemplate="header">
+                        <tr>
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="form-check"
+                              style="width: 10px !important"
+                            >
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id=""
+                                (change)="
+                                  checkOrUncheckAllParticipantId($event)
+                                "
+                                [checked]="
+                                  tableContents.length ===
+                                  selectedParticipants.length
+                                "
+                              />
+                            </div>
+                          </th>
+
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              NAME
+                            </div>
+                          </th>
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              GROUP
+                            </div>
+                          </th>
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              CENTERID
+                            </div>
+                          </th>
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              BATCH
+                            </div>
+                          </th>
+                          <th style="width: 10px" pFrozenColumn>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              REGISTRATION DATE
+                            </div>
+                          </th>
+                          <ng-container *ngFor="let key of headerKeys">
+                            <th
+                              *ngIf="
+                                tableHeaders[key].split(':')[0] !==
+                                  'FIRST NAME' &&
+                                tableHeaders[key].split(':')[0] !==
+                                  'LAST NAME' &&
+                                tableHeaders[key].split(':')[0] !== 'EMAIL' &&
+                                tableHeaders[key] !== 'CENTERID' &&
+                                tableHeaders[key] !== 'GROUP' &&
+                                tableHeaders[key] !== 'BATCH'
+                              "
+                              style="width: 10px"
+                            >
+                              <div class="flex align-items-center">
+                                {{ tableHeaders[key].split(":")[0] }}
+                                <p-sortIcon field="{{ '' }}"></p-sortIcon>
+                                <p-columnFilter
+                                  type="text"
+                                  field="{{ '' }}"
+                                  display="menu"
+                                  class="ml-auto"
+                                ></p-columnFilter>
+                              </div>
+                            </th>
+                          </ng-container>
+
+                          <th>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              SUSPENDED
+                            </div>
+                          </th>
+                          <th>
+                            <div
+                              class="flex justify-content-between align-items-center"
+                            >
+                              ACTIONS
+                            </div>
+                          </th>
+                        </tr>
+                      </ng-template>
+
+                      <ng-template pTemplate="body" let-tableContents>
+                        <tr>
+                          <td style="width: 10px" pFrozenColumn>
+                            <div class="form-check" style="width: 10px">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value=""
+                                id=""
+                                (change)="
+                                  captureParticipantId(tableContents.id)
+                                "
+                                [checked]="
+                                  selectedParticipants.includes(
+                                    tableContents.id
+                                  )
+                                "
+                              />
+                            </div>
+                          </td>
+
+                          <td pFrozenColumn style="min-width: 180px">
+                            <div style="display: inline-block; width: 150px">
+                              <div class="wrap-text">
+                                {{ tableContents.fields["FIRST NAME"] + " " }}
+                                <span>
+                                  {{ tableContents.fields["LAST NAME"] }}</span
+                                >
+                              </div>
+
+                              <div style="width: 150px">
+                                <div class="wrap-text">
+                                  {{ tableContents.fields["EMAIL"] }}
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+
+                          <td pFrozenColumn style="min-width: 100px">
+                            <div style="width: 7rem">
+                              <div
+                                class="badge badge-soft-success badge-border wrap-text"
+                              >
+                                {{ tableContents.groupName | uppercase }}
+                              </div>
+                            </div>
+                          </td>
+                          <td pFrozenColumn style="min-width: 100px">
+                            <div style="width: 7rem">
+                              <div
+                                class="badge badge-soft-primary badge-border wrap-text"
+                              >
+                                {{ tableContents.centerId | uppercase }}
+                              </div>
+                            </div>
+                          </td>
+                          <td pFrozenColumn style="min-width: 100px">
+                            <div style="width: 7rem">
+                              <div
+                                class="badge badge-border wrap-text"
+                                [ngClass]="{
+                                  'badge-soft-primary': tableContents.batch,
+                                  'badge-soft-warning': !tableContents.batch
+                                }"
+                              >
+                                {{
+                                  tableContents.batch
+                                    ? (tableContents.batch.name | uppercase)
+                                    : ("none" | uppercase)
+                                }}
+                              </div>
+                            </div>
+                          </td>
+                          <td pFrozenColumn style="min-width: 100px">
+                            <div style="width: 7rem">
+                              <div class="badge badge-soft-primary wrap-text">
+                                {{ tableContents.registeredOn | date }}
+                              </div>
+                            </div>
+                          </td>
+                          <ng-container *ngFor="let header of headersToMap">
+                            <td
+                              *ngIf="
+                                header.split(':')[0] !== 'FIRST NAME' &&
+                                header.split(':')[0] !== 'LAST NAME' &&
+                                header.split(':')[0] !== 'EMAIL' &&
+                                header !== 'CENTERID' &&
+                                header !== 'GROUP' &&
+                                header !== 'BATCH'
+                              "
+                              class="wrap-text"
+                              style="width: 200px"
+                            >
+                              <div style="width: 7rem">
+                                <div>
+                                  <div
+                                    class="badge badge-soft-success badge-border"
+                                    *ngIf="
+                                      tableContents.groupName === null &&
+                                      header === 'GROUP'
+                                    "
+                                  >
+                                    Unpublished
+                                  </div>
+                                  <div
+                                    class="badge badge-soft-success badge-border wrap-text"
+                                    *ngIf="
+                                      tableContents.groupName !== null &&
+                                      header === 'GROUP'
+                                    "
+                                  >
+                                    {{ tableContents.groupName | uppercase }}
+                                  </div>
+                                  <span
+                                    class="badge badge-soft-primary badge-border"
+                                    *ngIf="
+                                      tableContents.centerId === null &&
+                                      header === 'CENTERID'
+                                    "
+                                    >Unpublished</span
+                                  >
+                                  <span
+                                    class="badge badge-soft-primary badge-border"
+                                    *ngIf="
+                                      tableContents.centerId !== null &&
+                                      header === 'CENTERID'
+                                    "
+                                    >{{ tableContents.centerId }}</span
+                                  >
+
+                                  <div
+                                    style="display: inline-block; width: 8rem"
+                                  >
+                                    <div
+                                      *ngIf="
+                                        header.split(':')[1] === 'CALENDAR';
+                                        then calendarContent;
+                                        else normalContent
+                                      "
+                                    ></div>
+
+                                    <ng-template #calendarContent>{{
+                                      tableContents.fields[header.split(":")[0]]
+                                        | date
+                                    }}</ng-template>
+                                    <ng-template #normalContent>
+                                      <div class="wrap-text">
+                                        {{
+                                          tableContents.fields[
+                                            header.split(":")[0]
+                                          ]
+                                        }}
+                                      </div>
+                                    </ng-template>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                          </ng-container>
+
+                          <td>
+                            <span
+                              [ngClass]="
+                                tableContents.suspended === true
+                                  ? 'badge rounded-pill badge-soft-danger'
+                                  : 'badge rounded-pill badge-soft-primary'
+                              "
+                            >
+                              {{ tableContents.suspended }}
+                            </span>
+                          </td>
+
+                          <td>
+                            <div class="dropdown" ngbDropdown>
+                              <button
+                                class="btn btn-soft-secondary btn-sm dropdown arrow-none"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                ngbDropdownToggle
+                                (click)="stopPropagation($event)"
+                              >
+                                <i class="ri-more-fill align-middle"></i>
+                              </button>
+                              <ul
+                                class="dropdown-menu dropdown-menu-end"
+                                ngbDropdownMenu
+                                (click)="stopPropagation($event)"
+                              >
+                                <li
+                                  *ngIf="tableContents.suspended === false"
+                                  (click)="
+                                    suspendOrResumeParticipant(
+                                      tableContents.id,
+                                      true
+                                    )
+                                  "
+                                >
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                  >
+                                    <i
+                                      class="ri-pause-circle-line align-bottom me-2 text-muted"
+                                    ></i>
+                                    Suspend
+                                  </a>
+                                </li>
+                                <li
+                                  *ngIf="tableContents.suspended === true"
+                                  (click)="
+                                    suspendOrResumeParticipant(
+                                      tableContents.id,
+                                      false
+                                    )
+                                  "
+                                >
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                  >
+                                    <i
+                                      class="ri-play-circle-line align-bottom me-2 text-muted"
+                                    ></i>
+                                    Resume
+                                  </a>
+                                </li>
+
+                                <li
+                                  (click)="navigateToEditPage(tableContents.id)"
+                                >
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                  >
+                                    <i
+                                      class="ri-edit-line align-bottom me-2 text-muted"
+                                    ></i>
+                                    Edit
+                                  </a>
+                                </li>
+
+                                <li
+                                  (click)="
+                                    selectedParticipants = [];
+                                    selectedParticipants[0] = tableContents.id;
+                                    openModal(batchSelectionModal)
+                                  "
+                                >
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                  >
+                                    <i
+                                      class="ri ri-arrow-left-right-line align-bottom me-2 text-muted"
+                                    ></i>
+                                    Move to new Batch
+                                  </a>
+                                </li>
+
+                                <li>
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                  >
+                                    <i
+                                      class="ri-delete-bin-5-line align-bottom me-2 text-muted"
+                                    ></i>
+                                    Delete
+                                  </a>
+                                </li>
+
+                                <li class="dropdown-divider"></li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      </ng-template>
+                    </p-table>
+                  </div>
+
+                  <!--end col-->
+                </div>
+                <!--end row-->
+              </div>
+            </ngx-simplebar>
+          </div>
+
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="data">
+  <p-paginator
+    (onPageChange)="onPageChange($event)"
+    [first]="1"
+    [totalRecords]="data && data.total"
+    [rowsPerPageOptions]="[250, 350, 450, 500, 550]"
+    [rows]="5"
+    [pageLinkSize]="5"
+    [showCurrentPageReport]="true"
+  ></p-paginator
+></ng-container>
+
+<ng-template #addParticipantModal role="document" let-modal>
+  <div class="">
+    <div class="card-body">
+      <h3 class="mb-3">Add Participant</h3>
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-6" *ngFor="let regField of registrationFields">
+            <div class="mb-3">
+              <label class="form-label">{{ regField.name }}</label>
+              <span *ngIf="regField.mandatory" class="text-danger">*</span>
+
+              <!-- TEXT TYPE CONTAINER -->
+              <ng-container *ngIf="regField.type_ === 'TEXTBOX'">
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="regField.name"
+                  #inputValueRef
+                  (keyup)="captureFormValue(regField.id, inputValueRef.value)"
+                />
+              </ng-container>
+
+              <!-- SELECT TYPE CONTAINER -->
+              <ng-container *ngIf="regField.type_ === 'SELECT'">
+                <select
+                  class="form-select mb-3"
+                  #selectedValueRef
+                  (change)="
+                    captureFormValue(regField.id, selectedValueRef.value)
+                  "
+                >
+                  <option selected disabled>Select Option</option>
+                  <option *ngFor="let option of regField.values">
+                    {{ option }}
+                  </option>
+                </select>
+              </ng-container>
+
+              <ng-container *ngIf="regField.type_ === 'CALENDAR'">
+                <input
+                  class="form-control flatpickr-input"
+                  [placeholder]="regField.name"
+                  type="text"
+                  name="calendar"
+                  required
+                  mwlFlatpickr
+                  data-id="datetime"
+                  [type]="'datetime-local'"
+                  [altInput]="false"
+                  [enableTime]="false"
+                  [convertModelValue]="true"
+                  [altFormat]=""
+                  [dateFormat]="'Y-m-d H:i'"
+                  [(ngModel)]="calendarValue"
+                  (ngModelChange)="
+                    captureFormValue(regField.id, undefined, 'CALENDAR')
+                  "
+                />
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Center</label>
+              <span class="text-danger">*</span>
+              <select
+                [(ngModel)]="selectedCentedId"
+                class="form-select mb-3"
+                name="center"
+              >
+                <option selected disabled>Select center</option>
+                <option
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Group</label
+              ><span class="text-danger">*</span>
+
+              <select
+                [(ngModel)]="selectedSectionGroupToAddParticipant"
+                class="form-select mb-3"
+                name="section"
+              >
+                <option selected disabled>Select Section Group</option>
+
+                <option
+                  *ngFor="let section of assessmentSectionGroups.sectionGroups"
+                  value="{{ section.id }}"
+                >
+                  {{ section.groupName | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Batch</label>
+              <!-- <span class="text-danger">*</span> -->
+
+              <select
+                [(ngModel)]="selectedBatchToAddParticipant"
+                class="form-select mb-3"
+                name="section"
+              >
+                <option selected disabled>Select Batch</option>
+
+                <option *ngFor="let batch of batches" value="{{ batch.id }}">
+                  {{ batch.name | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- <div class="col-lg-6">
+              <div class="mb-3">
+                <label for="lastnameInput" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastnameInput"
+                  placeholder="Enter Lastname"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label  class="form-label"
+                  >Phone Number</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                 
+                  placeholder="Enter  phone number"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label  class="form-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                 
+                  placeholder="Enter Email Address"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label  class="form-label">Department</label>
+                <input
+                  type="text"
+                  class="form-control"
+                 
+                  placeholder="Enter Department"
+                />
+              </div>
+            </div> -->
+
+          <!-- <div class="mb-4">
+            <h5 class="fs-14 mb-1">Passport Image</h5>
+            <p class="text-muted">Add Passport Image.</p>
+            <input
+              class="form-control"
+              id="participant-image-input"
+              type="file"
+              accept="image/png, image/gif, image/jpeg"
+            />
+          </div> -->
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                *ngIf="!processingAddParticipant"
+                [disabled]="
+                  !selectedCentedId || !selectedSectionGroupToAddParticipant
+                "
+                type="submit"
+                class="btn btn-primary"
+                (click)="addParticipant()"
+              >
+                Add Participant
+              </button>
+
+              <button
+                disabled
+                class="btn btn-primary"
+                *ngIf="processingAddParticipant"
+              >
+                Processing...
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #importParticipantModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Participants</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="processingTemplateDownload == true"
+        (click)="downloadRegFieldTemplate()"
+      >
+        <span>
+          <!-- Border spinner -->
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Participants File upload</h5>
+            <p class="text-muted">Add Participants File.</p>
+            <input
+              class="form-control"
+              id="group-file-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="importParticipants()"
+                [disabled]="processingImport == true || !file"
+              >
+                <span *ngIf="processingImport == false"> Import</span>
+                <span *ngIf="processingImport == true"> Importing...</span>
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn btn-soft-danger"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #uploadPassportModal role="document" let-modal>
+  <div class="card">
+    <div class="card-header">
+      <h5>Upload Passports</h5>
+      <!-- <button
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="processingTemplateDownload == true"
+        (click)="downloadRegFieldTemplate()"
+      >
+        <span>
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button> -->
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Participants Passport upload</h5>
+            <p class="text-muted">Add Participants Passports.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept="application/zip, application/x-zip-compressed, .zip"
+              (change)="onPassportFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="uploadPassport()"
+                [disabled]="processingPassportImport == true || !passportFile"
+              >
+                <span *ngIf="processingPassportImport == false"> Upload</span>
+                <span *ngIf="processingPassportImport == true">
+                  Uploading...</span
+                >
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn btn-soft-danger"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #batchSelectionModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Move to batch</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <ng-container>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="contactInput" class="form-label"
+                  >Batch Name</label
+                >
+
+                <ng-select
+                  class="custom"
+                  [items]="batches"
+                  bindLabel="name"
+                  bindValue="id"
+                  name="section"
+                  dropdownPosition="bottom"
+                  [(ngModel)]="batchIdToMoveParticipantsTo"
+                  (change)="getSelectedBatchInfo($event)"
+                >
+                  <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+                    {{ item[i].name | uppercase }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="moveParticipantsToAnotherBatch()"
+                  [disabled]="
+                    processingMoveToAnotherBatch || !batchIdToMoveParticipantsTo
+                  "
+                >
+                  Move
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #moveParticipantToGroupModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Move to new section group</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <ng-container>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="contactInput" class="form-label"
+                  >Section Name</label
+                >
+
+                <ng-select
+                  class="custom"
+                  [items]="assessmentSectionGroups.sectionGroups"
+                  bindLabel="groupName"
+                  bindValue="id"
+                  name="section"
+                  dropdownPosition="bottom"
+                  [(ngModel)]="sectionGroupIdToMoveParticipantsTo"
+                  (change)="getSelectedGroupInfo($event)"
+                >
+                  <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+                    {{ item[i].subjectName | uppercase }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="moveParticipantsToAnotherSectionGroup()"
+                  [disabled]="
+                    processingMoveToAnotherGroup ||
+                    !sectionGroupIdToMoveParticipantsTo
+                  "
+                >
+                  Move
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </ng-container>
+
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #moveParticipantToCenterModal role="document" let-modal>
+  <div class="modal-header p-3 ps-4 bg-soft-primary">
+    <h5 class="modal-title" id="inviteMembersModalLabel">
+      Move Participant To New Center
+    </h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body p-4">
+    <form action="javascript:void(0);">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="mb-3">
+            <label class="form-label">Center Name</label>
+
+            <ng-select
+              class="custom"
+              [items]="allCenters"
+              bindLabel="centerName"
+              bindValue="id"
+              name="center"
+              dropdownPosition="bottom"
+              [(ngModel)]="centerIdToMoveParticipantsTo"
+              (change)="getSelectedCenterInfo($event)"
+            >
+              <ng-template ng-optgroup-tmp let-item="item" let-i="index">
+                {{ item[i].centerName | uppercase }}
+              </ng-template>
+            </ng-select>
+            <!-- <select
+              *ngIf="centers"
+              class="form-select mb-3"
+              aria-label=".form-select-lg example"
+              [(ngModel)]="centerIdToMoveParticipantsTo"
+              name="centerId"
+            >
+              <option selected>Open this select menu</option>
+              <option
+                value="{{ center.id }}"
+                *ngFor="let center of centers.centers"
+              >
+                {{ center.centerName }}
+              </option>
+            </select> -->
+          </div>
+        </div>
+
+        <!-- <div class="col-lg-12">
+          <div class="hstack gap-2 justify-content-end">
+            <button
+              type="submit"
+              class="btn btn-primary"
+              (click)="moveParticipantToAnotherCenter()"
+            >
+              Move
+            </button>
+            <button
+              type="button"
+              class="btn btn-soft-danger"
+              (click)="cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div> -->
+      </div>
+      <!--end row-->
+    </form>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-light w-xs"
+      data-bs-dismiss="modal"
+      (click)="modal.close('Close click')"
+    >
+      Cancel
+    </button>
+    <button
+      [disabled]="
+        processingMoveToAnotherCenter || !centerIdToMoveParticipantsTo
+      "
+      type="button"
+      class="btn btn-primary w-xs"
+      (click)="moveParticipantToAnotherCenter()"
+    >
+      <span *ngIf="!processingMoveToAnotherCenter">Move</span>
+      <span *ngIf="processingMoveToAnotherCenter">Processing...</span>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #editParticipantModal let-modal>
+  <div
+    *ngIf="fetchingParticipantForEdit"
+    class="d-flex align-items-center justify-content-center"
+    style="height: 60vh"
+  >
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+        >Loading participant info...</span
+      >
+    </div>
+  </div>
+
+  <ng-container *ngIf="participantForEdit && !fetchingParticipantForEdit">
+    <div class="modal-header">
+      <h2>Edit Participant Details</h2>
+    </div>
+
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="" class="form-label">Center ID</label>
+            <input
+              type="text"
+              class="form-control"
+              name="centerId"
+              disabled
+              value="{{ participantForEdit.centerId }}"
+            />
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="mb-3">
+            <label for="" class="form-label">Group Name</label>
+            <input
+              type="text"
+              class="form-control"
+              name="centerId"
+              disabled
+              value="{{ participantForEdit.groupName }}"
+            />
+          </div>
+        </div>
+        <div class="col-6 mb-2">
+          <label class="form-check-label" for="Suspended">
+            Suspended :
+            <span
+              *ngIf="!participantForEdit.suspended"
+              class="badge badge-outline-success"
+              >{{ participantForEdit.suspended }}</span
+            >
+            <span
+              *ngIf="participantForEdit.suspended"
+              class="badge badge-outline-danger"
+              >{{ participantForEdit.suspended }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <form
+        [formGroup]="form"
+        *ngIf="participantForEdit"
+        (ngSubmit)="onSubmit()"
+      >
+        <div class="row">
+          <div
+            *ngFor="let key of keys(participantForEdit.fields)"
+            class="col-6 mb-3"
+          >
+            <div>
+              <label [for]="participantForEdit.fields[key].field_id">{{
+                participantForEdit.fields[key].field_name
+              }}</label>
+              <input
+                *ngIf="participantForEdit.fields[key].field_type === 'TEXTBOX'"
+                [formControlName]="participantForEdit.fields[key].field_name"
+                [id]="participantForEdit.fields[key].field_id"
+                type="text"
+                class="form-control"
+                [placeholder]="participantForEdit.fields[key].field_name"
+              />
+              <select
+                *ngIf="participantForEdit.fields[key].field_type === 'SELECT'"
+                [formControlName]="participantForEdit.fields[key].field_name"
+                [id]="participantForEdit.fields[key].field_id"
+                class="form-control"
+              >
+                <option
+                  *ngFor="
+                    let option of participantForEdit.fields[key].field_values
+                  "
+                  [value]="option"
+                  [selected]="
+                    participantForEdit.fields[key].field_value === option
+                  "
+                >
+                  {{ option }}
+                </option>
+              </select>
+
+              <input
+                *ngIf="participantForEdit.fields[key].field_type === 'CALENDAR'"
+                class="form-control flatpickr-input"
+                [placeholder]="participantForEdit.fields[key].field_name"
+                type="text"
+                name="calendar"
+                required
+                mwlFlatpickr
+                data-id="datetime"
+                [type]="'date'"
+                [altInput]="false"
+                [enableTime]="false"
+                [convertModelValue]="true"
+                [altFormat]=""
+                [dateFormat]="'Y-m-d H:i'"
+                [(ngModel)]="dateToEdit"
+                [formControlName]="participantForEdit.fields[key].field_name"
+              />
+            </div>
+          </div>
+          <div class="d-flex justify-content-end gap-4">
+            <span class="btn btn-danger" (click)="cancel()">Close</span>
+            <button
+              type="submit"
+              [disabled]="processingEdit"
+              class="btn btn-primary"
+            >
+              <span *ngIf="!processingEdit">Submit</span>
+              <span *ngIf="processingEdit">Processing...</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer"></div>
+  </ng-container>
+</ng-template>

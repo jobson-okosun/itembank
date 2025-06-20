@@ -1,0 +1,214 @@
+<app-breadcrumbs
+  title="EXAM SCHEDULE "
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="!assessments"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Exams...</span
+    >
+  </div>
+</div>
+
+
+
+<!-- new -->
+
+<div *ngIf="assessments" class="row">
+  <div class="d-flex justify-content-between mb-2">
+    <h5 class="card-title mb-0 flex-grow-1">
+      List of all Exams({{ assessments.content.length }})
+    </h5>
+  </div>
+</div>
+
+<div *ngIf="!loading && assessments.content.length > 0" class="row">
+  <ng-container *ngFor="let assessment of assessments.content">
+    <div class="col-sm-12 col-lg-6">
+      <div class="card">
+        <div class="card-header d-flex mb-0 align-items-center">
+          <h5 class="fs-13 mb-0 flex-grow-1">
+            <a
+              href="javascript:void(0);"
+             
+              (click)="setCurrentAssessment(assessment)"
+              routerLink="/examalpha/exams/{{ assessment.id }}/exam-schedule"
+              >{{ assessment.name }}</a
+            >
+          </h5>
+          <div class="dropdown" ngbDropdown>
+            <a
+              class="text-muted arrow-none"
+              id="dropdownMenuLink1"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              ngbDropdownToggle
+              ><i
+                class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                style="cursor: pointer"
+              ></i
+            ></a>
+            <ul
+              class="dropdown-menu dropdown-menu-end"
+              aria-labelledby="dropdownMenuLink1"
+              ngbDropdownMenu
+            >
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="setCurrentAssessment(assessment)"
+                  routerLink="/examalpha/exams/{{ assessment.id }}/exam-schedule"
+                  ><i class="bx bxs-edit align-bottom me-2 text-muted"></i>
+                  Manage Schedule</a
+                >
+              </li>
+           
+              <li class="dropdown-divider"></li>
+           
+             
+             
+             
+
+            </ul>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="flex-shrink-0">
+            <ul class="ps-4 vstack gap-2" style="list-style-type: none">
+              <li>
+                Status:
+                <span
+                  class="text-capitalize"
+                  [ngClass]="{
+                    'text-success': assessment.status === 'PUBLISHED',
+                    'text-warning': assessment.status === 'DRAFT'
+                  }"
+                  ><i
+                    *ngIf="assessment.status === 'DRAFT'"
+                    class="ri-draft-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.status === 'PUBLISHED'"
+                    class="ri-checkbox-circle-fill align-bottom"
+                  ></i>
+                  {{ assessment.status }}</span
+                >
+              </li>
+              <li>
+                Delivery Method:
+                <span class="text-capitalize text-info"
+                  ><i
+                    *ngIf="assessment.deliveryMethod.includes('OFFLINE')"
+                    class="ri-cloud-off-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.deliveryMethod == 'ONLINE'"
+                    class="ri-rss-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="
+                      assessment.deliveryMethod == 'ONLINE_WITH_HUMAN_PROCTOR'
+                    "
+                    class="ri-user-shared-line align-bottom"
+                  ></i>
+                  {{ assessment.deliveryMethod }}</span
+                >
+              </li>
+              <li>
+                Duration:
+                <span class="text-primary"
+                  ><i class="ri-timer-line align-bottom"></i>
+                  {{ assessment.duration }} Minute(s).</span
+                >
+              </li>
+              <li>
+                Total Sections:
+                <span class="text-primary"
+                  ><i class="ri-layout-grid-line align-bottom"></i>
+                  {{ assessment.totalSections }}</span
+                >
+              </li>
+              <li>
+                Created At:
+                <span class="text-primary"
+                  ><i class="ri-calendar-event-line align-bottom"></i>
+                  {{ assessment.createdDate | date : "medium" }}</span
+                >
+              </li>
+              <li>
+                <div class="d-flex gap-2">
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalCenters"
+                    >Centers
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalCenterAdmins"
+                    >Admins
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalSectionsGroup"
+                    >Section Groups
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                  <span
+                    class="badge badge-soft-success rounded-pill fs-12"
+                    *ngIf="assessment.totalParticipants"
+                    >Participants
+                    <i
+                      class="ri-check-double-line text-success me-2 align-middle"
+                    ></i
+                  ></span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="card-footer border-top-dashed">
+          <div class="d-flex justify-content-between">
+            <div class="fs-12 flex-grow-1">
+              Start Date:
+              <span class="fs-12 text-secondary"
+                ><i class="ri-time-line align-bottom"></i>
+                {{ assessment.startDateTime | date : "medium" }}</span
+              >
+            </div>
+            <div class="fs-12 flex-grow-1">
+              End Date:
+              <span class="fs-12 text-secondary"
+                ><i class="ri-time-line align-bottom"></i>
+                {{ assessment.endDateTime | date : "medium" }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--end card-body-->
+    </div>
+  </ng-container>
+</div>
+
+<!--end row-->
+
+<app-rightsidebar
+  [currentView]="'Assessments'"
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar>

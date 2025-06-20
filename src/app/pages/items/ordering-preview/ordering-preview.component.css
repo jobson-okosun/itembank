@@ -1,0 +1,14 @@
+.drop-container {
+  width: inherit;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+
+.drop-item {
+  width: inherit;
+  height: 60px;
+  font-size: 20px;
+  padding: 10px;
+}
+/*# sourceMappingURL=ordering-preview.component.css.map */

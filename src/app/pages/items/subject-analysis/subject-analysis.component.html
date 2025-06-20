@@ -1,0 +1,185 @@
+<app-breadcrumbs
+  title="SUBJECTS | ANALYSIS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="card card-body">
+  <p-table
+    [value]="subjectAnalysis && subjectAnalysis.topics"
+    dataKey="name"
+    responsiveLayout="scroll"
+    [scrollable]="true"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 10px" pFrozenColumn></th>
+        <th style="width: 500px" pFrozenColumn pSortableColumn="name">
+          Topic <p-sortIcon field="name"></p-sortIcon>
+        </th>
+
+        <th pSortableColumn="price">
+          Total Questions <p-sortIcon field="price"></p-sortIcon>
+        </th>
+        <th pSortableColumn="category">
+          Total Awaiting Moderation <p-sortIcon field="category"></p-sortIcon>
+        </th>
+
+        <th pSortableColumn="inventoryStatus">
+          Total Rejected <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Published <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Questions In Recycle
+          <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Item Usage Count <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Items in Draft <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Passages <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Passages Awaiting Moderation
+          <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Passages In Draft
+          <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+        <th pSortableColumn="inventoryStatus">
+          Total Passages Published
+          <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+
+        <th pSortableColumn="inventoryStatus">
+          Total Passages Used <p-sortIcon field="inventoryStatus"></p-sortIcon>
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-subjectAnalysis
+      let-expanded="expanded"
+      let-i="rowIndex"
+    >
+      <tr>
+        <td style="width: 10px" pFrozenColumn>
+          <i
+            *ngIf="activeRow === i"
+            class="la la-angle-down cursor"
+            (click)="showSubTopic(i)"
+          ></i>
+          <i
+            *ngIf="activeRow !== i"
+            class="la la-angle-right cursor"
+            (click)="showSubTopic(i)"
+          ></i>
+        </td>
+        <td
+          style="width: 500px"
+          pFrozenColumn
+          (click)="showSubTopic(i)"
+          class="text-truncate cursor"
+          [ngClass]="{ 'text-primary': activeRow === i }"
+        >
+          <i class="la la-book"></i>
+
+          {{ subjectAnalysis.topicName | uppercase }}
+        </td>
+        <td>
+          {{ subjectAnalysis.totalItems }}
+        </td>
+        <td>{{ subjectAnalysis.totalItemsAwaitingModeration }}</td>
+
+        <td>{{ subjectAnalysis.totalItemsRejected }}</td>
+
+        <td>
+          {{ subjectAnalysis.totalItemsPublished }}
+        </td>
+        <td>
+          {{ subjectAnalysis.totalItemsInRecycle }}
+        </td>
+        <td>
+          {{ subjectAnalysis.totalItemsUsed }}
+        </td>
+        <!-- draft -->
+        <td>
+          {{ subjectAnalysis.totalItemsDraft }}
+        </td>
+
+        <!-- passages -->
+        <td>
+          {{ subjectAnalysis.totalPassages }}
+        </td>
+        <!-- passages awaiting mod -->
+        <td>
+          {{ subjectAnalysis.totalPassagesAwaitingModeration }}
+        </td>
+        <!-- passages in draft -->
+        <td>
+          {{ subjectAnalysis.totalPassagesDraft }}
+        </td>
+        <!-- passages pub -->
+        <td>
+          {{ subjectAnalysis.totalPassagesPublished }}
+        </td>
+        <!-- passages used -->
+        <td>
+          {{ subjectAnalysis.totalPassagesUsed }}
+        </td>
+      </tr>
+
+      <ng-container *ngIf="activeRow === i">
+        <tr style="border: none">
+          <th style="width: 10px" pFrozenColumn style="border: none"></th>
+          <!-- <th style="border: none" class="text-primary">SUBTOPICS</th> -->
+        </tr>
+        <tr *ngFor="let subTopic of subjectAnalysis.subtopics">
+          <td style="width: 10px" pFrozenColumn style="border: none"></td>
+          <td style="width: 500px" pFrozenColumn class="text-truncate">
+            {{ subTopic.subtopicName | uppercase }}
+          </td>
+          <td>{{ subTopic.totalItems }}</td>
+          <td>{{ subTopic.totalItemsAwaitingModeration }}</td>
+
+          <td>{{ subTopic.totalItemsRejected }}</td>
+          <td>{{ subTopic.totalItemsPublished }}</td>
+          <td>{{ subTopic.totalItemsInRecycle }}</td>
+          <td>{{ subTopic.totalItemsUsed }}</td>
+
+          <!-- draft -->
+          <td>
+            {{ subTopic.totalItemsDraft }}
+          </td>
+
+          <!-- passages -->
+          <td>
+            {{ subTopic.totalPassages }}
+          </td>
+
+          <!-- passages awaiting moc -->
+          <td>
+            {{ subTopic.totalPassagesAwaitingModeration }}
+          </td>
+          <!-- passages in draft -->
+          <td>
+            {{ subTopic.totalPassagesDraft }}
+          </td>
+          <!-- passages pub -->
+          <td>
+            {{ subTopic.totalPassagesPublished }}
+          </td>
+          <!-- passages used -->
+          <td>
+            {{ subTopic.totalPassagesUsed }}
+          </td>
+        </tr>
+      </ng-container>
+    </ng-template>
+  </p-table>
+</div>

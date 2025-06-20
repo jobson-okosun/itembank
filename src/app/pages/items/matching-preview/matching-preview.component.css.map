@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,eAAe,CAAA;EACb,KAAK,EAAE,GAAG;EACV,MAAM,EAAE,WAAW;CACpB",
+    "sources": [
+        "matching-preview.component.scss"
+    ],
+    "names": [],
+    "file": "matching-preview.component.css"
+}
