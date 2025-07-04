@@ -1,17 +1,11 @@
 <ng-container>
   <div class="live-preview">
-    <div
-      *ngIf="loadingAllSubjects"
-      class="d-flex align-items-center justify-content-center"
-      style="height: 60vh"
-    >
+    <div *ngIf="loadingAllSubjects" class="d-flex align-items-center justify-content-center" style="height: 60vh">
       <div class="d-flex align-items-center gap-2">
         <div class="spinner-border text-info fs-18" role="status">
           <span class="visually-hidden">Loading subjects..</span>
         </div>
-        <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-          >Loading subjects...</span
-        >
+        <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading subjects...</span>
       </div>
     </div>
   </div>
@@ -21,11 +15,8 @@
 
 
 <div *ngIf="subject || (allSubjects && !loadingAllSubjects)">
-  <app-breadcrumbs
-    *ngIf="!_noOfItems"
-    title="{{ subjectName }} | QUESTIONS ({{ totalItems }})"
-    [breadcrumbItems]="breadCrumbItems"
-  ></app-breadcrumbs>
+  <app-breadcrumbs *ngIf="!_noOfItems" title="{{ subjectName }} | QUESTIONS ({{ totalItems }})"
+    [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
   <div class="row">
     <!--Normal Topics navigation tab-->
@@ -35,19 +26,9 @@
           <div class="mb-3" *ngIf="!assessmentActive">
             <div class="row mb-2">
               <div class="">
-                <label for="choices-multiple-default" class="form-label"
-                  >Subjects</label
-                >
-                <ng-select
-                  class="custom"
-                  [items]="allSubjects"
-                  bindLabel="name"
-                  bindValue="subjectId"
-                  name="subject"
-                  dropdownPosition="bottom"
-                  [(ngModel)]="subjectId"
-                  (change)="handleSubjectSelection($event)"
-                >
+                <label for="choices-multiple-default" class="form-label">Subjects</label>
+                <ng-select class="custom" [items]="allSubjects" bindLabel="name" bindValue="subjectId" name="subject"
+                  dropdownPosition="bottom" [(ngModel)]="subjectId" (change)="handleSubjectSelection($event)">
                   <ng-template ng-optgroup-tmp let-item="item" let-i="index">
                     {{ item[i].name | uppercase }}
                   </ng-template>
@@ -73,42 +54,26 @@
           </div>
 
           <div>
-            <button
-              (click)="openNewTopicModal(newTopicModal)"
-              type="button"
-              class="btn btn-primary btn-label waves-effect right waves-light w-100"
-            >
-              <i
-                title="NEW TOPIC"
-                *ngIf="
+            <button (click)="openNewTopicModal(newTopicModal)" type="button"
+              class="btn btn-primary btn-label waves-effect right waves-light w-100">
+              <i title="NEW TOPIC" *ngIf="
                   currentUser.authorities.includes('ADMIN') && !_currentBlock
-                "
-                class="ri-add-line label-icon align-middle fs-11 ms-2"
-              ></i>
+                " class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               <!-- {{ subject.subjectName.toUpperCase() }} -->
               Add Topic
             </button>
           </div>
         </div>
         <div class="card-body">
-          <ngx-simplebar
-            class="message-list-content mx-n4 px-4 message-list-scroll"
-          >
+          <ngx-simplebar class="message-list-content mx-n4 px-4 message-list-scroll">
             <div *ngIf="subject" class="verti-sitemap dropdown" ngbDropdown>
               <ul class="list-unstyled mb-0">
-                <li
-                  class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  ngbDropdownToggle
-                >
+                <li class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
+                  data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   Topics ({{ subject && subject.topics.length }})
                 </li>
                 <li *ngIf="subject">
-                  <div
-                    class="first-list"
-                    *ngFor="let topic of subject.topics; let i = index"
-                  >
+                  <div class="first-list" *ngFor="let topic of subject.topics; let i = index">
                     <div class="profile-timeline">
                       <!-- <ngb-accordion #acc="ngbAccordion">
                         <ngb-panel
@@ -116,75 +81,41 @@
                           (shown)="showTopicDetails(topic)"
                         >
                           <ng-template ngbPanelTitle> -->
-                      <a
-                        class="accordion-button p-2 shadow-none"
-                        [ngClass]="{
+                      <a class="accordion-button p-2 shadow-none" [ngClass]="{
                           'accordion-button':
-                            clickedTopic.topicId === topic.topicId
-                        }"
-                        data-bs-toggle="collapse"
-                        (click)="showTopicDetails(topic)"
-                        aria-expanded="true"
-                        aria-controls="collapseOne"
-                      >
-                        <div
-                          class="list-wrap"
-                          #topicDrop="ngbDropdown"
-                          class="dropdown"
-                          ngbDropdown
-                        >
-                          <a
-                            [ngStyle]="{ cursor: 'pointer' }"
-                            class="fw-small fs-11 text-primary dropdown arrow-none"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            ngbDropdownToggle
-                            ngbTooltip="{{ topic.topicName.toUpperCase() }}"
-                            placement="bottom"
-                            ><i class="ri-folder-line me-1 align-bottom"></i>
+                            clickedTopic?.topicId === topic?.topicId
+                        }" data-bs-toggle="collapse" (click)="showTopicDetails(topic)" aria-expanded="true"
+                        aria-controls="collapseOne">
+                        <div class="list-wrap" #topicDrop="ngbDropdown" class="dropdown" ngbDropdown>
+                          <a [ngStyle]="{ cursor: 'pointer' }" class="fw-small fs-11 text-primary dropdown arrow-none"
+                            data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle
+                            ngbTooltip="{{ topic.topicName.toUpperCase() }}" placement="bottom"><i
+                              class="ri-folder-line me-1 align-bottom"></i>
                             {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a
-                          ><span
-                            ngbTooltip="TOTAL ITEMS"
-                            class="position-absolute top-50 start-100 translate-middle badge rounded bg-primary border-secondary"
-                            >{{ topic.totalItems }}</span
-                          >
+                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL ITEMS"
+                            class="position-absolute top-50 start-100 translate-middle badge rounded bg-primary border-secondary">{{
+                            topic.totalItems }}</span>
                         </div>
                       </a>
                       <!-- </ng-template> -->
                       <!-- <ng-template ngbPanelContent> -->
-                      <div
-                        *ngFor="let subtopic of topic.subtopics; let i = index"
-                        class="dropdown"
-                        #drop="ngbDropdown"
-                        ngbDropdown
-                      >
+                      <div *ngFor="let subtopic of topic.subtopics; let i = index" class="dropdown" #drop="ngbDropdown"
+                        ngbDropdown>
                         <ul class="second-list list-unstyled">
                           <li>
-                            <a
-                              [ngStyle]="{ cursor: 'pointer' }"
-                              (click)="
+                            <a [ngStyle]="{ cursor: 'pointer' }" (click)="
                                 showTopicDetails(topic, subtopic.topicId, i)
-                              "
-                              class="dropdown arrow-none fs-11 d-flex gap-1 align-items-center"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                              ngbDropdownToggle
-                              ngbTooltip="{{
+                              " class="dropdown arrow-none fs-11 d-flex gap-1 align-items-center"
+                              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle ngbTooltip="{{
                                 subtopic.subtopicName.toUpperCase()
-                              }}"
-                              ><i class="ri-folder-line"></i
-                              >{{
-                                subtopic.subtopicName.toUpperCase()
-                                  | slice : 0 : 20
+                              }}"><i class="ri-folder-line"></i>{{
+                              subtopic.subtopicName.toUpperCase()
+                              | slice : 0 : 20
                               }}{{
-                                subtopic.subtopicName.length > 20 ? "..." : ""
-                              }}<span
-                                ngbTooltip="TOTAL ITEMS"
-                                class="position-absolute top-50 start-0 translate-middle btn btn-sm"
-                                >{{ subtopic.totalItems }}</span
-                              ></a
-                            >
+                              subtopic.subtopicName.length > 20 ? "..." : ""
+                              }}<span ngbTooltip="TOTAL ITEMS"
+                                class="position-absolute top-50 start-0 translate-middle btn btn-sm">{{
+                                subtopic.totalItems }}</span></a>
                           </li>
                         </ul>
                       </div>
@@ -202,52 +133,33 @@
     </div>
 
     <!-- Regular topics navigation tab during assessment creation process -->
-    <div
-      *ngIf="
+    <div *ngIf="
         assessmentActive &&
         (_currentBlock.blockType !== 'PASSAGES' ||
           _currentBlock.selectionType !== 'AUTOMATED')
-      "
-      class="col-lg-3 col-sm-12"
-    >
+      " class="col-lg-3 col-sm-12">
       <div class="card">
         <div class="card-header border-bottom-dashed">
           <div>
-            <button
-              type="button"
-              class="btn btn-primary btn-label waves-effect right waves-light w-100"
-            >
-              <i
-                title="NEW TOPIC"
-                *ngIf="
+            <button type="button" class="btn btn-primary btn-label waves-effect right waves-light w-100">
+              <i title="NEW TOPIC" *ngIf="
                   currentUser.authorities.includes('ADMIN') && !_currentBlock
-                "
-                (click)="openNewTopicModal(newTopicModal)"
-                class="ri-add-line label-icon align-middle fs-11 ms-2"
-              ></i>
+                " (click)="openNewTopicModal(newTopicModal)"
+                class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               {{ subject && subject.subjectName.toUpperCase() }}
             </button>
           </div>
         </div>
         <div class="card-body" *ngIf="subjects">
-          <ngx-simplebar
-            class="message-list-content mx-n4 px-4 message-list-scroll"
-          >
+          <ngx-simplebar class="message-list-content mx-n4 px-4 message-list-scroll">
             <div class="verti-sitemap dropdown" ngbDropdown>
               <ul class="list-unstyled mb-0">
-                <li
-                  class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  ngbDropdownToggle
-                >
+                <li class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
+                  data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   Topics ({{ subject.topics.length }})
                 </li>
                 <li>
-                  <div
-                    class="first-list"
-                    *ngFor="let topic of subject.topics; let i = index"
-                  >
+                  <div class="first-list" *ngFor="let topic of subject.topics; let i = index">
                     <div class="profile-timeline">
                       <!-- <ngb-accordion #acc="ngbAccordion">
                         <ngb-panel
@@ -255,71 +167,38 @@
                           (shown)="showTopicDetails(topic)"
                         >
                           <ng-template ngbPanelTitle> -->
-                      <a
-                        class="accordion-button p-2 shadow-none"
-                        data-bs-toggle="collapse"
-                        (click)="showTopicDetails(topic)"
-                        aria-expanded="true"
-                        aria-controls="collapseOne"
-                      >
-                        <div
-                          class="list-wrap"
-                          #topicDrop="ngbDropdown"
-                          class="dropdown"
-                          ngbDropdown
-                        >
-                          <a
-                            [ngStyle]="{ cursor: 'pointer' }"
-                            class="fw-small fs-11 text-primary dropdown arrow-none"
-                            data-bs-toggle="dropdown"
-                            aria-expanded="false"
-                            ngbDropdownToggle
-                            ngbTooltip="{{ topic.topicName.toUpperCase() }}"
-                            placement="bottom"
-                            ><i class="ri-folder-line me-1 align-bottom"></i>
+                      <a class="accordion-button p-2 shadow-none" data-bs-toggle="collapse"
+                        (click)="showTopicDetails(topic)" aria-expanded="true" aria-controls="collapseOne">
+                        <div class="list-wrap" #topicDrop="ngbDropdown" class="dropdown" ngbDropdown>
+                          <a [ngStyle]="{ cursor: 'pointer' }" class="fw-small fs-11 text-primary dropdown arrow-none"
+                            data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle
+                            ngbTooltip="{{ topic.topicName.toUpperCase() }}" placement="bottom"><i
+                              class="ri-folder-line me-1 align-bottom"></i>
                             {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a
-                          ><span
-                            ngbTooltip="TOTAL ITEMS"
-                            class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary"
-                            >{{ topic.totalItems }}</span
-                          >
+                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL ITEMS"
+                            class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">{{
+                            topic.totalItems }}</span>
                         </div>
                       </a>
                       <!-- </ng-template> -->
                       <!-- <ng-template ngbPanelContent> -->
-                      <div
-                        *ngFor="let subtopic of topic.subtopics; let i = index"
-                        class="dropdown"
-                        #drop="ngbDropdown"
-                        ngbDropdown
-                      >
+                      <div *ngFor="let subtopic of topic.subtopics; let i = index" class="dropdown" #drop="ngbDropdown"
+                        ngbDropdown>
                         <ul class="second-list list-unstyled">
                           <li>
-                            <a
-                              [ngStyle]="{ cursor: 'pointer' }"
-                              (click)="
+                            <a [ngStyle]="{ cursor: 'pointer' }" (click)="
                                 showTopicDetails(topic, subtopic.topicId, i)
-                              "
-                              class="dropdown arrow-none fs-11 d-flex gap-1 align-items-center"
-                              data-bs-toggle="dropdown"
-                              aria-expanded="false"
-                              ngbDropdownToggle
-                              ngbTooltip="{{
+                              " class="dropdown arrow-none fs-11 d-flex gap-1 align-items-center"
+                              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle ngbTooltip="{{
                                 subtopic.subtopicName.toUpperCase()
-                              }}"
-                              ><i class="ri-folder-line"></i
-                              >{{
-                                subtopic.subtopicName.toUpperCase()
-                                  | slice : 0 : 20
+                              }}"><i class="ri-folder-line"></i>{{
+                              subtopic.subtopicName.toUpperCase()
+                              | slice : 0 : 20
                               }}{{
-                                subtopic.subtopicName.length > 20 ? "..." : ""
-                              }}<span
-                                ngbTooltip="TOTAL ITEMS"
-                                class="position-absolute top-50 start-0 translate-middle btn btn-sm btn-outline-secondary"
-                                >{{ subtopic.totalItems }}</span
-                              ></a
-                            >
+                              subtopic.subtopicName.length > 20 ? "..." : ""
+                              }}<span ngbTooltip="TOTAL ITEMS"
+                                class="position-absolute top-50 start-0 translate-middle btn btn-sm btn-outline-secondary">{{
+                                subtopic.totalItems }}</span></a>
                           </li>
                         </ul>
                       </div>
@@ -337,20 +216,14 @@
     </div>
 
     <!-- Passage topics navigation tab for automated passage selection-->
-    <div
-      *ngIf="
+    <div *ngIf="
         assessmentActive &&
         _currentBlock.selectionType === 'AUTOMATED' &&
         _currentBlock.blockType === 'PASSAGES'
-      "
-      class="col-lg-3 col-sm-12"
-    >
+      " class="col-lg-3 col-sm-12">
       <div class="card">
         <div class="card-header border-bottom-dashed">
-          <button
-            type="button"
-            class="btn btn-primary btn-label text-center waves-effect right waves-light w-100"
-          >
+          <button type="button" class="btn btn-primary btn-label text-center waves-effect right waves-light w-100">
             <!-- <i
               title="NEW TOPIC"
               *ngIf="currentUser.authorities.includes('ADMIN') && !_currentBlock"
@@ -361,52 +234,28 @@
           </button>
         </div>
         <div class="card-body">
-          <ngx-simplebar
-            class="message-list-content mx-n4 px-4 message-list-scroll"
-          >
+          <ngx-simplebar class="message-list-content mx-n4 px-4 message-list-scroll">
             <div class="verti-sitemap dropdown" ngbDropdown>
               <ul class="list-unstyled mb-0">
-                <li
-                  class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  ngbDropdownToggle
-                >
+                <li class="p-0 parent-title dropdown arrow-none d-flex justify-content-between"
+                  data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   Topics ({{ passageTopics.length }})
                 </li>
                 <li>
-                  <div
-                    class="first-list"
-                    *ngFor="let topic of passageTopics; let i = index"
-                  >
-                    <div
-                      class="list-wrap"
-                      [ngClass]="{
+                  <div class="first-list" *ngFor="let topic of passageTopics; let i = index">
+                    <div class="list-wrap" [ngClass]="{
                         'bg-soft-primary': clickedTopic
                           ? clickedTopic === topic.topicId
                           : false
-                      }"
-                      #topicDrop="ngbDropdown"
-                      class="dropdown"
-                      ngbDropdown
-                    >
-                      <a
-                        (click)="showTopicDetails(topic)"
-                        [ngStyle]="{ cursor: 'pointer' }"
-                        class="fw-small fs-11 text-primary dropdown arrow-none"
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        ngbDropdownToggle
-                        ngbTooltip="{{ topic.topicName.toUpperCase() }}"
-                        placement="top"
-                        ><i class="ri-folder-line me-1 align-bottom"></i>
+                      }" #topicDrop="ngbDropdown" class="dropdown" ngbDropdown>
+                      <a (click)="showTopicDetails(topic)" [ngStyle]="{ cursor: 'pointer' }"
+                        class="fw-small fs-11 text-primary dropdown arrow-none" data-bs-toggle="dropdown"
+                        aria-expanded="false" ngbDropdownToggle ngbTooltip="{{ topic.topicName.toUpperCase() }}"
+                        placement="top"><i class="ri-folder-line me-1 align-bottom"></i>
                         {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                        }}{{ topic.topicName.length > 25 ? "..." : "" }}</a
-                      ><span
-                        ngbTooltip="TOTAL PASSAGES"
-                        class="position-absolute top-50 start-100 translate-middle badge bg-primary"
-                        >{{ topic.totalPassages }}</span
-                      >
+                        }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL PASSAGES"
+                        class="position-absolute top-50 start-100 translate-middle badge bg-primary">{{
+                        topic.totalPassages }}</span>
                     </div>
                   </div>
                 </li>
@@ -420,10 +269,8 @@
     <div class="col-lg-9 col-sm-12" *ngIf="!editing">
       <div class="card">
         <!-- This Header is shown when you are viewing items in bank or adding questions manually to an assessment -->
-        <div
-          *ngIf="!_currentBlock || _currentBlock.selectionType === 'MANUAL'"
-          class="card-header border-bottom-dashed"
-        >
+        <div *ngIf="!_currentBlock || _currentBlock.selectionType === 'MANUAL'"
+          class="card-header border-bottom-dashed">
           <div class="d-flex justify-content-between align-items-center">
             <!-- Topic Name Section -->
             <div class="topic-container">
@@ -448,131 +295,93 @@
                   </span>
                 </span>
               </h5>
-              
+
             </div>
 
             <!-- Action Buttons -->
-            <div
-              class="action-buttons d-flex gap-2 flex-shrink-0 align-items-center"
-            >
+            <div class="action-buttons d-flex gap-2 flex-shrink-0 align-items-center">
               <!-- Count Section -->
               <div *ngIf="assessmentActive && selectedQuestionIds.length >= 0">
                 <span>
                   {{ selectedQuestionIds.length }} /
                   {{ _currentBlock.totalQuestions }}
                   {{
-                    _currentBlock.selectionType === "PASSAGES"
-                      ? "passage(s) added"
-                      : "questions added"
+                  _currentBlock.selectionType === "PASSAGES"
+                  ? "passage(s) added"
+                  : "questions added"
                   }}
                 </span>
               </div>
 
               <!-- Admin Buttons -->
               <ng-container *ngIf="!assessmentActive">
-                <button
-                  *ngIf="!currentUser.authorities.includes('MODERATOR')"
-                  class="btn btn-primary btn-icon"
-                  ngbTooltip="NEW QUESTION"
-                  (click)="sendData()"
-                >
+                <button *ngIf="!currentUser.authorities.includes('MODERATOR')" class="btn btn-primary btn-icon"
+                  ngbTooltip="NEW QUESTION" (click)="sendData()">
                   <i class="ri-add-line"></i>
                 </button>
                 <ng-container *ngIf="clickedTopic">
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       clickedTopic &&
                       !clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
-                    "
-                    class="btn btn-warning btn-icon"
-                    ngbTooltip="ADD SUBTOPIC"
-                    (click)="
+                    " class="btn btn-warning btn-icon" ngbTooltip="ADD SUBTOPIC" (click)="
                       openNewSubTopicModal(newSubTopicModal, clickedTopic)
-                    "
-                  >
+                    ">
                     <i class="ri-draft-line"></i>
                   </button>
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       clickedTopic &&
                       !clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
-                    "
-                    class="btn btn-info btn-icon"
-                    ngbTooltip="EDIT TOPIC"
-                    (click)="
+                    " class="btn btn-info btn-icon" ngbTooltip="EDIT TOPIC" (click)="
                       openRenameTopicModal(renameTopicModal, clickedTopic)
-                    "
-                  >
+                    ">
                     <i class="ri-pencil-line"></i>
                   </button>
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
-                    "
-                    class="btn btn-info btn-icon"
-                    ngbTooltip="RENAME SUB-TOPIC"
-                    (click)="
+                    " class="btn btn-info btn-icon" ngbTooltip="RENAME SUB-TOPIC" (click)="
                       openRenameSubtopicModal(renameSubtopicModal, clickedTopic)
-                    "
-                  >
+                    ">
                     <i class="ri-pencil-line"></i>
                   </button>
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
-                    "
-                    class="btn btn-danger btn-icon"
-                    ngbTooltip="REMOVE SUBTOPIC"
-                    (click)="
+                    " class="btn btn-danger btn-icon" ngbTooltip="REMOVE SUBTOPIC" (click)="
                       openDeleteSubtopicConfirmationModal(
                         deleteSubtopicConfirmationModal,
                         clickedTopic
                       )
-                    "
-                  >
+                    ">
                     <i class="ri-delete-bin-6-line"></i>
                   </button>
-                  <button
-                    *ngIf="
+                  <button *ngIf="
                       !clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
-                    "
-                    class="btn btn-danger btn-icon"
-                    ngbTooltip="REMOVE TOPIC"
-                    (click)="
+                    " class="btn btn-danger btn-icon" ngbTooltip="REMOVE TOPIC" (click)="
                       openDeleteTopicConfirmationModal(
                         deleteTopicConfirmationModal,
                         clickedTopic
                       )
-                    "
-                  >
+                    ">
                     <i class="ri-delete-bin-6-line"></i>
                   </button>
                 </ng-container>
               </ng-container>
 
               <!-- Filter Button -->
-              <button
-                type="button"
-                ngbTooltip="{{
+              <button type="button" ngbTooltip="{{
                   !showFilter ? 'Filter Options' : 'Hide Options'
-                }}"
-                class="{{
+                }}" class="{{
                   !showFilter
                     ? 'btn btn-outline-secondary'
                     : 'btn btn-outline-danger'
-                }}"
-                (click)="showFilters()"
-              >
-                <i
-                  class="{{
+                }}" (click)="showFilters()">
+                <i class="{{
                     !showFilter ? 'ri-equalizer-fill' : 'ri-close-line fs-14'
-                  }} me-2 align-middle"
-                ></i>
+                  }} me-2 align-middle"></i>
                 {{ !showFilter ? "Filter Questions" : "Hide Filter" }}
               </button>
             </div>
@@ -580,16 +389,11 @@
         </div>
 
         <!-- This header is shown when assessment questions are added randomly / automatically (AUTOMATED SELECTION OF QUESTIONS WITH CRITERIA) -->
-        <div
-          *ngIf="
+        <div *ngIf="
             assessmentActive && _currentBlock.selectionType === 'AUTOMATED'
-          "
-          class="card-header border-bottom-dashed"
-        >
+          " class="card-header border-bottom-dashed">
           <div class="row g-4 align-items-center">
-            <div
-              class="col-sm d-flex justify-content-between align-items-center"
-            >
+            <div class="col-sm d-flex justify-content-between align-items-center">
               <div>
                 <h5 class="card-title mb-0">
                   {{ _currentBlock.blockName }}
@@ -612,30 +416,18 @@
                   {{ totalFilterSelections }}/{{ _currentBlock.totalQuestions }}
                   passage(s) added to block
                 </div>
-                <ng-container
-                  *ngIf="totalFilterSelections !== _currentBlock.totalQuestions"
-                >
-                  <button
-                    *ngIf="_currentBlock.blockType === 'SINGLE_QUESTIONS'"
-                    type="button"
-                    (click)="
+                <ng-container *ngIf="totalFilterSelections !== _currentBlock.totalQuestions">
+                  <button *ngIf="_currentBlock.blockType === 'SINGLE_QUESTIONS'" type="button" (click)="
                       openNewRandomSelectionFilterModal(randomFilterOptions)
-                    "
-                    class="btn btn-primary"
-                  >
+                    " class="btn btn-primary">
                     <i class="ri-add-fill align-bottom me-1"></i>Add Criteria
                   </button>
 
-                  <button
-                    *ngIf="_currentBlock.blockType === 'PASSAGES'"
-                    type="button"
-                    (click)="
+                  <button *ngIf="_currentBlock.blockType === 'PASSAGES'" type="button" (click)="
                       openNewPassageSelectionFilterModal(
                         randomPassageFilterOptions
                       )
-                    "
-                    class="btn btn-primary"
-                  >
+                    " class="btn btn-primary">
                     <i class="ri-add-fill align-bottom me-1"></i>Add Criteria
                   </button>
                 </ng-container>
@@ -645,10 +437,7 @@
         </div>
 
         <!-- Filter Options-->
-        <div
-          *ngIf="showFilter"
-          class="card-body border-bottom-dashed border-bottom bg-white"
-        >
+        <div *ngIf="showFilter" class="card-body border-bottom-dashed border-bottom bg-white">
           <form #filterForm="ngForm" (ngSubmit)="filter()">
             <div ngModelGroup="filterInformation">
               <div class="row g-3 mb-2">
@@ -668,12 +457,8 @@
                         }"
                         [(ngModel)]="filterInformation.stimulusSearchText"
                       ></editor> -->
-                    <input
-                      name="stimulus"
-                      class="form-control"
-                      [(ngModel)]="filterInformation.stimulusSearchText"
-                      placeholder="search content"
-                    />
+                    <input name="stimulus" class="form-control" [(ngModel)]="filterInformation.stimulusSearchText"
+                      placeholder="search content" />
                     <i class="ri-search-line search-icon"></i>
                   </div>
                 </div>
@@ -682,13 +467,8 @@
                 <div class="col-sm-6">
                   <label for="title">Title</label>
                   <div class="search-box">
-                    <input
-                      type="text"
-                      name="title"
-                      class="form-control"
-                      placeholder="Search for title"
-                      [(ngModel)]="filterInformation.referenceSearchText"
-                    />
+                    <input type="text" name="title" class="form-control" placeholder="Search for title"
+                      [(ngModel)]="filterInformation.referenceSearchText" />
                     <i class="ri-search-line search-icon"></i>
                   </div>
                 </div>
@@ -698,31 +478,17 @@
                 <div class="col-sm-4">
                   <div>
                     <label for="status">Score</label>
-                    <input
-                      type="number"
-                      class="form-control"
-                      placeholder="0"
-                      name="score"
-                      [(ngModel)]="filterQuestionsScore"
-                    />
+                    <input type="number" class="form-control" placeholder="0" name="score"
+                      [(ngModel)]="filterQuestionsScore" />
                   </div>
                 </div>
                 <!--end col-->
                 <div *ngIf="!assessmentActive" class="col-sm-4">
                   <div>
                     <label for="status">Status</label>
-                    <select
-                      class="form-control"
-                      data-plugin="choices"
-                      data-choices
-                      data-choices-search-false
-                      name="status"
-                      [(ngModel)]="filterInformation.status"
-                    >
-                      <option
-                        *ngFor="let status of itemStatus"
-                        value="{{ status }}"
-                      >
+                    <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                      name="status" [(ngModel)]="filterInformation.status">
+                      <option *ngFor="let status of itemStatus" value="{{ status }}">
                         {{ status }}
                       </option>
                     </select>
@@ -732,14 +498,8 @@
                 <div class="col-sm-4">
                   <div>
                     <label for="passage">Passage</label>
-                    <select
-                      class="form-control"
-                      data-plugin="choices"
-                      data-choices
-                      data-choices-search-false
-                      name="passage"
-                      [(ngModel)]="filterInformation.hasPassage"
-                    >
+                    <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                      name="passage" [(ngModel)]="filterInformation.hasPassage">
                       <option value="true" selected>Yes</option>
                       <option value="false">No</option>
                     </select>
@@ -749,14 +509,8 @@
                 <div class="col-sm-4">
                   <div>
                     <label for="difficulty">Difficulty Level</label>
-                    <select
-                      class="form-control"
-                      data-plugin="choices"
-                      data-choices
-                      data-choices-search-false
-                      name="difficulty"
-                      [(ngModel)]="filterInformation.difficultyLevel"
-                    >
+                    <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                      name="difficulty" [(ngModel)]="filterInformation.difficultyLevel">
                       <option *ngFor="let difficulty of difficultyLevel">
                         {{ difficulty }}
                       </option>
@@ -767,14 +521,8 @@
                 <div class="col-sm-4">
                   <div>
                     <label for="itemType">Item Type</label>
-                    <select
-                      class="form-select"
-                      data-plugin="choices"
-                      data-choices
-                      data-choices-search-false
-                      name="itemType"
-                      [(ngModel)]="filterInformation.itemType"
-                    >
+                    <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+                      name="itemType" [(ngModel)]="filterInformation.itemType">
                       <option *ngFor="let type of itemType" value="{{ type }}">
                         {{ type }}
                       </option>
@@ -782,24 +530,12 @@
                   </div>
                 </div>
                 <!--end col-->
-                <div
-                  *ngIf="!currentUser.authorities.includes('MODERATOR')"
-                  class="col-sm-4"
-                >
+                <div *ngIf="!currentUser.authorities.includes('MODERATOR')" class="col-sm-4">
                   <div>
                     <label for="itemType">Item Usage</label>
-                    <select
-                      class="form-select"
-                      data-plugin="choices"
-                      data-choices
-                      data-choices-search-false
-                      name="itemUsed"
-                      [(ngModel)]="filterInformation.itemUsed"
-                    >
-                      <option
-                        *ngFor="let itemUsage of itemUsages"
-                        value="{{ itemUsage }}"
-                      >
+                    <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+                      name="itemUsed" [(ngModel)]="filterInformation.itemUsed">
+                      <option *ngFor="let itemUsage of itemUsages" value="{{ itemUsage }}">
                         {{ itemUsage }}
                       </option>
                     </select>
@@ -809,24 +545,17 @@
               </div>
               <div class="row-g-3">
                 <div class="col-sm-12">
-                  <app-item-tag
-                    (sendTags)="recieveItemTags($event)"
-                  ></app-item-tag>
+                  <app-item-tag (sendTags)="recieveItemTags($event)"></app-item-tag>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2">
-                <button
-                  type="button"
-                  (click)="clearFilter()"
-                  class="btn btn-danger mt-2"
-                >
+                <button type="button" (click)="clearFilter()" class="btn btn-danger mt-2">
                   <i class="ri-close-line align-middle me-2 mr-1"></i>clear
                   filter
                 </button>
                 <div class="col-sm-auto">
                   <button type="submit" class="btn btn-secondary mt-2">
-                    <i class="ri-equalizer-fill align-middle me-2 mr-1"></i
-                    >Apply Filter
+                    <i class="ri-equalizer-fill align-middle me-2 mr-1"></i>Apply Filter
                   </button>
                 </div>
                 <!--end col-->
@@ -837,50 +566,31 @@
         </div>
 
         <!-- Items List and Filter Options-->
-        <ngx-simplebar
-          class="message-list-content mx-n4 px-4 message-list-scroll"
-        >
+        <ngx-simplebar class="message-list-content mx-n4 px-4 message-list-scroll">
           <!-- This is the items List view for simply viewing of items in the bank -->
           <div *ngIf="!assessmentActive" class="card-body">
             <div class="live-preview">
-              <div
-                *ngIf="loading_items && subjects.length > 0"
-                class="d-flex align-items-center justify-content-center"
-                style="height: 60vh"
-              >
+              <div *ngIf="loading_items && subjects.length > 0" class="d-flex align-items-center justify-content-center"
+                style="height: 60vh">
                 <div class="d-flex align-items-center gap-2">
                   <div class="spinner-border text-info fs-18" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div>
-                  <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-                    >Loading questions...</span
-                  >
+                  <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading questions...</span>
                 </div>
               </div>
 
-              <div
-                class="list-group"
-                *ngIf="
+              <div class="list-group" *ngIf="
                   !loading_items && itemsPage && itemsPage.content.length > 0
-                "
-              >
-                <a
-                  style="color: #000"
-                  class="list-group-item"
-                  *ngFor="let item of itemsPage.content; let i = index"
-                >
-                  <div
-                    class="row"
-                    [ngClass]="{
+                ">
+                <a style="color: #000" class="list-group-item" *ngFor="let item of itemsPage.content; let i = index">
+                  <div class="row" [ngClass]="{
                       'item-size': item.showFullItem === false,
                       'item-size-expand': item.showFullItem === true
-                    }"
-                  >
+                    }">
                     <!-- ITEM DETAILS-->
                     <div class="col-lg-10 col-sm-12">
-                      <div
-                        class="d-flex flex-wrap align-items-center justify-content-between"
-                      >
+                      <div class="d-flex flex-wrap align-items-center justify-content-between">
                         <div>
                           <h5 class="list-title fs-18 mb-1">
                             {{ item.reference }}
@@ -893,10 +603,7 @@
                           <div class="list-text mb-0 fs-12">
                             date created: {{ item.createdAt | date }}
                           </div>
-                          <div
-                            *ngIf="item.modifiedAt !== 0"
-                            class="list-text mb-0 fs-12"
-                          >
+                          <div *ngIf="item.modifiedAt !== 0" class="list-text mb-0 fs-12">
                             last modified: {{ item.modifiedAt | date }}
                           </div>
                         </div>
@@ -913,35 +620,17 @@
                     </div>
 
                     <!-- PREVIEW AND DELETE, USAAGE HISTORY BUTTONS-->
-                    <div
-                      class="col-lg-2 col-sm-12 d-flex flex-column gap-1 mt-1 item-tags-size px-2"
-                    >
+                    <div class="col-lg-2 col-sm-12 d-flex flex-column gap-1 mt-1 item-tags-size px-2">
                       <div class="d-flex gap-2">
-                        <a
-                          *ngIf="item.showFullItem === false"
-                          (click)="preview(item, i)"
-                          class="btn btn-outline-success btn-sm"
-                          ><span *ngIf="!item.showingPreviewLoader"
-                            >preview</span
-                          ><i
-                            *ngIf="item.showingPreviewLoader"
-                            _ngcontent-urx-c230=""
-                            class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"
-                          ></i
-                        ></a>
-                        <a
-                          *ngIf="item.showFullItem === true"
-                          (click)="hidePreview(item, i)"
-                          class="btn btn-outline-success btn-sm"
-                          >hide</a
-                        >
-                        <button
-                          *ngIf="currentUser.authorities.includes('ADMIN')"
-                          ngbTooltip="USAGE HISTORY"
-                          type="button"
-                          class="btn px-2 btn-icon btn-outline-info"
-                          (click)="routeToUsageHistoryPage(item.itemId)"
-                        >
+                        <a *ngIf="item.showFullItem === false" (click)="preview(item, i)"
+                          class="btn btn-outline-success btn-sm"><span
+                            *ngIf="!item.showingPreviewLoader">Preview</span><i *ngIf="item.showingPreviewLoader"
+                            _ngcontent-urx-c230="" class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i></a>
+                        <a *ngIf="item.showFullItem === true" (click)="hidePreview(item, i)"
+                          class="btn btn-outline-success btn-sm">hide</a>
+                        <button *ngIf="currentUser.authorities.includes('ADMIN')" ngbTooltip="USAGE HISTORY"
+                          type="button" class="btn px-2 btn-icon btn-outline-info"
+                          (click)="routeToUsageHistoryPage(item.itemId)">
                           <i class="ri-history-line"></i>
                         </button>
                         <!-- <button
@@ -973,93 +662,60 @@
                     <div *ngIf="item.showFullItem === false">
                       <!-- QUESTION -->
                       <span>Question :</span>
-                      <div
-                        class="list-text mb-0"
-                        *ngIf="item.showFullItem; else preview"
-                        [innerHTML]="item.stimulus | htmlSanitizer"
-                      ></div>
+                      <div class="list-text mb-0" *ngIf="item.showFullItem; else preview"
+                        [innerHTML]="item.stimulus | htmlSanitizer"></div>
 
                       <ng-template #preview>
-                        <div
-                          class="list-text mb-0"
-                          [innerHTML]="item.stimulus | htmlSanitizer"
-                        ></div>
+                        <div class="list-text mb-0" [innerHTML]="item.stimulus | htmlSanitizer"></div>
                       </ng-template>
 
                       <!-- DIFFICULTY, TAGS, SCORE, ITEMTYPE etc-->
-                      <div
-                        class="d-flex flex-wrap justify-content-between mt-3"
-                      >
+                      <div class="d-flex flex-wrap justify-content-between mt-3">
                         <div class="d-flex gap-1">
-                          <span
-                            title="QUESTION TYPE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="QUESTION TYPE" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-list-check-2"></i>
                             :
                             <div class="badge badge-soft-success fs-10">
                               {{ item.type }}
                             </div>
                           </span>
-                          <span
-                            title="QUESTION STATUS"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="QUESTION STATUS" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-upload-cloud-2-line"></i>
                             :
                             <div class="badge badge-soft-primary fs-10">
                               {{ item.itemStatus }}
                             </div>
                           </span>
-                          <span
-                            title="DIFFICULTY LEVEL"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="DIFFICULTY LEVEL" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-line-height"></i>:
                             <div class="badge badge-soft-danger fs-10">
                               {{ item.difficultyLevel }}
                             </div>
                           </span>
-                          <span
-                            *ngIf="item.passageDetails.passageId"
-                            title="PASSAGE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span *ngIf="item.passageDetails.passageId" title="PASSAGE" class="d-flex align-items-center"
+                            style="cursor: pointer">
                             <i class="ri-article-line"></i>:
                             <div class="badge badge-soft-info fs-10">
                               PASSAGE QUESTION
                             </div>
                           </span>
                           <ng-container>
-                            <span
-                              style="cursor: pointer"
-                              [ngbPopover]="tagsTemplate"
-                              triggers="mouseenter:mouseleave"
-                              placement="top"
-                              ><i class="bx bx-purchase-tag fs-10"></i>:
+                            <span style="cursor: pointer" [ngbPopover]="tagsTemplate" triggers="mouseenter:mouseleave"
+                              placement="top"><i class="bx bx-purchase-tag fs-10"></i>:
                               <div class="badge badge-soft-primary fs-10">
                                 TAGS ({{ item.itemTagDTOS.length }})
-                              </div></span
-                            >
+                              </div>
+                            </span>
 
                             <ng-template #tagsTemplate>
-                              <ul
-                                style="list-style-type: none"
-                                *ngIf="item.itemTagDTOS.length > 0"
-                              >
-                                <li
-                                  *ngFor="
+                              <ul style="list-style-type: none" *ngIf="item.itemTagDTOS.length > 0">
+                                <li *ngFor="
                                     let tag of item.itemTagDTOS;
                                     let i = index
-                                  "
-                                >
+                                  ">
                                   <a class="fs-10">
                                     {{
-                                      tag.tagName | slice : 0 : 50 | uppercase
+                                    tag.tagName | slice : 0 : 50 | uppercase
                                     }}
                                   </a>
                                 </li>
@@ -1069,23 +725,15 @@
                               </p>
                             </ng-template>
                           </ng-container>
-                          <span
-                            title="ALLOCATED SCORE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="ALLOCATED SCORE" class="d-flex align-items-center" style="cursor: pointer">
                             <!-- <i class="ri-article-line"></i> -->
                             <div class="badge badge-soft-secondary fs-10">
                               {{ item.score }} Mark(s)
                             </div>
                           </span>
 
-                          <span
-                            *ngIf="item.used"
-                            title="USED FOR EXAM"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span *ngIf="item.used" title="USED FOR EXAM" class="d-flex align-items-center"
+                            style="cursor: pointer">
                             <!-- <i class="ri-article-line"></i> -->
                             <div class="badge badge-soft-warning fs-10">
                               Used
@@ -1095,40 +743,26 @@
 
                         <!-- COPY AND MOVE BUTTONS-->
                         <div class="d-flex gap-1">
-                          <span
-                            title="COPY QUESTION"
-                            ngbTooltip="COPY QUESTION"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                            (click)="
+                          <span title="COPY QUESTION" ngbTooltip="COPY QUESTION" class="d-flex align-items-center"
+                            style="cursor: pointer" (click)="
                               openSelectCopyLocationModal(
                                 copyQuestionModal,
                                 item,
                                 item.itemId
                               )
-                            "
-                          >
-                            <i
-                              class="ri-file-copy-2-line me-1 align-middle"
-                            ></i>
+                            ">
+                            <i class="ri-file-copy-2-line me-1 align-middle"></i>
                             <div class="text-muted fs-12">COPY</div>
                           </span>
-                          <span
-                            title="MOVE QUESTION"
-                            ngbTooltip="MOVE QUESTION"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                            (click)="
+                          <span title="MOVE QUESTION" ngbTooltip="MOVE QUESTION" class="d-flex align-items-center"
+                            style="cursor: pointer" (click)="
                               openSelectMoveLocationModal(
                                 moveQuestionModal,
                                 item,
                                 item.itemId
                               )
-                            "
-                          >
-                            <i
-                              class="ri-file-transfer-line me-1 align-middle"
-                            ></i>
+                            ">
+                            <i class="ri-file-transfer-line me-1 align-middle"></i>
                             <div class="text-muted fs-12">MOVE</div>
                           </span>
                         </div>
@@ -1137,124 +771,60 @@
 
                     <!-- ITEM PREVIEWS-->
                     <div *ngIf="item.showFullItem === true">
-                      <app-preview
-                        *ngIf="item.type === 'MCQ'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-preview>
-                      <app-matching-preview
-                        *ngIf="item.type === 'ASSOCIATION'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-matching-preview>
-                      <app-ordering-preview
-                        *ngIf="item.type === 'ORDER_LIST'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-ordering-preview>
-                      <app-rich-essay-preview
-                        *ngIf="item.type === 'ESSAY_RICH_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        [showAnswerToggle]="false"
-                        (reload)="reload($event)"
-                      ></app-rich-essay-preview>
-                      <app-multiple-response-preview
-                        *ngIf="item.type === 'MRQ'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-multiple-response-preview>
-                      <app-short-text-preview
-                        *ngIf="item.type === 'SHORT_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-short-text-preview>
-                      <app-yes-or-no-preview
-                        *ngIf="item.type === 'YES_NO'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        [subjectName]="subjectName"
-                        (reload)="reload($event)"
-                      ></app-yes-or-no-preview>
-                      <app-true-or-false-preview
-                        *ngIf="item.type === 'TRUE_FALSE'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-true-or-false-preview>
-                      <app-cloze-dropdown-preview
-                        *ngIf="item.type === 'CLOZE_DROPDOWN'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-cloze-dropdown-preview>
-                      <app-cloze-text-preview
-                        *ngIf="item.type === 'CLOZE_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-cloze-text-preview>
-                      <app-choice-matrix-preview
-                        *ngIf="item.type === 'CHOICE_MATRIX'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      ></app-choice-matrix-preview>
+                      <app-preview *ngIf="item.type === 'MCQ'" [previewData]="previewData" [itemTrailInfo]="itemProps"
+                        (reload)="reload($event)"></app-preview>
+                      <app-matching-preview *ngIf="item.type === 'ASSOCIATION'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-matching-preview>
+                      <app-ordering-preview *ngIf="item.type === 'ORDER_LIST'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-ordering-preview>
+                      <app-rich-essay-preview *ngIf="item.type === 'ESSAY_RICH_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" [showAnswerToggle]="false"
+                        (reload)="reload($event)"></app-rich-essay-preview>
+                      <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-multiple-response-preview>
+                      <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-short-text-preview>
+                      <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" [subjectName]="subjectName"
+                        (reload)="reload($event)"></app-yes-or-no-preview>
+                      <app-true-or-false-preview *ngIf="item.type === 'TRUE_FALSE'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-true-or-false-preview>
+                      <app-cloze-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-cloze-dropdown-preview>
+                      <app-cloze-text-preview *ngIf="item.type === 'CLOZE_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-cloze-text-preview>
+                      <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-choice-matrix-preview>
 
-                      <app-label-image-drag-drop-preview
-                        *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      >
+                      <app-label-image-drag-drop-preview *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps" (reload)="reload($event)">
                       </app-label-image-drag-drop-preview>
 
-                      <app-label-image-dropdown-preview
-                        *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      >
+                      <app-label-image-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps" (reload)="reload($event)">
                       </app-label-image-dropdown-preview>
 
-                      <app-label-image-text-preview
-                        *ngIf="item.type === 'CLOZE_TEXT_IMAGE'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        (reload)="reload($event)"
-                      >
+                      <app-label-image-text-preview *ngIf="item.type === 'CLOZE_TEXT_IMAGE'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)">
                       </app-label-image-text-preview>
+
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-drawing-and-writing-preview>
                     </div>
                   </div>
                 </a>
               </div>
 
-              <div
-                class="p-2"
-                *ngIf="
+              <div class="p-2" *ngIf="
                   !loading_items && itemsPage && itemsPage.content.length < 1
-                "
-              >
-                <div
-                  class="d-flex flex-column justify-content-between align-items-center"
-                >
-                  <img
-                    src="assets/images/blank_pages/empty-state.png"
-                    width="200"
-                    height="200"
-                    class=""
-                  />
+                ">
+                <div class="d-flex flex-column justify-content-between align-items-center">
+                  <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold my-2">
                     No Question(s) Found!
                   </h4>
-                  <a (click)="sendData()" class="btn btn-outline-primary"
-                    ><i class="ri-add-line me-2"></i>Add Question</a
-                  >
+                  <a (click)="sendData()" class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add
+                    Question</a>
                 </div>
 
                 <!-- <h2 class="card-title text-center my-2">No Topic Selected</h2> -->
@@ -1265,25 +835,12 @@
                 </p> -->
               </div>
 
-              <div
-                class="p-2"
-                *ngIf="!loading_items && subject.topics.length < 1"
-              >
-                <div
-                  class="d-flex flex-column justify-content-between align-items-center"
-                >
-                  <img
-                    src="assets/images/blank_pages/empty-state.png"
-                    width="200"
-                    height="200"
-                    class=""
-                  />
+              <div class="p-2" *ngIf="!loading_items && subject.topics.length < 1">
+                <div class="d-flex flex-column justify-content-between align-items-center">
+                  <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold">No Topic(s) Found!</h4>
-                  <a
-                    (click)="openNewTopicModal(newTopicModal)"
-                    class="btn btn-outline-primary"
-                    ><i class="ri-add-line me-2"></i>Add Topic</a
-                  >
+                  <a (click)="openNewTopicModal(newTopicModal)" class="btn btn-outline-primary"><i
+                      class="ri-add-line me-2"></i>Add Topic</a>
                 </div>
 
                 <!-- <h2 class="card-title text-center my-2">No Topic Selected</h2> -->
@@ -1297,56 +854,34 @@
           </div>
 
           <!-- This is the items List view for manual selection of single items to be added to an assessment -->
-          <div
-            *ngIf="assessmentActive && _currentBlock.selectionType === 'MANUAL'"
-            class="card-body"
-          >
+          <div *ngIf="assessmentActive && _currentBlock.selectionType === 'MANUAL'" class="card-body">
             <div class="live-preview">
-              <div
-                *ngIf="loading_items"
-                class="d-flex align-items-center justify-content-center"
-                style="height: 60vh"
-              >
+              <div *ngIf="loading_items" class="d-flex align-items-center justify-content-center" style="height: 60vh">
                 <div class="d-flex align-items-center gap-2">
                   <div class="spinner-border text-info fs-18" role="status">
                     <span class="visually-hidden">Loading...</span>
                   </div>
-                  <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-                    >Loading questions...</span
-                  >
+                  <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading questions...</span>
                 </div>
               </div>
 
-              <div
-                class="list-group"
-                *ngIf="
+              <div class="list-group" *ngIf="
                   !loading_items &&
                   !_loadingExistingItemIds &&
                   itemsPage.content.length >= 1
-                "
-              >
-                <a
-                  style="color: #000"
-                  class="list-group-item"
-                  [ngStyle]="
+                ">
+                <a style="color: #000" class="list-group-item" [ngStyle]="
                     _errorMsg && _errorMsg.includes(item.itemId)
                       ? { border: '1px solid red' }
                       : { border: 'none' }
-                  "
-                  *ngFor="let item of itemsPage.content; let i = index"
-                >
-                  <div
-                    class="row"
-                    [ngClass]="{
+                  " *ngFor="let item of itemsPage.content; let i = index">
+                  <div class="row" [ngClass]="{
                       'item-size': item.showFullItem === false,
                       'item-size-expand': item.showFullItem === true
-                    }"
-                  >
+                    }">
                     <!-- ITEM DETAILS-->
                     <div class="col-lg-10 col-sm-auto">
-                      <div
-                        class="d-flex flex-wrap align-items-center justify-content-between"
-                      >
+                      <div class="d-flex flex-wrap align-items-center justify-content-between">
                         <div>
                           <h5 class="list-title fs-18 mb-1">
                             {{ item.reference }}
@@ -1357,32 +892,22 @@
                         </div>
                         <div class="d-flex gap-2 float-end">
                           <div class="list-text mb-0 fs-12">
-                            date created: 23-11-2022
+                            Date created: 23-11-2022
                           </div>
                           <div class="list-text mb-0 fs-12">
-                            last modified: 23-11-2022
+                            Last modified: 23-11-2022
                           </div>
                         </div>
                       </div>
                     </div>
 
                     <!-- PREVIEW AND DELETE BUTTONS-->
-                    <div
-                      class="col-lg-2 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size px-2"
-                    >
+                    <div class="col-lg-2 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size px-2">
                       <div class="d-flex gap-2">
-                        <a
-                          *ngIf="item.showFullItem === false"
-                          (click)="preview(item, i)"
-                          class="btn btn-outline-success"
-                          >preview</a
-                        >
-                        <a
-                          *ngIf="item.showFullItem === true"
-                          (click)="hidePreview(item, i)"
-                          class="btn btn-outline-success"
-                          >hide</a
-                        >
+                        <a *ngIf="item.showFullItem === false" (click)="preview(item, i)"
+                          class="btn btn-outline-success">Preview</a>
+                        <a *ngIf="item.showFullItem === true" (click)="hidePreview(item, i)"
+                          class="btn btn-outline-success">Hide</a>
                         <!-- <button
                           *ngIf="currentUser.authorities.includes('ADMIN')"
                           ngbTooltip="USAGE HISTORY"
@@ -1419,93 +944,60 @@
                     <div *ngIf="item.showFullItem === false">
                       <!-- QUESTION -->
                       <span>Question :</span>
-                      <div
-                        class="list-text mb-0"
-                        *ngIf="item.showFullItem; else preview"
-                        [innerHTML]="item.stimulusSafeHtml"
-                      ></div>
+                      <div class="list-text mb-0" *ngIf="item.showFullItem; else preview"
+                        [innerHTML]="item.stimulusSafeHtml"></div>
 
                       <ng-template #preview>
-                        <div
-                          class="list-text mb-0"
-                          [innerHTML]="item.stimulus"
-                        ></div>
+                        <div class="list-text mb-0" [innerHTML]="item.stimulus"></div>
                       </ng-template>
 
-                      <div
-                        class="d-flex flex-wrap justify-content-between mt-3"
-                      >
+                      <div class="d-flex flex-wrap justify-content-between mt-3">
                         <!-- QUESTION EXTRAS-->
                         <div class="d-flex gap-1">
-                          <span
-                            title="QUESTION TYPE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="QUESTION TYPE" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-list-check-2"></i>
                             :
                             <div class="badge badge-soft-success fs-10">
                               {{ item.type }}
                             </div>
                           </span>
-                          <span
-                            title="QUESTION STATUS"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="QUESTION STATUS" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-upload-cloud-2-line"></i>
                             :
                             <div class="badge badge-soft-primary fs-10">
                               {{ item.itemStatus }}
                             </div>
                           </span>
-                          <span
-                            title="DIFFICULTY LEVEL"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="DIFFICULTY LEVEL" class="d-flex align-items-center" style="cursor: pointer">
                             <i class="ri-line-height"></i>:
                             <div class="badge badge-soft-danger fs-10">
                               {{ item.difficultyLevel }}
                             </div>
                           </span>
-                          <span
-                            *ngIf="item.passageDetails.passageId"
-                            title="PASSAGE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span *ngIf="item.passageDetails.passageId" title="PASSAGE" class="d-flex align-items-center"
+                            style="cursor: pointer">
                             <i class="ri-article-line"></i>:
                             <div class="badge badge-soft-info fs-10">
                               PASSAGE QUESTION
                             </div>
                           </span>
                           <ng-container>
-                            <span
-                              style="cursor: pointer"
-                              [ngbPopover]="tagsTemplate"
-                              triggers="mouseenter:mouseleave"
-                              placement="top"
-                              ><i class="bx bx-purchase-tag fs-10"></i>:
+                            <span style="cursor: pointer" [ngbPopover]="tagsTemplate" triggers="mouseenter:mouseleave"
+                              placement="top"><i class="bx bx-purchase-tag fs-10"></i>:
                               <div class="badge badge-soft-primary fs-10">
                                 TAGS ({{ item.itemTagDTOS.length }})
-                              </div></span
-                            >
+                              </div>
+                            </span>
 
                             <ng-template #tagsTemplate>
-                              <ul
-                                style="list-style-type: none"
-                                *ngIf="item.itemTagDTOS.length > 0"
-                              >
-                                <li
-                                  *ngFor="
+                              <ul style="list-style-type: none" *ngIf="item.itemTagDTOS.length > 0">
+                                <li *ngFor="
                                     let tag of item.itemTagDTOS;
                                     let i = index
-                                  "
-                                >
+                                  ">
                                   <a class="fs-10">
                                     {{
-                                      tag.tagName | slice : 0 : 50 | uppercase
+                                    tag.tagName | slice : 0 : 50 | uppercase
                                     }}
                                   </a>
                                 </li>
@@ -1515,11 +1007,7 @@
                               </p>
                             </ng-template>
                           </ng-container>
-                          <span
-                            title="ALLOCATED SCORE"
-                            class="d-flex align-items-center"
-                            style="cursor: pointer"
-                          >
+                          <span title="ALLOCATED SCORE" class="d-flex align-items-center" style="cursor: pointer">
                             <!-- <i class="ri-article-line"></i> -->
                             <div class="badge badge-soft-secondary fs-10">
                               {{ item.score }} Mark(s)
@@ -1528,42 +1016,26 @@
                         </div>
 
                         <!-- QUESTION SELECTION CHECKBOX-->
-                        <div
-                          class="d-flex gap-2"
-                          *ngIf="
+                        <div class="d-flex gap-2" *ngIf="
                             selectedQuestionIds.length == 0 ||
                             selectedQuestionIds.length <
                               _currentBlock.totalQuestions ||
                             selectedQuestionIds.includes(item.itemId)
-                          "
-                        >
-                          <input
-                            [disabled]="_existingItemIds.includes(item.itemId)"
-                            *ngIf="assessmentActive"
-                            class="form-check-input"
-                            type="checkbox"
-                            (change)="addQuestionIdToAssessment(item.itemId)"
+                          ">
+                          <input [disabled]="_existingItemIds.includes(item.itemId)" *ngIf="assessmentActive"
+                            class="form-check-input" type="checkbox" (change)="addQuestionIdToAssessment(item.itemId)"
                             [checked]="
                               selectedQuestionIds.includes(item.itemId) ||
                               _existingItemIds.includes(item.itemId)
-                            "
-                          />
-                          <label
-                            (click)="addQuestionIdToAssessment(item.itemId)"
-                            *ngIf="
+                            " />
+                          <label (click)="addQuestionIdToAssessment(item.itemId)" *ngIf="
                               !selectedQuestionIds.includes(item.itemId) &&
                               !_existingItemIds.includes(item.itemId)
-                            "
-                            class="text-muted"
-                            >select question</label
-                          >
-                          <span
-                            class="text-muted"
-                            *ngIf="
+                            " class="text-muted">select question</label>
+                          <span class="text-muted" *ngIf="
                               item.itemId &&
                               _existingItemIds.includes(item.itemId)
-                            "
-                          >
+                            ">
                             already selected for exam
                           </span>
                         </div>
@@ -1572,80 +1044,39 @@
 
                     <!-- QUESTION PREVIEWS-->
                     <div *ngIf="item.showFullItem === true">
-                      <app-preview
-                        *ngIf="item.type === 'MCQ'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-preview>
-                      <app-matching-preview
-                        *ngIf="item.type === 'ASSOCIATION'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-matching-preview>
-                      <app-ordering-preview
-                        *ngIf="item.type === 'ORDER_LIST'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-ordering-preview>
-                      <app-rich-essay-preview
-                        *ngIf="item.type === 'ESSAY_RICH_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-rich-essay-preview>
-                      <app-multiple-response-preview
-                        *ngIf="item.type === 'MRQ'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-multiple-response-preview>
-                      <app-short-text-preview
-                        *ngIf="item.type === 'SHORT_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-short-text-preview>
-                      <app-yes-or-no-preview
-                        *ngIf="item.type === 'YES_NO'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                        [subjectName]="subjectName"
-                      ></app-yes-or-no-preview>
-                      <app-true-or-false-preview
-                        *ngIf="item.type === 'TRUE_FALSE'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-true-or-false-preview>
-                      <app-cloze-dropdown-preview
-                        *ngIf="item.type === 'CLOZE_DROPDOWN'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-cloze-dropdown-preview>
-                      <app-cloze-text-preview
-                        *ngIf="item.type === 'CLOZE_TEXT'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-cloze-text-preview>
-                      <app-choice-matrix-preview
-                        *ngIf="item.type === 'CHOICE_MATRIX'"
-                        [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"
-                      ></app-choice-matrix-preview>
+                      <app-preview *ngIf="item.type === 'MCQ'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-preview>
+                      <app-matching-preview *ngIf="item.type === 'ASSOCIATION'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-matching-preview>
+                      <app-ordering-preview *ngIf="item.type === 'ORDER_LIST'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-ordering-preview>
+                      <app-rich-essay-preview *ngIf="item.type === 'ESSAY_RICH_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-rich-essay-preview>
+                      <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-multiple-response-preview>
+                      <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-short-text-preview>
+                      <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" [subjectName]="subjectName"></app-yes-or-no-preview>
+                      <app-true-or-false-preview *ngIf="item.type === 'TRUE_FALSE'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-true-or-false-preview>
+                      <app-cloze-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-cloze-dropdown-preview>
+                      <app-cloze-text-preview *ngIf="item.type === 'CLOZE_TEXT'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-cloze-text-preview>
+                      <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-choice-matrix-preview>
+
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
                     </div>
                   </div>
                 </a>
               </div>
 
-              <div
-                class=""
-                *ngIf="!loading_items && itemsPage.content.length < 1"
-              >
-                <div
-                  class="d-flex flex-column justify-content-between align-items-center"
-                >
-                  <img
-                    src="assets/images/blank_pages/empty-state.png"
-                    width="200"
-                    height="200"
-                    class=""
-                  />
+              <div class="" *ngIf="!loading_items && itemsPage.content.length < 1">
+                <div class="d-flex flex-column justify-content-between align-items-center">
+                  <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold">No Question(s) Found!</h4>
                 </div>
 
@@ -1671,17 +1102,11 @@
           </div>
 
           <!-- This is the view for Automated selection of questions to be added to the assessment -->
-          <div
-            *ngIf="_currentBlock && _currentBlock.selectionType === 'AUTOMATED'"
-            class="card-body"
-          >
-            <div
-              *ngIf="
+          <div *ngIf="_currentBlock && _currentBlock.selectionType === 'AUTOMATED'" class="card-body">
+            <div *ngIf="
                 assessmentFilters.length == 0 &&
                 _currentBlock.blockType === 'SINGLE_QUESTIONS'
-              "
-              class="live-preview"
-            >
+              " class="live-preview">
               <!-- <div class="card p-2">
                 <h2 class="card-title text-center my-2">
                   Filter cards goes in here
@@ -1706,39 +1131,24 @@
                   >
                 </p>
               </div> -->
-              <div
-                *ngIf="
+              <div *ngIf="
                   assessmentFilters.length == 0 &&
                   _currentBlock.blockType === 'SINGLE_QUESTIONS'
-                "
-                class="d-flex flex-column justify-content-between align-items-center"
-              >
-                <img
-                  src="assets/images/blank_pages/empty-state.png"
-                  width="200"
-                  height="200"
-                  class=""
-                />
+                " class="d-flex flex-column justify-content-between align-items-center">
+                <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                 <h4 class="text-secondary fw-bold">
                   No Question(s) Criteria Added!
                 </h4>
-                <a
-                  (click)="
+                <a (click)="
                     openNewRandomSelectionFilterModal(randomFilterOptions)
-                  "
-                  class="btn btn-outline-primary"
-                  ><i class="ri-add-line me-2"></i>Add Criteria</a
-                >
+                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Criteria</a>
               </div>
             </div>
 
-            <div
-              *ngIf="
+            <div *ngIf="
                 assessmentPassageFilters.length == 0 &&
                 _currentBlock.blockType === 'PASSAGES'
-              "
-              class="live-preview"
-            >
+              " class="live-preview">
               <!-- <div class="card p-2">
                 <h2 class="card-title text-center my-2">
                   Filter Options goes in here
@@ -1764,46 +1174,28 @@
                   >
                 </p>
               </div> -->
-              <div
-                *ngIf="
+              <div *ngIf="
                   assessmentFilters.length == 0 &&
                   _currentBlock.blockType === 'PASSAGES'
-                "
-                class="d-flex flex-column justify-content-between align-items-center"
-              >
-                <img
-                  src="assets/images/blank_pages/empty-state.png"
-                  width="200"
-                  height="200"
-                  class=""
-                />
+                " class="d-flex flex-column justify-content-between align-items-center">
+                <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                 <h4 class="text-secondary fw-bold">
                   No Passage(s) Criteria Added!
                 </h4>
-                <a
-                  (click)="
+                <a (click)="
                     openNewPassageSelectionFilterModal(
                       randomPassageFilterOptions
                     )
-                  "
-                  class="btn btn-outline-primary"
-                  ><i class="ri-add-line me-2"></i>Add Criteria</a
-                >
+                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Criteria</a>
               </div>
             </div>
 
             <!-- Single Questions Filter Cards-->
-            <div
-              *ngIf="
+            <div *ngIf="
                 assessmentFilters.length > 0 &&
                 _currentBlock.blockType === 'SINGLE_QUESTIONS'
-              "
-              class="live-preview"
-            >
-              <div
-                *ngFor="let assessmentFilter of assessmentFilters"
-                class="card"
-              >
+              " class="live-preview">
+              <div *ngFor="let assessmentFilter of assessmentFilters" class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="d-flex justify-content-between">
@@ -1811,48 +1203,34 @@
                         <h5 class="card-title">
                           {{ assessmentFilter.topicName | uppercase }}
                         </h5>
-                        <span
-                          *ngIf="assessmentFilter.subtopicName"
-                          class="text-muted fs-12"
-                          >SUB-TOPIC:
-                          {{ assessmentFilter.subtopicName | uppercase }}</span
-                        >
+                        <span *ngIf="assessmentFilter.subtopicName" class="text-muted fs-12">SUB-TOPIC:
+                          {{ assessmentFilter.subtopicName | uppercase }}</span>
                         <p class="" *ngIf="assessmentFilter.content">
                           <span>Content: </span>{{ assessmentFilter.content }}
                         </p>
                       </div>
                       <div class="">
-                        <button
-                          class="btn btn-icon btn-danger"
-                          (click)="deleteAssessmentFilter(assessmentFilter)"
-                          ngbTooltip="DELETE CRITERIA"
-                          [disabled]="submitted"
-                        >
+                        <button class="btn btn-icon btn-danger" (click)="deleteAssessmentFilter(assessmentFilter)"
+                          ngbTooltip="DELETE CRITERIA" [disabled]="submitted">
                           <i class="ri-delete-bin-2-line"></i>
                         </button>
                       </div>
                     </div>
                     <div class="d-flex justify-content-between mt-3">
                       <div class="d-flex gap-1">
-                        <span
-                          title="ITEM TYPE"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="ITEM TYPE" class="d-flex align-items-center">
                           <!-- <i class="ri-list-check-2"></i> -->
                           <span class="fs-10 fw-bold">Question Type</span>
                           :
                           <div class="badge badge-soft-success fs-10">
                             {{
-                              assessmentFilter.itemType
-                                ? assessmentFilter.itemType
-                                : "NONE"
+                            assessmentFilter.itemType
+                            ? assessmentFilter.itemType
+                            : "NONE"
                             }}
                           </div>
                         </span>
-                        <span
-                          title="TOTAL QUESTIONS"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="TOTAL QUESTIONS" class="d-flex align-items-center">
                           <!-- <i class="ri-file-list-line"></i> -->
                           <span class="fs-10 fw-bold">Total Questions</span>
                           :
@@ -1860,26 +1238,20 @@
                             {{ assessmentFilter.totalQuestions }} Question(s)
                           </div>
                         </span>
-                        <span
-                          title="TOTAL TAGS"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="TOTAL TAGS" class="d-flex align-items-center">
                           <!-- <i class="ri-price-tag-3-line"></i> -->
                           <span class="fs-10 fw-bold">Total Tags</span>
                           :
                           <div class="badge badge-soft-primary fs-10">
                             {{
-                              assessmentFilter.tags.length > 0
-                                ? assessmentFilter.tags.length
-                                : 0
+                            assessmentFilter.tags.length > 0
+                            ? assessmentFilter.tags.length
+                            : 0
                             }}
                             Tag(s)
                           </div>
                         </span>
-                        <span
-                          title="SEARCH CONTENT"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="SEARCH CONTENT" class="d-flex align-items-center">
                           <!-- <i class="ri-price-tag-3-line"></i> -->
                           <span class="fs-10 fw-bold">Search Content</span>
                           :
@@ -1890,14 +1262,8 @@
                       </div>
                       <div *ngIf="assessmentFilter.tags.length > 0">
                         Tags:
-                        <ng-container
-                          *ngFor="let tag of assessmentFilter.tags"
-                          class="d-flex align-items-center"
-                        >
-                          <span
-                            title="TAGS"
-                            class="badge badge-soft-info fs-10"
-                          >
+                        <ng-container *ngFor="let tag of assessmentFilter.tags" class="d-flex align-items-center">
+                          <span title="TAGS" class="badge badge-soft-info fs-10">
                             {{ tag.tagName }}
                           </span>
                         </ng-container>
@@ -1917,17 +1283,11 @@
             </div>
 
             <!-- Passage Filter Cards-->
-            <div
-              *ngIf="
+            <div *ngIf="
                 assessmentPassageFilters.length > 0 &&
                 _currentBlock.blockType === 'PASSAGES'
-              "
-              class="live-preview"
-            >
-              <div
-                *ngFor="let assessmentFilter of assessmentPassageFilters"
-                class="card"
-              >
+              " class="live-preview">
+              <div *ngFor="let assessmentFilter of assessmentPassageFilters" class="card">
                 <div class="card-body">
                   <div class="row">
                     <div class="d-flex justify-content-between">
@@ -1935,37 +1295,26 @@
                         <h5 class="card-title">
                           {{ assessmentFilter.topicName | uppercase }}
                         </h5>
-                        <span
-                          *ngIf="assessmentFilter.subtopicName"
-                          class="text-muted fs-12"
-                          >SUB-TOPIC:
-                          {{ assessmentFilter.subtopicName | uppercase }}</span
-                        >
+                        <span *ngIf="assessmentFilter.subtopicName" class="text-muted fs-12">SUB-TOPIC:
+                          {{ assessmentFilter.subtopicName | uppercase }}</span>
                         <p class="">
                           {{
-                            assessmentFilter.content
-                              ? assessmentFilter.content
-                              : "NONE"
+                          assessmentFilter.content
+                          ? assessmentFilter.content
+                          : "NONE"
                           }}
                         </p>
                       </div>
                       <div>
-                        <button
-                          class="btn btn-icon btn-danger"
-                          (click)="deleteAssessmentFilter(assessmentFilter)"
-                          ngbTooltip="DELETE CRITERIA"
-                          [disabled]="submitted"
-                        >
+                        <button class="btn btn-icon btn-danger" (click)="deleteAssessmentFilter(assessmentFilter)"
+                          ngbTooltip="DELETE CRITERIA" [disabled]="submitted">
                           <i class="ri-delete-bin-2-line"></i>
                         </button>
                       </div>
                     </div>
                     <div class="d-flex justify-content-between mt-3">
                       <div class="d-flex gap-1">
-                        <span
-                          title="TOTAL QUESTIONS"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="TOTAL QUESTIONS" class="d-flex align-items-center">
                           <i class="ri-list-check-2"></i>
                           :
                           <div class="badge badge-soft-success fs-10">
@@ -1973,26 +1322,20 @@
                             Question(s)
                           </div>
                         </span>
-                        <span
-                          title="TOTAL PASSAGES"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="TOTAL PASSAGES" class="d-flex align-items-center">
                           <i class="ri-file-list-line"></i>
                           :
                           <div class="badge badge-soft-primary fs-10">
                             {{ assessmentFilter.totalPassages }} Passage(s)
                           </div>
                         </span>
-                        <span
-                          title="TOTAL TAGS"
-                          class="d-flex align-items-center"
-                        >
+                        <span title="TOTAL TAGS" class="d-flex align-items-center">
                           <i class="ri-price-tag-3-line"></i>:
                           <div class="badge badge-soft-primary fs-10">
                             {{
-                              assessmentFilter.tags.length > 0
-                                ? assessmentFilter.tags.length
-                                : 0
+                            assessmentFilter.tags.length > 0
+                            ? assessmentFilter.tags.length
+                            : 0
                             }}
                             Tag(s)
                           </div>
@@ -2002,21 +1345,11 @@
                       <div class="d-flex align-items-center">
                         <div>
                           Tags:
-                          <ng-container
-                            *ngIf="assessmentFilter.tags.length > 0"
-                          >
-                            <span
-                              class="badge badge-soft-info fs-10"
-                              *ngFor="let tag of assessmentFilter.tags"
-                              >{{ tag.tagName }}</span
-                            ></ng-container
-                          >
-                          <ng-container
-                            *ngIf="assessmentFilter.tags.length == 0"
-                          >
-                            <span class="badge badge-soft-info fs-10"
-                              >NONE</span
-                            >
+                          <ng-container *ngIf="assessmentFilter.tags.length > 0">
+                            <span class="badge badge-soft-info fs-10" *ngFor="let tag of assessmentFilter.tags">{{
+                              tag.tagName }}</span></ng-container>
+                          <ng-container *ngIf="assessmentFilter.tags.length == 0">
+                            <span class="badge badge-soft-info fs-10">NONE</span>
                           </ng-container>
                         </div>
                       </div>
@@ -2029,35 +1362,20 @@
         </ngx-simplebar>
         <div *ngIf="!assessmentActive && itemsPage" class="card-footer">
           <!-- Pagination-->
-          <p-paginator
-            [totalRecords]="itemsPage.totalElements"
-            (onPageChange)="itemsPageChange($event)"
-            [first]="0"
-            [rowsPerPageOptions]="[20, 30, 50]"
-            [rows]="20"
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          >
+          <p-paginator [totalRecords]="itemsPage.totalElements" (onPageChange)="itemsPageChange($event)" [first]="0"
+            [rowsPerPageOptions]="[20, 30, 50]" [rows]="20" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
           </p-paginator>
         </div>
-        <div
-          *ngIf="
+        <div *ngIf="
             assessmentActive &&
             itemsPage &&
             _currentBlock.selectionType == 'MANUAL'
-          "
-          class="card-footer"
-        >
+          " class="card-footer">
           <!-- Pagination-->
-          <p-paginator
-            [totalRecords]="itemsPage.totalElements"
-            (onPageChange)="itemsPageChangeAssessment($event)"
-            [first]="0"
-            [rowsPerPageOptions]="[20, 30, 50]"
-            [rows]="20"
-            [showCurrentPageReport]="true"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-          >
+          <p-paginator [totalRecords]="itemsPage.totalElements" (onPageChange)="itemsPageChangeAssessment($event)"
+            [first]="0" [rowsPerPageOptions]="[20, 30, 50]" [rows]="20" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
           </p-paginator>
         </div>
       </div>
@@ -2066,13 +1384,8 @@
     <ng-template #newTopicModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">CREATE NEW TOPIC</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2083,41 +1396,23 @@
           </p>
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <label>Topic Name</label>
-            <input
-              type="text"
-              name="topicName"
-              class="form-control mb-3"
-              placeholder="Topic"
-              required
-              [ngModel]="newTopic.name"
-              (ngModelChange)="newTopic.name = $event.toUpperCase()"
-            />
+            <input type="text" name="topicName" class="form-control mb-3" placeholder="Topic" required
+              [ngModel]="newTopic.name" (ngModelChange)="newTopic.name = $event.toUpperCase()" />
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex gap-2 float-end mt-4">
-          <button
-            type="button"
-            class="btn btn-danger d-flex gap-1 align-items-center"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click'); newTopicForm.reset()"
-          >
+          <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+            (click)="modal.close('Close click'); newTopicForm.reset()">
             <i class="ri-close-line"></i>Close
           </button>
-          <button
-            type="button"
-            *ngIf="!submitted"
-            (click)="addNewTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center"
-          >
+          <button type="button" *ngIf="!submitted" (click)="addNewTopic()"
+            class="btn btn-primary d-flex gap-1 align-items-center">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2133,13 +1428,8 @@
     <ng-template #renameTopicModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">RENAME TOPIC</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2148,41 +1438,24 @@
           <p class="text-muted text-center">{{ subjectName.toUpperCase() }}</p>
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <label>Topic Name</label>
-            <input
-              type="text"
-              name="topicName"
-              class="form-control mb-3"
-              placeholder="Topic"
-              required
+            <input type="text" name="topicName" class="form-control mb-3" placeholder="Topic" required
               [ngModel]="currentTopic.topicName.toUpperCase()"
-              (ngModelChange)="currentTopic.topicName = $event.toUpperCase()"
-            />
+              (ngModelChange)="currentTopic.topicName = $event.toUpperCase()" />
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex gap-2 float-end mt-2">
-          <button
-            type="button"
-            class="btn btn-danger d-flex gap-1 align-items-center"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click'); renameTopicForm.reset()"
-          >
+          <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+            (click)="modal.close('Close click'); renameTopicForm.reset()">
             <i class="ri-close-line"></i>Close
           </button>
-          <button
-            *ngIf="!submitted"
-            type="button"
-            (click)="renameTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center"
-          >
+          <button *ngIf="!submitted" type="button" (click)="renameTopic()"
+            class="btn btn-primary d-flex gap-1 align-items-center">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2198,13 +1471,8 @@
     <ng-template #renameSubtopicModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">RENAME SUBTOPIC</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2212,47 +1480,30 @@
         <form #renameSubtopicForm="ngForm" (ngSubmit)="renameSubtopic()">
           <p class="text-muted text-center">
             {{ subjectName.toUpperCase() }}/{{
-              currentTopic.topicName.toUpperCase()
+            currentTopic.topicName.toUpperCase()
             }}
           </p>
           <p></p>
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <label>Subtopic Name</label>
-            <input
-              type="text"
-              name="topicName"
-              class="form-control mb-3"
-              placeholder="Topic"
-              required
+            <input type="text" name="topicName" class="form-control mb-3" placeholder="Topic" required
               [ngModel]="currentTopic.subtopicName.toUpperCase()"
-              (ngModelChange)="currentTopic.subtopicName = $event.toUpperCase()"
-            />
+              (ngModelChange)="currentTopic.subtopicName = $event.toUpperCase()" />
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex gap-2 float-end">
-          <button
-            type="button"
-            class="btn btn-danger d-flex gap-1 align-items-center"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click'); renameSubtopicForm.reset()"
-          >
+          <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+            (click)="modal.close('Close click'); renameSubtopicForm.reset()">
             <i class="ri-close-line"></i>Close
           </button>
-          <button
-            type="button"
-            *ngIf="!submitted"
-            (click)="renameSubtopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center"
-          >
+          <button type="button" *ngIf="!submitted" (click)="renameSubtopic()"
+            class="btn btn-primary d-flex gap-1 align-items-center">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2268,13 +1519,8 @@
     <ng-template #newSubTopicModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">CREATE NEW SUB-TOPIC</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2285,41 +1531,24 @@
           </p>
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <label for="subTopicName">Sub-Topic Name</label>
-            <input
-              type="text"
-              name="subTopicName"
-              class="form-control mb-3"
-              placeholder="Topic"
-              required
-              [(ngModel)]="newSubtopic.name"
-            />
+            <input type="text" name="subTopicName" class="form-control mb-3" placeholder="Topic" required
+              [(ngModel)]="newSubtopic.name" />
             <!-- (ngModelChange)="newSubtopic.name = $event.toUpperCase()" -->
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex gap-2 float-end">
-          <button
-            type="button"
-            class="btn btn-danger d-flex gap-1 align-items-center"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click'); newSubTopicForm.reset()"
-          >
+          <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+            (click)="modal.close('Close click'); newSubTopicForm.reset()">
             <i class="ri-close-line"></i>Close
           </button>
-          <button
-            type="button"
-            *ngIf="!submitted"
-            (click)="saveSubTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center"
-          >
+          <button type="button" *ngIf="!submitted" (click)="saveSubTopic()"
+            class="btn btn-primary d-flex gap-1 align-items-center">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2335,60 +1564,34 @@
     <ng-template #randomFilterOptions [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">NEW BLOCK CRITERIA</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click'); removeAllTopics()"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click'); removeAllTopics()">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="px-5 modal-body">
-        <form
-          #assessmentFilterForm
-          (ngSubmit)="
+        <form #assessmentFilterForm (ngSubmit)="
             submitAssessmentFilter(assessmentFilterForm, scoreRef.value)
-          "
-        >
+          ">
           <div class="py-2">
-            <label for="subTopicName"
-              >Topic <span class="text-danger">*</span></label
-            >
-            <ng-select
-              [items]="subject.topics"
-              bindLabel="topicName"
-              class="custom"
-              name="topicName"
-              dropdownPosition="bottom"
-              (change)="pickTopic($event)"
-            >
+            <label for="subTopicName">Topic <span class="text-danger">*</span></label>
+            <ng-select [items]="subject.topics" bindLabel="topicName" class="custom" name="topicName"
+              dropdownPosition="bottom" (change)="pickTopic($event)">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
             </ng-select>
           </div>
 
-          <div
-            *ngIf="
+          <div *ngIf="
               assessmentFilter.topicId &&
               assessmentFilter.topicName !== 'ALL-TOPIC(S)' &&
               (assessmentSelectedTopic.subtopics ||
                 assessmentSelectedTopic.subtopics.length > 0)
-            "
-            class="py-2"
-          >
+            " class="py-2">
             <label for="subTopicName">Sub-Topic</label>
-            <ng-select
-              [items]="assessmentSelectedTopic.subtopics"
-              bindLabel="subtopicName"
-              class="custom"
-              bindValue="topicId"
-              name="subtopicName"
-              dropdownPosition="bottom"
-              (change)="pickSubTopic($event)"
-            >
+            <ng-select [items]="assessmentSelectedTopic.subtopics" bindLabel="subtopicName" class="custom"
+              bindValue="topicId" name="subtopicName" dropdownPosition="bottom" (change)="pickSubTopic($event)">
               <ng-template ng-optgroup-tmp let-item="item">
                 {{ item[1].subjectName | uppercase }}
               </ng-template>
@@ -2402,32 +1605,16 @@
           <div class="row py-1">
             <!-- Total number of questions specification field-->
             <div class="col-6">
-              <label for="totalQuestions"
-                >Total Questions <span class="text-danger">*</span></label
-              >
-              <input
-                type="number"
-                [max]="_currentBlock.totalQuestions"
-                min="1"
-                class="form-control"
-                name="totalQuestions"
-                placeholder="1-100"
-                [(ngModel)]="assessmentFilter.totalQuestions"
-                ngModel
-              />
+              <label for="totalQuestions">Total Questions <span class="text-danger">*</span></label>
+              <input type="number" [max]="_currentBlock.totalQuestions" min="1" class="form-control"
+                name="totalQuestions" placeholder="1-100" [(ngModel)]="assessmentFilter.totalQuestions" ngModel />
             </div>
 
             <!-- Question type selection field-->
             <div class="col-6">
-              <label for="questionType"
-                >Question Type<!--  <span class="text-danger">*</span> --></label
-              >
-              <select
-                class="form-select"
-                name="questionType"
-                #itemTypeRef
-                (change)="onQuestionTypeChange(itemTypeRef.value)"
-              >
+              <label for="questionType">Question Type<!--  <span class="text-danger">*</span> --></label>
+              <select class="form-select" name="questionType" #itemTypeRef
+                (change)="onQuestionTypeChange(itemTypeRef.value)">
                 <option value="any" selected="true">ANY</option>
                 <option value="{{ type }}" *ngFor="let type of itemType">
                   {{ type }}
@@ -2438,28 +1625,14 @@
             <!-- score-->
             <div class="col-6">
               <label for="totalQuestions"> Score</label>
-              <input
-                #scoreRef
-                type="number"
-                min="0"
-                class="form-control"
-                name="score"
-                placeholder="ANY"
-                ngModel
-              />
+              <input #scoreRef type="number" min="0" class="form-control" name="score" placeholder="ANY" ngModel />
             </div>
 
             <!-- Difficulty Level-->
             <div class="col-6">
-              <label for="questionType"
-                >Difficulty Level<!--  <span class="text-danger">*</span> --></label
-              >
-              <select
-                class="form-select"
-                name="difficultyLevel"
-                #difficultyLevelRef
-                (change)="onDiffLevelChange(difficultyLevelRef.value)"
-              >
+              <label for="questionType">Difficulty Level<!--  <span class="text-danger">*</span> --></label>
+              <select class="form-select" name="difficultyLevel" #difficultyLevelRef
+                (change)="onDiffLevelChange(difficultyLevelRef.value)">
                 <option selected="true">ANY</option>
                 <option *ngFor="let dl of difficultyLevel">
                   {{ dl }}
@@ -2472,47 +1645,28 @@
             <!-- filter items by content -->
             <div class="col-12">
               <label for="content">Content</label>
-              <input
-                type="text"
-                class="form-control"
-                name="content"
-                placeholder="ANY"
-                [(ngModel)]="assessmentFilter.content"
-                ngModel
-              />
+              <input type="text" class="form-control" name="content" placeholder="ANY"
+                [(ngModel)]="assessmentFilter.content" ngModel />
             </div>
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            (click)="
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="
               modal.close('Close click');
               assessmentFilterForm.reset();
               removeAllTopics()
-            "
-          >
+            ">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
-          <button
-            type="button"
-            *ngIf="!submitted"
-            (click)="
+          <button type="button" *ngIf="!submitted" (click)="
               submitAssessmentFilter(assessmentFilterForm, scoreRef.value)
-            "
-            class="btn btn-primary"
-          >
+            " class="btn btn-primary">
             <i class="ri-save-line me-2 align-middle"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2530,51 +1684,29 @@
         <h3 class="modal-title">PASSAGE CRITERIA</h3>
       </div>
       <div class="px-5 modal-body">
-        <form
-          #assessmentPassageFilterForm
-          (ngSubmit)="
+        <form #assessmentPassageFilterForm (ngSubmit)="
             submitAssessmentPassageFilter(assessmentPassageFilterForm)
-          "
-        >
+          ">
           <div class="py-2">
-            <label for="subTopicName"
-              >Topic Name <span class="text-danger">*</span></label
-            >
-            <ng-select
-              [items]="subject.topics"
-              class="custom"
-              bindLabel="topicName"
-              bindValue="topicId"
-              name="topicName"
-              dropdownPosition="bottom"
-              (change)="pickTopicForAssessmentPassageFilter($event)"
-            >
+            <label for="subTopicName">Topic Name <span class="text-danger">*</span></label>
+            <ng-select [items]="subject.topics" class="custom" bindLabel="topicName" bindValue="topicId"
+              name="topicName" dropdownPosition="bottom" (change)="pickTopicForAssessmentPassageFilter($event)">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
             </ng-select>
 
-            <div
-              *ngIf="
+            <div *ngIf="
                 assessmentSelectedTopic &&
                 assessmentPassageFilter.topicId &&
                 assessmentPassageFilter.topicName !== 'ALL-TOPIC(S)' &&
                 (assessmentSelectedTopic.subtopics ||
                   assessmentSelectedTopic.subtopics.length > 0)
-              "
-              class="py-2"
-            >
+              " class="py-2">
               <label for="subTopicName">Sub-Topic</label>
-              <ng-select
-                [items]="assessmentSelectedTopic.subtopics"
-                bindLabel="subtopicName"
-                class="custom"
-                bindValue="topicId"
-                name="subtopicName"
-                dropdownPosition="bottom"
-                (change)="pickSubTopicForAssessmentPassageFilter($event)"
-                [(ngModel)]="assessmentFilter.subtopicId"
-              >
+              <ng-select [items]="assessmentSelectedTopic.subtopics" bindLabel="subtopicName" class="custom"
+                bindValue="topicId" name="subtopicName" dropdownPosition="bottom"
+                (change)="pickSubTopicForAssessmentPassageFilter($event)" [(ngModel)]="assessmentFilter.subtopicId">
                 <ng-template ng-optgroup-tmp let-item="item">
                   {{ item[1].subjectName | uppercase }}
                 </ng-template>
@@ -2586,87 +1718,45 @@
             <!-- filter passage by content -->
             <div class="col-12 mb-2">
               <label for="content">Content (Optional)</label>
-              <input
-                type="text"
-                class="form-control"
-                name="content"
-                placeholder="Content of the passage....."
-                [(ngModel)]="assessmentPassageFilter.content"
-                ngModel
-              />
+              <input type="text" class="form-control" name="content" placeholder="Content of the passage....."
+                [(ngModel)]="assessmentPassageFilter.content" ngModel />
             </div>
 
             <!-- Total number of passages specification field-->
             <div class="col-6">
-              <label for="totalQuestions"
-                >No of Passages <span class="text-danger">*</span></label
-              >
-              <input
-                type="number"
-                min="0"
-                class="form-control"
-                name="totalPassages"
-                placeholder="1-100"
-                [(ngModel)]="assessmentPassageFilter.totalPassages"
-                ngModel
-              />
+              <label for="totalQuestions">No of Passages <span class="text-danger">*</span></label>
+              <input type="number" min="0" class="form-control" name="totalPassages" placeholder="1-100"
+                [(ngModel)]="assessmentPassageFilter.totalPassages" ngModel />
             </div>
 
             <div class="col-6">
-              <label for="totalQuestions"
-                >No of Questions in passage<span class="text-danger"
-                  >*</span
-                ></label
-              >
-              <input
-                type="number"
-                min="0"
-                class="form-control"
-                name="totalQuestionsInPassage"
+              <label for="totalQuestions">No of Questions in passage<span class="text-danger">*</span></label>
+              <input type="number" min="0" class="form-control" name="totalQuestionsInPassage"
                 placeholder="{{ _currentBlock.totalQuestionsInPassage }}"
-                [value]="_currentBlock.totalQuestionsInPassage"
-                ngModel
-                disabled
-              />
+                [value]="_currentBlock.totalQuestionsInPassage" ngModel disabled />
             </div>
           </div>
 
           <div class="py-2">
-            <app-item-tag
-              (sendTags)="recieveTag($event)"
-              [status]="'Optional'"
-            ></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [status]="'Optional'"></app-item-tag>
           </div>
         </form>
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            class="btn btn-outline-danger"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click')"
-          >
+          <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"
+            (click)="modal.close('Close click')">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
-          <button
-            *ngIf="!submitted"
-            [disabled]="
+          <button *ngIf="!submitted" [disabled]="
               !assessmentPassageFilter.totalPassages ||
               !assessmentPassageFilter.topicId ||
               submitted
-            "
-            type="button"
-            (click)="submitAssessmentPassageFilter(assessmentPassageFilterForm)"
-            class="btn btn-primary"
-          >
+            " type="button" (click)="submitAssessmentPassageFilter(assessmentPassageFilterForm)"
+            class="btn btn-primary">
             <i class="ri-save-line me-2 align-middle"></i>Save
           </button>
-          <button
-            *ngIf="submitted"
-            class="btn btn-outline-primary btn-load"
-            [disabled]="submitted"
-          >
+          <button *ngIf="submitted" class="btn btn-outline-primary btn-load" [disabled]="submitted">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>
@@ -2681,32 +1771,18 @@
     <ng-template #copyQuestionModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">COPY QUESTION</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="px-5 modal-body">
         <form #questionCopyForm (ngSubmit)="copyQuestion(questionCopyForm)">
           <div class="py-2">
-            <label for="subjectName"
-              >Subject Name <span class="text-danger">*</span></label
-            >
-            <ng-select
-              [items]="subjects"
-              class="custom"
-              bindLabel="subjectName"
-              bindValue="subjectId"
-              name="subjectName"
-              dropdownPosition="bottom"
-              [(ngModel)]="copiedItems.subjectId"
-              (ngModelChange)="getTopicsTreeToCopyItem()"
-            >
+            <label for="subjectName">Subject Name <span class="text-danger">*</span></label>
+            <ng-select [items]="subjects" class="custom" bindLabel="subjectName" bindValue="subjectId"
+              name="subjectName" dropdownPosition="bottom" [(ngModel)]="copiedItems.subjectId"
+              (ngModelChange)="getTopicsTreeToCopyItem()">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2714,21 +1790,11 @@
           </div>
 
           <div class="py-2">
-            <label for="topicName"
-              >Topic Name <span class="text-danger">*</span></label
-            >
-            <ng-select
-              [items]="
+            <label for="topicName">Topic Name <span class="text-danger">*</span></label>
+            <ng-select [items]="
                 copyDestinationTopicTree && copyDestinationTopicTree.topics
-              "
-              class="custom"
-              bindLabel="topicName"
-              bindValue="topicId"
-              name="topicName"
-              dropdownPosition="bottom"
-              [(ngModel)]="copiedItems.topicId"
-              (change)="setTopicToCopyItemInto($event)"
-            >
+              " class="custom" bindLabel="topicName" bindValue="topicId" name="topicName" dropdownPosition="bottom"
+              [(ngModel)]="copiedItems.topicId" (change)="setTopicToCopyItemInto($event)">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2737,15 +1803,8 @@
 
           <div class="py-2">
             <label for="subtopicName">Subtopic Name (Optional)</label>
-            <ng-select
-              [items]="copyDestinationSubtopicTree"
-              class="custom"
-              bindLabel="subtopicName"
-              bindValue="topicId"
-              name="subtopicName"
-              dropdownPosition="bottom"
-              [(ngModel)]="copiedItems.subtopicId"
-            >
+            <ng-select [items]="copyDestinationSubtopicTree" class="custom" bindLabel="subtopicName" bindValue="topicId"
+              name="subtopicName" dropdownPosition="bottom" [(ngModel)]="copiedItems.subtopicId">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2756,32 +1815,18 @@
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
           <!-- Close copy modal action button-->
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click')"
-          >
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
 
           <!-- Copy question action button-->
-          <button
-            *ngIf="!copying"
-            [disabled]="!copiedItems.subjectId && !copiedItems.topicId"
-            type="button"
-            (click)="copyQuestion(questionCopyForm)"
-            class="btn btn-primary"
-          >
+          <button *ngIf="!copying" [disabled]="!copiedItems.subjectId && !copiedItems.topicId" type="button"
+            (click)="copyQuestion(questionCopyForm)" class="btn btn-primary">
             <i class="ri-save-line me-2 align-middle"></i>Copy
           </button>
 
           <!-- copying question activity loader button-->
-          <button
-            *ngIf="copying"
-            class="btn btn-outline-primary btn-load"
-            [disabled]="copying"
-          >
+          <button *ngIf="copying" class="btn btn-outline-primary btn-load" [disabled]="copying">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Copying...</span>
@@ -2796,13 +1841,8 @@
     <ng-template #moveQuestionModal [showModal] let-modal>
       <div class="modal-header">
         <h3 class="modal-title">MOVE QUESTION</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2810,16 +1850,9 @@
         <form #questionMoveForm (ngSubmit)="moveQuestion(questionMoveForm)">
           <div class="py-2">
             <label for="subjectName">Subject Name</label>
-            <ng-select
-              class="custom"
-              [items]="subjects"
-              bindLabel="subjectName"
-              bindValue="subjectId"
-              name="subjectName"
-              dropdownPosition="bottom"
-              [(ngModel)]="movedItems.subjectId"
-              (ngModelChange)="getTopicsTreeToMoveItem()"
-            >
+            <ng-select class="custom" [items]="subjects" bindLabel="subjectName" bindValue="subjectId"
+              name="subjectName" dropdownPosition="bottom" [(ngModel)]="movedItems.subjectId"
+              (ngModelChange)="getTopicsTreeToMoveItem()">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2828,17 +1861,10 @@
 
           <div class="py-2">
             <label for="topicName">Topic Name</label>
-            <ng-select
-              [items]="
+            <ng-select [items]="
                 moveDestinationTopicTree && moveDestinationTopicTree.topics
-              "
-              bindLabel="topicName"
-              name="topicName"
-              class="custom"
-              bindValue="topicId"
-              dropdownPosition="bottom"
-              (change)="setTopicToMoveItemInto($event)"
-            >
+              " bindLabel="topicName" name="topicName" class="custom" bindValue="topicId" dropdownPosition="bottom"
+              (change)="setTopicToMoveItemInto($event)">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2847,17 +1873,10 @@
 
           <div class="py-2">
             <label for="subtopicName">Subtopic Name</label>
-            <ng-select
-              [items]="
+            <ng-select [items]="
                 moveDestinationSubtopicTree && moveDestinationSubtopicTree
-              "
-              bindLabel="subtopicName"
-              bindValue="topicId"
-              class="custom"
-              name="subtopicName"
-              dropdownPosition="bottom"
-              [(ngModel)]="movedItems.subtopicId"
-            >
+              " bindLabel="subtopicName" bindValue="topicId" class="custom" name="subtopicName"
+              dropdownPosition="bottom" [(ngModel)]="movedItems.subtopicId">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -2868,32 +1887,18 @@
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
           <!-- Close move action modal button-->
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click')"
-          >
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
 
           <!-- Move question action button-->
-          <button
-            *ngIf="!moving"
-            [disabled]="!movedItems.subjectId && !movedItems.topicId"
-            type="button"
-            (click)="moveQuestion(questionMoveForm)"
-            class="btn btn-primary"
-          >
+          <button *ngIf="!moving" [disabled]="!movedItems.subjectId && !movedItems.topicId" type="button"
+            (click)="moveQuestion(questionMoveForm)" class="btn btn-primary">
             <i class="ri-save-line me-2 align-middle"></i>Move
           </button>
 
           <!-- Moving question activity loader button-->
-          <button
-            *ngIf="moving"
-            class="btn btn-outline-primary btn-load"
-            [disabled]="moving"
-          >
+          <button *ngIf="moving" class="btn btn-outline-primary btn-load" [disabled]="moving">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Moving...</span>
@@ -2908,13 +1913,8 @@
     <ng-template #deleteQuestionConfirmationModal let-modal>
       <div class="modal-header">
         <h3 class="modal-title">CONFIRM DELETE</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2928,26 +1928,14 @@
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            (click)="modal.close('Close click')"
-            class="btn btn-secondary"
-          >
+          <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
             No, Cancel
           </button>
-          <button
-            type="button"
-            (click)="deleteItem()"
-            class="btn btn-danger"
-            *ngIf="submitted"
-          >
+          <button type="button" (click)="deleteItem()" class="btn btn-danger" *ngIf="submitted">
             Yes, Delete It
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-danger btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-danger btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -2963,13 +1951,8 @@
     <ng-template #deleteTopicConfirmationModal let-modal>
       <div class="modal-header">
         <h3 class="modal-title">CONFIRM DELETE</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -2983,26 +1966,14 @@
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            (click)="modal.close('Close click')"
-            class="btn btn-secondary"
-          >
+          <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
             No, Cancel
           </button>
-          <button
-            type="button"
-            (click)="deleteTopic()"
-            class="btn btn-danger"
-            *ngIf="!submitted"
-          >
+          <button type="button" (click)="deleteTopic()" class="btn btn-danger" *ngIf="!submitted">
             Yes, Delete It
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-danger btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-danger btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -3018,13 +1989,8 @@
     <ng-template #deleteSubtopicConfirmationModal let-modal>
       <div class="modal-header">
         <h3 class="modal-title">CONFIRM DELETE</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -3038,26 +2004,14 @@
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            (click)="modal.close('Close click')"
-            class="btn btn-secondary"
-          >
+          <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
             No, Cancel
           </button>
-          <button
-            type="button"
-            (click)="deleteSubTopic()"
-            class="btn btn-danger"
-            *ngIf="!submitted"
-          >
+          <button type="button" (click)="deleteSubTopic()" class="btn btn-danger" *ngIf="!submitted">
             Yes, Delete It
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-danger btn-load"
-              [disabled]="submitted"
-            >
+            <button class="btn btn-outline-danger btn-load" [disabled]="submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -3073,32 +2027,22 @@
     <ng-template #itemUsageModal let-modal>
       <div class="modal-header">
         <h3 class="modal-title">QUESTION USAGE HISTORY</h3>
-        <button
-          type="button"
-          class="close"
-          data-dismiss="modal"
-          aria-label="Close"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+          (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div
-        class="modal-body px-5"
-        style="
+      <div class="modal-body px-5" style="
           height: 350px;
           scroll-behavior: smooth;
           overflow-x: hidden;
           overflow-y: auto;
-        "
-      >
-        <ng-container
-          *ngIf="
+        ">
+        <ng-container *ngIf="
             !loading_usage_history &&
             itemUsageHistory &&
             itemUsageHistory.length > 0
-          "
-        >
+          ">
           <div *ngFor="let usage of itemUsageHistory" class="profile-timeline">
             <!-- <div class="d-flex align-items-center">
               <div class="flex-shrink-0 avatar-xs">
@@ -3115,20 +2059,11 @@
                 </h6>
               </div>
             </div> -->
-            <ngb-accordion
-              #acc="ngbAccordion"
-              activeIds="static-1"
-              [closeOthers]="true"
-            >
+            <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true">
               <ngb-panel id="static-1">
                 <ng-template ngbPanelTitle>
-                  <a
-                    class="accordion-button p-2 shadow-none"
-                    data-bs-toggle="collapse"
-                    href="javasccript:void(0;)"
-                    aria-expanded="true"
-                    aria-controls="collapseOne"
-                  >
+                  <a class="accordion-button p-2 shadow-none" data-bs-toggle="collapse" href="javasccript:void(0;)"
+                    aria-expanded="true" aria-controls="collapseOne">
                     <div class="d-flex align-items-center">
                       <div class="flex-shrink-0 avatar-xs">
                         <div class="avatar-title rounded-circle 'bg-success'">
@@ -3147,12 +2082,8 @@
                   </a>
                 </ng-template>
                 <ng-template ngbPanelContent>
-                  <div
-                    id="collapseOne"
-                    class="accordion-collapse collapse show"
-                    aria-labelledby="headingOne"
-                    data-bs-parent="#accordionExample"
-                  >
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
                     <div class="accordion-body ms-2 ps-5 pt-0">
                       <p class="text-muted">
                         used at {{ usage.usedAt | date : "medium" }}.
@@ -3165,49 +2096,28 @@
           </div>
         </ng-container>
 
-        <div
-          class="p-2"
-          *ngIf="!loading_usage_history && itemUsageHistory.length < 1"
-        >
-          <div
-            class="d-flex flex-column justify-content-between align-items-center"
-          >
-            <img
-              src="assets/images/blank_pages/empty-state.png"
-              width="200"
-              height="200"
-              class=""
-            />
+        <div class="p-2" *ngIf="!loading_usage_history && itemUsageHistory.length < 1">
+          <div class="d-flex flex-column justify-content-between align-items-center">
+            <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
             <h4 class="text-secondary fw-bold my-2">
               This Question has never been used for an exam!
             </h4>
           </div>
         </div>
 
-        <div
-          *ngIf="loading_usage_history"
-          class="d-flex align-items-center justify-content-center"
-          style="height: 60vh"
-        >
+        <div *ngIf="loading_usage_history" class="d-flex align-items-center justify-content-center"
+          style="height: 60vh">
           <div class="d-flex align-items-center gap-2">
             <div class="spinner-border text-info fs-18" role="status">
-              <span class="visually-hidden"
-                >Loading question usage history...</span
-              >
+              <span class="visually-hidden">Loading question usage history...</span>
             </div>
-            <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-              >Loading question usage history...</span
-            >
+            <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading question usage history...</span>
           </div>
         </div>
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            (click)="modal.close('Close click')"
-            class="btn btn-danger"
-          >
+          <button type="button" (click)="modal.close('Close click')" class="btn btn-danger">
             Close
           </button>
         </div>
@@ -3216,8 +2126,5 @@
   </div>
 </div>
 
-<app-rightsidebar
-  [currentView]="'Manage Questions'"
-  [pageGuide]="quickGuide"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Manage Questions'" [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>

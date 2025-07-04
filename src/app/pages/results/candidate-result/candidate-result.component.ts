@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AssessmentsService } from '../../assessment/service/assessments.service';
+import { ActivatedRoute } from '@angular/router';
+import { DataService } from 'src/app/services/data.service';
+import { Participant_Result_Data_DTO } from '../../items/models/result';
 
 @Component({
   selector: 'app-candidate-result',
@@ -7,26 +10,86 @@ import { AssessmentsService } from '../../assessment/service/assessments.service
   styleUrls: ['./candidate-result.component.scss'],
 })
 export class CandidateResultComponent implements OnInit {
+  participantId: string;
+  assessmentId: string;
+  assessment: Participant_Result_Data_DTO | null = null;
+  barChartSeries: any = null
+  pieChartSeries: any = null
+
   breadCrumbItems!: Array<{}>;
   assessmentName: string;
-  groupedBarChart: any;
-  gradientCircleChart: any;
+  gradientCircleChart: any[] = [];
+  isLoadingResult: boolean = false;
 
-  constructor(private assessmentService: AssessmentsService) {}
+  constructor(
+    private assessmentService: AssessmentsService,
+    private readonly activatedRoute: ActivatedRoute,
+    private dataService: DataService
+  ) {}
 
   ngOnInit(): void {
-    this.assessmentName = this.assessmentService.activeAssessment;
-    this.breadCrumbItems = [
-      { label: 'results', active: false },
-      { label: 'result', active: true },
-    ];
-
-    this._groupedBarChart('["--vz-primary", "--vz-info"]');
-    this._gradientCircleChart('["--vz-success"]');
+    this.getResultParams();
+    this.fetchResult();
   }
+
+  fetchResult() {
+    this.isLoadingResult = true
+    this.dataService
+      .getCandidateResult(this.assessmentId, this.participantId)
+      .subscribe(async (res) => {
+        await this.initializeDashboardInformation(res)
+      }, () => this.isLoadingResult = false);
+  }
+
+  async initializeDashboardInformation(res: Participant_Result_Data_DTO) {
+    await this._gradientCircleChart('["--vz-success"]', res)
+    this.assessment = res;
+    this.initBreadcrumb();
+    this.isLoadingResult = false
+  }
+
+  getResultParams() {
+    this.activatedRoute.paramMap.subscribe((route) => {
+      this.participantId = route.get('participantId');
+      this.assessmentId = route.get('assessmentId');
+    });
+  }
+
+  initBreadcrumb() {
+    const candidateName = `${this.assessment.reg_fields['FIRST NAME'] ?? ''} ${
+      this.assessment.reg_fields['LAST NAME'] ?? ''
+    }`;
+
+    this.breadCrumbItems = [
+      { label: 'Results', active: false },
+      { label: candidateName, active: true },
+    ];
+  }
+
+  calculateTimeSpent() {
+    const durationMinutes = this.assessment.logins_ips
+      ? this.assessment.logins_ips?.duration !== null
+        ? `${this.assessment.logins_ips?.duration} min(s)`
+        : 'N/A'
+      : 'N/A';
+
+      return durationMinutes
+  }
+
+  getParticipantName () {
+      const participantName = `${this.assessment.reg_fields['FIRST NAME']} ${this.assessment.reg_fields['LAST NAME']}`;
+      return participantName
+  }
+
+  toOrdinal(n: number) {
+    const s = ["th", "st", "nd", "rd"], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
 
   private getChartColorsArray(colors: any) {
     colors = JSON.parse(colors);
+
     return colors.map(function (value: any) {
       var newValue = value.replace(' ', '');
       if (newValue.indexOf(',') === -1) {
@@ -52,119 +115,71 @@ export class CandidateResultComponent implements OnInit {
     });
   }
 
-  private _groupedBarChart(colors: any) {
+  async _gradientCircleChart(colors: any, res: Participant_Result_Data_DTO) {
     colors = this.getChartColorsArray(colors);
-    this.groupedBarChart = {
-      series: [
-        {
-          data: [60, 40, 40, 40],
-          name: 'percentage',
-        },
-        {
-          data: [52, 32, 30, 25],
-          name: 'score',
-        },
-      ],
-      chart: {
-        type: 'bar',
-        height: 350,
-        toolbar: {
-          show: false,
-        },
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true,
-          dataLabels: {
-            position: 'top',
-          },
-        },
-      },
-      dataLabels: {
-        enabled: true,
-        offsetX: -6,
-        style: {
-          fontSize: '12px',
-          colors: ['#fff'],
-        },
-      },
-      stroke: {
-        show: true,
-        width: 1,
-        colors: ['#fff'],
-      },
-      tooltip: {
-        shared: true,
-        intersect: false,
-      },
-      xaxis: {
-        categories: ['Section 1', 'Section 2', 'Section 3', 'Section 4'],
-      },
-      colors: colors,
-    };
-  }
 
-  private _gradientCircleChart(colors: any) {
-    colors = this.getChartColorsArray(colors);
-    this.gradientCircleChart = {
-      series: [75],
-      chart: {
-        height: 330,
-        type: 'radialBar',
-        toolbar: {
-          show: false,
+    for(const item of res?.attempt_summary) {
+      const config = {
+        series: [item.section_scaled_score],
+        chart: {
+          height: 330,
+          type: 'radialBar',
+          toolbar: {
+            show: false,
+          },
         },
-      },
-      plotOptions: {
-        radialBar: {
-          startAngle: -135,
-          endAngle: 225,
-          hollow: {
-            margin: 0,
-            size: '70%',
-            image: undefined,
-            imageOffsetX: 0,
-            imageOffsetY: 0,
-            position: 'front',
-          },
-          track: {
-            strokeWidth: '67%',
-            margin: 0, // margin is in pixels
-          },
-
-          dataLabels: {
-            show: true,
-            name: {
-              offsetY: -10,
-              show: true,
-              color: '#888',
-              fontSize: '17px',
+        plotOptions: {
+          radialBar: {
+            startAngle: -135,
+            endAngle: 225,
+            hollow: {
+              margin: 0,
+              size: '70%',
+              image: undefined,
+              imageOffsetX: 0,
+              imageOffsetY: 0,
+              position: 'front',
             },
-            value: {
-              color: '#111',
-              fontSize: '36px',
+            track: {
+              strokeWidth: '67%',
+              margin: 0,
+            },
+
+            dataLabels: {
               show: true,
+              name: {
+                offsetY: -10,
+                show: true,
+                color: '#888',
+                fontSize: '17px',
+              },
+              value: {
+                color: '#111',
+                fontSize: '36px',
+                show: true,
+              },
             },
           },
         },
-      },
-      fill: {
-        type: 'gradient',
-        gradient: {
-          shade: 'dark',
-          type: 'horizontal',
-          shadeIntensity: 0.5,
-          gradientToColors: colors,
-          inverseColors: true,
-          opacityFrom: 1,
-          opacityTo: 1,
-          stops: [0, 100],
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shade: 'dark',
+            type: 'horizontal',
+            shadeIntensity: 0.5,
+            gradientToColors: colors,
+            inverseColors: true,
+            opacityFrom: 1,
+            opacityTo: 1,
+            stops: [0, 100],
+          },
         },
-      },
-      stroke: {
-        lineCap: 'round',
-      },
-      labels: ['Percent'],
-    };
+        stroke: {
+          lineCap: 'round',
+        },
+        labels: ['Percent'],
+      };
+      this.gradientCircleChart.push(config)
+    }
   }
 }

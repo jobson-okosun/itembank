@@ -67,7 +67,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    console.log('helo view initafter');
     this.renderMath();
   }
 
@@ -144,14 +143,17 @@ export class SignInComponent implements OnInit, AfterViewInit {
         (err: HttpErrorResponse) => {
           //todo: show error
           this.error = true;
-          console.log(err);
           if (err.status === 401) {
             this.error_msg = 'Invalid Login Credentials!';
-            this.submitted = false;
-          } else {
+            // this.submitted = false;
+          } else if (err?.error?.message) {
             this.error_msg = err.error.message;
-            this.submitted = false;
+            // this.submitted = false;
+          } else {
+            this.error_msg = 'Sorry! Unable to perform login';
           }
+
+          this.submitted = false;
 
           /* console.log(err); */
         }

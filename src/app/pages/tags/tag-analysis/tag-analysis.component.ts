@@ -59,5 +59,8 @@ export class TagAnalysisComponent implements OnInit {
     }
   }
 
+  routeBack() {
+    history.back()
+  }
   
 }

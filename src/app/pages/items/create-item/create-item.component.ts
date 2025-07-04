@@ -122,7 +122,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     }
 
     this.passageId = this.ar.snapshot.params["passageId"];
-    console.log(this.passageId);
+    // console.log(this.passageId);
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
@@ -357,7 +357,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
-    console.log("saved called");
+    // console.log("saved called");
 
     if (!validated) {
       return;

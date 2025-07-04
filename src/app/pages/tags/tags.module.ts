@@ -22,6 +22,7 @@ import { ViewTagComponent } from './view-tag/view-tag.component';
 import { ViewSubjectTagComponent } from './view-subject-tag/view-subject-tag.component';
 import { TagAnalysisComponent } from './tag-analysis/tag-analysis.component';
 import { LayoutsModule } from 'src/app/layouts/layouts.module';
+import { NoSpaceDirective } from './directives/no-space.directive';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { LayoutsModule } from 'src/app/layouts/layouts.module';
     ViewTagComponent,
     ViewSubjectTagComponent,
     TagAnalysisComponent,
+    NoSpaceDirective
   ],
   imports: [
     CommonModule,

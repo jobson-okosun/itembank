@@ -1,5 +1,6 @@
+<!-- <ng-containainer class="d-none"> -->
 <app-breadcrumbs
-  title="{{ passageWorkflow ? 'NEW PASSAGE QUESTION' : 'NEW QUESTION' }} | {{ itemTrailInformation.subjectName }}"
+  title="{{ passageWorkflow ? 'NEW PASSAGE QUESTION' : 'NEW QUESTION' }} | {{ itemTrailInformation?.subjectName }}"
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 
@@ -174,6 +175,14 @@
       [formType]="formType"
       (savedItem)="saved($event)"
     ></app-create-item>
+
+    <app-drawing-and-writing
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'DRAWING_AND_WRITING'"
+      (savedItem)="saved($event)"
+    ></app-drawing-and-writing>
+    
   </div>
 </div>
 
@@ -182,6 +191,9 @@
   [pageGuide]=""
   (settingsButtonClicked)="onSettingsButtonClicked()"
 ></app-rightsidebar>
+<!-- </ng-containainer> -->
 
+<!-- trial for draw and writing preview -->
+ <!-- <app-drawing-and-writing-preview></app-drawing-and-writing-preview> -->
 
 

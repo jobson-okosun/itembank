@@ -1,30 +1,18 @@
-<app-breadcrumbs
-  *ngIf="!showNotifications"
-  title="SUBJECTS"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<app-breadcrumbs *ngIf="!showNotifications" title="SUBJECTS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div
-  *ngIf="loading"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="loading" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading subjects...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading subjects...</span>
   </div>
 </div>
 
 <div *ngIf="!loading">
   <div class="row mb-3 pb-1">
     <div class="col-12">
-      <div
-        class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column"
-      >
+      <div class="d-flex align-items-lg-center flex-lg-row flex-sm-row justify-content-between flex-column">
         <div class="flex-grow-1">
           <h4 class="fs-16 mb-1">
             List of all Subjects ({{ allSubjects.length }})
@@ -32,23 +20,13 @@
         </div>
         <div class="d-flex gap-2 mt-lg-0">
           <div class="search-box ms-2">
-            <input
-              type="text"
-              name="searchTerm"
-              class="form-control"
-              placeholder="Search Name..."
-              [(ngModel)]="searchSubject"
-              (ngModelChange)="filterSubjects()"
-            />
+            <input type="text" name="searchTerm" class="form-control" placeholder="Search Name..."
+              [(ngModel)]="searchSubject" (ngModelChange)="filterSubjects()" />
             <i class="ri-search-line search-icon"></i>
           </div>
 
-          <button
-            *ngIf="currentUser.authorities.includes('ADMIN')"
-            type="button"
-            (click)="addSubjectModal(newSubjectModal)"
-            class="btn btn-primary float-end"
-          >
+          <button *ngIf="currentUser.authorities.includes('ADMIN')" type="button"
+            (click)="addSubjectModal(newSubjectModal)" class="btn btn-primary float-end">
             <i class="ri-add-line align-middle me-1"></i> Create Subject
           </button>
           <!-- <app-rightsidebar
@@ -66,10 +44,7 @@
 
 <div *ngIf="allSubjects.length > 0 && !loading">
   <div class="row">
-    <div
-      class="col-xxl-4 col-lg-6 col-md-6 col-sm-6"
-      *ngFor="let subject of allSubjects"
-    >
+    <div class="col-xxl-4 col-lg-6 col-md-6 col-sm-6" *ngFor="let subject of allSubjects">
       <div class="card">
         <div class="card-body p-2">
           <div class="d-flex align-items-center">
@@ -79,10 +54,7 @@
                 (click)="setSubjectId(subject)"
                 routerLink="/examalpha/subjects/{{ subject.name }}"
                 > -->
-                <div
-                  class="avatar-title bg-primary text-white rounded fs-24"
-                  style="cursor: pointer"
-                >
+                <div class="avatar-title bg-primary text-white rounded fs-24" style="cursor: pointer">
                   <!-- <i class="ri-folder-zip-line"></i> -->
                   {{ subject.name[0].toUpperCase() }}
                 </div>
@@ -91,112 +63,82 @@
             </div>
             <div class="flex-grow-1 overflow-hidden">
               <h5 class="fs-16 mb-1">
-                <div
-                  (click)="setSubjectId(subject)"
-                  class="text-body text-truncate d-block"
-                  style="cursor: pointer"
-                >
+                <div (click)="setSubjectId(subject)" class="text-body text-truncate d-block" style="cursor: pointer">
                   {{ subject.name.toUpperCase() }}
-                  <span
-                    *ngIf="subject.subjectCode"
-                    class="text-muted fs-12 text-capitalize"
-                    >({{ subject.subjectCode }})</span
-                  >
+                  <span *ngIf="subject.subjectCode" class="text-muted fs-12 text-capitalize">({{ subject.subjectCode
+                    }})</span>
                 </div>
               </h5>
               <div class="d-flex gap-1 align-items-center mt-2">
-                <a
-                  class="text-primary d-flex flex-row gap-1"
-                  (click)="gotoPassages(subject)"
-                  style="cursor: pointer"
-                  ><i class="ri-article-line me-2 "></i>Passages:<span
-                    title="TOTAL PASSAGES"
-                    class="d-flex gap-1 align-items-center"
-                    >{{ subject.totalPassages }}</span
-                  ></a
-                >
-                <a
-                  class="text-primary d-flex flex-row gap-1"
-                  style="cursor: pointer"
-                  (click)="setSubjectId(subject)"
-                  routerLink="/examalpha/subjects/{{ subject.subjectId }}"
-                  ><i class="ri-stack-line"></i> Questions:<span
-                    title="TOTAL QUESTIONS"
-                    class="d-flex gap-1 align-items-center"
-                    >{{ subject.totalItems }}</span
-                  ></a
-                >
-                <a
-                  style="cursor: pointer"
-                  class=""
-                  [ngbPopover]="subjectDetails"
-                  placement="right"
-                  [popoverTitle]="subject.name | uppercase"
-                  triggers="mouseenter:mouseleave"
-                  ><i class="ri-information-line fs-5 text-secondary"></i
-                ></a>
+                <a class="text-primary d-flex flex-row gap-1" (click)="gotoPassages(subject)" style="cursor: pointer"><i
+                    class="ri-article-line me-2 "></i>Passages:<span title="TOTAL PASSAGES"
+                    class="d-flex gap-1 align-items-center">{{ subject.totalPassages }}</span></a>
+                <a class="text-primary d-flex flex-row gap-1" style="cursor: pointer" (click)="setSubjectId(subject)"
+                  routerLink="/examalpha/subjects/{{ subject.subjectId }}"><i class="ri-stack-line"></i> Questions:<span
+                    title="TOTAL QUESTIONS" class="d-flex gap-1 align-items-center">{{ subject.totalItems }}</span></a>
+                <a style="cursor: pointer" class="" [ngbPopover]="subjectDetails" placement="right"
+                  [popoverTitle]="subject.name | uppercase" triggers="mouseenter:mouseleave"><i
+                    class="ri-information-line fs-5 text-secondary"></i></a>
                 <ng-template #subjectDetails>
-                  <ul
-                    style="
+                  <ul style="
                       display: flex;
                       flex-direction: column;
                       list-style: none;
                       line-height: 1.5;
                       gap: 3px;
-                    "
-                  >
+                    ">
                     <li>
                       <span class="badge bg-primary">{{
                         subject.totalItems
-                      }}</span>
+                        }}</span>
                       Total Questions
                     </li>
                     <li>
                       <span class="badge bg-secondary">{{
                         subject.totalUsed
-                      }}</span>
+                        }}</span>
                       Total Used Questions
                     </li>
                     <li>
                       <span class="badge bg-info">{{
                         subject.awaitingModeration
-                      }}</span>
+                        }}</span>
                       Total Awaiting Moderation
                     </li>
                     <li>
                       <span class="badge bg-warning">{{
                         subject.totalDrafts
-                      }}</span>
+                        }}</span>
                       Total Draft Questions
                     </li>
                     <li>
                       <span class="badge bg-success">{{
                         subject.totalPublished
-                      }}</span>
+                        }}</span>
                       Total Published Questions
                     </li>
                     <li>
                       <span class="badge bg-danger">{{
                         subject.inRecycle
-                      }}</span>
+                        }}</span>
                       Total Questions in Recycle
                     </li>
                     <li>
                       <span class="badge bg-warning">{{
                         subject.totalPassagesDraft
-                      }}</span>
+                        }}</span>
                       Total Draft Passages
                     </li>
                     <li>
                       <span class="badge bg-warning">{{
                         subject.totalPassagesAwaitingModeration
-                      }}</span>
+                        }}</span>
                       Total Passages Awaiting Moderation
                     </li>
                     <li>
                       <span class="badge bg-success">{{
                         subject.totalPassagesPublished
-                      }}</span>
+                        }}</span>
                       Total Published Passages
                     </li>
                   </ul>
@@ -206,80 +148,41 @@
             <div class="flex-shrink-0 ms-2">
               <div class="d-flex gap-1">
                 <div class="dropdown" ngbDropdown>
-                  <button
-                    class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none"
-                    type="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                    ngbDropdownToggle
-                  >
+                  <button class="btn btn-icon text-muted btn-sm fs-18 dropdown arrow-none" type="button"
+                    data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                     <i class="ri-more-fill" style="cursor: pointer"></i>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                     <li *ngIf="subject.moderationId" style="cursor: pointer">
-                      <a
-                        class="dropdown-item"
-                        (click)="showApprovedQuestions(subject)"
-                        ><i
-                          class="bx bx-list-check fs-20 align-bottom me-2 text-muted"
-                        ></i>
-                        List Accepted Questions</a
-                      >
+                      <a class="dropdown-item" (click)="showApprovedQuestions(subject)"><i
+                          class="bx bx-list-check fs-20 align-bottom me-2 text-muted"></i>
+                        List Accepted Questions</a>
                     </li>
                     <li *ngIf="subject.moderationId">
-                      <a
-                        class="dropdown-item"
-                        (click)="showRejectedQuestions(subject)"
-                        ><i
-                          class="bx bx-list-check fs-20 align-bottom me-2 text-muted"
-                        ></i>
-                        List Rejected Questions</a
-                      >
+                      <a class="dropdown-item" (click)="showRejectedQuestions(subject)"><i
+                          class="bx bx-list-check fs-20 align-bottom me-2 text-muted"></i>
+                        List Rejected Questions</a>
                     </li>
                     <li style="cursor: pointer">
-                      <a
-                        class="dropdown-item"
-                        (click)="setSubjectId(subject)"
-                        routerLink="/examalpha/subjects/{{ subject.subjectId }}"
-                        ><i
-                          class="ri-stack-fill align-bottom me-2 text-muted"
-                        ></i>
-                        Manage Questions</a
-                      >
+                      <a class="dropdown-item" (click)="setSubjectId(subject)"
+                        routerLink="/examalpha/subjects/{{ subject.subjectId }}"><i
+                          class="ri-stack-fill align-bottom me-2 text-muted"></i>
+                        Manage Questions</a>
                     </li>
                     <li style="cursor: pointer">
-                      <a class="dropdown-item" (click)="gotoPassages(subject)"
-                        ><i
-                          class="ri-article-fill align-bottom me-2 text-muted"
-                        ></i>
-                        Manage Passages</a
-                      >
+                      <a class="dropdown-item" (click)="gotoPassages(subject)"><i
+                          class="ri-article-fill align-bottom me-2 text-muted"></i>
+                        Manage Passages</a>
                     </li>
-                    <li
-                      *ngIf="currentUser.authorities.includes('ADMIN')"
-                      style="cursor: pointer"
-                    >
-                      <a
-                        class="dropdown-item"
-                        (click)="gotoSubjectAnalysis(subject)"
-                        ><i
-                          class="ri-bar-chart-box-fill align-bottom me-2 text-muted"
-                        ></i>
-                        Subject Analysis</a
-                      >
+                    <li *ngIf="currentUser.authorities.includes('ADMIN')" style="cursor: pointer">
+                      <a class="dropdown-item" (click)="gotoSubjectAnalysis(subject)"><i
+                          class="ri-bar-chart-box-fill align-bottom me-2 text-muted"></i>
+                        Subject Analysis</a>
                     </li>
-                    <li
-                      *ngIf="currentUser.authorities.includes('ADMIN')"
-                      style="cursor: pointer"
-                    >
-                      <a
-                        class="dropdown-item"
-                        (click)="renameSubjectModal(editSubjectModal, subject)"
-                        ><i
-                          class="ri-pencil-fill align-bottom me-2 text-muted"
-                        ></i>
-                        Rename Subject</a
-                      >
+                    <li *ngIf="currentUser.authorities.includes('ADMIN')" style="cursor: pointer">
+                      <a class="dropdown-item" (click)="renameSubjectModal(editSubjectModal, subject)"><i
+                          class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                        Rename Subject</a>
                     </li>
                   </ul>
                 </div>
@@ -306,72 +209,39 @@
 
 <div *ngIf="allSubjects.length === 0 && !loading">
   <div class="d-flex flex-column justify-content-between align-items-center">
-    <img
-      src="assets/images/blank_pages/empty-state.png"
-      width="200"
-      height="200"
-      class="my-2"
-    />
+    <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="my-2" />
     <h4 class="text-secondary fw-bold">No Subject(s) Found!</h4>
   </div>
 </div>
 
 <ng-template #newSubjectModal let-modal>
   <div class="modal-body p-5">
-    <form
-      #newSubjectForm="ngForm"
-      (ngSubmit)="addSubject(newSubjectForm)"
-      novalidate
-    >
+    <form #newSubjectForm="ngForm" (ngSubmit)="addSubject(newSubjectForm)" novalidate>
       <div>
         <h4 class="text-center">CREATE NEW SUBJECT</h4>
         <div class="mt-4">
           <label for="subjectName" class="label">Subject Name</label>
-          <input
-            type="text"
-            name="subjectName"
-            class="form-control mb-3"
-            placeholder="Subject"
-            required
-            [(ngModel)]="newSubject.name"
-          />
+          <input type="text" name="subjectName" class="form-control mb-3" placeholder="Subject" required
+            [(ngModel)]="newSubject.name" />
         </div>
 
         <div class="mt-4">
           <label for="subjectName" class="label">Subject Code</label>
-          <input
-            type="text"
-            name="subjectCode"
-            class="form-control mb-3"
-            placeholder="Subject Code"
-            required
-            [(ngModel)]="newSubject.subjectCode"
-          />
+          <input type="text" name="subjectCode" class="form-control mb-3" placeholder="Subject Code" required
+            [(ngModel)]="newSubject.subjectCode" />
         </div>
 
         <div class="hstack gap-2 justify-content-end">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click'); newSubjectForm.reset()"
-          >
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+            (click)="modal.close('Close click'); newSubjectForm.reset()">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
-          <button
-            type="submit"
-            *ngIf="!submitted"
-            [disabled]="!newSubject.name"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-          >
+          <button type="submit" *ngIf="!submitted" [disabled]="!newSubject.name" class="btn btn-primary"
+            data-bs-dismiss="modal">
             <i class="ri-save-line me-2 align-middle"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
-            <button
-              class="btn btn-outline-primary btn-load"
-              [disabled]="!submitted"
-            >
+            <button class="btn btn-outline-primary btn-load" [disabled]="!submitted">
               <span class="d-flex align-items-center">
                 <span class="spinner-border flex-shrink-0" role="status">
                   <span class="visually-hidden">Saving...</span>
@@ -444,11 +314,7 @@
 
 <ng-template #editSubjectModal let-modal>
   <div class="modal-body p-5">
-    <form
-      #editSubjectForm="ngForm"
-      (ngSubmit)="renameSubject(editSubjectForm)"
-      novalidate
-    >
+    <form #editSubjectForm="ngForm" (ngSubmit)="renameSubject(editSubjectForm)" novalidate>
       <div>
         <h4 class="text-center">RENAME SUBJECT</h4>
         <p class="text-muted text-center">
@@ -456,52 +322,24 @@
         </p>
         <div class="mt-4">
           <label for="subjectName" class="label">Subject Name</label>
-          <input
-            type="text"
-            name="subjectName"
-            class="form-control mb-3"
-            placeholder="Subject"
-            required
-            [ngModel]="editSubject.name.toUpperCase()"
-            (ngModelChange)="editSubject.name = $event.toUpperCase()"
-          />
+          <input type="text" name="subjectName" class="form-control mb-3" placeholder="Subject" required
+            [ngModel]="editSubject.name.toUpperCase()" (ngModelChange)="editSubject.name = $event.toUpperCase()" />
         </div>
 
         <div class="mt-4">
           <label for="subjectName" class="label">Subject Code</label>
-          <input
-            type="text"
-            name="subjectCode"
-            class="form-control mb-3"
-            placeholder="Subject Code"
-            required
-            [ngModel]="editSubject.subjectCode"
-            (ngModelChange)="editSubject.subjectCode = $event.toUpperCase()"
-          />
+          <input type="text" name="subjectCode" class="form-control mb-3" placeholder="Subject Code" required
+            [ngModel]="editSubject.subjectCode" (ngModelChange)="editSubject.subjectCode = $event.toUpperCase()" />
         </div>
 
         <div class="hstack gap-2 justify-content-end">
-          <button
-            type="button"
-            class="btn btn-danger"
-            data-bs-dismiss="modal"
-            (click)="modal.close('Close click')"
-          >
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
-          <button
-            *ngIf="!submitted"
-            type="submit"
-            class="btn btn-primary"
-            data-bs-dismiss="modal"
-          >
+          <button *ngIf="!submitted" [disabled]="editSubjectForm.invalid" type="submit" class="btn btn-primary" data-bs-dismiss="modal">
             <i class="ri-save-line me-2 align-middle"></i>Save
           </button>
-          <button
-            *ngIf="submitted"
-            class="btn btn-outline-primary btn-load"
-            disabled
-          >
+          <button *ngIf="submitted"  class="btn btn-outline-primary btn-load" disabled>
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>
@@ -515,8 +353,5 @@
   </div>
 </ng-template>
 
-<app-rightsidebar
-  [currentView]="'Subjects'"
-  [pageGuide]="quickGuide"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Subjects'" [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>

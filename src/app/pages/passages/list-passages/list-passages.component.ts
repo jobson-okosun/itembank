@@ -125,6 +125,8 @@ export class ListPassagesComponent implements OnInit {
     this.subjectId = this.activatedRoute.snapshot.params["subjectId"];
     this.breadCrumbItems = [{ label: "passages", active: true }];
     this.assessmentActive = this.itemService.assessmentActive;
+    // console.log(this.assessmentActive)
+
     this.passageStatus = Object.values(ItemStatusEnum);
     this.itemType = Object.values(ItemTypes);
 
@@ -583,6 +585,7 @@ export class ListPassagesComponent implements OnInit {
       topicId: topic.topicId,
     };
     this.itemUtil.currentItemTrail = itemTrail;
+    this.itemUtil.saveCurrentItemTrail()
   }
 
   getPassages(topic?: any) {
@@ -757,12 +760,19 @@ export class ListPassagesComponent implements OnInit {
   setTrailInfo(passageInfo: any) {
     this.passageService.topicName = this.selectedTopicName;
     this.passageService.currentPassageTrail = this.itemTrail;
-    this.itemUtil.currentItemTrail = {
+
+    // console.log(this.passageService.topicName, this.passageService.currentPassageTrail)
+
+    const trail = {
       subjectId: this.subjectId,
       topicId: this.selectedTopic.topicId,
       subjectName: this.subjectName,
       topicName: this.selectedTopic.topicName,
-    };
+      assessmentActive: this.itemService.assessmentActive
+    }
+
+    this.itemUtil.currentItemTrail = trail;
+    this.itemUtil.saveCurrentItemTrail(trail)
   }
 
   sendInformation(topic: any) {

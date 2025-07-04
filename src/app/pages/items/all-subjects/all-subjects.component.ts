@@ -12,6 +12,7 @@ import { Account } from "src/app/authentication/model/account.model";
 import { NotifierService } from "angular-notifier";
 import { Router } from "@angular/router";
 import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
+import { ItemDetails, ItemUtilitiesService } from "../item-utilities.service";
 
 export interface RenameSubjectModel {
   subjectName: string;
@@ -74,7 +75,8 @@ export class AllSubjectsComponent implements OnInit {
     private subjectService: SubjectService,
     private passageService: AllPassagesService,
     private userService: UserService,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    private itemUtil: ItemUtilitiesService,
   ) {}
 
   onSettingsButtonClicked() {
@@ -195,6 +197,12 @@ export class AllSubjectsComponent implements OnInit {
 
   gotoSubjectAnalysis(subject: any) {
     this.itemService.subjectName = subject.name;
+    const trail: ItemDetails = {
+      subjectId: null,
+      subjectName: subject.name
+    }
+    this.itemUtil.saveCurrentItemTrail(trail)
+    
     this.router.navigate([
       "/examalpha/subjects/" + subject.subjectId + "/analysis",
     ]);
@@ -367,7 +375,7 @@ export class AllSubjectsComponent implements OnInit {
     let subject: RenameSubjectModel = {
       subjectName: this.editSubject.name,
       subjectId: this.currentSubject.subjectId,
-      subjectCode: this.currentSubject.subjectCode,
+      subjectCode: this.editSubject.subjectCode,
     };
     this.subjectService.renameSubject(subject).subscribe(
       (value) => {

@@ -65,13 +65,19 @@ export class PassageAndItemComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.breadCrumbItems = [{ label: 'Passage-preview', active: true }];
-    this.assessmentActive = this.itemService.assessmentActive;
+    const localTrail = this.itemUtil.getSavedItemTrail()
 
-    this.itemService.subjectId = this.itemTrail.subjectId;
-    this.itemService.topicId = this.itemTrail.topicId;
-    this.itemService.subjectName = this.itemTrail.subjectName;
-    this.itemService.topicName = this.itemTrail.topicName;
+    this.breadCrumbItems = [{ label: 'Passage-preview', active: true }];
+    this.assessmentActive = this.itemService.assessmentActive ?? localTrail.assessmentActive;
+
+    if(!this.itemTrail) {
+       this.itemTrail = localTrail
+    }
+
+    this.itemService.subjectId = this.itemTrail?.subjectId;
+    this.itemService.topicId = this.itemTrail?.topicId;
+    this.itemService.subjectName = this.itemTrail?.subjectName;
+    this.itemService.topicName = this.itemTrail?.topicName
 
     //this.fetchPassageItems(this.passageId);
     this.itemService.fetchPassageItem(this.passageId).subscribe(

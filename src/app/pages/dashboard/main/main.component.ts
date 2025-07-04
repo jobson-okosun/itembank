@@ -251,6 +251,10 @@ export class MainComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
+    // this.currentUser = this.userService.getCurrentUser()
+    //   ? this.userService.getCurrentUser()
+    //   : this.userService.getCurrentUserAfterReload();
+
     this.breadCrumbItems = [{ label: 'dashboard', active: true }];
     if (
       this.currentUser.authorities.includes('ADMIN') ||
@@ -581,9 +585,11 @@ export class MainComponent implements OnInit {
           if (value) {
             this.authoringGraph = value;
             this.setAuthorGraph();
+            this.loading = false;
+            Swal.close();
           }
-          this.loading = false;
-          Swal.close();
+          // this.loading = false;
+          // Swal.close();
         },
         (error: HttpErrorResponse) => {
           this.loading = false;
@@ -652,6 +658,8 @@ export class MainComponent implements OnInit {
       (value) => {
         this.tagsGraph = value;
         this.setupTagsGraph();
+        this.loading = false;
+        Swal.close();
       },
       (error: HttpErrorResponse) => {
         this.loading = false;

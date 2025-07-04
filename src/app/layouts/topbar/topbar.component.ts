@@ -54,8 +54,7 @@ export class TopbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.element = document.documentElement;
-    this.currentUser = this.userService.getCurrentUser();
-    this.getNotifications();
+    this.getCurrentUserData();
 
     /* setInterval(() => {
       this.getNotifications();
@@ -76,6 +75,14 @@ export class TopbarComponent implements OnInit {
     }
   }
 
+  getCurrentUserData() {
+    this.currentUser = this.userService.getCurrentUser()
+      ? this.userService.getCurrentUser()
+      : this.userService.getCurrentUserAfterReload();
+
+    this.getNotifications();
+  }
+
   viewAllNotifications() {
     this.router.navigate(['/examalpha/notifications']);
   }
@@ -93,41 +100,41 @@ export class TopbarComponent implements OnInit {
       this.currentUser.authority === 'AUTHOR' ||
       this.currentUser.authorities.includes('MODERATOR')
     ) { */
-      this.itemService
-        .fetchAuthorModerationNotifications(this.currentUser.id)
-        .subscribe(
-          (value) => {
-            if (value) {
-              value.content.forEach((notification) => {
-                if (
-                  notification.messageRead == false &&
-                  notification.status == 'ACCEPTED'
-                ) {
-                  this.notifications.push(notification);
-                  this.approved.push(notification);
-                }
-                if (
-                  notification.messageRead == false &&
-                  notification.status == 'REJECTED'
-                ) {
-                  this.notifications.push(notification);
-                  this.rejected.push(notification);
-                }
-              });
-              /* this.notifications.content.forEach((notification) => {
+    this.itemService
+      .fetchAuthorModerationNotifications(this.currentUser.id)
+      .subscribe(
+        (value) => {
+          if (value) {
+            value.content.forEach((notification) => {
+              if (
+                notification.messageRead == false &&
+                notification.status == 'ACCEPTED'
+              ) {
+                this.notifications.push(notification);
+                this.approved.push(notification);
+              }
+              if (
+                notification.messageRead == false &&
+                notification.status == 'REJECTED'
+              ) {
+                this.notifications.push(notification);
+                this.rejected.push(notification);
+              }
+            });
+            /* this.notifications.content.forEach((notification) => {
                 if(notification.status == 'REJECTED'){
                   this.rejected.push(notification);
                 }else{
                   this.approved.push(notification);
                 }
               }) */
-              // console.log('NOTIFICATIONS: ', this.notifications);
-            }
-          },
-          (error: HttpErrorResponse) => {
-            this.notifier.notify('error', `${error.error.message}`);
+            // console.log('NOTIFICATIONS: ', this.notifications);
           }
-        );
+        },
+        (error: HttpErrorResponse) => {
+          this.notifier.notify('error', `${error.error.message}`);
+        }
+      );
     /* } */
   }
 

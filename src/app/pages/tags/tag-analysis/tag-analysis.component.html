@@ -1,40 +1,34 @@
-<app-breadcrumbs
-  title="TAG_ANALYSIS"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<app-breadcrumbs title="TAG_ANALYSIS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div
-  *ngIf="!analysis"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="!analysis" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading tag analysis...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading tag analysis...</span>
   </div>
 </div>
 
 
-
-<h4 *ngIf="analysis" class="card-title" style="cursor: default">
-  <span title="SUBJECT">{{ analysis.subjectName | uppercase }}</span> |
-  <span title="TAG">{{ currentTag | uppercase }}</span>
-  <span title="TOTAL QUESTIONS">({{ analysis.totalItems }})</span>
-</h4> 
+<div class="d-flex align-items-center justify-content-between gap-2 mb-3">
+  <div class="d-flex align-items-center flex-row gap-2">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+      height="24" fill="none" viewBox="0 0 24 24">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M5 12h14M5 12l4-4m-4 4 4 4" />
+    </svg>
+    <a (click)="routeBack()">Back to Tag questions</a>
+  </div>
+  <h4 *ngIf="analysis" class="card-title" style="cursor: default">
+    <span title="SUBJECT">{{ analysis.subjectName | uppercase }}</span> | <span title="TAG">{{ currentTag | uppercase
+      }}</span><span title="TOTAL QUESTIONS">({{ analysis.totalItems }})</span>
+  </h4>
+</div>
 
 <div *ngIf="analysis" class="card">
 
- 
-  <p-table
-    [value]="analysis && analysis.topics"
-    dataKey="name"
-    responsiveLayout="scroll"
-    [scrollable]="true"
-  >
+
+  <p-table [value]="analysis && analysis.topics" dataKey="name" responsiveLayout="scroll" [scrollable]="true">
     <ng-template pTemplate="header">
       <tr>
         <th style="width: 5px" pFrozenColumn></th>
@@ -87,32 +81,14 @@
         </th> -->
       </tr>
     </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-topicAnalysis
-      let-expanded="expanded"
-      let-i="rowIndex"
-    >
+    <ng-template pTemplate="body" let-topicAnalysis let-expanded="expanded" let-i="rowIndex">
       <tr>
         <td style="width: 10px" pFrozenColumn>
-          <i
-            *ngIf="activeRow === i"
-            class="la la-angle-down cursor"
-            (click)="showSubTopic(i)"
-          ></i>
-          <i
-            *ngIf="activeRow !== i"
-            class="la la-angle-right cursor"
-            (click)="showSubTopic(i)"
-          ></i>
+          <i *ngIf="activeRow === i" class="la la-angle-down cursor" (click)="showSubTopic(i)"></i>
+          <i *ngIf="activeRow !== i" class="la la-angle-right cursor" (click)="showSubTopic(i)"></i>
         </td>
-        <td
-          style="width: 500px"
-          pFrozenColumn
-          (click)="showSubTopic(i)"
-          class="text-truncate cursor"
-          [ngClass]="{ 'text-primary': activeRow === i }"
-        >
+        <td style="width: 500px" pFrozenColumn (click)="showSubTopic(i)" class="text-truncate cursor"
+          [ngClass]="{ 'text-primary': activeRow === i }">
           <i class="la la-book"></i>
 
           {{ topicAnalysis.topicName | uppercase }}
@@ -134,7 +110,7 @@
       </tr>
 
       <ng-container *ngIf="activeRow === i">
-        <tr style="border: none;" >
+        <tr style="border: none;">
           <th style="width: 10px" pFrozenColumn style="border: none"></th>
           <!-- <th style="border: none" class="text-primary">SUBTOPICS</th> -->
         </tr>
@@ -227,8 +203,5 @@
 </div>
 <!-- end card body -->
 
-<app-rightsidebar
-  [currentView]="'Tags'"
-  [pageGuide]=""
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Tags'" [pageGuide]=""
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>

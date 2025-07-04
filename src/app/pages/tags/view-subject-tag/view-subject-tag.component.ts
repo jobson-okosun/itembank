@@ -119,6 +119,7 @@ export class ViewSubjectTagComponent implements OnInit {
       this.itemUtil.currentItemTrail = newItemTrail;
     } else {
       this.itemUtil.currentItemTrail = itemTrail;
+      this.itemUtil.saveCurrentItemTrail()
     }
 
     this.router.navigate(['/examalpha/items/new-item']);

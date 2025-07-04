@@ -10,7 +10,7 @@ import { SimplebarAngularModule } from 'simplebar-angular';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { PaginatorModule } from 'primeng/paginator';
 
-/** component imports */
+/** component imports */ 
 import { ListPassagesComponent } from './list-passages/list-passages.component';
 import { AllSubjectsPassageComponent } from './all-subjects-passage/all-subjects-passage.component';
 import { ItemUtilitiesService } from '../items/item-utilities.service';

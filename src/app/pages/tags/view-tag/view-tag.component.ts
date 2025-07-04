@@ -57,7 +57,8 @@ export class ViewTagComponent implements OnInit {
     this.tagId = this.ar.snapshot.params['tagId'];
     this.tagService.listTagSubjects(this.tagId).subscribe(
       (value) => {
-        value.forEach((subj) => {
+        value = value?.length ? value : []
+        value?.forEach((subj) => {
           subj.loading = false;
         });
         this.allSubjects = value;
@@ -119,5 +120,9 @@ export class ViewTagComponent implements OnInit {
         }
       );
     }
+  }
+
+  routeBack() {
+    history.back()
   }
 }

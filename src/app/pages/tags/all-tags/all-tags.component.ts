@@ -120,7 +120,10 @@ export class AllTagsComponent implements OnInit {
 
   ngOnInit(): void {
     this.breadCrumbItems = [{ label: 'Tags', active: true }];
-    this.currentUser = this.user.getCurrentUser();
+    // this.currentUser = this.user.getCurrentUser();
+        this.currentUser = this.user.getCurrentUser()
+      ? this.user.getCurrentUser()
+      : this.user.getCurrentUserAfterReload();
 
     this.tagService.listAllTags(this.pageCount, this.pageSize).subscribe(
       (value) => {
@@ -198,8 +201,11 @@ export class AllTagsComponent implements OnInit {
           html: 'Tag name was changed successfully.',
           title: 'Congratulations!',
         });
+        
         this.modalService.dismissAll();
         this.newTag = new NewTag();
+        this.newTag.tagName = ''
+
         this.ngOnInit();
         this.submitted = false;
         //this.loader();

@@ -471,7 +471,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     this.assessmentFilter.totalQuestions -= this.totalFilterSelections;
 
-    console.log(this.assessmentFilter.totalQuestions);
+    // console.log(this.assessmentFilter.totalQuestions);
 
     // dropdown for move/copy question
     if (this.currentUser.authorities.includes("ADMIN")) {
@@ -482,7 +482,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           });
           // console.log(value);
           this.subjects = value;
-          console.log(this.subjects, "subjects");
+          // console.log(this.subjects, "subjects");
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
@@ -517,7 +517,11 @@ export class SubjectComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.itemStatus = Object.values(ItemStatusEnum);
     this.itemType = Object.values(ItemTypes);
+
     this.assessmentActive = this.itemService.assessmentActive;
+
+    // console.log({ass: this.itemService.assessmentActive, itemTrail})
+
     this.breadCrumbItems = [
       { label: this.itemService.subjectName, active: true },
     ];
@@ -560,47 +564,33 @@ export class SubjectComponent implements OnInit, OnChanges {
     // }
 
     /** starting point for Logic to fetch passage topic tree */
-    if (
-      this.assessmentActive &&
-      this._currentBlock.selectionType == "AUTOMATED" &&
-      this._currentBlock.blockType == "PASSAGES"
-    ) {
+    if ( this.assessmentActive && this._currentBlock.selectionType == "AUTOMATED" && this._currentBlock.blockType == "PASSAGES") {
       this.loadingAllSubjects = false;
       this.subjectName = this._subjectName;
-      console.log(this._currentBlock);
-      this.itemService
-        .fetchAssessmentPassageTopicsTree(
-          this._subjectId,
-          this._currentBlock.totalQuestionsInPassage
-        )
-        .subscribe((value) => {
-          this.passageTopics = value;
-          console.log(this.passageTopics);
-        });
+      // console.log(this._currentBlock);
+      this.itemService.fetchAssessmentPassageTopicsTree( this._subjectId, this._currentBlock.totalQuestionsInPassage)
+      .subscribe((value) => {
+        this.passageTopics = value;
+        console.log(this.passageTopics);
+      });
     }
 
     if (this.assessmentActive && this._currentBlock.selectionType == "MANUAL") {
-      console.log("hello world");
+      // console.log("hello world");
       this.loadingAllSubjects = false;
       this.fetchAssessmentSubjectTopicsTree();
-      this.itemService
-        .fetchManualSelectedItemsInAssessment(
-          this._assessmentId,
-          this._sectionId
-        )
-        .subscribe(
-          (value) => {
-            this.manuallySelectedItemsAndPassages = value;
-          },
-          (error: HttpErrorResponse) => {
-            this.notifier.notify("error", error.error.message);
-          }
-        );
-    } else if (
-      this.assessmentActive &&
-      this._currentBlock.selectionType == "AUTOMATED"
-    ) {
-      console.log("hello earth");
+      this.itemService.fetchManualSelectedItemsInAssessment( this._assessmentId, this._sectionId)
+      .subscribe(
+        (value) => {
+          this.manuallySelectedItemsAndPassages = value;
+        },
+        (error: HttpErrorResponse) => {
+          this.notifier.notify("error", error.error.message);
+        }
+      );
+
+    } else if ( this.assessmentActive && this._currentBlock.selectionType == "AUTOMATED") {
+      // console.log("hello earth");
       this.loadingAllSubjects = false;
       this.fetchAssessmentSubjectTopicsTree();
     }
@@ -609,58 +599,34 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.totalItems = this.itemService.totalItemsInCurrentSubject;
     }
 
-    if (
-      this.itemService.topicId ||
-      (this.itemService.subtopicId && !this.assessmentActive)
-    ) {
+    if ( this.itemService.topicId ||(this.itemService.subtopicId && !this.assessmentActive)) {
       /* console.log(this.itemService.topicId, 'topicId');
       console.log(this.itemService.subtopicId, 'subtopicId'); */
 
-      console.log(this.itemService.topicId, "topicId");
-      this.itemService
-        .fetchAllItems(
-          this.itemService.subjectId,
-          this.itemService.topicId,
-          this.itemService.subtopicId,
-          this.pageNo,
-          this.pageSize
-        )
-        .subscribe(
-          (value) => {
-            this.itemsPage = value;
-            this.itemsPage.content.forEach(
-              (item) => (item.showFullItem = false)
-            );
-            this.itemService.topicId = "";
-            this.itemService.subtopicId = "";
-            this.loading_items = false;
-          },
-          (error: HttpErrorResponse) => {
-            // console.log(error);
-          }
-        );
+      // console.log(this.itemService.topicId, "topicId");
+      this.itemService.fetchAllItems( this.itemService.subjectId, this.itemService.topicId, this.itemService.subtopicId, this.pageNo, this.pageSize)
+      .subscribe(
+        (value) => {
+          this.itemsPage = value;
+          this.itemsPage.content.forEach(
+            (item) => (item.showFullItem = false)
+          );
+          this.itemService.topicId = "";
+          this.itemService.subtopicId = "";
+          this.loading_items = false;
+        },
+        (error: HttpErrorResponse) => {
+          // console.log(error);
+        }
+      );
     }
 
     if (
-      (this.assessmentActive &&
-        this.itemService.subtopicId &&
-        this._currentBlock &&
-        this._currentBlock.sectionId) ||
-      this.itemService.topicId
-    ) {
-      console.log("asseement is active");
+      (this.assessmentActive && this.itemService.subtopicId && this._currentBlock && this._currentBlock.sectionId) || this.itemService.topicId) {
+      // console.log("asseement is active");
       /* console.log(this.itemService.topicId, 'topicId');
       console.log(this.itemService.subtopicId, 'subtopicId'); */
-      this.itemService
-        .fetchAllAssessmentItems(
-          this._assessmentId,
-          this._currentBlock && this._currentBlock.sectionId,
-          this.itemService.subjectId,
-          this.itemService.topicId,
-          this.itemService.subtopicId,
-          this.pageNo,
-          this.pageSize
-        )
+      this.itemService.fetchAllAssessmentItems( this._assessmentId, this._currentBlock && this._currentBlock.sectionId, this.itemService.subjectId, this.itemService.topicId, this.itemService.subtopicId, this.pageNo, this.pageSize)
         .subscribe(
           (value) => {
             this.itemsPage = value;
@@ -681,7 +647,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.fetchSubjectDetails();
 
     // persit current page state
-    console.log(this.itemService.subjectId, "sub id here");
+    // console.log(this.itemService.subjectId, "sub id here");
     if (this.itemService.subjectId) {
       this.subjectId = this.itemService.subjectId;
     }
@@ -716,10 +682,11 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     //this.fetchItems();
 
-    this.breadCrumbItems = [
-      { label: "Subjects" },
-      { label: this.subjectName, active: true },
-    ];
+    const itemTrail = this.itemUtil.getSavedItemTrail()
+    if(itemTrail) {
+      //  this.itemUtil.currentItemTrail = this.itemUtil.currentItemTrail ?? itemTrail
+    }
+    this.breadCrumbItems = [{ label: "Subjects" }, { label: this.subjectName ?? itemTrail?.subjectName, active: true }];
   }
 
   fetchAssessmentSubjectTopicsTree() {
@@ -729,19 +696,19 @@ export class SubjectComponent implements OnInit, OnChanges {
       .subscribe({
         next: (value) => {
           this.subject = value;
-          console.log(value);
+          // console.log(value);
           this.loadingAllSubjects = false;
 
           if (!this.subject.topics[0]) {
             this.loading_topics = false;
             this.loading_items = false;
 
-            console.log("hrllo here");
+            // console.log("hrllo here");
             return;
           }
           this.fetchItems(this.subject.topics[0]);
           this.clickedTopic = this.subject.topics[0];
-          console.log(this.clickedTopic);
+          // console.log(this.clickedTopic);
           let itemTrail = {
             subjectId: this.itemService.subjectId,
             subjectName: this.subjectName,
@@ -751,6 +718,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
           this.itemProps = itemTrail;
           this.itemUtil.currentItemTrail = itemTrail;
+          this.itemUtil.saveCurrentItemTrail()
           this.loading_topics = false;
         },
         error: (err: HttpErrorResponse) => {
@@ -767,38 +735,36 @@ export class SubjectComponent implements OnInit, OnChanges {
     //   return;
     // }
     if (this.itemService.subjectId)
-      this.itemService
-        .fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
+      this.itemService.fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
         .subscribe(
           (value) => {
             this.subject = value;
             this.subjectId = this.itemService.subjectId;
-            console.log(value);
+            // console.log(value);
 
             if (!this.subject.topics[0]) {
               this.loading_topics = false;
               this.loading_items = false;
 
-              console.log("hrllo here");
+              // console.log("hrllo here");
               return;
             }
 
-            console.log(this.itemUtil.currentItemTrail, "current tril");
+            // console.log(this.itemUtil.currentItemTrail, "current tril");
             // const foundTopic = this.subject.topics.find((topic)=> topic.topicId === this.itemUtil.currentItemTrail.topicId)
             // console.log(foundTopic, "found")
             this.fetchItems(this.subject.topics[0]);
             this.clickedTopic = this.subject.topics[0];
             if (this.itemUtil.currentItemTrail) {
-              const foundTopic = this.subject.topics.find(
-                (topic) =>
+              const foundTopic = this.subject.topics.find((topic) =>
                   topic.topicId === this.itemUtil.currentItemTrail.topicId
               );
               this.fetchItems(foundTopic);
               this.clickedTopic = foundTopic;
-              console.log(foundTopic, "found");
+              // console.log(foundTopic, "found");
             }
 
-            console.log(this.clickedTopic);
+            // console.log(this.clickedTopic);
             let itemTrail = {
               subjectId: this.itemService.subjectId,
               subjectName: this.subjectName,
@@ -808,6 +774,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
             this.loading_topics = false;
             //console.log(this.subject);
           },
@@ -838,7 +805,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   handleAdminActions() {
-    console.log("Admin block");
+    // console.log("Admin block");
     this.itemService.fetchAllSubjectsItems().subscribe(
       (value) => {
         this.allSubjects = value;
@@ -959,6 +926,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     };
     this.itemProps = itemTrail;
     this.itemUtil.currentItemTrail = itemTrail;
+    this.itemUtil.saveCurrentItemTrail()
   }
 
   handleError(error: HttpErrorResponse) {
@@ -975,6 +943,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     const foundSubject = this.allSubjects.find(
       (subject) => subject.subjectId === subjectId
     );
+
     this.itemService.setSubjectName(foundSubject.name);
     this.totalItems = foundSubject.totalItems;
     this.itemService.totalItemsInCurrentSubject = foundSubject.totalItems;
@@ -993,10 +962,21 @@ export class SubjectComponent implements OnInit, OnChanges {
     } else if (this.currentUser.authorities.includes("MODERATOR")) {
       this.fetchTopicTreeModerator();
     }
+
+    // Add a trail
+    const itemTrail = {
+      subjectId: foundSubject.subjectId,
+      subjectName: foundSubject.name,
+      topicId: null,
+      topicName: null,
+      subtopicId: null,
+      subtopicName: null,
+    };
+    this.itemUtil.saveCurrentItemTrail(itemTrail)
   }
 
   fetchTopicTreeAuthor() {
-    console.log(this.itemService.subjectId);
+    // console.log(this.itemService.subjectId);
     this.itemService
       .fetchSubjectTopicsTreeAuthor(this.itemService.subjectId)
       .subscribe(
@@ -1015,6 +995,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
             this.loading_topics = false;
           }
         },
@@ -1048,6 +1029,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
             this.loading_topics = false;
             this.loading_topics = false;
           }
@@ -1060,24 +1042,24 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   fetchTopicTreeUser() {
-    console.log(this.allSubjects);
+    // console.log(this.allSubjects);
     this.itemService
       .fetchSubjectTopicsTreeUser(this.itemService.subjectId)
       .subscribe(
         (value) => {
           this.subject = value;
-          console.log(value);
+          // console.log(value);
 
           if (!this.subject.topics[0]) {
             this.loading_topics = false;
             this.loading_items = false;
 
-            console.log("hrllo here");
+            // console.log("hrllo here");
             return;
           }
           this.fetchItems(this.subject.topics[0]);
           this.clickedTopic = this.subject.topics[0];
-          console.log(this.clickedTopic);
+          // console.log(this.clickedTopic);
           let itemTrail = {
             subjectId: this.itemService.subjectId,
             subjectName: this.subjectName,
@@ -1087,6 +1069,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
           this.itemProps = itemTrail;
           this.itemUtil.currentItemTrail = itemTrail;
+          this.itemUtil.saveCurrentItemTrail()
           this.loading_topics = false;
           //console.log(this.subject);
         },
@@ -1211,8 +1194,8 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   reload(event: any) {
-    console.log("i am here");
-    console.log(event);
+    // console.log("i am here");
+    // console.log(event);
     // todo: refactor this
     // reload topics tree
     if (this.currentUser.authorities.includes("ADMIN")) {
@@ -1236,6 +1219,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1269,6 +1253,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1305,6 +1290,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
+            this.itemUtil.saveCurrentItemTrail()
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1422,10 +1408,11 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     this.itemProps = itemTrail;
     this.itemUtil.currentItemTrail = itemTrail;
+    this.itemUtil.saveCurrentItemTrail()
   }
 
   fetchItems(topic: any, subtopicId?: string) {
-    console.log("fetch items called here");
+    // console.log("fetch items called here");
     this.loading_items = true;
     this.pageNo = 0;
     this.pageSize = 20;
@@ -1449,10 +1436,10 @@ export class SubjectComponent implements OnInit, OnChanges {
               item.showingPreviewLoader = false;
             });
             this.loading_items = false;
-            console.log(this.itemsPage.content);
+            // console.log(this.itemsPage.content);
           },
           (error: HttpErrorResponse) => {
-            console.log(error);
+            // console.log(error);
             this.loading_items = false;
           }
         );
@@ -1460,7 +1447,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.itemService
         .fetchAllItems(
           this.itemService.subjectId,
-          topic.topicId,
+          topic?.topicId,
           subtopicId,
           this.pageNo,
           this.pageSize
@@ -1478,7 +1465,7 @@ export class SubjectComponent implements OnInit, OnChanges {
               item.stimulusPreview = item.stimulus.slice(0, 50);
             });
             this.loading_items = false;
-            console.log(this.itemsPage.content);
+            // console.log(this.itemsPage.content);
           },
           (error: HttpErrorResponse) => {
             // console.log(error);
@@ -1522,9 +1509,9 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.pageSize = event.rows;
     this.pageNo = event.page;
 
-    console.log(this.clickedTopic);
-    console.log(this.selectedSubtopic);
-    console.log(this.selectedSubtopicId);
+    // console.log(this.clickedTopic);
+    // console.log(this.selectedSubtopic);
+    // console.log(this.selectedSubtopicId);
     this.itemService
       .fetchAllItems(
         this.itemService.subjectId,
@@ -1592,22 +1579,23 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   preview(item: any, i: number) {
     item.showingPreviewLoader = true;
+    
     if (this.previewData) {
       this.itemsPage.content[this.activePreviewItem].showFullItem = false;
       item.showingPreviewLoader = false;
     }
+
     this.itemService.fetchIndividualItem(item.itemId).subscribe(
       (value) => {
         item.showingPreviewLoader = false;
         if (value) {
           this.activePreviewItem = i;
           this.previewData = value;
-          const sanitizedHtml = this.itemService.sanitize(
-            this.previewData.stimulus
-          );
+          const sanitizedHtml = this.itemService.sanitize(this.previewData.stimulus);
           // this.previewData.stimulus =
           //   this.domSanitizer.bypassSecurityTrustHtml(sanitizedHtml);
           item.showFullItem = true;
+          // console.log({ value })
         }
       },
       (err: HttpErrorResponse) => {
@@ -1817,6 +1805,9 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   sendData() {
+    // console.log(this.itemUtil)
+    // return 
+
     this.itemUtil.passageId = "";
     if (this._currentActivity === "addingItems") {
       this._currentActivity = "addingNewItem";
@@ -1846,9 +1837,11 @@ export class SubjectComponent implements OnInit, OnChanges {
       // console.log(newItemTrail);
       this.itemProps = newItemTrail;
       this.itemUtil.currentItemTrail = newItemTrail;
+      this.itemUtil.saveCurrentItemTrail()
     } else {
       this.itemProps = itemTrail;
       this.itemUtil.currentItemTrail = itemTrail;
+      this.itemUtil.saveCurrentItemTrail()
     }
     if (this._currentActivity === "addingItems") {
       this._currentActivity = "addingNewItem";

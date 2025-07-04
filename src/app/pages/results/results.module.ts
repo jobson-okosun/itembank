@@ -16,7 +16,7 @@ import { NgxEchartsModule } from "ngx-echarts";
 import { NgApexchartsModule } from "ng-apexcharts";
 import { SharedModule } from "src/app/shared/shared.module";
 import { EditorModule, TINYMCE_SCRIPT_SRC } from "@tinymce/tinymce-angular";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 import { ResultsRoutingModule } from "./results-routing.module";
 import { DashboardComponent } from "./dashboard/dashboard.component";
@@ -26,6 +26,7 @@ import { CandidateResultComponent } from "./candidate-result/candidate-result.co
 import { TranscriptViewComponent } from "./transcript-view/transcript-view.component";
 import { ReportsDashboardComponent } from "./reports-dashboard/reports-dashboard.component";
 import { PaginatorModule } from "primeng/paginator";
+import { McqComponent } from './transcript/question-types/mcq/mcq.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { PaginatorModule } from "primeng/paginator";
     CandidateResultComponent,
     TranscriptViewComponent,
     ReportsDashboardComponent,
+    McqComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +54,7 @@ import { PaginatorModule } from "primeng/paginator";
     SharedModule,
     EditorModule,
     FormsModule,
+    ReactiveFormsModule,
     NgbModule,
     NgbProgressbarModule,
     PaginatorModule,

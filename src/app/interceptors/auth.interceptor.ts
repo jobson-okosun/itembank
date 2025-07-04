@@ -49,6 +49,9 @@ export class AuthInterceptor implements HttpInterceptor {
           );
         } else {
           // For other errors
+          if(!['/sign-in', '/account/sign-up', '/reset-password'].includes(location.pathname)) {
+            // location.href = '/'
+          }
           return throwError(error);
         }
       })

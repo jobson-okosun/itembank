@@ -1,6 +1,4 @@
-<div
-  class="auth-page-wrapper d-flex justify-content-center align-items-center min-vh-100"
->
+<div class="auth-page-wrapper d-flex justify-content-center align-items-center min-vh-100">
   <!-- <div class="bg-overlay"></div> -->
   <!-- auth-page content -->
   <div class="auth-page-content overflow-hidden pt-lg-3 pt-2">
@@ -10,17 +8,11 @@
           <div class="card overflow-hidden border-0">
             <div class="row g-0">
               <div class="col-lg-6">
-                <div
-                  class="p-lg-5 p-3 d-flex flex-column justify-content-center"
-                >
+                <div class="p-lg-5 p-3 d-flex flex-column justify-content-center">
                   <div class="mt-sm-0 mb-3 text-white-50">
                     <div>
                       <a routerLink="/" class="d-inline-block auth-logo">
-                        <img
-                          src="/assets/logo/EXPryLogoHor.png"
-                          alt=""
-                          height="20"
-                        />
+                        <img src="/assets/logo/EXPryLogoHor.png" alt="" height="20" />
                       </a>
                     </div>
                   </div>
@@ -31,210 +23,132 @@
                   </div>
 
                   <div class="mt-2">
-                    <form
-                      *ngIf="step === 1"
-                      [formGroup]="signupForm"
-                      (ngSubmit)="onSubmit()"
-                    >
+                    <form *ngIf="step === 1" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
                       <div class="row">
-                        <!-- first name -->
                         <div class="col-6">
                           <div class="mb-3">
-                            <label for="firstname" class="form-label"
-                              >First name</label
-                            >
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="firstname"
-                              placeholder="Enter First name "
-                              formControlName="firstName"
-                              [ngClass]="{
-                                'is-invalid':
-                                  checkSubmit && f['firstName'].errors
-                              }"
-                            />
-                            <div
-                              *ngIf="checkSubmit && f['firstName'].errors"
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div *ngIf="f['firstname'].errors['required']">
+                            <label for="firstname" class="form-label">First name</label>
+                            <input type="text" class="form-control" id="firstname" placeholder="Enter First name "
+                              formControlName="firstName" [ngClass]="{
+                                'is-invalid': signupForm.get('firstName').touched && signupForm.get('firstName').invalid
+                              }" />
+                            <div *ngIf="signupForm.get('firstName').touched && signupForm.get('firstName').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('firstName').hasError('required')">
                                 First Name is required
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- lastname -->
                         <div class="col-6">
                           <div class="mb-3">
-                            <label for="lastName" class="form-label"
-                              >Last name</label
-                            >
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="lastname"
-                              placeholder="Enter Last name "
-                              formControlName="lastName"
-                              [ngClass]="{
-                                'is-invalid':
-                                  checkSubmit && f['lastName'].errors
-                              }"
-                            />
-                            <div
-                              *ngIf="checkSubmit && f['lastName'].errors"
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div *ngIf="f['lastName'].errors['required']">
+                            <label for="lastName" class="form-label">Last name</label>
+                            <input type="text" class="form-control" id="lastname" placeholder="Enter Last name "
+                              formControlName="lastName" [ngClass]="{
+                                'is-invalid': signupForm.get('lastName').touched && signupForm.get('lastName').invalid
+                              }" />
+                            <div *ngIf="signupForm.get('lastName').touched && signupForm.get('lastName').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('lastName').hasError('required')">
                                 Last Name is required
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- email -->
                         <div class="col-6">
                           <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="email"
-                              placeholder="Enter email "
-                              formControlName="email"
-                              [ngClass]="{
-                                'is-invalid': checkSubmit && f['email'].errors
-                              }"
-                            />
-                            <div
-                              *ngIf="checkSubmit && f['email'].errors"
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div *ngIf="f['email'].errors['required']">
+                            <input type="text" class="form-control" id="email" placeholder="Enter email "
+                              formControlName="email" [ngClass]="{
+                                'is-invalid': signupForm.get('email').touched && signupForm.get('email').invalid
+                              }" />
+                            <div *ngIf="signupForm.get('email').touched && signupForm.get('email').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('email').hasError('required')">
                                 Email is required
+                              </div>
+                              <div *ngIf="signupForm.get('email').hasError('email')">
+                                Email is not valid
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- phone -->
-
                         <div class="col-6">
                           <div class="mb-3">
-                            <label for="phone" class="form-label"
-                              >Phone number</label
-                            >
-                            <input
-                              type="number"
-                              class="form-control"
-                              id="phone"
-                              placeholder="Enter Phone number "
-                              formControlName="phoneNumber"
-                              [ngClass]="{
-                                'is-invalid': checkSubmit && f['phone'].errors
-                              }"
-                            />
-                            <div
-                              *ngIf="checkSubmit && f['phoneNumber'].errors"
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div *ngIf="f['phoneNumber'].errors['required']">
+                            <label for="phone" class="form-label">Phone number</label>
+                            <input type="number" class="form-control" id="phone" placeholder="Enter Phone number "
+                              formControlName="phoneNumber" [ngClass]="{
+                                'is-invalid': signupForm.get('phoneNumber').touched && signupForm.get('phoneNumber').invalid
+                              }" />
+                            <div *ngIf="signupForm.get('phoneNumber').touched && signupForm.get('phoneNumber').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('phoneNumber').hasError('required')">
                                 Phone is required
                               </div>
                             </div>
                           </div>
                         </div>
 
-                        <!-- company -->
+                        <div class="col-6">
+                          <div class="mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <select class="form-select form-select-md" id="" (change)="setStates()" formControlName="country" [ngClass]="{'is-invalid': signupForm.get('country').touched && signupForm.get('country').invalid }" required>
+                              <option disabled selected value="">Select one</option>
+                              <option class="text-uppercase" *ngFor="let country of countries" value="{{ country.country }}">
+                                {{ country.country }}
+                              </option>
+                            </select>
+                            <div *ngIf="signupForm.get('country').touched && signupForm.get('country').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('country').hasError('required')">
+                                Country is required
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-6">
+                          <div class="mb-3">
+                            <label for="state" class="form-label">State</label>
+                            <select class="form-select form-select-md" id="" formControlName="state" [ngClass]="{'is-invalid': signupForm.get('state').touched && signupForm.get('state').invalid }" required>
+                              <option disabled selected value="">Select one</option>
+                              <option class="text-uppercase" *ngFor="let state of states" value="{{ state | uppercase }}">
+                                {{ state }}
+                              </option>
+                            </select>
+                            <div *ngIf="signupForm.get('state').touched && signupForm.get('state').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('state').hasError('required')">
+                                State is required
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
                         <div class="col-12">
                           <div class="mb-3">
-                            <label for="company" class="form-label"
-                              >Company</label
-                            >
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="company"
-                              placeholder="Enter company name "
-                              formControlName="organizationName"
-                              [ngClass]="{
-                                'is-invalid':
-                                  checkSubmit && f['organizationName'].errors
-                              }"
-                            />
-                            <div
-                              *ngIf="
-                                checkSubmit && f['organizationName'].errors
-                              "
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div
-                                *ngIf="f['organizationName'].errors['required']"
-                              >
+                            <label for="company" class="form-label">Company</label>
+                            <input type="text" class="form-control" id="company" placeholder="Enter company name "
+                              formControlName="organizationName" [ngClass]="{
+                                'is-invalid': signupForm.get('organizationName').touched && signupForm.get('organizationName').invalid
+                              }" />
+                            <div *ngIf="signupForm.get('organizationName').touched && signupForm.get('organizationName').invalid" class="invalid-feedback" align="left">
+                              <div *ngIf="signupForm.get('organizationName').hasError('required')">
                                 Company is required
                               </div>
                             </div>
                           </div>
                         </div>
-                        <!-- <div class="col-6">
-                          <div class="mb-2">
-                            <div class="mb-3">
-                              <label for="country" class="form-label"
-                                >Country</label
-                              >
-                              <select
-                                class="form-control form-select form-select-md"
-                                id="country"
-                                placeholder="Enter First name "
-                                formControlName="firstname"
-                                [ngClass]="{
-                                  'is-invalid':
-                                    checkSubmit && f['firstname'].errors
-                                }"
-                              >
-                                <option selected>Select one</option>
-                                <option value="">New Delhi</option>
-                                <option value="">Istanbul</option>
-                                <option value="">Jakarta</option>
-                              </select>
-                            </div>
-
-                            <div
-                              *ngIf="checkSubmit && f['country'].errors"
-                              class="invalid-feedback"
-                              align="left"
-                            >
-                              <div *ngIf="f['country'].errors['required']">
-                                Country is required
-                              </div>
-                            </div>
-                          </div>
-                        </div> -->
                       </div>
 
                       <div *ngIf="error" class="mt-2">
-                        <p
-                          class="alert alert-danger alert-dismissible fade show"
-                        >
+                        <p class="alert alert-danger alert-dismissible fade show">
                           {{ error_msg }}
                         </p>
                       </div>
 
                       <div class="row">
                         <div class="mt-2 col-12">
-                          <button
-                            class="btn btn-primary w-100"
-                            type="submit"
-                            [disabled]="submitted === true"
-                          >
+                          <button class="btn btn-primary w-100" type="submit" [disabled]="signupForm.invalid">
                             {{
-                              submitted === false ? "Sign Up" : "Processing..."
+                            submitted === false ? "Sign Up" : "Processing..."
                             }}
                           </button>
                         </div>
@@ -242,40 +156,13 @@
                         <div class="col-12">
                           <hr class="m-3" />
                         </div>
-
-                        <!-- <div class="mt-2 col-12">
-                          <button
-                            class="btn btn-outline-secondary w-100"
-                            type="submit"
-                            [disabled]="submitted === true"
-                          >
-                            <div
-                              class="d-flex justify-content-center gap-3 text-center"
-                            >
-                              <img
-                                src="/assets/images/google-icon.svg"
-                                alt=""
-                                style="width: 20px"
-                              />
-                              <span>{{
-                                submitted === false
-                                  ? "Sign up with Google"
-                                  : "Processing..."
-                              }}</span>
-                            </div>
-                          </button>
-                        </div> -->
                       </div>
 
                       <div class="mt-3 text-start">
                         <p class="mb-0">
                           Already have an account ?
-                          <a
-                            routerLink="/auth/sign-in"
-                            class="fw-semibold text-primary text-decoration-underline"
-                          >
-                            Login</a
-                          >
+                          <a routerLink="/auth/sign-in" class="fw-semibold text-primary text-decoration-underline">
+                            Login</a>
                         </p>
                       </div>
                     </form>
@@ -288,41 +175,20 @@
                             to create username and password
                           </p>
                           <div class="d-flex justify-content-center mt-3">
-                            <img
-                              style="position: absolute"
-                              src="/assets/images/svg/success-check-mark.svg"
-                              alt=""
-                              srcset=""
-                            />
+                            <img style="position: absolute" src="/assets/images/svg/success-check-mark.svg" alt=""
+                              srcset="" />
                           </div>
 
-                          <div
-                            class="d-flex justify-content-center"
-                            style="position: relative"
-                          >
-                            <img
-                              style="height: 409px"
-                              src="/assets/images/svg/registration-success.svg"
-                              alt=""
-                              srcset=""
-                            />
+                          <div class="d-flex justify-content-center" style="position: relative">
+                            <img style="height: 409px" src="/assets/images/svg/registration-success.svg" alt=""
+                              srcset="" />
                           </div>
 
-                          <div
-                            class=""
-                            style="
-                              position: absolute;
-                              bottom: 170px;
-                              width: 100%;
-                            "
-                          >
-                            <button
-                              (click)="openMailApp()"
-                              class="btn btn-primary w-100"
-                              style="width: 100%"
-                            >
+                          <div class="" style=" position: absolute; bottom: 170px; width: 100%;">
+                            <button (click)="openMailApp()" class="btn btn-primary w-100" style="width: 100%">
                               Go to mail
                             </button>
+                            <a routerLink="/sign-in" class="d-block mt-5 text-center text-black">-- Or Sign in --</a>
                           </div>
                         </div>
                       </div>
@@ -334,11 +200,8 @@
 
               <div class="col-lg-6">
                 <div class="p-lg-5 p-5 d-lg-block d-none d-lg-block">
-                  <img
-                    src="assets/images/signup.png"
-                    alt="sign-up-image"
-                    style="max-width: 100%; height: 100%"
-                  />
+                  <img src="assets/images/forgot-password-image.png" alt="sign-up-image"
+                    style="max-width: 100%; height: 100%" />
                 </div>
               </div>
               <!-- end col -->

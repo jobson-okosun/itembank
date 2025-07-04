@@ -204,13 +204,13 @@
                 (click)="fetchUserItemAnalysis(userId)"
               >
                 <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
-                  Questions
+                  Item Analysis
                 </a>
                 <ng-template ngbNavContent>
                   <div class="card">
                     <div class="card-body">
                       <div class="d-flex align-items-center mb-4">
-                        <h5 class="card-title flex-grow-1">Items Created</h5>
+                        <h5 class="card-title flex-grow-1">Item analysis</h5>
                       </div>
                       <div class="row">
                         <div class="col-lg-12">
@@ -1167,6 +1167,12 @@
           [component]="'usage-history'"
           (closeOuterModal)="modal.close('Close click')"
         ></app-choice-matrix-preview>
+        <app-drawing-and-writing-preview
+          *ngIf="item.type === 'DRAWING_AND_WRITING'"
+          [previewData]="item"
+          [component]="'usage-history'"
+          (closeOuterModal)="modal.close('Close click')"
+        ></app-drawing-and-writing-preview>
       </div>
       <div *ngIf="currentPreview === 'Passage' && passage">
         <app-passage-preview [previewData]="passage"></app-passage-preview>

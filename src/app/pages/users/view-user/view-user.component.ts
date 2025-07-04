@@ -1,25 +1,25 @@
-import { ActivatedRoute, ParamMap, Router } from "@angular/router";
-import { Component, OnInit, ViewChildren, QueryList } from "@angular/core";
-import { UserService } from "src/app/shared/user.service";
-import { DecimalPipe } from "@angular/common";
-import { UserDetail } from "../model/user-detail";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ItemHttpService } from "../../items/item-http.service";
-import { ItemAnalysis } from "../model/item-analysis.model";
-import { Account } from "src/app/authentication/model/account.model";
-import { UsersService } from "../user/users.service";
-import { NotifierService } from "angular-notifier";
-import { ActivityListPage } from "../model/activity-list-page";
-import { UserActivityFilter } from "../model/user-activity-filter";
-import { UserActivityTypes } from "../model/user-activity-types";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { SinglePassageModel } from "../../items/passage-item/model/single-passage-model.model";
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Component, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { UserService } from 'src/app/shared/user.service';
+import { DecimalPipe } from '@angular/common';
+import { UserDetail } from '../model/user-detail';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ItemHttpService } from '../../items/item-http.service';
+import { ItemAnalysis } from '../model/item-analysis.model';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UsersService } from '../user/users.service';
+import { NotifierService } from 'angular-notifier';
+import { ActivityListPage } from '../model/activity-list-page';
+import { UserActivityFilter } from '../model/user-activity-filter';
+import { UserActivityTypes } from '../model/user-activity-types';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { SinglePassageModel } from '../../items/passage-item/model/single-passage-model.model';
 
 @Component({
-  selector: "app-view-user",
-  templateUrl: "./view-user.component.html",
-  styleUrls: ["./view-user.component.scss"],
+  selector: 'app-view-user',
+  templateUrl: './view-user.component.html',
+  styleUrls: ['./view-user.component.scss'],
   providers: [DecimalPipe],
 })
 export class ViewUserComponent implements OnInit {
@@ -87,9 +87,13 @@ export class ViewUserComponent implements OnInit {
     private modalService: NgbModal,
     private passageService: AllPassagesService
   ) {
-    this.currentUser = this.userService.getCurrentUser();
+    // this.currentUser = this.userService.getCurrentUser();
+    this.currentUser = this.userService.getCurrentUser()
+      ? this.userService.getCurrentUser()
+      : this.userService.getCurrentUserAfterReload();
+      
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-      this.userId = params.get("id");
+      this.userId = params.get('id');
       // console.log(this.userId);
     });
     this.setDefaultActivityFilterParams();
@@ -97,11 +101,11 @@ export class ViewUserComponent implements OnInit {
 
   /** Handler function for the quick guide pull out */
   onSettingsButtonClicked() {
-    document.body.classList.toggle("right-bar-enabled");
-    const rightBar = document.getElementById("theme-settings-offcanvas");
+    document.body.classList.toggle('right-bar-enabled');
+    const rightBar = document.getElementById('theme-settings-offcanvas');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
@@ -112,7 +116,7 @@ export class ViewUserComponent implements OnInit {
   }
 
   setDefaultActivityFilterParams() {
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser?.authorities?.includes('ADMIN')) {
       this.userActivityFilter.userId = this.userId;
     }
     //this.userActivityFilter.userActivityType = 'LOGIN';
@@ -120,14 +124,14 @@ export class ViewUserComponent implements OnInit {
 
   fetchUserItemAnalysis(userId: string) {
     // get all the items created by user
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser?.authorities?.includes('ADMIN')) {
       this.userService2.getAuthorItems(this.userId).subscribe(
         (value) => {
           this.userItemAnalysis = value;
           // console.log(this.userItemAnalysis);
         },
         (error: HttpErrorResponse) => {
-          this.notifier.notify("error", error.error.message);
+          this.notifier.notify('error', error.error.message);
         }
       );
     } else {
@@ -138,14 +142,14 @@ export class ViewUserComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
-          this.notifier.notify("error", error.error.message);
+          this.notifier.notify('error', error.error.message);
         }
       );
     }
   }
 
   fetchUserDetail(userId: string) {
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser?.authorities?.includes('ADMIN')) {
       this.userService2.getUserDetail(userId).subscribe(
         (value) => {
           this.userDetail = value;
@@ -178,7 +182,7 @@ export class ViewUserComponent implements OnInit {
 
   fetchActivities() {
     this.loadingActivityList = true;
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser?.authorities?.includes('ADMIN')) {
       this.userService2
         .fetchActivityListAdmin(this.userActivityFilter, this.page, this.size)
         .subscribe(
@@ -187,7 +191,7 @@ export class ViewUserComponent implements OnInit {
             this.loadingActivityList = false;
           },
           (error: HttpErrorResponse) => {
-            this.notifier.notify("error", error.error.message);
+            this.notifier.notify('error', error.error.message);
             this.loadingActivityList = false;
           }
         );
@@ -204,7 +208,7 @@ export class ViewUserComponent implements OnInit {
             this.loadingActivityList = false;
           },
           (error: HttpErrorResponse) => {
-            this.notifier.notify("error", error.error.message);
+            this.notifier.notify('error', error.error.message);
             this.loadingActivityList = false;
           }
         );
@@ -213,8 +217,8 @@ export class ViewUserComponent implements OnInit {
 
   fetchItem(itemId: string, previewModal: any) {
     this.loading_item = true;
-    this.currentPreview = "Question";
-    this.modalService.open(previewModal, { centered: true, size: "xl" });
+    this.currentPreview = 'Question';
+    this.modalService.open(previewModal, { centered: true, size: 'xl' });
     this.itemService.fetchIndividualItem(itemId).subscribe(
       (value) => {
         if (value) {
@@ -224,7 +228,7 @@ export class ViewUserComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         // console.log(error.error.message);
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
         this.loading_item = false;
       }
     );
@@ -232,8 +236,8 @@ export class ViewUserComponent implements OnInit {
 
   fetchPassage(passageId: string, previewModal: any) {
     this.loading_passage = true;
-    this.currentPreview = "Passage";
-    this.modalService.open(previewModal, { centered: true, size: "xl" });
+    this.currentPreview = 'Passage';
+    this.modalService.open(previewModal, { centered: true, size: 'xl' });
     this.passageService.fetchSinglePassage(passageId).subscribe(
       (value) => {
         if (value) {
@@ -243,7 +247,7 @@ export class ViewUserComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         // console.log(error.error.message);
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
         this.loading_passage = false;
       }
     );

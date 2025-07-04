@@ -25,6 +25,7 @@ export class ItemTypeComponent implements OnInit {
     'Fill in the gap',
     'Written',
     'Match & Order',
+    'DRAWING_AND_WRITING'
     /* 'Passage', */
   ];
 
@@ -101,6 +102,10 @@ export class ItemTypeComponent implements OnInit {
     { type: 'Matching', imgPath: 'assets/images/Itembank/association.png', code: 'ASS' },
     { type: 'Ordering', imgPath: 'assets/images/Itembank/order_list.png', code: 'ORD' },
   ];
+
+  drawingAndWriting: ItemTypeModel[] = [
+    { type: 'DRAWING_AND_WRITING', imgPath: 'assets/images/itemTypes/drawing-and-writing.jpg', code: 'DAW'}
+  ]
 
   constructor(private activatedRoute: ActivatedRoute) {
     this.activatedRoute.queryParamMap.subscribe((params) => {

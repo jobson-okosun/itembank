@@ -1,8 +1,8 @@
 import { HttpErrorResponse } from "@angular/common/http";
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AccountService } from "../services/account.service";
-import { AccountRegistration } from "../models/account";
+import { Country, Countries } from "src/app/authentication/countries/data";
 
 @Component({
   selector: "app-signup",
@@ -10,6 +10,8 @@ import { AccountRegistration } from "../models/account";
   styleUrls: ["./signup.component.scss"],
 })
 export class SignupComponent implements OnInit {
+  countries: Country[] = [];
+  states: string[] = [];
   signupForm!: FormGroup;
   error: boolean;
   error_msg: string;
@@ -21,16 +23,19 @@ export class SignupComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private accountService: AccountService
-  ) {}
+  ) {
+    this.countries = Countries;
+  }
 
   ngOnInit(): void {
     this.signupForm = this.formBuilder.group({
       firstName: ["", [Validators.required]],
       lastName: ["", Validators.required],
       organizationName: ["", Validators.required],
-      email: ["", Validators.required],
+      email: ["", [Validators.required, Validators.email]],
       phoneNumber: ["", Validators.required],
-      // country: ["", Validators.required],
+      country: ["", Validators.required],
+      state: ["", Validators.required],
     });
   }
 
@@ -74,7 +79,7 @@ export class SignupComponent implements OnInit {
     // }
     // stop here if form is invalid
     if (this.signupForm.invalid) {
-      console.log(this.signupForm.value);
+      this. signupForm.markAllAsTouched()
       this.submitted = false;
     } else {
       // let payload: AccountRegistration = {
@@ -98,9 +103,8 @@ export class SignupComponent implements OnInit {
         (err: HttpErrorResponse) => {
           //todo: show error
           this.error = true;
-
-          this.error_msg = err.error.message;
-
+          this.error_msg = err?.error?.message ? err.error.message : 'Sorry! Unable to perform sign in';
+          
           this.submitted = false;
           /* console.log(err); */
         }
@@ -109,8 +113,17 @@ export class SignupComponent implements OnInit {
   }
 
   openMailApp(){
-   
       window.location.href = "mailto:";
-    
+  }
+
+  setStates() {
+    this.countries.forEach((country) => {
+      if (
+        country.country == this.signupForm.controls["country"].value
+      ) {
+        this.states = country.states;
+      }
+    });
+    // console.log(this.states);
   }
 }

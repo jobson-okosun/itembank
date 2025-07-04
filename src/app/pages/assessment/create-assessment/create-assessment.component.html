@@ -1,8 +1,5 @@
 <div *ngIf="currentActivity === 'assessment'">
-  <app-breadcrumbs
-    title="ASSESSMENT"
-    [breadcrumbItems]="breadCrumbItems"
-  ></app-breadcrumbs>
+  <app-breadcrumbs title="ASSESSMENT" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
   <div class="row">
     <div class="card">
@@ -14,36 +11,20 @@
         <div class="text-center pt-3 pb-4 mb-1">
           <h5>Create an Assessment!</h5>
         </div>
-        <aw-wizard
-          #wizard
-          [navBarLayout]="'large-empty-symbols'"
-          class="nav nav-pills progress-bar-tab custom-nav"
-        >
+        <aw-wizard #wizard [navBarLayout]="'large-empty-symbols'" class="nav nav-pills progress-bar-tab custom-nav">
           <aw-wizard-step [stepId]="'1'">
             <ng-template awWizardStepSymbol>
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link rounded-pill active"
-                  data-progressbar="custom-progress-bar"
-                  id="pills-gen-info-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#pills-gen-info"
-                  type="button"
-                  role="tab"
-                  aria-controls="pills-gen-info"
-                  aria-selected="true"
-                >
+                <button class="nav-link rounded-pill active" data-progressbar="custom-progress-bar"
+                  id="pills-gen-info-tab" data-bs-toggle="pill" data-bs-target="#pills-gen-info" type="button"
+                  role="tab" aria-controls="pills-gen-info" aria-selected="true">
                   1
                 </button>
               </li>
             </ng-template>
-            <form
-              #newAssessmentDetailsTemplateForm="ngForm"
-              (ngSubmit)="
+            <form #newAssessmentDetailsTemplateForm="ngForm" (ngSubmit)="
                 saveAssessmentDetails(newAssessmentDetailsTemplateForm)
-              "
-              novalidate
-            >
+              " novalidate>
               <div>
                 <div class="mb-4">
                   <div>
@@ -57,34 +38,20 @@
                 <div class="mb-4">
                   <div>
                     <label class="form-label mb-0">Assessment Title</label>
-                    <input
-                      type="text"
-                      name="examination-type"
-                      class="form-control"
-                      id="assessment-title"
-                      name="assessmentTitle"
-                      placeholder="Enter Assessment Title"
-                      [(ngModel)]="fullAssessmentController.title"
-                    />
+                    <input type="text" name="examination-type" class="form-control" id="assessment-title"
+                      name="assessmentTitle" placeholder="Enter Assessment Title"
+                      [(ngModel)]="fullAssessmentController.title" />
                   </div>
                 </div>
                 <div ngModelGroup="assessmentSettings">
                   <div class="row">
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label class="form-label" for="asssessmentName"
-                          >Assessment Name</label
-                        >
-                        <select
-                          class="form-control"
-                          data-plugin="choices"
-                          data-choices
-                          data-choices-search-false
-                          name="assessmentName"
-                          [(ngModel)]="
+                        <label class="form-label" for="asssessmentName">Assessment Name</label>
+                        <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                          name="assessmentName" [(ngModel)]="
                             newAssessmentDetailsTemplate.assessmentSettings.name
-                          "
-                        >
+                          ">
                           <option value="Examination" selected>
                             Examination
                           </option>
@@ -96,32 +63,19 @@
                     </div>
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label class="form-label" for="assessmentDate"
-                          >Assessment Date</label
-                        >
-                        <input
-                          class="form-control flatpickr-input"
-                          type="text"
-                          mwlFlatpickr
-                          [altInput]="true"
-                          [convertModelValue]="true"
-                          name="assessmentDate"
-                          [(ngModel)]="
+                        <label class="form-label" for="assessmentDate">Assessment Date</label>
+                        <input class="form-control flatpickr-input" type="text" mwlFlatpickr [altInput]="true"
+                          [convertModelValue]="true" name="assessmentDate" [(ngModel)]="
                             newAssessmentDetailsTemplate.assessmentSettings
                               .examDate
-                          "
-                        />
+                          " />
                       </div>
                     </div>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label" for="instruction"
-                      >Assessment Instruction</label
-                    >
+                    <label class="form-label" for="instruction">Assessment Instruction</label>
                     <div>
-                      <editor
-                        name="instruction"
-                        initialValue="Give a description of the assessment or instructions..."
+                      <editor name="instruction" initialValue="Give a description of the assessment or instructions..."
                         [init]="{
                           height: 200,
                           menubar: true,
@@ -130,12 +84,10 @@
                           branding:false,
                           toolbar:
                             'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
-                        }"
-                        [(ngModel)]="
+                        }" [(ngModel)]="
                           newAssessmentDetailsTemplate.assessmentSettings
                             .instruction
-                        "
-                      ></editor>
+                        "></editor>
                     </div>
                   </div>
 
@@ -144,10 +96,7 @@
                       End Assessment instruction
                     </label>
                     <div>
-                      <editor
-                        name="endExamInstruction"
-                        initialValue="End exam instructions..."
-                        [init]="{
+                      <editor name="endExamInstruction" initialValue="End exam instructions..." [init]="{
                           height: 200,
                           menubar: true,
                           base_url: '/tinymce',
@@ -155,26 +104,19 @@
                           branding:false,
                           toolbar:
                             'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
-                        }"
-                        [(ngModel)]="
+                        }" [(ngModel)]="
                           newAssessmentDetailsTemplate.assessmentSettings
                             .endExamInstruction
-                        "
-                      ></editor>
+                        "></editor>
                     </div>
                   </div>
 
                   <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="displayAllSections"
-                      checked="true"
+                    <input class="form-check-input" type="checkbox" name="displayAllSections" checked="true"
                       [(ngModel)]="
                         newAssessmentDetailsTemplate.assessmentSettings
                           .displayAllSectionsAtOnce
-                      "
-                    />
+                      " />
                     <label class="form-check-label" for="displayAllSections">
                       Display all sections to candidate at once.
                     </label>
@@ -183,41 +125,26 @@
                 <div ngModelGroup="scoringSettings">
                   <p class="text-muted">SCORING SETTINGS</p>
                   <div class="form-check mb-1">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="displayResult"
-                      [(ngModel)]="
+                    <input class="form-check-input" type="checkbox" name="displayResult" [(ngModel)]="
                         newAssessmentDetailsTemplate.scoringSettings
                           .displayResult
-                      "
-                    />
+                      " />
                     <label class="form-check-label" for="displayResult">
                       Display result?
                     </label>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="passMark"
-                      />
+                      <input class="form-check-input" type="checkbox" name="passMark" />
                       <label class="form-check-label" for="passMark">
                         Pass mark
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          class="form-control col-xl-1"
-                          min="0"
-                          placeholder="1000"
-                          name="passMark"
+                        <input type="number" class="form-control col-xl-1" min="0" placeholder="1000" name="passMark"
                           [(ngModel)]="
                             newAssessmentDetailsTemplate.scoringSettings
                               .passMark
-                          "
-                        />
+                          " />
                       </div>
                     </div>
                   </div>
@@ -226,16 +153,9 @@
               </div>
               <!-- wizard-tab -->
               <div class="d-flex align-items-start gap-3 mt-4">
-                <button
-                  type="submit"
-                  class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
-                  data-nexttab="pills-info-desc-tab"
-                  awNextStep
-                >
-                  <i
-                    class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"
-                  ></i
-                  >Go to Exam Settings
+                <button type="submit" class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
+                  data-nexttab="pills-info-desc-tab" awNextStep>
+                  <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Go to Exam Settings
                 </button>
               </div>
             </form>
@@ -244,27 +164,16 @@
           <aw-wizard-step [stepId]="'2'">
             <ng-template awWizardStepSymbol>
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link rounded-pill"
-                  data-progressbar="custom-progress-bar"
-                  id="pills-info-desc-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#pills-info-desc"
-                  type="button"
-                  role="tab"
-                  aria-controls="pills-info-desc"
-                  aria-selected="false"
-                >
+                <button class="nav-link rounded-pill" data-progressbar="custom-progress-bar" id="pills-info-desc-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-info-desc" type="button" role="tab"
+                  aria-controls="pills-info-desc" aria-selected="false">
                   2
                 </button>
               </li>
             </ng-template>
-            <form
-              #assessmentSettingsTemplateForm="ngForm"
-              (ngSubmit)="
+            <form #assessmentSettingsTemplateForm="ngForm" (ngSubmit)="
                 saveAssessmentSettings(assessmentSettingsTemplateForm)
-              "
-            >
+              ">
               <div>
                 <div class="mb-4">
                   <div>
@@ -280,158 +189,90 @@
                   <p class="text-muted">TIME SETTINGS</p>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        #assessmentDuration
-                      />
+                      <input class="form-check-input" type="checkbox" #assessmentDuration />
                       <label class="form-check-label" for="duration">
                         Assessment Duration
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          min="0"
-                          placeholder="60"
-                          class="form-control"
-                          name="duration"
-                          [(ngModel)]="
+                        <input type="number" min="0" placeholder="60" class="form-control" name="duration" [(ngModel)]="
                             newAssessmentSettingsTemplate.timeSettings.duration
-                          "
-                          [disabled]="!assessmentDuration.checked"
-                        />
+                          " [disabled]="!assessmentDuration.checked" />
                       </div>
                       minutes.
                     </div>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        #instructionReadingTime
-                      />
-                      <label
-                        class="form-check-label"
-                        for="instructionReadingTime"
-                      >
+                      <input class="form-check-input" type="checkbox" #instructionReadingTime />
+                      <label class="form-check-label" for="instructionReadingTime">
                         Instruction reading time.
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control col-xl-1"
-                          placeholder="3"
-                          name="instructionReadingTime"
-                          [(ngModel)]="
+                        <input type="number" min="0" class="form-control col-xl-1" placeholder="3"
+                          name="instructionReadingTime" [(ngModel)]="
                             newAssessmentSettingsTemplate.timeSettings
                               .instructionReadingTime
-                          "
-                          [disabled]="!instructionReadingTime.checked"
-                        />
+                          " [disabled]="!instructionReadingTime.checked" />
                       </div>
                       minutes.
                     </div>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="warnReadTimeEnding"
-                        [(ngModel)]="
+                      <input class="form-check-input" type="checkbox" name="warnReadTimeEnding" [(ngModel)]="
                           newAssessmentSettingsTemplate.timeSettings
                             .warnReadTimeEnding
-                        "
-                      />
+                        " />
                       <label class="form-check-label" for="warnReadTimeEnding">
                         Warn when approaching the end of reading time?
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control col-xl-1"
-                          placeholder="3"
-                          name="readTimeWaringInSeconds"
-                          [(ngModel)]="
+                        <input type="number" min="0" class="form-control col-xl-1" placeholder="3"
+                          name="readTimeWaringInSeconds" [(ngModel)]="
                             newAssessmentSettingsTemplate.timeSettings
                               .readTimeWaringInSeconds
-                          "
-                          [disabled]="
+                          " [disabled]="
                             !newAssessmentSettingsTemplate.timeSettings
                               .warnReadTimeEnding
-                          "
-                        />
+                          " />
                       </div>
                       minutes.
                     </div>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                        #autoSave
-                      />
-                      <label
-                        class="form-check-label"
-                        for="autoSaveIntervalSeconds"
-                      >
+                      <input class="form-check-input" type="checkbox" id="formCheck1" #autoSave />
+                      <label class="form-check-label" for="autoSaveIntervalSeconds">
                         Autosave every
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control col-xl-1"
-                          placeholder="30"
-                          name="autoSaveIntervalSeconds"
-                          [(ngModel)]="
+                        <input type="number" min="0" class="form-control col-xl-1" placeholder="30"
+                          name="autoSaveIntervalSeconds" [(ngModel)]="
                             newAssessmentSettingsTemplate.timeSettings
                               .autoSaveIntervalSeconds
-                          "
-                          [disabled]="!autoSave.checked"
-                        />
+                          " [disabled]="!autoSave.checked" />
                       </div>
                       seconds.
                     </div>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="triggerInactivityWarning"
-                        [(ngModel)]="
+                      <input class="form-check-input" type="checkbox" name="triggerInactivityWarning" [(ngModel)]="
                           newAssessmentSettingsTemplate.timeSettings
                             .triggerInactivityWarning
-                        "
-                      />
-                      <label
-                        class="form-check-label"
-                        for="triggerInactivityWarning"
-                      >
+                        " />
+                      <label class="form-check-label" for="triggerInactivityWarning">
                         Trigger inactivity warning when inactive for
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control col-xl-1"
-                          placeholder="3"
-                          name="triggerInactivityWarningSeconds"
-                          [(ngModel)]="
+                        <input type="number" min="0" class="form-control col-xl-1" placeholder="3"
+                          name="triggerInactivityWarningSeconds" [(ngModel)]="
                             newAssessmentSettingsTemplate.timeSettings
                               .triggerInactivityWarningSeconds
-                          "
-                          [disabled]="
+                          " [disabled]="
                             !newAssessmentSettingsTemplate.timeSettings
                               .triggerInactivityWarning
-                          "
-                        />
+                          " />
                       </div>
                       minutes.
                     </div>
@@ -459,88 +300,54 @@
                 <div ngModelGroup="playBackSettings">
                   <p class="text-muted">PLAYBACK SETTINGS</p>
                   <div class="form-check mb-2">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="warnCandidateOfUnattemptedQuestions"
+                    <input class="form-check-input" type="checkbox" name="warnCandidateOfUnattemptedQuestions"
                       [(ngModel)]="
                         newAssessmentSettingsTemplate.playBackSettings
                           .warnCandidatesOfUnattemptedQuestions
-                      "
-                    />
-                    <label
-                      class="form-check-label"
-                      for="warnCandidateOfUnattemptedQuestions"
-                    >
+                      " />
+                    <label class="form-check-label" for="warnCandidateOfUnattemptedQuestions">
                       Warn candidates of unattempted questions?
                     </label>
                   </div>
                   <div class="form-check mb-1">
-                    <input
-                      class="form-check-input"
-                      type="checkbox"
-                      name="displayConfirmationWindowOnSubmission"
+                    <input class="form-check-input" type="checkbox" name="displayConfirmationWindowOnSubmission"
                       [(ngModel)]="
                         newAssessmentSettingsTemplate.playBackSettings
                           .displayConfirmationWindowOnSubmission
-                      "
-                    />
-                    <label
-                      class="form-check-label"
-                      for="displayConfirmationWindowOnSubmission"
-                    >
+                      " />
+                    <label class="form-check-label" for="displayConfirmationWindowOnSubmission">
                       Display confirmation window on submission?
                     </label>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        name="percentageCheck"
-                        #percentageSubmissionCheck
-                      />
+                      <input class="form-check-input" type="checkbox" name="percentageCheck"
+                        #percentageSubmissionCheck />
                       <label class="form-check-label" for="percentageCheck">
                         Allow submission only when
                       </label>
                       <div class="col-xl-1 col-md-1 col-sm-1">
-                        <input
-                          type="number"
-                          class="form-control col-xl-1"
-                          placeholder="100"
-                          name="percentageSubmissionCheck"
-                          [(ngModel)]="
+                        <input type="number" class="form-control col-xl-1" placeholder="100"
+                          name="percentageSubmissionCheck" [(ngModel)]="
                             newAssessmentSettingsTemplate.playBackSettings
                               .percentageSubmissionCheck
-                          "
-                          [disabled]="!percentageSubmissionCheck.checked"
-                        />
+                          " [disabled]="!percentageSubmissionCheck.checked" />
                       </div>
                       % of questions are attempted.
                     </div>
                   </div>
                   <div class="form-check">
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         Font size
                       </label>
                       <div class="col-xl-1">
-                        <select
-                          class="form-control"
-                          data-plugin="choices"
-                          data-choices
-                          data-choices-search-false
-                          name="fontSize"
-                          [(ngModel)]="
+                        <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                          name="fontSize" [(ngModel)]="
                             newAssessmentSettingsTemplate.playBackSettings
                               .fontSize
-                          "
-                        >
+                          ">
                           <option *ngFor="let fontSize of fontSizes">
                             {{ fontSize }}
                           </option>
@@ -552,27 +359,14 @@
                 <!-- playback settings-->
               </div>
               <div class="d-flex align-items-start gap-3 mt-4">
-                <button
-                  type="button"
-                  class="btn btn-link btn-sm text-decoration-none btn-label previestab"
-                  data-previous="pills-gen-info-tab"
-                  awPreviousStep
-                >
-                  <i
-                    class="ri-arrow-left-line label-icon align-middle fs-16 me-2"
-                  ></i>
+                <button type="button" class="btn btn-link btn-sm text-decoration-none btn-label previestab"
+                  data-previous="pills-gen-info-tab" awPreviousStep>
+                  <i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
                   Back to Assessment Details
                 </button>
-                <button
-                  type="submit"
-                  class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
-                  data-nexttab="pills-success-tab"
-                  awNextStep
-                >
-                  <i
-                    class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"
-                  ></i
-                  >Go to Section Settings
+                <button type="submit" class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
+                  data-nexttab="pills-success-tab" awNextStep>
+                  <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Go to Section Settings
                 </button>
               </div>
             </form>
@@ -581,30 +375,18 @@
           <aw-wizard-step [stepId]="'3'">
             <ng-template awWizardStepSymbol>
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link rounded-pill"
-                  data-progressbar="custom-progress-bar"
-                  id="pills-success-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#pills-success"
-                  type="button"
-                  role="tab"
-                  aria-controls="pills-success"
-                  aria-selected="false"
-                >
+                <button class="nav-link rounded-pill" data-progressbar="custom-progress-bar" id="pills-success-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-success" type="button" role="tab"
+                  aria-controls="pills-success" aria-selected="false">
                   3
                 </button>
               </li>
             </ng-template>
-            <form
-              #assessmentSectionTemplateForm="ngForm"
-              (ngSubmit)="saveAssessmentSection(assessmentSectionTemplateForm)"
-            >
+            <form #assessmentSectionTemplateForm="ngForm"
+              (ngSubmit)="saveAssessmentSection(assessmentSectionTemplateForm)">
               <div>
                 <div>
-                  <div
-                    class="d-flex flex-wrap gap-2 align-items-center justify-content-between"
-                  >
+                  <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
                     <div>
                       <h5 class="mb-1">Item Settings</h5>
                       <p class="text-muted">
@@ -613,11 +395,7 @@
                       </p>
                     </div>
                     <div class="d-flex flex-wrap gap-2 float-end">
-                      <button
-                        type="button"
-                        (click)="addSection()"
-                        class="btn btn-sm btn-soft-info"
-                      >
+                      <button type="button" (click)="addSection()" class="btn btn-sm btn-soft-info">
                         <i class="bx bx-plus"></i>
                         Add Section
                       </button>
@@ -634,51 +412,28 @@
                   <hr />
                   <!-- section settings heading-->
 
-                  <div
-                    class="live-preview mb-2"
-                    ngModelGroup="block"
-                    *ngFor="let section of sections; let i = index"
-                  >
-                    <ngb-accordion
-                      #acc="ngbAccordion"
-                      activeIds="static-1"
-                      [closeOthers]="true"
-                      class="custom-accordionwithicon accordion-border-box"
-                    >
+                  <div class="live-preview mb-2" ngModelGroup="block" *ngFor="let section of sections; let i = index">
+                    <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true"
+                      class="custom-accordionwithicon accordion-border-box">
                       <ngb-panel id="static-1">
                         <ng-template ngbPanelTitle class="accordion-header">
                           <h2 class="accordion-header" id="gen-ques-headingOne">
-                            <button
-                              class="accordion-button"
-                              type="button"
-                              data-bs-toggle="collapse"
-                              data-bs-target="#gen-ques-collapseOne"
-                              aria-expanded="false"
-                              aria-controls="gen-ques-collapseOne"
-                            >
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#gen-ques-collapseOne" aria-expanded="false"
+                              aria-controls="gen-ques-collapseOne">
                               SECTION {{ i + 1 }}
                             </button>
                           </h2>
                         </ng-template>
-                        <ng-template
-                          ngbPanelContent
-                          [ngIf]="sections.length > 0"
-                        >
+                        <ng-template ngbPanelContent [ngIf]="sections.length > 0">
                           <div class="accordion-body">
                             <div class="live-preview">
                               <div>
-                                <div
-                                  class="d-flex flex-wrap align-items-center justify-content-between"
-                                >
+                                <div class="d-flex flex-wrap align-items-center justify-content-between">
                                   <p class="text-muted">SECTION SETTINGS</p>
-                                  <div
-                                    class="d-flex flex-wrap gap-2 align-items-center"
-                                  >
-                                    <button
-                                      type="button"
-                                      class="btn btn-primary btn-sm float-end"
-                                      (click)="addBlock(i)"
-                                    >
+                                  <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <button type="button" class="btn btn-primary btn-sm float-end"
+                                      (click)="addBlock(i)">
                                       <i class="ri-add-line"></i>Add Block
                                     </button>
                                   </div>
@@ -690,340 +445,182 @@
                                         <label class="form-label" for="name">
                                           Section Name
                                         </label>
-                                        <input
-                                          class="form-control"
-                                          type="text"
-                                          name="name"
-                                          placeholder="Name"
-                                          [(ngModel)]="section.name"
-                                        />
+                                        <input class="form-control" type="text" name="name" placeholder="Name"
+                                          [(ngModel)]="section.name" />
                                       </div>
                                       <div class="col-6">
-                                        <label
-                                          for="choices-multiple-default"
-                                          class="form-label"
-                                          >Subject Name</label
-                                        >
-                                        <ng-select
-                                          [items]="subjects"
-                                          bindLabel="subjectName"
-                                          name="subjects"
-                                          dropdownPosition="bottom"
-                                          [(ngModel)]="section.subjectName"
-                                          (ngModelChange)="
+                                        <label for="choices-multiple-default" class="form-label">Subject Name</label>
+                                        <ng-select [items]="subjects" bindLabel="subjectName" name="subjects"
+                                          dropdownPosition="bottom" [(ngModel)]="section.subjectName" (ngModelChange)="
                                             setSubject($event, i)
-                                          "
-                                        >
-                                          <ng-template
-                                            ng-optgroup-tmp
-                                            let-item="item"
-                                          >
+                                          ">
+                                          <ng-template ng-optgroup-tmp let-item="item">
                                             {{
-                                              item[i].subjectName | uppercase
+                                            item[i].subjectName | uppercase
                                             }}
                                           </ng-template>
                                         </ng-select>
                                       </div>
                                     </div>
                                     <div class="form-check">
-                                      <div
-                                        class="d-flex flex-wrap gap-2 align-items-center"
-                                      >
-                                        <input
-                                          class="form-check-input"
-                                          type="checkbox"
-                                          #durationInMinutes
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="durationInMinutes"
-                                        >
+                                      <div class="d-flex flex-wrap gap-2 align-items-center">
+                                        <input class="form-check-input" type="checkbox" #durationInMinutes />
+                                        <label class="form-check-label" for="durationInMinutes">
                                           Section Duration in minutes.
                                         </label>
                                         <div class="col-xl-1">
-                                          <input
-                                            type="number"
-                                            placeholder="60"
-                                            class="form-control"
-                                            name="durationInMinutes"
-                                            [(ngModel)]="
+                                          <input type="number" placeholder="60" class="form-control"
+                                            name="durationInMinutes" [(ngModel)]="
                                               section.sectionSettings
                                                 .durationInMinutes
-                                            "
-                                            [disabled]="
+                                            " [disabled]="
                                               !durationInMinutes.checked
-                                            "
-                                          />
+                                            " />
                                         </div>
                                         (This is possible, only when one section
                                         is being displayed at a time).
                                       </div>
                                     </div>
                                     <div class="form-check">
-                                      <div
-                                        class="d-flex flex-wrap gap-2 align-items-center"
-                                      >
-                                        <input
-                                          class="form-check-input"
-                                          type="checkbox"
-                                          name="averageDifficulty"
-                                          #averageDifficultyLevel
-                                        />
-                                        <label
-                                          class="form-check-label"
-                                          for="averageDifficulty"
-                                        >
+                                      <div class="d-flex flex-wrap gap-2 align-items-center">
+                                        <input class="form-check-input" type="checkbox" name="averageDifficulty"
+                                          #averageDifficultyLevel />
+                                        <label class="form-check-label" for="averageDifficulty">
                                           Average difficulty level (0-1)
                                         </label>
                                         <div class="col-xl-1">
-                                          <input
-                                            type="number"
-                                            placeholder="from 0 to 1"
-                                            max="1"
-                                            min="0"
-                                            class="form-control"
-                                            name="averageDifficultyLevel"
-                                            [(ngModel)]="
+                                          <input type="number" placeholder="from 0 to 1" max="1" min="0"
+                                            class="form-control" name="averageDifficultyLevel" [(ngModel)]="
                                               section.sectionSettings
                                                 .averageDifficultyLevel
-                                            "
-                                            [disabled]="
+                                            " [disabled]="
                                               !averageDifficultyLevel.checked
-                                            "
-                                          />
+                                            " />
                                         </div>
                                       </div>
                                     </div>
                                     <div class="form-check mb-2">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="shuffleItems"
-                                        [(ngModel)]="
+                                      <input class="form-check-input" type="checkbox" name="shuffleItems" [(ngModel)]="
                                           section.sectionSettings.shuffleItems
-                                        "
-                                      />
-                                      <label
-                                        class="form-check-label"
-                                        for="shuffleItems"
-                                      >
+                                        " />
+                                      <label class="form-check-label" for="shuffleItems">
                                         Shuffle items
                                       </label>
                                     </div>
                                     <div class="form-check mb-2">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="shuffleOptions"
-                                        [(ngModel)]="
+                                      <input class="form-check-input" type="checkbox" name="shuffleOptions" [(ngModel)]="
                                           section.sectionSettings.shuffleOptions
-                                        "
-                                      />
-                                      <label
-                                        class="form-check-label"
-                                        for="shuffleOptions"
-                                      >
+                                        " />
+                                      <label class="form-check-label" for="shuffleOptions">
                                         Shuffle options
                                       </label>
                                     </div>
                                     <div class="form-check mb-2">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="shuffleBlocks"
-                                        [(ngModel)]="
+                                      <input class="form-check-input" type="checkbox" name="shuffleBlocks" [(ngModel)]="
                                           section.sectionSettings.shuffleBlocks
-                                        "
-                                      />
-                                      <label
-                                        class="form-check-label"
-                                        for="shuffleBlocks"
-                                      >
+                                        " />
+                                      <label class="form-check-label" for="shuffleBlocks">
                                         Shuffle blocks
                                       </label>
                                     </div>
                                     <div class="form-check mb-2">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="allowCalculator"
+                                      <input class="form-check-input" type="checkbox" name="allowCalculator"
                                         [(ngModel)]="
                                           section.sectionSettings
                                             .allowCalculator
-                                        "
-                                      />
-                                      <label
-                                        class="form-check-label"
-                                        for="allowCalculator"
-                                      >
+                                        " />
+                                      <label class="form-check-label" for="allowCalculator">
                                         Allow calculator
                                       </label>
                                     </div>
                                     <div class="form-check mb-2">
-                                      <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        name="preventNavigationToAttemptedItems"
-                                        [(ngModel)]="
+                                      <input class="form-check-input" type="checkbox"
+                                        name="preventNavigationToAttemptedItems" [(ngModel)]="
                                           section.sectionSettings
                                             .preventNavigationToAttemptedItems
-                                        "
-                                      />
-                                      <label
-                                        class="form-check-label"
-                                        for="preventNavigationToAttemptedItems"
-                                      >
+                                        " />
+                                      <label class="form-check-label" for="preventNavigationToAttemptedItems">
                                         Prevent navigation to attempted items
                                       </label>
                                     </div>
                                   </div>
                                 </div>
 
-                                <div
-                                  class="card"
-                                  *ngIf="section.blocks.length > 0"
-                                  class="form-check"
-                                >
+                                <div class="card" *ngIf="section.blocks.length > 0" class="form-check">
                                   <hr />
                                   <div>
                                     <p class="text-muted">BLOCKS</p>
                                   </div>
                                   <!-- item settings heading-->
 
-                                  <div
-                                    class="live-preview mb-2"
-                                    ngModelGroup="block"
-                                    *ngFor="
+                                  <div class="live-preview mb-2" ngModelGroup="block" *ngFor="
                                       let block of section.blocks;
                                       let j = index
-                                    "
-                                  >
-                                    <ngb-accordion
-                                      #acc="ngbAccordion"
-                                      activeIds="static-1"
-                                      [closeOthers]="true"
-                                      class="custom-accordionwithicon accordion-border-box"
-                                    >
+                                    ">
+                                    <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true"
+                                      class="custom-accordionwithicon accordion-border-box">
                                       <ngb-panel id="static-1">
-                                        <ng-template
-                                          ngbPanelTitle
-                                          class="accordion-header"
-                                        >
-                                          <h2
-                                            class="accordion-header"
-                                            id="gen-ques-headingOne"
-                                          >
-                                            <button
-                                              class="accordion-button"
-                                              type="button"
-                                              data-bs-toggle="collapse"
-                                              data-bs-target="#gen-ques-collapseOne"
-                                              aria-expanded="false"
-                                              aria-controls="gen-ques-collapseOne"
-                                            >
+                                        <ng-template ngbPanelTitle class="accordion-header">
+                                          <h2 class="accordion-header" id="gen-ques-headingOne">
+                                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                              data-bs-target="#gen-ques-collapseOne" aria-expanded="false"
+                                              aria-controls="gen-ques-collapseOne">
                                               BLOCK {{ j + 1 }}
                                             </button>
                                           </h2>
                                         </ng-template>
-                                        <ng-template
-                                          ngbPanelContent
-                                          [ngIf]="section.blocks.length > 0"
-                                        >
+                                        <ng-template ngbPanelContent [ngIf]="section.blocks.length > 0">
                                           <div class="accordion-body">
                                             <div class="live-preview">
-                                              <div
-                                                class="d-flex flex-wrap align-items-center justify-content-between"
-                                              >
+                                              <div class="d-flex flex-wrap align-items-center justify-content-between">
                                                 <p class="text-muted">
                                                   BLOCK SETTINGS
                                                 </p>
 
-                                                <div
-                                                  class="d-flex align-items-center"
-                                                >
+                                                <div class="d-flex align-items-center">
                                                   <!-- ADD NEW BLOCK-->
-                                                  <div
-                                                    #drop="ngbDropdown"
-                                                    class="btn"
-                                                    role="group"
-                                                    ngbDropdown
-                                                  >
-                                                    <button
-                                                      type="button"
-                                                      (mouseover)="
+                                                  <div #drop="ngbDropdown" class="btn" role="group" ngbDropdown>
+                                                    <button type="button" (mouseover)="
                                                         onHover(drop)
-                                                      "
-                                                      class="btn btn-sm btn-soft-info dropdown-toggle arrow-none"
-                                                      data-bs-toggle="dropdown"
-                                                      aria-expanded="false"
-                                                      ngbDropdownToggle
-                                                    >
-                                                      <i class="bx bx-plus"></i
-                                                      >Add Questions
+                                                      " class="btn btn-sm btn-soft-info dropdown-toggle arrow-none"
+                                                      data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                                      <i class="bx bx-plus"></i>Add Questions
                                                     </button>
-                                                    <ul
-                                                      (mouseleave)="
+                                                    <ul (mouseleave)="
                                                         onLeave(drop)
-                                                      "
-                                                      class="dropdown-menu"
-                                                      ngbDropdownMenu
-                                                    >
+                                                      " class="dropdown-menu" ngbDropdownMenu>
                                                       <li>
-                                                        <a
-                                                          class="dropdown-item d-flex gap-2 align-items-center"
+                                                        <a class="dropdown-item d-flex gap-2 align-items-center"
                                                           (click)="
                                                             addQuestion(i, j)
-                                                          "
-                                                          ><i
-                                                            class="bx bx-plus"
-                                                          ></i
-                                                          >Add a new question</a
-                                                        >
+                                                          "><i class="bx bx-plus"></i>Add a new question</a>
                                                       </li>
                                                       <li>
-                                                        <a
-                                                          class="dropdown-item d-flex gap-2 align-items-center"
+                                                        <a class="dropdown-item d-flex gap-2 align-items-center"
                                                           (click)="
                                                             addQuestion(i, j)
-                                                          "
-                                                          ><i
-                                                            class="ri-repeat-2-line"
-                                                          ></i
-                                                          >Reuse item from
-                                                          bank</a
-                                                        >
+                                                          "><i class="ri-repeat-2-line"></i>Reuse item from
+                                                          bank</a>
                                                       </li>
                                                       <li>
-                                                        <a
-                                                          class="dropdown-item d-flex gap-2 align-items-center"
+                                                        <a class="dropdown-item d-flex gap-2 align-items-center"
                                                           (click)="
                                                             addRandomQuestion(
                                                               i,
                                                               j
                                                             )
-                                                          "
-                                                          ><i
-                                                            class="bx bx-shuffle"
-                                                          ></i
-                                                          >Add random
-                                                          questions</a
-                                                        >
+                                                          "><i class="bx bx-shuffle"></i>Add random
+                                                          questions</a>
                                                       </li>
                                                       <li>
-                                                        <a
-                                                          class="dropdown-item d-flex gap-2 align-items-center"
+                                                        <a class="dropdown-item d-flex gap-2 align-items-center"
                                                           (click)="
                                                             addPassageQuestions(
                                                               i,
                                                               j
                                                             )
-                                                          "
-                                                          ><i
-                                                            class="ri-repeat-2-line"
-                                                          ></i
-                                                          >Reuse passage
-                                                          items</a
-                                                        >
+                                                          "><i class="ri-repeat-2-line"></i>Reuse passage
+                                                          items</a>
                                                       </li>
                                                     </ul>
                                                   </div>
@@ -1031,16 +628,11 @@
 
                                                   <!-- REMOVE BLOCK -->
                                                   <div>
-                                                    <button
-                                                      type="button"
-                                                      class="btn btn-sm btn-icon btn-outline-danger"
+                                                    <button type="button" class="btn btn-sm btn-icon btn-outline-danger"
                                                       (click)="
                                                         removeBlock(i, j)
-                                                      "
-                                                    >
-                                                      <i
-                                                        class="ri-delete-bin-6-line"
-                                                      ></i>
+                                                      ">
+                                                      <i class="ri-delete-bin-6-line"></i>
                                                     </button>
                                                   </div>
                                                   <!-- END REMOVE BLOCK-->
@@ -1050,71 +642,41 @@
                                               <div class="row">
                                                 <div class="card-body">
                                                   <div class="mb-4">
-                                                    <div
-                                                      class="form-check mb-1"
-                                                    >
-                                                      <input
-                                                        type="text"
-                                                        class="form-control"
-                                                        placeholder="Block Name"
-                                                        name="blockName"
-                                                        [(ngModel)]="
+                                                    <div class="form-check mb-1">
+                                                      <input type="text" class="form-control" placeholder="Block Name"
+                                                        name="blockName" [(ngModel)]="
                                                           block.name
-                                                        "
-                                                      />
+                                                        " />
                                                     </div>
 
                                                     <div class="mt-2">
                                                       <div class="form-check">
-                                                        <div
-                                                          class="d-flex flex-wrap gap-2 align-items-center"
-                                                        >
-                                                          <label
-                                                            class="form-check-label"
-                                                            for="totalQuestions"
-                                                          >
+                                                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                          <label class="form-check-label" for="totalQuestions">
                                                             Total number of
                                                             items
                                                           </label>
-                                                          <div
-                                                            class="col-xl-1 col-md-1 col-sm-1"
-                                                          >
-                                                            <input
-                                                              type="number"
-                                                              placeholder="20"
-                                                              class="form-control"
-                                                              name="totalQuestions"
-                                                              [(ngModel)]="
+                                                          <div class="col-xl-1 col-md-1 col-sm-1">
+                                                            <input type="number" placeholder="20" class="form-control"
+                                                              name="totalQuestions" [(ngModel)]="
                                                                 block.totalQuestions
-                                                              "
-                                                            />
+                                                              " />
                                                           </div>
                                                         </div>
                                                       </div>
 
                                                       <div class="form-check">
-                                                        <div
-                                                          class="d-flex flex-wrap gap-2 align-items-center"
-                                                        >
-                                                          <label
-                                                            class="form-check-label"
-                                                            for="totalQuestionsPerStudent"
-                                                          >
+                                                        <div class="d-flex flex-wrap gap-2 align-items-center">
+                                                          <label class="form-check-label"
+                                                            for="totalQuestionsPerStudent">
                                                             Total number of
                                                             items per student
                                                           </label>
-                                                          <div
-                                                            class="col-xl-1 col-md-1 col-sm-1"
-                                                          >
-                                                            <input
-                                                              type="number"
-                                                              placeholder="20"
-                                                              class="form-control"
-                                                              name="totalQuestionsPerStudent"
-                                                              [(ngModel)]="
+                                                          <div class="col-xl-1 col-md-1 col-sm-1">
+                                                            <input type="number" placeholder="20" class="form-control"
+                                                              name="totalQuestionsPerStudent" [(ngModel)]="
                                                                 block.totalQuestionsPerCandidate
-                                                              "
-                                                            />
+                                                              " />
                                                           </div>
                                                         </div>
                                                       </div>
@@ -1122,111 +684,65 @@
                                                       <!-- RANDOM ITEM PICK SELECTION FORM-->
                                                       <div *ngIf="randomPick" class="form-check">
                                                         <div class="row mt-2">
-                                                          <div
-                                                            class="col-6 form-check mb-1"
-                                                          >
-                                                            <label
-                                                              >Topic Name</label
-                                                            >
-                                                            <ng-select
-                                                              #topic
-                                                              [items]="topics"
-                                                              bindLabel="topicName"
-                                                              name="topics"
-                                                              dropdownPosition="bottom"
-                                                              [(ngModel)]="
-                                                                selectedTopic &&
-                                                                selectedTopic.topicName
-                                                              "
-                                                              (ngModelChange)="
+                                                          <div class="col-6 form-check mb-1">
+                                                            <label>Topic Name</label>
+                                                            <ng-select #topic [items]="topics" bindLabel="topicName"
+                                                              name="topics" dropdownPosition="bottom" [(ngModel)]="selectedTopic && selectedTopic.topicName" (ngModelChange)="
                                                                 setTopic($event)
-                                                              "
-                                                            >
-                                                              <ng-template
-                                                                ng-optgroup-tmp
-                                                                let-item="item"
-                                                              >
+                                                              ">
+                                                              <ng-template ng-optgroup-tmp let-item="item">
                                                                 {{
-                                                                  item[0]
-                                                                    .tagName
-                                                                    | uppercase
+                                                                item[0]
+                                                                .tagName
+                                                                | uppercase
                                                                 }}
                                                               </ng-template>
                                                             </ng-select>
                                                           </div>
-                                                          <div
-                                                            *ngIf="
+                                                          <div *ngIf="
                                                               randomPick &&
                                                               selectedTopic
-                                                            "
-                                                            class="col-6 form-check mb-1"
-                                                          >
-                                                            <label
-                                                              >Subtopic
-                                                              Name</label
-                                                            >
-                                                            <ng-select
-                                                              [items]="
+                                                            " class="col-6 form-check mb-1">
+                                                            <label>Subtopic
+                                                              Name</label>
+                                                            <ng-select [items]="
                                                                 subtopics
-                                                              "
-                                                              bindLabel="subtopicName"
-                                                              name="subtopics"
-                                                              dropdownPosition="bottom"
-                                                              [(ngModel)]="
-                                                                selectedSubtopic &&
-                                                                selectedSubtopic.subtopicName
-                                                              "
-                                                              (ngModelChange)="
+                                                              " bindLabel="subtopicName" name="subtopics"
+                                                              dropdownPosition="bottom" [(ngModel)]="selectedSubtopic &&selectedSubtopic.subtopicName" (ngModelChange)="
                                                                 setSubtopic(
                                                                   $event
                                                                 )
-                                                              "
-                                                            >
-                                                              <ng-template
-                                                                ng-optgroup-tmp
-                                                                let-item="item"
-                                                              >
+                                                              ">
+                                                              <ng-template ng-optgroup-tmp let-item="item">
                                                                 {{
-                                                                  item[0]
-                                                                    .tagName
-                                                                    | uppercase
+                                                                item[0]
+                                                                .tagName
+                                                                | uppercase
                                                                 }}
                                                               </ng-template>
                                                             </ng-select>
                                                           </div>
                                                         </div>
-                                                        <div
-                                                          *ngIf="randomPick"
-                                                          class="row mx-1"
-                                                        >
+                                                        <div *ngIf="randomPick" class="row mx-1">
                                                           <div class="col-10">
-                                                            <app-item-tag
-                                                              *ngIf="
+                                                            <app-item-tag *ngIf="
                                                                 showTagField
-                                                              "
-                                                              (sendTags)="
+                                                              " (sendTags)="
                                                                 recieveTags(
                                                                   $event,
                                                                   i
                                                                 )
-                                                              "
-                                                            ></app-item-tag>
+                                                              "></app-item-tag>
                                                           </div>
                                                           <div class="col-2">
-                                                            <button
-                                                              [ngClass]="{
+                                                            <button [ngClass]="{
                                                                 randomSelectClicked:
                                                                   'cursor: not-allowed'
-                                                              }"
-                                                              type="button"
-                                                              (click)="
+                                                              }" type="button" (click)="
                                                                 pickAtRandom()
-                                                              "
-                                                              class="mt-4 btn btn-outline-success"
-                                                              [disabled]="
+                                                              " class="mt-4 btn btn-outline-success" [disabled]="
                                                                 randomSelectClicked
-                                                              "
-                                                            >
+                                                              ">
                                                               Pick Randomly
                                                             </button>
                                                           </div>
@@ -1235,63 +751,32 @@
                                                       <!-- END RANDOM PICK SELECTION FORM-->
 
                                                       <!-- RANDOM SELECT PASSAGE ITEMS-->
-                                                      <div
-                                                        *ngIf="passageSelection"
-                                                        class="form-check"
-                                                      >
-                                                        <div
-                                                          class="row mt-2"
-                                                          *ngIf="
+                                                      <div *ngIf="passageSelection" class="form-check">
+                                                        <div class="row mt-2" *ngIf="
                                                             passageSelection
-                                                          "
-                                                        >
-                                                          <div
-                                                            class="col-11 form-check mb-1"
-                                                          >
-                                                            <label
-                                                              >Topic Name</label
-                                                            >
-                                                            <ng-select
-                                                              #topic
-                                                              [items]="topics"
-                                                              bindLabel="topicName"
-                                                              name="topics"
-                                                              dropdownPosition="bottom"
-                                                              [(ngModel)]="
-                                                                selectedTopic &&
-                                                                selectedTopic.topicName
-                                                              "
-                                                              (ngModelChange)="
-                                                                setTopic($event)
-                                                              "
-                                                            >
-                                                              <ng-template
-                                                                ng-optgroup-tmp
-                                                                let-item="item"
-                                                              >
+                                                          ">
+                                                          <div class="col-11 form-check mb-1">
+                                                            <label>Topic Name</label>
+                                                            <ng-select #topic [items]="topics" bindLabel="topicName"
+                                                              name="topics" dropdownPosition="bottom" [(ngModel)]="selectedTopic && selectedTopic.topicName" (ngModelChange)="setTopic($event)">
+                                                              <ng-template ng-optgroup-tmp let-item="item">
                                                                 {{
-                                                                  item[0]
-                                                                    .tagName
-                                                                    | uppercase
+                                                                item[0]
+                                                                .tagName
+                                                                | uppercase
                                                                 }}
                                                               </ng-template>
                                                             </ng-select>
                                                           </div>
                                                           <div class="col-1">
-                                                            <button
-                                                              [ngClass]="{
+                                                            <button [ngClass]="{
                                                                 passageSelection:
                                                                   'cursor: not-allowed'
-                                                              }"
-                                                              type="button"
-                                                              (click)="
+                                                              }" type="button" (click)="
                                                                 pickAtRandom()
-                                                              "
-                                                              class="mt-4 btn btn-outline-success"
-                                                              [disabled]="
+                                                              " class="mt-4 btn btn-outline-success" [disabled]="
                                                                 !passageSelection
-                                                              "
-                                                            >
+                                                              ">
                                                               Find
                                                             </button>
                                                           </div>
@@ -1528,27 +1013,14 @@
                 </div>
               </div>
               <div class="d-flex align-items-start gap-3 mt-4">
-                <button
-                  type="button"
-                  class="btn btn-link btn-sm text-decoration-none btn-label previestab"
-                  data-previous="pills-gen-info-tab"
-                  awPreviousStep
-                >
-                  <i
-                    class="ri-arrow-left-line label-icon align-middle fs-16 me-2"
-                  ></i>
+                <button type="button" class="btn btn-link btn-sm text-decoration-none btn-label previestab"
+                  data-previous="pills-gen-info-tab" awPreviousStep>
+                  <i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
                   Back to Exam Settings
                 </button>
-                <button
-                  type="submit"
-                  class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
-                  data-nexttab="pills-success-tab"
-                  awNextStep
-                >
-                  <i
-                    class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"
-                  ></i
-                  >Go to Delivery Method
+                <button type="submit" class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
+                  data-nexttab="pills-success-tab" awNextStep>
+                  <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Go to Delivery Method
                 </button>
               </div>
             </form>
@@ -1557,17 +1029,9 @@
           <aw-wizard-step [stepId]="'4'">
             <ng-template awWizardStepSymbol>
               <li class="nav-item" role="presentation">
-                <button
-                  class="nav-link rounded-pill"
-                  data-progressbar="custom-progress-bar"
-                  id="pills-success-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#pills-success"
-                  type="button"
-                  role="tab"
-                  aria-controls="pills-success"
-                  aria-selected="false"
-                >
+                <button class="nav-link rounded-pill" data-progressbar="custom-progress-bar" id="pills-success-tab"
+                  data-bs-toggle="pill" data-bs-target="#pills-success" type="button" role="tab"
+                  aria-controls="pills-success" aria-selected="false">
                   4
                 </button>
               </li>
@@ -1600,43 +1064,27 @@
                 <p class="text-muted">DELIVERY METHOD SETTINGS</p>
 
                 <div class="form-check mb-2">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="formCheck1"
-                  />
+                  <input class="form-check-input" type="checkbox" id="formCheck1" />
                   <label class="form-check-label" for="formCheck1">
                     Online
                   </label>
                   <div class="form-check">
                     <div>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         No proctor
                       </label>
                     </div>
 
                     <div>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         AI proctor
                       </label>
                     </div>
 
                     <div>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         AI & supervise
                       </label>
@@ -1645,32 +1093,20 @@
                 </div>
 
                 <div class="form-check mb-2">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="formCheck1"
-                  />
+                  <input class="form-check-input" type="checkbox" id="formCheck1" />
                   <label class="form-check-label" for="formCheck1">
                     Assessment center
                   </label>
                   <div class="form-check">
                     <div>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         Secure browser
                       </label>
                     </div>
 
                     <div>
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="formCheck1"
-                      />
+                      <input class="form-check-input" type="checkbox" id="formCheck1" />
                       <label class="form-check-label" for="formCheck1">
                         Web browser
                       </label>
@@ -1680,27 +1116,14 @@
               </div>
 
               <div class="d-flex align-items-start gap-3 mt-4">
-                <button
-                  type="button"
-                  class="btn btn-link btn-sm text-decoration-none btn-label previestab"
-                  data-previous="pills-gen-info-tab"
-                  awPreviousStep
-                >
-                  <i
-                    class="ri-arrow-left-line label-icon align-middle fs-16 me-2"
-                  ></i>
+                <button type="button" class="btn btn-link btn-sm text-decoration-none btn-label previestab"
+                  data-previous="pills-gen-info-tab" awPreviousStep>
+                  <i class="ri-arrow-left-line label-icon align-middle fs-16 me-2"></i>
                   Back to Item Settings
                 </button>
-                <button
-                  type="button"
-                  class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
-                  data-nexttab="pills-success-tab"
-                  (click)="saveSettings()"
-                >
-                  <i
-                    class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"
-                  ></i
-                  >Finish and save
+                <button type="button" class="btn btn-success btn-label btn-sm right ms-auto nexttab nexttab"
+                  data-nexttab="pills-success-tab" (click)="saveSettings()">
+                  <i class="ri-arrow-right-line label-icon align-middle fs-16 ms-2"></i>Finish and save
                 </button>
               </div>
             </div>
@@ -1713,25 +1136,15 @@
   </div>
 </div>
 
-<app-subject
-  *ngIf="currentActivity === 'addingItems'"
-  [_subjectId]="selectedSubject.subjectId"
-  [_assessmentItemsList]="assessmentItems"
-  [_subjectName]="selectedSubject.subjectName"
-  [_currentActivity]="currentActivity"
-  [_noOfItems]="maxItems"
-  (back)="backToAssessment($event)"
-  (gotoNewItem)="gotoNewItem($event)"
-  (addItemToAssessment)="addAssessmentItem($event)"
-  (removeItemFromAssessment)="removeAssessmentItem($event)"
-></app-subject>
+<app-subject *ngIf="currentActivity === 'addingItems'" [_subjectId]="selectedSubject.subjectId"
+  [_assessmentItemsList]="assessmentItems" [_subjectName]="selectedSubject.subjectName"
+  [_currentActivity]="currentActivity" [_noOfItems]="maxItems" (back)="backToAssessment($event)"
+  (gotoNewItem)="gotoNewItem($event)" (addItemToAssessment)="addAssessmentItem($event)"
+  (removeItemFromAssessment)="removeAssessmentItem($event)"></app-subject>
 <!-- end row-->
 
-<app-new-item
-  *ngIf="currentActivity === 'addingNewItem'"
-  [currentActivity]="currentActivity"
-  (backToAssessment)="backToAssessmentFromNewItem($event)"
-></app-new-item>
+<app-new-item *ngIf="currentActivity === 'addingNewItem'" [currentActivity]="currentActivity"
+  (backToAssessment)="backToAssessmentFromNewItem($event)"></app-new-item>
 
 <!-- <ng-template #modal [showModal] let-modal>
   <div class="modal-body p-4">

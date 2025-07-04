@@ -77,13 +77,13 @@ export class NewItemComponent implements OnInit {
     this.formType = "Single Response";
 
     this.breadCrumbItems = [
-      { label: "questions" },
-      { label: "new-question", active: true },
+      { label: "Questions" },
+      { label: "New question", active: true },
     ];
 
     if (this.itemId !== null) {
     }
-    this.itemTrailInformation = this.itemUtil.currentItemTrail;
+    this.itemTrailInformation = this.itemUtil.currentItemTrail ?? this.itemUtil.getSavedItemTrail();
     // console.log(this.itemTrailInformation);
     /* console.log(this.itemId); */
   }
@@ -92,7 +92,7 @@ export class NewItemComponent implements OnInit {
     //console.log('current item type::::::', value);
 
     this.selectedItemType = value;
-
+  
     if (this.selectedItemType === "Fill in the gap") {
       this.setFormType("Cloze with dropdown");
     } else if (this.selectedItemType === "Multiple choice") {
@@ -103,6 +103,9 @@ export class NewItemComponent implements OnInit {
       this.setFormType("Matching");
     } else if (this.selectedItemType === "Passage") {
       this.setFormType("Passage");
+    }
+    else if (this.selectedItemType === "DRAWING_AND_WRITING") {
+      this.setFormType("DRAWING_AND_WRITING");
     }
   }
 

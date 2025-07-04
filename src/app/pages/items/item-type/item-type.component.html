@@ -4,15 +4,9 @@
   </div>
   <div class="card-body">
     <div class="mb-3">
-      <label for="choices-multiple-default" class="form-label text-muted"
-        >Select Question Type</label
-      >
-      <ng-select
-        [items]="itemTypes"
-        bindLabel="name"
-        [(ngModel)]="selectedItemType"
-        (change)="setItemType(selectedItemType)"
-      >
+      <label for="choices-multiple-default" class="form-label text-muted">Select Question Type</label>
+      <ng-select [items]="itemTypes" bindLabel="name" [(ngModel)]="selectedItemType"
+        (change)="setItemType(selectedItemType)">
       </ng-select>
     </div>
 
@@ -35,27 +29,14 @@
     </div> -->
 
     <div *ngIf="selectedItemType === 'Fill in the gap'" class="row mt-3">
-      <div
-        *ngFor="let i of fig"
-        class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
-        style="cursor: pointer"
-      >
+      <div *ngFor="let i of fig" class="col-xxl-12 col-lg-12 col-md-12 col-sm-12" style="cursor: pointer">
         <div class="mb-0">
-          <span class="card-title"
-            >{{ i.type }} -
-            <span class="badge badge-soft-primary">{{ i.code }}</span></span
-          >
+          <span class="card-title">{{ i.type }} -
+            <span class="badge badge-soft-primary">{{ i.code }}</span></span>
         </div>
-        <div
-          class="card card-overlay p-2"
-          [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
-          (click)="setFormType(i.type)"
-        >
-          <img
-            class="card-img img-fluid"
-            src="{{ i.imgPath }}"
-            alt="Card image"
-          />
+        <div class="card card-overlay p-2" [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
+          (click)="setFormType(i.type)">
+          <img class="card-img img-fluid" src="{{ i.imgPath }}" alt="Card image" />
           <!-- <div class="card-img-overlay p-0">
             <div class="card-header bg-transparent">
               <h4 class="card-title text-white mb-0">
@@ -70,27 +51,14 @@
     <!-- end row-->
 
     <div *ngIf="selectedItemType === 'Multiple choice'" class="row">
-      <div
-        *ngFor="let i of mcq"
-        class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
-        style="cursor: pointer"
-      >
+      <div *ngFor="let i of mcq" class="col-xxl-12 col-lg-12 col-md-12 col-sm-12" style="cursor: pointer">
         <div class="mb-0">
-          <span class="card-title"
-            >{{ i.type }} -
-            <span class="badge badge-soft-primary">{{ i.code }}</span></span
-          >
+          <span class="card-title">{{ i.type }} -
+            <span class="badge badge-soft-primary">{{ i.code }}</span></span>
         </div>
-        <div
-          class="card card-overlay p-2"
-          [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
-          (click)="setFormType(i.type)"
-        >
-          <img
-            class="card-img img-fluid"
-            src="{{ i.imgPath }}"
-            alt="Card image"
-          />
+        <div class="card card-overlay p-2" [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
+          (click)="setFormType(i.type)">
+          <img class="card-img img-fluid" src="{{ i.imgPath }}" alt="Card image" />
           <!-- <div class="card-img-overlay p-2">
             <div class="card-header bg-transparent">
               <h4 class="card-title text-black mb-0">
@@ -105,27 +73,14 @@
     <!-- end row-->
 
     <div *ngIf="selectedItemType === 'Written'" class="row mt-3">
-      <div
-        *ngFor="let i of wr"
-        class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
-        style="cursor: pointer"
-      >
+      <div *ngFor="let i of wr" class="col-xxl-12 col-lg-12 col-md-12 col-sm-12" style="cursor: pointer">
         <div class="mb-0">
-          <span class="card-title"
-            >{{ i.type }} -
-            <span class="badge badge-soft-primary">{{ i.code }}</span></span
-          >
+          <span class="card-title">{{ i.type }} -
+            <span class="badge badge-soft-primary">{{ i.code }}</span></span>
         </div>
-        <div
-          class="card card-overlay p-2"
-          [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
-          (click)="setFormType(i.type)"
-        >
-          <img
-            class="card-img img-fluid"
-            src="{{ i.imgPath }}"
-            alt="Card image"
-          />
+        <div class="card card-overlay p-2" [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
+          (click)="setFormType(i.type)">
+          <img class="card-img img-fluid" src="{{ i.imgPath }}" alt="Card image" />
           <!-- <div class="card-img-overlay p-0">
             <div class="card-header bg-transparent">
               <h4 class="card-title text-white mb-0">
@@ -140,25 +95,14 @@
     <!-- end row-->
 
     <div *ngIf="selectedItemType === 'Match & Order'" class="row mt-3">
-      <div
-        *ngFor="let i of cmo"
-        class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
-        style="cursor: pointer"
-        [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
-        (click)="setFormType(i.type)"
-      >
+      <div *ngFor="let i of cmo" class="col-xxl-12 col-lg-12 col-md-12 col-sm-12" style="cursor: pointer"
+        [ngClass]="{ 'border border-1 border-primary': i.type === formType }" (click)="setFormType(i.type)">
         <div class="mb-0">
-          <span class="card-title"
-            >{{ i.type }} -
-            <span class="badge badge-soft-primary">{{ i.code }}</span></span
-          >
+          <span class="card-title">{{ i.type }} -
+            <span class="badge badge-soft-primary">{{ i.code }}</span></span>
         </div>
         <div class="card card-overlay p-2">
-          <img
-            class="card-img img-fluid"
-            src="{{ i.imgPath }}"
-            alt="Card image"
-          />
+          <img class="card-img img-fluid" src="{{ i.imgPath }}" alt="Card image" />
           <!-- <div class="card-img-overlay p-0">
             <div class="card-header bg-transparent">
               <h4 class="card-title text-white mb-0">
@@ -177,11 +121,24 @@
         <div class="mb-0">
           <h4 class="card-title">{{ selectedItemType }}</h4>
         </div>
-        <img
-          class="card-img img-fluid"
-          src="assets/images/small/img-1.jpg"
-          alt="Card image"
-        />
+        <img class="card-img img-fluid" src="assets/images/small/img-1.jpg" alt="Card image" />
+        <!-- <div class="card-img-overlay p-0">
+          <div class="card-header bg-transparent">
+            <h4 class="card-title text-white mb-0">
+              {{  }}
+            </h4>
+          </div>
+        </div> -->
+      </div>
+      <!-- end col -->
+    </div>
+
+    <div *ngIf="selectedItemType === 'DRAWING_AND_WRITING'" class="row mt-3">
+      <div class="card border-0" (click)="setFormType(item.type)" *ngFor="let item of drawingAndWriting;" >
+        <div class="mb-0">
+          <h4 class="card-title">{{ item.type.replaceAll('_AND_', ' & ') }}</h4>
+        </div>
+        <img class="card-img img-fluid mx-auto col-6 border rounded" src="{{ item.imgPath }}" alt="Card image" [ngClass]="{ 'border-primary': item.type === formType }"/>
         <!-- <div class="card-img-overlay p-0">
           <div class="card-header bg-transparent">
             <h4 class="card-title text-white mb-0">

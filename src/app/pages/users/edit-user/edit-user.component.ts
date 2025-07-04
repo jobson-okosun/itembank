@@ -61,7 +61,11 @@ export class EditUserComponent implements OnInit {
 
   updating: boolean = false;
 
-  currentUser: Account = this.userService2.getCurrentUser();
+  // currentUser: Account = this.userService2.getCurrentUser();
+  currentUser = this.userService2.getCurrentUser()
+  ? this.userService2.getCurrentUser()
+  : this.userService2.getCurrentUserAfterReload();
+
 
   constructor(
     private router: Router,
@@ -308,4 +312,8 @@ export class EditUserComponent implements OnInit {
   }
 
   editUserModerationLevels() {}
+
+  routeBack() {
+    this.location.back()
+  }
 }

@@ -1,28 +1,18 @@
-<app-breadcrumbs
-  title="{{ currentTab }} | {{ currentAssessment | uppercase }}"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<app-breadcrumbs title="{{ currentTab }} | {{ currentAssessment | uppercase }}"
+  [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div
-  *ngIf="loading"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="loading" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading Exam details...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading Exam details...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading Exam details...</span>
   </div>
 </div>
 
 <div *ngIf="!loading && assessment" class="row">
   <div *ngFor="let card of cards" class="col-lg-3 col-sm-12 col-md-6 card p-3">
-    <div
-      class="d-flex flex-row gap-2 justify-content-center align-items-center"
-    >
+    <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
       <h4>{{ card.title }}</h4>
       <h3>{{ card.count }}</h3>
     </div>
@@ -32,98 +22,62 @@
 <!-- Action Buttons, PUBLISH, ADVANCED OPTIONS, ADD SUBJECT-->
 <div *ngIf="!loading" class="row">
   <div class="d-flex flex-row mb-2 justify-content-end gap-2">
-    <button
-      type="button"
-      *ngIf="assessment && assessment.status !== 'PUBLISHED'"
-      (click)="openNewSectionModal(newSectionModal)"
-      class="btn btn-outline-success btn-label waves-effect waves-light"
-    >
+    <button type="button" *ngIf="assessment && assessment.status !== 'PUBLISHED'"
+      (click)="openNewSectionModal(newSectionModal)" class="btn btn-outline-success btn-label waves-effect waves-light">
       <i class="ri-add-line label-icon align-middle me-2"></i>Add Section
     </button>
 
     <!--   routerLink="/exam-preview/{{ assessmentId }}" -->
-    <button
-      (click)="openAssessmentPreviewModal(examPreviewModal)"
-      type="button"
-      class="btn btn-outline-primary btn-label waves-effect waves-light"
-    >
+    <button (click)="openAssessmentPreviewModal(examPreviewModal)" type="button"
+      class="btn btn-outline-primary btn-label waves-effect waves-light">
       <i class="ri-eye-line label-icon align-middle me-2"></i>Preview
     </button>
 
     <div ngbDropdown>
-      <button
-        type="button"
+      <button type="button"
         class="btn btn-soft-info btn-label waves-effect right waves-light dropdown-toggle arrow-none"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-        ngbDropdownToggle
-      >
-        <i
-          class="ri-arrow-down-s-fill label-icon align-middle me-2"
-          style="cursor: pointer"
-        ></i
-        >Advanced Options
+        data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+        <i class="ri-arrow-down-s-fill label-icon align-middle me-2" style="cursor: pointer"></i>Advanced Options
       </button>
       <ul class="dropdown-menu" ngbDropdownMenu>
         <li style="cursor: pointer">
-          <a
-            (click)="openAssessmentSettingsModal(assessmentSettingsModal)"
-            class="dropdown-item d-flex gap-2 align-items-center"
-            ><i style="cursor: pointer" class="ri ri-settings-2-line"></i>Exam
-            Settings</a
-          >
+          <a (click)="openAssessmentSettingsModal(assessmentSettingsModal)"
+            class="dropdown-item d-flex gap-2 align-items-center"><i style="cursor: pointer"
+              class="ri ri-settings-2-line"></i>Exam
+            Settings</a>
         </li>
-        <li
-          *ngIf="
+        <li *ngIf="
             assessment &&
             assessment.status !== 'PUBLISHED' &&
             assessment.sectionDetails.length == 0
-          "
-          style="cursor: pointer"
-        >
-          <a
-            (click)="openTemplateImportModal(templateImportModal)"
-            class="dropdown-item d-flex gap-2 align-items-center"
-            ><i class="bx bx-shuffle" style="cursor: pointer"></i>Import
-            Template</a
-          >
+          " style="cursor: pointer">
+          <a (click)="openTemplateImportModal(templateImportModal)"
+            class="dropdown-item d-flex gap-2 align-items-center"><i class="bx bx-shuffle"
+              style="cursor: pointer"></i>Import
+            Template</a>
         </li>
         <li style="cursor: pointer">
-          <a
-            (click)="openNewAssessmentTemplateModal(NewAssessmentTemplateModal)"
-            class="dropdown-item d-flex gap-2 align-items-center"
-            ><i class="ri-repeat-2-line" style="cursor: pointer"></i>Save Exam
-            Template</a
-          >
+          <a (click)="openNewAssessmentTemplateModal(NewAssessmentTemplateModal)"
+            class="dropdown-item d-flex gap-2 align-items-center"><i class="ri-repeat-2-line"
+              style="cursor: pointer"></i>Save Exam
+            Template</a>
         </li>
       </ul>
     </div>
 
     <!--  [disabled]="canPublish(assessment.status)" -->
-    <button
-      type="button"
-      *ngIf="assessment && assessment.status !== 'PUBLISHED'"
-      (click)="
+    <button type="button" *ngIf="assessment && assessment.status !== 'PUBLISHED'" (click)="
         openPublishExamConfirmationModal(publishAssessmentConfirmationModal)
-      "
-      class="btn btn-success btn-label waves-effect waves-light"
-    >
+      " class="btn btn-success btn-label waves-effect waves-light">
       <i class="bx bx-upload label-icon align-middle me-2"></i>Publish
     </button>
   </div>
 </div>
 
 <!-- Sections Table-->
-<div
-  *ngIf="!loading && assessment && assessment.sectionDetails.length > 0"
-  class="row"
->
+<div *ngIf="!loading && assessment && assessment.sectionDetails.length > 0" class="row">
   <div class="table table-responsive">
-    <p-table
-      [value]="assessment.sectionDetails"
-      styleClass="p-datatable-gridlines"
-      responsiveLayout="scroll"
-    >
+    <p-table [value]="assessment.sectionDetails" styleClass="p-datatable-gridlines" responsiveLayout="scroll">
       <!--Table Header-->
       <ng-template pTemplate="header">
         <tr>
@@ -153,30 +107,19 @@
           <td>{{ section.sectionName | uppercase }}</td>
           <td>
             <ng-container *ngIf="section.blockDetailsDTOS.length > 0">
-              <div
-                class="live-preview mb-2"
-                *ngFor="let block of section.blockDetailsDTOS; let i = index"
-              >
-                <ngb-accordion
-                  *ngIf="block.blockName"
-                  #acc="ngbAccordion"
-                  class="custom-accordionwithicon accordion-border-box"
-                >
+              <div class="live-preview mb-2" *ngFor="let block of section.blockDetailsDTOS; let i = index">
+                <ngb-accordion *ngIf="block.blockName" #acc="ngbAccordion"
+                  class="custom-accordionwithicon accordion-border-box">
                   <ngb-panel id="static-1">
                     <ng-template ngbPanelTitle class="accordion-header">
                       <h2 class="accordion-header" id="gen-ques-headingOne">
-                        <button
-                          class="accordion-button"
-                          type="button"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#gen-ques-collapseOne"
-                          aria-expanded="false"
-                          aria-controls="gen-ques-collapseOne"
-                        >
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#gen-ques-collapseOne" aria-expanded="false"
+                          aria-controls="gen-ques-collapseOne">
                           {{ block.blockName }} - {{ block.blockType }} ({{
-                            block.blockType !== "SINGLE_QUESTIONS"
-                              ? block.totalFound + "/" + block.totalQuestions
-                              : block.totalFound + "/" + block.totalQuestions
+                          block.blockType !== "SINGLE_QUESTIONS"
+                          ? block.totalFound + "/" + block.totalQuestions
+                          : block.totalFound + "/" + block.totalQuestions
                           }})
                         </button>
                       </h2>
@@ -191,61 +134,43 @@
                           </span>
                           <span class="border fs-12 p-2 border-secondary">
                             {{
-                              block.blockType === "SINGLE_QUESTIONS"
-                                ? "QUESTION SELECTION TYPE:"
-                                : "PASSAGE SELECTION TYPE:"
+                            block.blockType === "SINGLE_QUESTIONS"
+                            ? "QUESTION SELECTION TYPE:"
+                            : "PASSAGE SELECTION TYPE:"
                             }}
                             {{ block.selectionType }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
+                            class="border fs-12 p-2 border-secondary">
                             TOTAL EXPECTED QUESTIONS IN BLOCK:
                             {{ block.totalQuestions }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
+                            class="border fs-12 p-2 border-secondary">
                             TOTAL EXPECTED QUESTIONS PER CANDIDATE:
                             {{ block.totalQuestionsPerStudent }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
+                            class="border fs-12 p-2 border-secondary">
                             TOTAL SELECTED QUESTIONS:
                             {{ block.totalFound }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'PASSAGES'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'PASSAGES'" class="border fs-12 p-2 border-secondary">
                             TOTAL EXPECTED PASSAGES:
                             {{ block.totalQuestions }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'PASSAGES'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'PASSAGES'" class="border fs-12 p-2 border-secondary">
                             TOTAL EXPECTED PASSAGES PER CANDIDATE:
                             {{ block.totalQuestionsPerStudent }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'PASSAGES'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'PASSAGES'" class="border fs-12 p-2 border-secondary">
                             TOTAL EXPECTED QUESTIONS:
                             {{
-                              block.totalQuestions *
-                                block.totalQuestionsInPassage
+                            block.totalQuestions *
+                            block.totalQuestionsInPassage
                             }}
                           </span>
-                          <span
-                            *ngIf="block.blockType === 'PASSAGES'"
-                            class="border fs-12 p-2 border-secondary"
-                          >
+                          <span *ngIf="block.blockType === 'PASSAGES'" class="border fs-12 p-2 border-secondary">
                             NO OF PASSAGES FOUND:
                             {{ block.totalFound }}
                           </span>
@@ -254,139 +179,103 @@
                         <!-- Block action buttons-->
                         <div class="d-flex gap-2">
                           <!-- Add Questions to block icon button-->
-                          <button
-                            *ngIf="
+                          <button *ngIf="
                               ((block.selectionType === 'MANUAL' &&
                                 block.blockType === 'SINGLE_QUESTIONS') ||
                                 (block.selectionType === 'AUTOMATED' &&
                                   block.blockType === 'SINGLE_QUESTIONS')) &&
                               block.totalQuestions !== block.totalFound
-                            "
-                            ngbTooltip="ADD QUESTION(S)"
-                            class="btn btn-icon btn-outline-info"
-                            (click)="
+                            " ngbTooltip="ADD QUESTION(S)" class="btn btn-icon btn-outline-info" (click)="
                               setSelectedBlock(block, section);
                               openManualItemSelectionModal(
                                 manualItemSelectionModal
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-add-line"></i>
                           </button>
 
                           <!-- Edit Questions added to block if question selection complete-->
-                          <button
-                            *ngIf="
+                          <button *ngIf="
                               ((block.selectionType === 'MANUAL' &&
                                 block.blockType === 'SINGLE_QUESTIONS') ||
                                 (block.selectionType === 'AUTOMATED' &&
                                   block.blockType === 'SINGLE_QUESTIONS')) &&
                               block.totalQuestions === block.totalFound
-                            "
-                            ngbTooltip="ADD QUESTION(S)"
-                            class="btn btn-icon btn-outline-info"
-                            (click)="
+                            " ngbTooltip="ADD QUESTION(S)" class="btn btn-icon btn-outline-info" (click)="
                               setSelectedBlock(block, section);
                               openManualItemSelectionModal(
                                 manualItemSelectionModal
                               )
-                            "
-                          >
-                            <i class="ri-pencil-line"></i
-                            ><!-- Icon to change when selection of questions for a block is completed-->
+                            ">
+                            <i
+                              class="ri-pencil-line"></i><!-- Icon to change when selection of questions for a block is completed-->
                           </button>
 
                           <!-- Add Passages to block icon button-->
-                          <button
-                            *ngIf="
+                          <button *ngIf="
                               block.selectionType === 'MANUAL' &&
                               block.blockType === 'PASSAGES' &&
                               block.totalQuestions !== block.totalFound
-                            "
-                            ngbTooltip="ADD PASSAGE(S)"
-                            class="btn btn-icon btn-outline-info"
-                            (click)="
+                            " ngbTooltip="ADD PASSAGE(S)" class="btn btn-icon btn-outline-info" (click)="
                               setSelectedBlock(block, section);
                               openManualPassageItemSelectionModal(
                                 manualPassageItemSelectionModal
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-add-line"></i>
                           </button>
 
                           <!-- Add Passages to block automated-->
-                          <button
-                            *ngIf="
+                          <button *ngIf="
                               block.selectionType === 'AUTOMATED' &&
                               block.blockType === 'PASSAGES' &&
                               block.totalQuestions !== block.totalFound
-                            "
-                            ngbTooltip="ADD PASSAGE(S)"
-                            class="btn btn-icon btn-outline-info"
-                            (click)="
+                            " ngbTooltip="ADD PASSAGE(S)" class="btn btn-icon btn-outline-info" (click)="
                               setSelectedBlock(block, section);
                               openManualItemSelectionModal(
                                 manualItemSelectionModal
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-add-line"></i>
                           </button>
 
-                          <button
-                            *ngIf="block.blockType === 'SINGLE_QUESTIONS'"
-                            ngbTooltip="VIEW QUESTIONS"
-                            class="btn btn-icon btn-outline-warning"
-                            (click)="
+                          <button *ngIf="block.blockType === 'SINGLE_QUESTIONS'" ngbTooltip="VIEW QUESTIONS."
+                            class="btn btn-icon btn-outline-warning" (click)="
                               setSelectedBlock(block, section);
                               viewBlockItems(
                                 listBlockItemsModal,
                                 section.sectionId,
                                 block.blockId
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-file-list-line"></i>
                           </button>
-                          <button
-                            *ngIf="block.blockType === 'PASSAGES'"
-                            ngbTooltip="VIEW PASSAGE(S)"
-                            class="btn btn-icon btn-outline-warning"
-                            (click)="
+                          <button *ngIf="block.blockType === 'PASSAGES'" ngbTooltip="VIEW PASSAGE(S)"
+                            class="btn btn-icon btn-outline-warning" (click)="
                               setSelectedBlock(block, section);
                               viewBlockPassages(
                                 listBlockPassagesModal,
                                 section.sectionId,
                                 block.blockId
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-file-list-line"></i>
                           </button>
-                          <button
-                            *ngIf="assessment.status !== 'PUBLISHED'"
-                            ngbTooltip="EDIT BLOCK SETTINGS"
-                            class="btn btn-icon btn-outline-primary"
-                            (click)="
+                          <button *ngIf="assessment.status !== 'PUBLISHED'" ngbTooltip="EDIT BLOCK SETTINGS"
+                            class="btn btn-icon btn-outline-primary" (click)="
                               setSelectedBlock(block, section);
                               openEditBlockModal(editBlockModal, block)
-                            "
-                          >
+                            ">
                             <i class="ri-settings-line"></i>
                           </button>
-                          <button
-                            *ngIf="assessment.status !== 'PUBLISHED'"
-                            class="btn btn-icon btn-outline-danger"
-                            ngbTooltip="DELETE BLOCK"
-                            (click)="
+                          <button *ngIf="assessment.status !== 'PUBLISHED'" class="btn btn-icon btn-outline-danger"
+                            ngbTooltip="DELETE BLOCK" (click)="
                               openDeleteBlockConfirmationModal(
                                 deleteBlockConfirmationModal,
                                 section,
                                 block
                               )
-                            "
-                          >
+                            ">
                             <i class="ri-delete-bin-2-line"></i>
                           </button>
                         </div>
@@ -404,15 +293,11 @@
                 Expecting
                 <span>{{ section.totalQuestions }}</span> questions for this
                 section. Found
-                <span
-                  style="cursor: pointer"
-                  ngbTooltip="{{
+                <span style="cursor: pointer" ngbTooltip="{{
                     'SELECTED ' +
                       section.totalSelectedQuestions +
                       ' QUESTIONS IN SECTION'
-                  }}"
-                  >{{ section.totalSelectedQuestions }}</span
-                >
+                  }}">{{ section.totalSelectedQuestions }}</span>
               </div>
             </div>
             <div class="mb-2 gap-1">
@@ -456,41 +341,23 @@
           </td>
           <td *ngIf="assessment.status !== 'PUBLISHED'">
             <div class="dropdown" ngbDropdown>
-              <button
-                class="btn btn-soft-info dropdown arrow-none"
-                type="button"
-                (click)="setSelectedSection(section)"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-                ngbDropdownToggle
-              >
+              <button class="btn btn-soft-info dropdown arrow-none" type="button" (click)="setSelectedSection(section)"
+                data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                 <i class="ri-more-fill align-middle"></i>
               </button>
               <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                 <li *ngIf="assessment.status !== 'PUBLISHED'">
-                  <a
-                    class="dropdown-item"
-                    style="cursor: pointer"
-                    (click)="
+                  <a class="dropdown-item" style="cursor: pointer" (click)="
                       setSelectedSection(section);
                       openNewBlockModal(newBlockModal, section)
-                    "
-                    ><i class="ri-add-line align-bottom me-2 text-muted"></i>
-                    New Question Block</a
-                  >
+                    "><i class="ri-add-line align-bottom me-2 text-muted"></i>
+                    New Question Block</a>
                 </li>
                 <li>
-                  <a
-                    class="dropdown-item"
-                    style="cursor: pointer"
-                    (click)="
+                  <a class="dropdown-item" style="cursor: pointer" (click)="
                       openAssessmentSectionModal(sectionSettingsModal, section)
-                    "
-                    ><i
-                      class="ri-settings-4-line align-bottom me-2 text-muted"
-                    ></i>
-                    section settings</a
-                  >
+                    "><i class="ri-settings-4-line align-bottom me-2 text-muted"></i>
+                    section settings</a>
                 </li>
 
                 <!-- FEATURE MOVED TO VERSION 2 -->
@@ -509,20 +376,14 @@
                 </li> -->
 
                 <li *ngIf="assessment.status !== 'PUBLISHED'">
-                  <a
-                    (click)="
+                  <a (click)="
                       openDeleteSectionConfirmationModal(
                         deleteSectionConfirmationModal,
                         section
                       )
-                    "
-                    class="dropdown-item"
-                    style="cursor: pointer"
-                    ><i
-                      class="ri-delete-bin-2-line align-bottom me-2 text-muted"
-                    ></i>
-                    Remove section</a
-                  >
+                    " class="dropdown-item" style="cursor: pointer"><i
+                      class="ri-delete-bin-2-line align-bottom me-2 text-muted"></i>
+                    Remove section</a>
                 </li>
               </ul>
             </div>
@@ -534,23 +395,12 @@
 </div>
 
 <!-- Blank Assessment with no subjects added-->
-<div
-  class="p-2"
-  *ngIf="!loading && assessment && assessment.sectionDetails.length < 1"
->
+<div class="p-2" *ngIf="!loading && assessment && assessment.sectionDetails.length < 1">
   <div class="d-flex flex-column justify-content-between align-items-center">
-    <img
-      src="assets/images/blank_pages/empty-state.png"
-      width="200"
-      height="200"
-      class=""
-    />
+    <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
     <h4 class="text-secondary fw-bold my-2">No section Added Yet!</h4>
-    <a
-      (click)="openNewSectionModal(newSectionModal)"
-      class="btn btn-outline-primary"
-      ><i class="ri-add-line me-2"></i>Add section</a
-    >
+    <a (click)="openNewSectionModal(newSectionModal)" class="btn btn-outline-primary"><i
+        class="ri-add-line me-2"></i>Add section</a>
   </div>
 
   <!-- <h2 class="card-title text-center my-2">No Topic Selected</h2> -->
@@ -631,77 +481,41 @@
 <ng-template #assessmentSettingsModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">EXAM SETTINGS</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="modal-body"
-    style="
+  <div class="modal-body" style="
       height: 500px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
+    ">
     <div class="px-3">
-      <form
-        #assessmentSettingsForm="ngForm"
-        (ngSubmit)="saveAssessmentSettings(assessmentSettingsForm)"
-      >
+      <form #assessmentSettingsForm="ngForm" (ngSubmit)="saveAssessmentSettings(assessmentSettingsForm)">
         <div>
           <p class="text-muted">EXAM DETAILS</p>
           <div>
             <div class="mt-2">
               <label for="subjectName" class="label">Exam Name</label>
-              <input
-                type="text"
-                name="name"
-                class="form-control mb-3"
-                placeholder="Name of Exam"
-                required
-                [(ngModel)]="assessmentSettings.name"
-              />
+              <input type="text" name="name" class="form-control mb-3" placeholder="Name of Exam" required
+                [(ngModel)]="assessmentSettings.name" />
             </div>
 
             <div class="row mt-3">
               <div class="col-12">
-                <label class="form-label"
-                  >Exam Description <span class="text-danger">*</span></label
-                >
-                <textarea
-                  placeholder="Give a brief description of the exam..."
-                  [minLength]="200"
-                  [maxlength]="1000"
-                  rows="3"
-                  cols="100vw"
-                  class="form-control"
-                  name="description"
-                  [(ngModel)]="assessmentSettings.description"
-                ></textarea>
+                <label class="form-label">Exam Description <span class="text-danger">*</span></label>
+                <textarea placeholder="Give a brief description of the exam..." [minLength]="200" [maxlength]="1000"
+                  rows="3" cols="100vw" class="form-control" name="description"
+                  [(ngModel)]="assessmentSettings.description"></textarea>
               </div>
             </div>
 
             <div class="row mt-3">
               <div class="col-6">
-                <label for="subjectName" class="label"
-                  >Exam Delivery Method</label
-                >
-                <select
-                  name="delivery"
-                  class="form-select mb-3"
-                  [(ngModel)]="assessmentSettings.deliveryMethod"
-                >
-                  <option
-                    *ngFor="let method of deliveryMethods"
-                    value="{{ method }}"
-                  >
+                <label for="subjectName" class="label">Exam Delivery Method</label>
+                <select name="delivery" class="form-select mb-3" [(ngModel)]="assessmentSettings.deliveryMethod">
+                  <option *ngFor="let method of deliveryMethods" value="{{ method }}">
                     {{ method }}
                   </option>
                 </select>
@@ -709,49 +523,24 @@
 
               <div class="col-6">
                 <label for="subjectName" class="label">Exam Duration</label>
-                <input
-                  type="number"
-                  min="0"
-                  name="duration"
-                  class="form-control mb-3"
-                  placeholder="Exam duration"
-                  required
-                  [(ngModel)]="assessmentSettings.durationMinutes"
-                />
+                <input type="number" min="0" name="duration" class="form-control mb-3" placeholder="Exam duration"
+                  required [(ngModel)]="assessmentSettings.durationMinutes" />
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col-6">
               <label class="form-label">Exam Start Date</label>
-              <input
-                class="form-control flatpickr-input"
-                type="text"
-                mwlFlatpickr
-                [type]="'datetime-local'"
-                [altInput]="false"
-                [enableTime]="true"
-                [convertModelValue]="true"
-                [dateFormat]="'Y-m-d H:i'"
-                name="startDate"
-                [(ngModel)]="assessmentSettings.startDate"
-              />
+              <input class="form-control flatpickr-input" type="text" mwlFlatpickr [type]="'datetime-local'"
+                [altInput]="false" [enableTime]="true" [convertModelValue]="true" [dateFormat]="'Y-m-d H:i'"
+                name="startDate" [(ngModel)]="assessmentSettings.startDate" />
             </div>
 
             <div class="col-6">
               <label class="form-label">Exam End Date</label>
-              <input
-                class="form-control flatpickr-input"
-                type="text"
-                mwlFlatpickr
-                [type]="'datetime-local'"
-                [altInput]="false"
-                [enableTime]="true"
-                [convertModelValue]="true"
-                [dateFormat]="'Y-m-d H:i'"
-                name="endDate"
-                [(ngModel)]="assessmentSettings.endDate"
-              />
+              <input class="form-control flatpickr-input" type="text" mwlFlatpickr [type]="'datetime-local'"
+                [altInput]="false" [enableTime]="true" [convertModelValue]="true" [dateFormat]="'Y-m-d H:i'"
+                name="endDate" [(ngModel)]="assessmentSettings.endDate" />
             </div>
           </div>
         </div>
@@ -760,11 +549,8 @@
           <p class="text-muted">EXAM INSTRUCTIONS</p>
           <div>
             <div class="mt-4">
-              <label for="subjectName" class="label"
-                >Start Exam Instruction</label
-              >
-              <editor
-                name="instruction"
+              <label for="subjectName" class="label">Start Exam Instruction</label>
+              <editor name="instruction"
                 initialValue="Give instructions to the candidate at the start of the start of the examination..."
                 [init]="{
                   height: 200,
@@ -776,19 +562,13 @@
                   quickbars_insert_toolbars: false,
                   toolbar:
                     'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
-                }"
-                [(ngModel)]="assessmentSettings.startExamInstruction"
-              ></editor>
+                }" [(ngModel)]="assessmentSettings.startExamInstruction"></editor>
             </div>
 
             <div class="mt-4">
-              <label for="subjectName" class="label"
-                >End Exam Instruction</label
-              >
-              <editor
-                name="end-instruction"
-                initialValue="Give instructions to the candidate at the end of the examination..."
-                [init]="{
+              <label for="subjectName" class="label">End Exam Instruction</label>
+              <editor name="end-instruction"
+                initialValue="Give instructions to the candidate at the end of the examination..." [init]="{
                   height: 200,
                   branding: false,
                   menubar: true,
@@ -798,9 +578,7 @@
                   quickbars_insert_toolbars: false,
                   toolbar:
                     'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
-                }"
-                [(ngModel)]="assessmentSettings.endExamInstruction"
-              ></editor>
+                }" [(ngModel)]="assessmentSettings.endExamInstruction"></editor>
             </div>
           </div>
         </div>
@@ -809,260 +587,148 @@
           <p class="text-muted">EXAM SETTINGS</p>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                #instructionReadingTime
-               [checked]="assessmentSettings.instructionReadTimeSec"
-                (change)="onInstructionReadingTimeSecChange($event)"
-              />
-              <label
-              (click)="
+              <input class="form-check-input" type="checkbox" #instructionReadingTime
+                [checked]="assessmentSettings.instructionReadTimeSec"
+                (change)="onInstructionReadingTimeSecChange($event)" />
+              <label (click)="
               instructionReadingTime.checked =
                 !instructionReadingTime.checked;
               assessmentSettings.instructionReadTimeSec =
                 instructionReadingTime.checked
                   ? assessmentSettings.instructionReadTimeSec
                   : 20
-            "
-              
-              class="form-check-label" for="instructionReadingTime">
+            " class="form-check-label" for="instructionReadingTime">
                 Instruction reading time.
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control"
-                  placeholder="3"
-                  name="instructionReadingTime"
-                  [(ngModel)]="assessmentSettings.instructionReadTimeSec"
-                />
+                <input type="number" min="0" class="form-control" placeholder="3" name="instructionReadingTime"
+                  [(ngModel)]="assessmentSettings.instructionReadTimeSec" />
               </div>
               seconds.
             </div>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="warnReadTimeEnding"
-                #endOfInstructionReadingTime
+              <input class="form-check-input" type="checkbox" name="warnReadTimeEnding" #endOfInstructionReadingTime
                 [checked]="assessmentSettings.warnEndOfReadingTimeSec"
-                (change)="onWarnEndOfReadingTimeChange($event)"
-              />
-              <label
-                (click)="
+                (change)="onWarnEndOfReadingTimeChange($event)" />
+              <label (click)="
                   endOfInstructionReadingTime.checked =
                     !endOfInstructionReadingTime.checked;
                   assessmentSettings.warnEndOfReadingTimeSec =
                     endOfInstructionReadingTime.checked
                       ? assessmentSettings.warnEndOfReadingTimeSec
                       : 0
-                "
-                class="form-check-label"
-                for="warnReadTimeEnding"
-              >
+                " class="form-check-label" for="warnReadTimeEnding">
                 Warn candidate when approaching the end of instruction reading
                 time?
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control col-xl-2"
-                  placeholder="3"
-                  name="readTimeWaringInSeconds"
-                  [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec"
-                />
+                <input type="number" min="0" class="form-control col-xl-2" placeholder="3"
+                  name="readTimeWaringInSeconds" [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec" />
               </div>
               seconds.
             </div>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="formCheck1"
-                #autoSave
-                checked
-                disabled
-              />
+              <input class="form-check-input" type="checkbox" id="formCheck1" #autoSave checked disabled />
               <label class="form-check-label" for="autoSaveIntervalSeconds">
                 Autosave every
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control"
-                  placeholder="30"
-                  name="autoSaveIntervalSeconds"
-                  [(ngModel)]="assessmentSettings.autoSaveSec"
-                />
+                <input type="number" min="0" class="form-control" placeholder="30" name="autoSaveIntervalSeconds"
+                  [(ngModel)]="assessmentSettings.autoSaveSec" />
               </div>
               seconds.
             </div>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="triggerInactivityWarning"
-                [checked]="assessmentSettings.inactivityWaringSec"
-                #inactivityWarningSec
-                (change)="onInactivityWarningChange($event)"
-              />
-              <label
-                (click)="
+              <input class="form-check-input" type="checkbox" name="triggerInactivityWarning"
+                [checked]="assessmentSettings.inactivityWaringSec" #inactivityWarningSec
+                (change)="onInactivityWarningChange($event)" />
+              <label (click)="
                   inactivityWarningSec.checked = !inactivityWarningSec.checked;
                   assessmentSettings.inactivityWaringSec =
                     inactivityWarningSec.checked
                       ? assessmentSettings.inactivityWaringSec
                       : 0
-                "
-                class="form-check-label"
-                for="triggerInactivityWarning"
-              >
+                " class="form-check-label" for="triggerInactivityWarning">
                 Trigger inactive warning when candidate is in active for
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  min="0"
-                  class="form-control"
-                  placeholder="3"
-                  name="triggerInactivityWarningSeconds"
-                  [(ngModel)]="assessmentSettings.inactivityWaringSec"
-                />
+                <input type="number" min="0" class="form-control" placeholder="3" name="triggerInactivityWarningSeconds"
+                  [(ngModel)]="assessmentSettings.inactivityWaringSec" />
               </div>
               seconds.
             </div>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                #extraTime
-                [checked]="assessmentSettings.compensatoryTimeMins"
-                (change)="onCompensatoryTimeChange($event)"
-              />
-              <label
-                (click)="
+              <input class="form-check-input" type="checkbox" #extraTime
+                [checked]="assessmentSettings.compensatoryTimeMins" (change)="onCompensatoryTimeChange($event)" />
+              <label (click)="
                   extraTime.checked = !extraTime.checked;
                   assessmentSettings.compensatoryTimeMins = extraTime.checked
                     ? assessmentSettings.compensatoryTimeMins
                     : 0
-                "
-                class="form-check-label"
-              >
+                " class="form-check-label">
                 Enable compensatory time
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  class="form-control"
-                  placeholder="240"
-                  name="additionalTime"
-                  [(ngModel)]="assessmentSettings.compensatoryTimeMins"
-                />
+                <input type="number" class="form-control" placeholder="240" name="additionalTime"
+                  [(ngModel)]="assessmentSettings.compensatoryTimeMins" />
               </div>
               minutes.
             </div>
           </div>
           <div class="form-check mt-2">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              name="warnCandidateOfUnattemptedQuestions"
+            <input class="form-check-input" type="checkbox" name="warnCandidateOfUnattemptedQuestions"
               [(ngModel)]="assessmentSettings.warnUnattemptedQuestions"
-              [checked]="assessmentSettings.warnUnattemptedQuestions"
-              #warnCandidateUnattempted
-            />
-            <label
-              class="form-check-label"
-              for="warnCandidateOfUnattemptedQuestions"
-              (click)="
+              [checked]="assessmentSettings.warnUnattemptedQuestions" #warnCandidateUnattempted />
+            <label class="form-check-label" for="warnCandidateOfUnattemptedQuestions" (click)="
                 assessmentSettings.warnUnattemptedQuestions =
                   !assessmentSettings.warnUnattemptedQuestions
-              "
-            >
+              ">
               Warn candidates of unattempted questions?
             </label>
           </div>
           <div class="form-check mt-3">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              name="displayConfirmationWindowOnSubmission"
-              [(ngModel)]="assessmentSettings.endExamConfirmation"
-              [checked]="assessmentSettings.endExamConfirmation"
-              #endConfirmation
-            />
-            <label
-              class="form-check-label"
-              for="displayConfirmationWindowOnSubmission"
-              (click)="endConfirmation.checked = !endConfirmation.checked"
-            >
+            <input class="form-check-input" type="checkbox" name="displayConfirmationWindowOnSubmission"
+              [(ngModel)]="assessmentSettings.endExamConfirmation" [checked]="assessmentSettings.endExamConfirmation"
+              #endConfirmation />
+            <label class="form-check-label" for="displayConfirmationWindowOnSubmission"
+              (click)="endConfirmation.checked = !endConfirmation.checked">
               Display confirmation window when candidate attempt to end exam?
             </label>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="percentageCheck"
-                #percentageSubmissionCheck
-                [checked]="assessmentSettings.allowEndExamAfterXQuestions"
-              />
-              <label
-                (click)="
+              <input class="form-check-input" type="checkbox" name="percentageCheck" #percentageSubmissionCheck
+                [checked]="assessmentSettings.allowEndExamAfterXQuestions" />
+              <label (click)="
                   percentageSubmissionCheck.checked =
                     !percentageSubmissionCheck.checked
-                "
-                class="form-check-label"
-                for="percentageCheck"
-              >
+                " class="form-check-label" for="percentageCheck">
                 Allow candidate to end exam only when
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input
-                  type="number"
-                  class="form-control col-xl-1"
-                  placeholder="100"
-                  name="percentageSubmissionCheck"
-                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions"
-                />
+                <input type="number" class="form-control col-xl-1" placeholder="100" name="percentageSubmissionCheck"
+                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" />
               </div>
               % questions have been attempted.
             </div>
           </div>
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="formCheck1"
-                checked
-                disabled
-              />
+              <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="formCheck1">
                 Font size
               </label>
               <div class="col-2">
-                <select
-                  class="form-control"
-                  data-plugin="choices"
-                  data-choices
-                  data-choices-search-false
-                  name="fontSize"
-                  [(ngModel)]="assessmentSettings.fontSize"
-                >
+                <select class="form-control" data-plugin="choices" data-choices data-choices-search-false
+                  name="fontSize" [(ngModel)]="assessmentSettings.fontSize">
                   <option *ngFor="let fontSize of fontSizes">
                     {{ fontSize }}
                   </option>
@@ -1073,134 +739,73 @@
 
           <div class="d-flex gap-3">
             <div class="form-check mt-2">
-              <input
-                #displayAllSections
-                class="form-check-input"
-                type="checkbox"
-                name="displayAllSections"
+              <input #displayAllSections class="form-check-input" type="checkbox" name="displayAllSections"
                 [(ngModel)]="assessmentSettings.displayAllSectionsAtOnce"
-                [checked]="assessmentSettings.displayAllSectionsAtOnce"
-              />
-              <label
-                (click)="
+                [checked]="assessmentSettings.displayAllSectionsAtOnce" />
+              <label (click)="
                   assessmentSettings.displayAllSectionsAtOnce =
                     !assessmentSettings.displayAllSectionsAtOnce
-                "
-                class="form-check-label"
-                for="displayResult"
-              >
+                " class="form-check-label" for="displayResult">
                 Display all sections at once?
               </label>
             </div>
 
             <div>
-              <select
-                #displayRef
-                (change)="handleDispayAllSectionOption(displayRef.value)"
-                class="form-select form-select-md"
-              >
+              <select #displayRef (change)="handleDispayAllSectionOption(displayRef.value)"
+                class="form-select form-select-md">
                 <option selected disabled>Select one</option>
-                <option
-                  value="oneAtTime"
-                  [selected]="!assessmentSettings.displayAllSectionsAtOnce"
-                >
+                <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
                   One at a time
                 </option>
-                <option
-                  value="allAtOnce"
-                  [selected]="assessmentSettings.displayAllSectionsAtOnce"
-                >
+                <option value="allAtOnce" [selected]="assessmentSettings.displayAllSectionsAtOnce">
                   All At Once
                 </option>
               </select>
             </div>
           </div>
           <div class="form-check mt-2">
-            <input
-              #preserveSectionOrder
-              class="form-check-input"
-              type="checkbox"
-              name="preserveSectionOrder"
-              [(ngModel)]="assessmentSettings.preserveSectionOrder"
-            />
-            <label
-              (click)="
+            <input #preserveSectionOrder class="form-check-input" type="checkbox" name="preserveSectionOrder"
+              [(ngModel)]="assessmentSettings.preserveSectionOrder" />
+            <label (click)="
                 assessmentSettings.preserveSectionOrder =
                   !assessmentSettings.preserveSectionOrder
-              "
-              class="form-check-label"
-              for="preserveSectionOrder"
-            >
+              " class="form-check-label" for="preserveSectionOrder">
               Preserve section order?
             </label>
           </div>
 
           <div class="form-check mt-2">
-            <input
-              #retake
-              class="form-check-input"
-              type="checkbox"
-              name="retake"
-              [(ngModel)]="assessmentSettings.allowRetake"
-            />
-            <label
-              (click)="
+            <input #retake class="form-check-input" type="checkbox" name="retake"
+              [(ngModel)]="assessmentSettings.allowRetake" />
+            <label (click)="
                 assessmentSettings.allowRetake =
                   !assessmentSettings.allowRetake
-              "
-              class="form-check-label"
-              for="retake"
-            >
+              " class="form-check-label" for="retake">
               Allow retake?
             </label>
           </div>
 
-          <div
-          *ngIf="assessmentSettings.allowRetake"
-          class="col-xl-2 col-md-2 col-sm-2"
-        >
-          <label>Retake count</label>
-          <input
-            type="number"
-            class="form-control"
-            placeholder="4"
-            name="retakeCount"
-            [(ngModel)]="assessmentSettings.retakeCount"
-          />
-        </div>
+          <div *ngIf="assessmentSettings.allowRetake" class="col-xl-2 col-md-2 col-sm-2">
+            <label>Retake count</label>
+            <input type="number" class="form-control" placeholder="4" name="retakeCount"
+              [(ngModel)]="assessmentSettings.retakeCount" />
+          </div>
 
           <div class="form-check mt-2">
-            <input
-              #instantResult
-              class="form-check-input"
-              type="checkbox"
-              name="displayResult"
-              [(ngModel)]="assessmentSettings.instantResult"
-            />
-            <label
-              (click)="
+            <input #instantResult class="form-check-input" type="checkbox" name="displayResult"
+              [(ngModel)]="assessmentSettings.instantResult" />
+            <label (click)="
                 assessmentSettings.instantResult =
                   !assessmentSettings.instantResult
-              "
-              class="form-check-label"
-              for="displayResult"
-            >
+              " class="form-check-label" for="displayResult">
               Display result to candidate on exam completion?
             </label>
           </div>
 
-          <div
-            *ngIf="assessmentSettings.instantResult"
-            class="col-xl-2 col-md-2 col-sm-2"
-          >
+          <div *ngIf="assessmentSettings.instantResult" class="col-xl-2 col-md-2 col-sm-2">
             <label>Pass mark</label>
-            <input
-              type="number"
-              class="form-control"
-              placeholder="240"
-              name="passMark"
-              [(ngModel)]="assessmentSettings.passMark"
-            />
+            <input type="number" class="form-control" placeholder="240" name="passMark"
+              [(ngModel)]="assessmentSettings.passMark" />
           </div>
         </div>
       </form>
@@ -1208,18 +813,10 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
-      <button
-        *ngIf="!submitted"
-        (click)="saveAssessmentSettings()"
-        class="btn btn-primary"
-      >
+      <button *ngIf="!submitted" (click)="saveAssessmentSettings()" class="btn btn-primary">
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button>
       <ng-template [ngIf]="submitted">
@@ -1239,29 +836,17 @@
 <ng-template #sectionSettingsModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">EDIT SECTION SETTINGS</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="px-5 modal-body"
-    style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
-    <form
-      #sectionSettingForm="ngForm"
-      (ngSubmit)="saveSectionSettings(sectionSettingForm)"
-    >
+    ">
+    <form #sectionSettingForm="ngForm" (ngSubmit)="saveSectionSettings(sectionSettingForm)">
       <div>
         <div class="row mb-2">
           <div class="col-6">
@@ -1276,65 +861,33 @@
               (ngModelChange)="changeSelectedSection($event)"
               (change)="changeSelectedSection($event)"
             ></ng-select> -->
-            <input
-              class="form-control"
-              name="displayName"
-              placeholder="Display Name"
-              [(ngModel)]="editSection.name"
-            />
+            <input class="form-control" name="displayName" placeholder="Display Name" [(ngModel)]="editSection.name" />
           </div>
           <div class="col-6">
-            <label for="choices-multiple-default" class="form-label"
-              >Section Name</label
-            >
-            <input
-              class="form-control"
-              type="text"
-              name="subjectName"
-              style="text-transform: uppercase"
-              placeholder="Section Name"
-              [value]="editSection.subjectName"
-              [(ngModel)]="editSection.subjectName"
-              disabled
-            />
+            <label for="choices-multiple-default" class="form-label">Section Name</label>
+            <input class="form-control" type="text" name="subjectName" style="text-transform: uppercase"
+              placeholder="Section Name" [value]="editSection.subjectName" [(ngModel)]="editSection.subjectName"
+              disabled />
           </div>
           <div class="col-6">
             <label class="form-label" for="name">
-              Questions in section <span class="text-danger">*</span></label
-            >
-            <input
-              #totalQuestionInSection
-              class="form-control"
-              type="number"
-              name="totalQuestions"
-              placeholder="10"
-              [(ngModel)]="editSection.totalQuestions"
-            />
+              Questions in section <span class="text-danger">*</span></label>
+            <input #totalQuestionInSection class="form-control" type="number" name="totalQuestions" placeholder="10"
+              [(ngModel)]="editSection.totalQuestions" />
           </div>
           <div class="col-6">
             <label class="form-label" for="name">
               Questions per candidate <span class="text-danger">*</span>
             </label>
-            <input
-              #totalQuestionsPerStudent
-              class="form-control"
-              type="number"
-              name="totalQuestionsPerStudent"
-              placeholder="10"
-              [(ngModel)]="editSection.totalQuestionsPerCandidate"
-            />
+            <input #totalQuestionsPerStudent class="form-control" type="number" name="totalQuestionsPerStudent"
+              placeholder="10" [(ngModel)]="editSection.totalQuestionsPerCandidate" />
           </div>
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="section-instruction"
-            >Section Instruction</label
-          >
+          <label class="form-label" for="section-instruction">Section Instruction</label>
           <div>
-            <editor
-              name="section-instruction"
-              initialValue="Give a description of the exam or instructions..."
-              [init]="{
+            <editor name="section-instruction" initialValue="Give a description of the exam or instructions..." [init]="{
                 height: 200,
                 branding: false,
                 menubar: true,
@@ -1345,9 +898,7 @@
 
                 toolbar:
                   'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-              }"
-              [(ngModel)]="editSection.sectionSettings.sectionInstruction"
-            ></editor>
+              }" [(ngModel)]="editSection.sectionSettings.sectionInstruction"></editor>
           </div>
         </div>
 
@@ -1359,74 +910,45 @@
             section is being displayed at a time). -->
           </label>
           <div class="">
-            <input
-              type="number"
-              placeholder="60"
-              class="form-control"
-              name="durationInMinutes"
+            <input type="number" placeholder="60" class="form-control" name="durationInMinutes"
               [disabled]="!assessmentSettings.displayAllSectionsAtOnce"
-              [(ngModel)]="editSection.sectionSettings.durationInMinutes"
-            />
+              [(ngModel)]="editSection.sectionSettings.durationInMinutes" />
           </div>
         </div>
 
         <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="shuffleItems"
-            [(ngModel)]="editSection.sectionSettings.shuffleItems"
-          />
+          <input class="form-check-input" type="checkbox" name="shuffleItems"
+            [(ngModel)]="editSection.sectionSettings.shuffleItems" />
           <label class="form-check-label" for="shuffleItems">
             Shuffle questions
           </label>
         </div>
         <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="shuffleOptions"
-            [(ngModel)]="editSection.sectionSettings.shuffleOptions"
-          />
+          <input class="form-check-input" type="checkbox" name="shuffleOptions"
+            [(ngModel)]="editSection.sectionSettings.shuffleOptions" />
           <label class="form-check-label" for="shuffleOptions">
             Shuffle options
           </label>
         </div>
         <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="shuffleBlocks"
-            [(ngModel)]="editSection.sectionSettings.shuffleBlocks"
-          />
+          <input class="form-check-input" type="checkbox" name="shuffleBlocks"
+            [(ngModel)]="editSection.sectionSettings.shuffleBlocks" />
           <label class="form-check-label" for="shuffleBlocks">
             Shuffle blocks
           </label>
         </div>
         <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="allowCalculator"
-            [(ngModel)]="editSection.sectionSettings.allowCalculator"
-          />
+          <input class="form-check-input" type="checkbox" name="allowCalculator"
+            [(ngModel)]="editSection.sectionSettings.allowCalculator" />
           <label class="form-check-label" for="allowCalculator">
             Allow calculator
           </label>
         </div>
         <div class="form-check mb-2">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="preventNavigationToAttemptedItems"
-            [(ngModel)]="
+          <input class="form-check-input" type="checkbox" name="preventNavigationToAttemptedItems" [(ngModel)]="
               editSection.sectionSettings.preventNavigationToAttemptedItems
-            "
-          />
-          <label
-            class="form-check-label"
-            for="preventNavigationToAttemptedItems"
-          >
+            " />
+          <label class="form-check-label" for="preventNavigationToAttemptedItems">
             Prevent navigation to attempted questions
           </label>
         </div>
@@ -1435,19 +957,11 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
-      <button
-        type="button"
-        (click)="saveSectionSettings(sectionSettingForm)"
-        class="btn btn-primary"
-        *ngIf="!submitted"
-      >
+      <button type="button" (click)="saveSectionSettings(sectionSettingForm)" class="btn btn-primary"
+        *ngIf="!submitted">
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button>
       <ng-template [ngIf]="submitted">
@@ -1467,60 +981,31 @@
 <ng-template #newSectionModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">ADD SECTION</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="px-5 modal-body">
-    <form
-      #newSectionForm="ngForm"
-      (ngSubmit)="saveSection(newSectionForm)"
-      novalidate
-    >
+    <form #newSectionForm="ngForm" (ngSubmit)="saveSection(newSectionForm)" novalidate>
       <div class="row mb-2">
         <div class="">
-          <label for="choices-multiple-default" class="form-label"
-            >Section <span class="text-danger">*</span></label
-          >
-         
-            <i
-              style="cursor: pointer"
-              class="ri-question-fill text-info"
-              placement="top"
-              data-bs-container="body"
-              data-bs-toggle="popover"
-              [ngbPopover]="sectionInfoPopOver"
-              triggers="mouseenter:mouseleave"
-              popoverClass="popOverClass"
-            ></i>
+          <label for="choices-multiple-default" class="form-label">Section <span class="text-danger">*</span></label>
 
-            <ng-template #sectionInfoPopOver>
-              <ul>
-                <li>
-                  <span class="fs-10"
-                    >The part or category of the assessment.</span
-                  >
-                </li>
-              
-              </ul>
-            </ng-template>
-        
-          <ng-select
-            class="custom"
-            [items]="subjects"
-            bindLabel="subjectName"
-            bindValue="subjectId"
-            name="subject"
-            dropdownPosition="bottom"
-            [(ngModel)]="newSection.subjectId"
-            (change)="setSubject($event)"
-          >
+          <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
+            data-bs-toggle="popover" [ngbPopover]="sectionInfoPopOver" triggers="mouseenter:mouseleave"
+            popoverClass="popOverClass"></i>
+
+          <ng-template #sectionInfoPopOver>
+            <ul>
+              <li>
+                <span class="fs-10">The part or category of the assessment.</span>
+              </li>
+
+            </ul>
+          </ng-template>
+
+          <ng-select class="custom" [items]="subjects" bindLabel="subjectName" bindValue="subjectId" name="subject"
+            dropdownPosition="bottom" [(ngModel)]="newSection.subjectId" (change)="setSubject($event)">
             <ng-template ng-optgroup-tmp let-item="item" let-i="index">
               {{ item[i].subjectName | uppercase }}
             </ng-template>
@@ -1531,137 +1016,79 @@
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="name">
-            Display Name <span class="text-danger">*</span></label
-          >
-          <i
-          style="cursor: pointer"
-          class="ri-question-fill text-info"
-          placement="top"
-          data-bs-container="body"
-          data-bs-toggle="popover"
-          [ngbPopover]="displayNameInfoPopOver"
-          triggers="mouseenter:mouseleave"
-          popoverClass="popOverClass"
-        ></i>
+            Display Name <span class="text-danger">*</span></label>
+          <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
+            data-bs-toggle="popover" [ngbPopover]="displayNameInfoPopOver" triggers="mouseenter:mouseleave"
+            popoverClass="popOverClass"></i>
 
-        <ng-template #displayNameInfoPopOver>
-          <ul>
-            <li>
-              <span class="fs-10"
-                >The name shown to identify the section.</span
-              >
-            </li>
-          
-          </ul>
-        </ng-template>
-          <input
-            #sectionName
-            style="text-transform: uppercase"
-            class="form-control"
-            type="text"
-            name="name"
-            placeholder="Name"
-            [(ngModel)]="newSection.name"
-          />
+          <ng-template #displayNameInfoPopOver>
+            <ul>
+              <li>
+                <span class="fs-10">The name shown to identify the section.</span>
+              </li>
+
+            </ul>
+          </ng-template>
+          <input #sectionName style="text-transform: uppercase" class="form-control" type="text" name="name"
+            placeholder="Name" [(ngModel)]="newSection.name" />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="col-12">
           <label class="form-label" for="name">
-            Total Questions<span class="text-danger">*</span></label
-          >
-          <i
-          style="cursor: pointer"
-          class="ri-question-fill text-info"
-          placement="top"
-          data-bs-container="body"
-          data-bs-toggle="popover"
-          [ngbPopover]="totalQuestionInfoPopOver"
-          triggers="mouseenter:mouseleave"
-          popoverClass="popOverClass"
-        ></i>
+            Total Questions<span class="text-danger">*</span></label>
+          <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
+            data-bs-toggle="popover" [ngbPopover]="totalQuestionInfoPopOver" triggers="mouseenter:mouseleave"
+            popoverClass="popOverClass"></i>
 
-        <ng-template #totalQuestionInfoPopOver>
-          <ul>
-            <li>
-              <span class="fs-10"
-                >The total number of questions in the section.</span
-              >
-            </li>
-          
-          </ul>
-        </ng-template>
-          <input
-            #totalQuestionInSection
-            class="form-control"
-            type="number"
-            name="totalQuestions"
-            placeholder="10"
-            [(ngModel)]="newSection.totalQuestions"
-          />
+          <ng-template #totalQuestionInfoPopOver>
+            <ul>
+              <li>
+                <span class="fs-10">The total number of questions in the section.</span>
+              </li>
+
+            </ul>
+          </ng-template>
+          <input #totalQuestionInSection class="form-control" type="number" name="totalQuestions" placeholder="10"
+            [(ngModel)]="newSection.totalQuestions" />
         </div>
 
         <div class="col-12 mt-2">
           <label class="form-label" for="name">
             Total Questions per candidate
-            <span class="text-danger">*</span> 
-            <i
-            style="cursor: pointer"
-            class="ri-question-fill text-info"
-            placement="top"
-            data-bs-container="body"
-            data-bs-toggle="popover"
-            [ngbPopover]="totalQuestionPerCandidateInfoPopOver"
-            triggers="mouseenter:mouseleave"
-            popoverClass="popOverClass"
-          ></i>
+            <span class="text-danger">*</span>
+            <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
+              data-bs-toggle="popover" [ngbPopover]="totalQuestionPerCandidateInfoPopOver"
+              triggers="mouseenter:mouseleave" popoverClass="popOverClass"></i>
 
-          <ng-template #totalQuestionPerCandidateInfoPopOver>
-            <ul>
-              <li>
-                <span class="fs-10"
-                  >The number of questions each candidate will answer.</span
-                >
-              </li>
-            
-            </ul>
-          </ng-template>
-            </label
-          ><br />
-          <span
-            class="text-danger fs-12"
-            *ngIf="
+            <ng-template #totalQuestionPerCandidateInfoPopOver>
+              <ul>
+                <li>
+                  <span class="fs-10">The number of questions each candidate will answer.</span>
+                </li>
+
+              </ul>
+            </ng-template>
+          </label><br />
+          <span class="text-danger fs-12" *ngIf="
               newSection.totalQuestionsPerStudent > newSection.totalQuestions
-            "
-            >(Question per candidate cannot be more than total questions
-            allocated to section)</span
-          >
-          
-          <input
-            #totalQuestionsPerStudent
-            class="form-control"
-            type="number"
-            name="totalQuestionsPerStudent"
-            placeholder="10"
-            [(ngModel)]="newSection.totalQuestionsPerStudent"
-          />
+            ">(Question per candidate cannot be more than total questions
+            allocated to section)</span>
+
+          <input #totalQuestionsPerStudent class="form-control" type="number" name="totalQuestionsPerStudent"
+            placeholder="10" [(ngModel)]="newSection.totalQuestionsPerStudent" />
         </div>
       </div>
     </form>
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click'); newSectionForm.reset()"
-      >
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+        (click)="modal.close('Close click'); newSectionForm.reset()">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
-      <button
-        [disabled]="
+      <button [disabled]="
           submitted ||
           assessment.status === 'PUBLISHED' ||
           !newSection.totalQuestionsPerStudent ||
@@ -1669,12 +1096,7 @@
           !newSection.name ||
           !newSection.subjectId ||
           newSection.totalQuestionsPerStudent > newSection.totalQuestions
-        "
-        type="button"
-        *ngIf="!submitted"
-        (click)="saveSection()"
-        class="btn btn-primary"
-      >
+        " type="button" *ngIf="!submitted" (click)="saveSection()" class="btn btn-primary">
         <i class="ri-save-line me-2 align-middle"></i>Save
       </button>
       <ng-template [ngIf]="submitted">
@@ -1694,47 +1116,26 @@
 <ng-template #newBlockModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">NEW QUESTION BLOCK</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click'); newBlockForm.reset()"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click'); newBlockForm.reset()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="px-5 modal-body">
-    <form
-      #newBlockForm="ngForm"
-      (ngSubmit)="saveBlock(newBlockForm)"
-      novalidate
-    >
+    <form #newBlockForm="ngForm" (ngSubmit)="saveBlock(newBlockForm)" novalidate>
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="name">
-            Block Name <span class="text-danger">*</span></label
-          >
-          <input
-            class="form-control"
-            type="text"
-            name="blockName"
-            placeholder="Name"
-            [(ngModel)]="newBlock.name"
-          />
+            Block Name <span class="text-danger">*</span></label>
+          <input class="form-control" type="text" name="blockName" placeholder="Name" [(ngModel)]="newBlock.name" />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="duration">
-            Question Category <span class="text-danger">*</span></label
-          >
-          <select
-            name="questionType"
-            class="form-select"
-            [(ngModel)]="newBlock.blockType"
-          >
+            Question Category <span class="text-danger">*</span></label>
+          <select name="questionType" class="form-select" [(ngModel)]="newBlock.blockType">
             <!-- (ngModelChange)="resetSelectionTypes($event)" -->
             <option *ngFor="let type of blockTypes" value="{{ type }}">
               {{ type }}
@@ -1747,79 +1148,51 @@
         <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
           <label class="form-label" for="totalQuestions">
             {{
-              newBlock.blockType === "SINGLE_QUESTIONS"
-                ? "Total Question(s) in the block"
-                : "Total Passage(s) in the block"
+            newBlock.blockType === "SINGLE_QUESTIONS"
+            ? "Total Question(s) in the block"
+            : "Total Passage(s) in the block"
             }}<span class="text-danger">*</span>
           </label>
           <div class="col-xl-3 col-md-2 col-sm-2">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestions"
-              [(ngModel)]="newBlock.totalQuestions"
-              (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)"
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
+              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)" />
           </div>
         </div>
 
-        <div
-          *ngIf="newBlock.blockType === 'PASSAGES'"
-          class="d-flex flex-wrap gap-2 align-items-center mb-2"
-        >
+        <div *ngIf="newBlock.blockType === 'PASSAGES'" class="d-flex flex-wrap gap-2 align-items-center mb-2">
           <label class="form-label" for="totalQuestionsPerCandidate">
             Total Question(s) in Passage
             <span class="text-danger">*</span>
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestionsInPassage"
-              [(ngModel)]="newBlock.numberOfItemsInPassage"
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
+              [(ngModel)]="newBlock.numberOfItemsInPassage" />
           </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
           <label class="form-label" for="totalQuestionsPerCandidate">
             {{
-              newBlock.blockType === "SINGLE_QUESTIONS"
-                ? "Total Question(s) per candidate"
-                : "Total Passage(s) per candidate"
+            newBlock.blockType === "SINGLE_QUESTIONS"
+            ? "Total Question(s) per candidate"
+            : "Total Passage(s) per candidate"
             }}
             <span class="text-danger">*</span>
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestionsPerCandidate"
-              [(ngModel)]="newBlock.totalQuestionsPerCandidate"
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
+              [(ngModel)]="newBlock.totalQuestionsPerCandidate" />
           </div>
         </div>
       </div>
 
       <div *ngIf="newBlock.totalQuestions" class="row my-3">
-        <label class="form-label" for="selectionType"
-          >{{
-            newBlock.blockType === "SINGLE_QUESTIONS"
-              ? "Question Selection Type"
-              : "Passage Selection Type"
-          }}<span class="text-danger"> *</span></label
-        >
-        <select
-          name="selectionType"
-          class="form-select"
-          [(ngModel)]="newBlock.selectionType"
-        >
+        <label class="form-label" for="selectionType">{{
+          newBlock.blockType === "SINGLE_QUESTIONS"
+          ? "Question Selection Type"
+          : "Passage Selection Type"
+          }}<span class="text-danger"> *</span></label>
+        <select name="selectionType" class="form-select" [(ngModel)]="newBlock.selectionType">
           <option *ngFor="let type of selectionTypes" value="{{ type }}">
             <!-- <span *ngIf="type === 'AUTOMATED_WITH_CRITERIA'">AUTOMATED</span> -->
             <!-- <span *ngIf="type !== 'AUTOMATED_WITH_CRITERIA'">{{ type }}</span> -->
@@ -1831,21 +1204,12 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click'); newBlockForm.reset()"
-      >
+      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+        (click)="modal.close('Close click'); newBlockForm.reset()">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
-      <button
-        [disabled]="!newBlock.selectionType || submitted"
-        type="button"
-        (click)="saveBlock()"
-        class="btn btn-primary"
-        *ngIf="!submitted"
-      >
+      <button [disabled]="!newBlock.selectionType || submitted" type="button" (click)="saveBlock()"
+        class="btn btn-primary" *ngIf="!submitted">
         <i class="ri-save-line me-2 align-middle"></i>Save
       </button>
       <ng-template [ngIf]="submitted">
@@ -1865,44 +1229,23 @@
 <ng-template #editBlockModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">EDIT QUESTION BLOCK SETTINGS</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="px-5 modal-body">
-    <form
-      #editBlockForm="ngForm"
-      (ngSubmit)="updateBlock(editBlockForm)"
-      novalidate
-    >
+    <form #editBlockForm="ngForm" (ngSubmit)="updateBlock(editBlockForm)" novalidate>
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="name"> Block Name </label>
-          <input
-            class="form-control"
-            type="text"
-            name="blockName"
-            placeholder="Name"
-            [(ngModel)]="editBlock.name"
-          />
+          <input class="form-control" type="text" name="blockName" placeholder="Name" [(ngModel)]="editBlock.name" />
         </div>
       </div>
 
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="duration"> Question Type </label>
-          <select
-            name="questionType"
-            class="form-select"
-            [disabled]="true"
-            [(ngModel)]="editBlock.blockType"
-          >
+          <select name="questionType" class="form-select" [disabled]="true" [(ngModel)]="editBlock.blockType">
             <option *ngFor="let type of blockTypes" value="{{ type }}">
               {{ type }}
             </option>
@@ -1913,14 +1256,8 @@
       <div class="row mb-2">
         <div class="">
           <label class="form-label" for="duration">Block Position</label>
-          <input
-            type="number"
-            min="0"
-            placeholder="60"
-            class="form-control"
-            name="blockIndex"
-            [(ngModel)]="editBlock.index"
-          />
+          <input type="number" min="0" placeholder="60" class="form-control" name="blockIndex"
+            [(ngModel)]="editBlock.index" />
         </div>
       </div>
 
@@ -1928,96 +1265,55 @@
         <div class="d-flex flex-wrap gap-2 align-items-center">
           <label class="form-label" for="totalQuestions">
             {{
-              editBlock.blockType === "SINGLE_QUESTIONS"
-                ? "Total Question(s) in the block"
-                : "Total Passage(s) in the block"
+            editBlock.blockType === "SINGLE_QUESTIONS"
+            ? "Total Question(s) in the block"
+            : "Total Passage(s) in the block"
             }}
           </label>
           <div class="col-xl-3 col-md-2 col-sm-2">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestions"
-              [(ngModel)]="editBlock.totalQuestions"
-              disabled
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
+              [(ngModel)]="editBlock.totalQuestions" disabled />
           </div>
         </div>
 
         <div class="d-flex flex-wrap gap-2 align-items-center">
           <label class="form-label" for="totalQuestionsPerStudent">
             {{
-              editBlock.blockType === "SINGLE_QUESTIONS"
-                ? "Total Question(s) per candidate"
-                : "Total Passage(s) per candidate"
+            editBlock.blockType === "SINGLE_QUESTIONS"
+            ? "Total Question(s) per candidate"
+            : "Total Passage(s) per candidate"
             }}
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestionsPerCandidate"
-              [(ngModel)]="editBlock.totalQuestionsPerStudent"
-              disabled
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
+              [(ngModel)]="editBlock.totalQuestionsPerStudent" disabled />
           </div>
         </div>
 
-        <div
-          *ngIf="editBlock.blockType === 'PASSAGES'"
-          class="d-flex flex-wrap gap-2 align-items-center mb-2"
-        >
+        <div *ngIf="editBlock.blockType === 'PASSAGES'" class="d-flex flex-wrap gap-2 align-items-center mb-2">
           <label class="form-label" for="totalQuestionsPerCandidate">
             Total Question(s) in Passage
             <span class="text-danger">*</span>
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
-            <input
-              type="number"
-              min="0"
-              placeholder="60"
-              class="form-control"
-              name="totalQuestionsInPassage"
-              [(ngModel)]="editBlock.totalQuestionsInPassage"
-              disabled
-            />
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
+              [(ngModel)]="editBlock.totalQuestionsInPassage" disabled />
           </div>
         </div>
       </div>
 
       <div *ngIf="editBlock.selectionType" class="row my-3">
-        <label class="form-label" for="selectionType"
-          >Question Selection Type</label
-        >
-        <input
-          type="text"
-          class="form-control"
-          name="selectionType"
-          [(ngModel)]="editBlock.selectionType"
-          disabled
-        />
+        <label class="form-label" for="selectionType">Question Selection Type</label>
+        <input type="text" class="form-control" name="selectionType" [(ngModel)]="editBlock.selectionType" disabled />
       </div>
     </form>
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
-      <button
-        type="button"
-        (click)="updateBlock(editBlockForm)"
-        class="btn btn-primary"
-      >
+      <button type="button" (click)="updateBlock(editBlockForm)" class="btn btn-primary">
         <i class="ri-save-line me-2 align-middle"></i>Save
       </button>
     </div>
@@ -2028,51 +1324,31 @@
   <div class="modal-header">
     <h3 class="modal-title">
       {{
-        selectedBlock.blockType === "PASSAGES"
-          ? "ADD PASSAGE(S) TO " + selectedBlock.blockName
-          : "ADD QUESTION(S) TO " + selectedBlock.blockName
+      selectedBlock.blockType === "PASSAGES"
+      ? "ADD PASSAGE(S) TO " + selectedBlock.blockName
+      : "ADD QUESTION(S) TO " + selectedBlock.blockName
       }}
     </h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click'); ngOnInit()"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click'); ngOnInit()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="px-5 modal-body"
-    style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
-    <app-subject
-      #subjectComponent
-      [_noOfItems]="selectedBlock.totalQuestions"
-      [_currentBlock]="selectedBlock"
-      [_subjectId]="itemService.subjectId"
-      [_subjectName]="itemService.subjectName"
-      [_assessmentId]="assessmentId"
-      [_sectionId]="selectedSection.sectionId"
-      [_existingItemIds]="existingItemIds"
-      [_loadingExistingItems]="loadingExistingItemIds"
-      (addItemToAssessment)="saveItemsToAssessment($event)"
-      (removeItemFromAssessment)="removeAssessmentItem($event)"
-    ></app-subject>
+    ">
+    <app-subject #subjectComponent [_noOfItems]="selectedBlock.totalQuestions" [_currentBlock]="selectedBlock"
+      [_subjectId]="itemService.subjectId" [_subjectName]="itemService.subjectName" [_assessmentId]="assessmentId"
+      [_sectionId]="selectedSection.sectionId" [_existingItemIds]="existingItemIds"
+      [_loadingExistingItems]="loadingExistingItemIds" (addItemToAssessment)="saveItemsToAssessment($event)"
+      (removeItemFromAssessment)="removeAssessmentItem($event)"></app-subject>
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click'); ngOnInit()"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click'); ngOnInit()">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
       <!-- <button
@@ -2083,12 +1359,8 @@
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button> -->
       <ng-template [ngIf]="!submitted">
-        <button
-          *ngIf="selectedBlock.selectionType === 'MANUAL'"
-          (click)="saveManualSelectedItemsToBlock()"
-          [disabled]="selectedItems.length < selectedBlock.totalQuestions"
-          class="btn btn-primary"
-        >
+        <button *ngIf="selectedBlock.selectionType === 'MANUAL'" (click)="saveManualSelectedItemsToBlock()"
+          [disabled]="selectedItems.length < selectedBlock.totalQuestions" class="btn btn-primary">
           <i class="ri-save-line align-middle fs-16 me-2"></i>Save
         </button>
       </ng-template>
@@ -2110,67 +1382,39 @@
 <ng-template #manualPassageItemSelectionModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">ADD PASSAGE(S) TO BLOCK</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click'); ngOnInit()"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click'); ngOnInit()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="px-5 modal-body"
-    style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
-    <app-list-passages
-      [_subjectId]="itemService.subjectId"
-      [_assessmentId]="assessmentId"
-      [_sectionId]="selectedSection.sectionId"
-      [_subjectName]="itemService.subjectName"
-      [_currentBlock]="selectedBlock"
-      [_existingPassageIds]="existingPassageIds"
-      [_loadingExistingPassageIds]="loadingExistingPassageIds"
-      (sendSelectedPassages)="recievePassageIds($event)"
-    ></app-list-passages>
+    ">
+    <app-list-passages [_subjectId]="itemService.subjectId" [_assessmentId]="assessmentId"
+      [_sectionId]="selectedSection.sectionId" [_subjectName]="itemService.subjectName" [_currentBlock]="selectedBlock"
+      [_existingPassageIds]="existingPassageIds" [_loadingExistingPassageIds]="loadingExistingPassageIds"
+      (sendSelectedPassages)="recievePassageIds($event)"></app-list-passages>
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click'); ngOnInit()"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click'); ngOnInit()">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
-      <button
-        *ngIf="
+      <button *ngIf="
           selectedBlock.selectionType === 'MANUAL' &&
           !savingManualSelectedPassageItems
-        "
-        (click)="saveManualSelectedPassageItemsToBlock()"
-        [disabled]="
+        " (click)="saveManualSelectedPassageItemsToBlock()" [disabled]="
           selectedPassageIds.length < selectedBlock.totalQuestions ||
           savingManualSelectedPassageItems
-        "
-        class="btn btn-success"
-      >
-        <span *ngIf="!savingManualSelectedPassageItems"
-          ><i class="ri-save-line align-middle fs-16 me-2"></i>Save</span
-        >
+        " class="btn btn-success">
+        <span *ngIf="!savingManualSelectedPassageItems"><i class="ri-save-line align-middle fs-16 me-2"></i>Save</span>
       </button>
 
       <ng-template [ngIf]="savingManualSelectedPassageItems">
-        <button
-          class="btn btn-success btn-load"
-          [disabled]="savingManualSelectedPassageItems"
-        >
+        <button class="btn btn-success btn-load" [disabled]="savingManualSelectedPassageItems">
           <span class="d-flex align-items-center">
             <span class="spinner-border flex-shrink-0" role="status">
               <span class="visually-hidden">Saving...</span>
@@ -2190,50 +1434,30 @@
       {{ selectedBlock.blockName }}
     </h3>
     <div>
-      <span class=""
-        >{{ items.length }}/{{ selectedBlock.totalQuestions }} questions
-        selected</span
-      >
-      <button
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-        (click)="modal.close('Close click')"
-      >
+      <span class="">{{ items.length }}/{{ selectedBlock.totalQuestions }} Questions
+        selected</span>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
   </div>
-  <div
-    class="px-5 modal-body"
-    style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
+    ">
     <div class="card-body">
       <div class="live-preview">
         <div class="list-group" *ngIf="items">
-          <a
-            style="color: #000"
-            class="list-group-item"
-            *ngFor="let item of items; let i = index"
-          >
-            <div
-              class="row d-flex"
-              [ngClass]="{
+          <a style="color: #000" class="list-group-item" *ngFor="let item of items; let i = index">
+            <div class="row d-flex" [ngClass]="{
                 'item-size': item.showFullItem === false,
                 'item-size-expand': item.showFullItem === true
-              }"
-            >
+              }">
               <!-- ITEM DETAILS-->
               <div class="col-lg-11 col-sm-auto">
-                <div
-                  class="d-flex flex-wrap align-items-center justify-content-between"
-                >
+                <div class="d-flex flex-wrap align-items-center justify-content-between">
                   <div>
                     <h5 class="list-title fs-18 mb-1">
                       {{ item.reference }}
@@ -2243,12 +1467,12 @@
                     </p>
                     <p class="list-text mb-0 fs-12">
                       {{
-                        item.subjectName.toUpperCase() +
-                          "|" +
-                          item.topicName.toUpperCase()
+                      item.subjectName.toUpperCase() +
+                      "|" +
+                      item.topicName.toUpperCase()
                       }}{{
-                        item.subtopicName &&
-                          "|" + item.subtopicName.toUpperCase()
+                      item.subtopicName &&
+                      "|" + item.subtopicName.toUpperCase()
                       }}
                     </p>
                   </div>
@@ -2264,9 +1488,7 @@
               </div>
 
               <!-- PREVIEW BUTTON-->
-              <div
-                class="col-lg-1 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size px-2"
-              >
+              <div class="col-lg-1 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size px-2">
                 <!-- <div #roleDropdown="ngbDropdown" class="dropdown" ngbDropdown>
                   <div
                     class="badge badge-soft-primary fs-12"
@@ -2289,96 +1511,62 @@
                   </ul>
                 </div> -->
                 <div class="d-flex gap-2">
-                  <a
-                    *ngIf="item.showFullItem === false"
-                    (click)="preview(item, i)"
-                    class="btn btn-sm btn-outline-success"
-                    >preview</a
-                  >
-                  <a
-                    *ngIf="item.showFullItem === true"
-                    (click)="hidePreview(item, i)"
-                    class="btn btn-sm btn-outline-success"
-                    >hide</a
-                  >
+                  <a *ngIf="item.showFullItem === false" (click)="preview(item, i)"
+                    class="btn btn-sm btn-outline-success">preview</a>
+                  <a *ngIf="item.showFullItem === true" (click)="hidePreview(item, i)"
+                    class="btn btn-sm btn-outline-success">hide</a>
                 </div>
               </div>
             </div>
 
             <div class="row">
               <div *ngIf="item.showFullItem === false">
-                <span
-                  >Question {{ i + 1 }}:
+                <span>Question {{ i + 1 }}:
                   <div class="list-text mb-0" [innerHTML]="item.stimulus">
                     {{ item.stimulus | slice : 0 : 50 }}
-                  </div></span
-                >
+                  </div>
+                </span>
 
                 <div class="d-flex justify-content-between mt-3">
                   <div class="d-flex gap-1">
-                    <span
-                      title="QUESTION TYPE"
-                      class="d-flex align-items-center"
-                      style="cursor: pointer"
-                    >
+                    <span title="QUESTION TYPE" class="d-flex align-items-center" style="cursor: pointer">
                       <i class="ri-list-check-2"></i>
                       :
                       <div class="badge badge-soft-success fs-10">
                         {{ item.type }}
                       </div>
                     </span>
-                    <span
-                      title="QUESTION STATUS"
-                      class="d-flex align-items-center"
-                      style="cursor: pointer"
-                    >
+                    <span title="QUESTION STATUS" class="d-flex align-items-center" style="cursor: pointer">
                       <i class="ri-upload-cloud-2-line"></i>
                       :
                       <div class="badge badge-soft-primary fs-10">
                         {{ item.itemStatus }}
                       </div>
                     </span>
-                    <span
-                      title="DIFFICULTY LEVEL"
-                      class="d-flex align-items-center"
-                      style="cursor: pointer"
-                    >
+                    <span title="DIFFICULTY LEVEL" class="d-flex align-items-center" style="cursor: pointer">
                       <i class="ri-line-height"></i>:
                       <div class="badge badge-soft-danger fs-10">
                         {{ item.difficultyLevel }}
                       </div>
                     </span>
-                    <span
-                      *ngIf="item.passageDetails.passageId"
-                      title="PASSAGE"
-                      class="d-flex align-items-center"
-                      style="cursor: pointer"
-                    >
+                    <span *ngIf="item.passageDetails.passageId" title="PASSAGE" class="d-flex align-items-center"
+                      style="cursor: pointer">
                       <i class="ri-article-line"></i>:
                       <div class="badge badge-soft-info fs-10">
                         PASSAGE QUESTION
                       </div>
                     </span>
                     <ng-container>
-                      <span
-                        style="cursor: pointer"
-                        [ngbPopover]="tagsTemplate"
-                        triggers="mouseenter:mouseleave"
-                        placement="top"
-                        ><i class="bx bxs-purchase-tag fs-10"></i>:
+                      <span style="cursor: pointer" [ngbPopover]="tagsTemplate" triggers="mouseenter:mouseleave"
+                        placement="top"><i class="bx bxs-purchase-tag fs-10"></i>:
                         <div class="badge badge-soft-primary fs-10">
                           TAGS ({{ item.itemTagDTOS.length }})
-                        </div></span
-                      >
+                        </div>
+                      </span>
 
                       <ng-template #tagsTemplate>
-                        <ul
-                          style="list-style-type: none"
-                          *ngIf="item.itemTagDTOS.length > 0"
-                        >
-                          <li
-                            *ngFor="let tag of item.itemTagDTOS; let i = index"
-                          >
+                        <ul style="list-style-type: none" *ngIf="item.itemTagDTOS.length > 0">
+                          <li *ngFor="let tag of item.itemTagDTOS; let i = index">
                             <a class="fs-10">
                               {{ tag.tagName | slice : 0 : 50 | uppercase }}
                             </a>
@@ -2387,11 +1575,7 @@
                         <p *ngIf="item.itemTagDTOS.length < 1">No Tag(s)</p>
                       </ng-template>
                     </ng-container>
-                    <span
-                      title="SCORE"
-                      class="d-flex align-items-center"
-                      style="cursor: pointer"
-                    >
+                    <span title="SCORE" class="d-flex align-items-center" style="cursor: pointer">
                       <div class="badge badge-soft-secondary fs-10">
                         {{ item.score }} Mark(s)
                       </div>
@@ -2402,97 +1586,50 @@
 
               <!-- QUESTIONS PREVIEW-->
               <div *ngIf="item.showFullItem === true">
-                <app-preview
-                  *ngIf="item.type === 'MCQ'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-preview>
-                <app-matching-preview
-                  *ngIf="item.type === 'ASSOCIATION'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-matching-preview>
-                <app-ordering-preview
-                  *ngIf="item.type === 'ORDER_LIST'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-ordering-preview>
-                <app-rich-essay-preview
-                  *ngIf="item.type === 'ESSAY_RICH_TEXT'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-rich-essay-preview>
-                <app-multiple-response-preview
-                  *ngIf="item.type === 'MRQ'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-multiple-response-preview>
-                <app-short-text-preview
-                  *ngIf="item.type === 'SHORT_TEXT'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-short-text-preview>
-                <app-yes-or-no-preview
-                  *ngIf="item.type === 'YES_NO'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-yes-or-no-preview>
-                <app-true-or-false-preview
-                  *ngIf="item.type === 'TRUE_FALSE'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-true-or-false-preview>
-                <app-cloze-dropdown-preview
-                  *ngIf="item.type === 'CLOZE_DROPDOWN'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-cloze-dropdown-preview>
-                <app-cloze-text-preview
-                  *ngIf="item.type === 'CLOZE_TEXT'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-cloze-text-preview>
+                <app-preview *ngIf="item.type === 'MCQ'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-preview>
+                <app-matching-preview *ngIf="item.type === 'ASSOCIATION'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-matching-preview>
+                <app-ordering-preview *ngIf="item.type === 'ORDER_LIST'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-ordering-preview>
+                <app-rich-essay-preview *ngIf="item.type === 'ESSAY_RICH_TEXT'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-rich-essay-preview>
+                <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-multiple-response-preview>
+                <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-short-text-preview>
+                <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-yes-or-no-preview>
+                <app-true-or-false-preview *ngIf="item.type === 'TRUE_FALSE'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-true-or-false-preview>
+                <app-cloze-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-cloze-dropdown-preview>
+                <app-cloze-text-preview *ngIf="item.type === 'CLOZE_TEXT'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-cloze-text-preview>
 
-                <app-choice-matrix-preview
-                  *ngIf="item.type === 'CHOICE_MATRIX'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                ></app-choice-matrix-preview>
+                <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-choice-matrix-preview>
 
-                <app-label-image-drag-drop-preview
-                  *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                >
+                <app-label-image-drag-drop-preview *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
+                  [previewData]="previewData" [itemTrailInfo]="itemProps">
                 </app-label-image-drag-drop-preview>
 
-                <app-label-image-dropdown-preview
-                  *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                >
+                <app-label-image-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
+                  [previewData]="previewData" [itemTrailInfo]="itemProps">
                 </app-label-image-dropdown-preview>
 
-                <app-label-image-text-preview
-                  *ngIf="item.type === 'CLOZE_TEXT_IMAGE'"
-                  [previewData]="previewData"
-                  [itemTrailInfo]="itemProps"
-                >
+                <app-label-image-text-preview *ngIf="item.type === 'CLOZE_TEXT_IMAGE'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps">
                 </app-label-image-text-preview>
+
+                <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData" [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
               </div>
             </div>
           </a>
         </div>
         <div *ngIf="items.length === 0">
-          <div
-            class="d-flex flex-column justify-content-between align-items-center"
-          >
-            <img
-              src="assets/images/blank_pages/empty-state.png"
-              width="200"
-              height="200"
-              class=""
-            />
+          <div class="d-flex flex-column justify-content-between align-items-center">
+            <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
             <h4 class="text-secondary fw-bold">No item(s) Found!</h4>
           </div>
         </div>
@@ -2501,11 +1638,7 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
       <!-- <button
@@ -2533,43 +1666,27 @@
       {{ selectedBlock.blockName }}
     </h3>
     <div>
-      <span class=""
-        >{{ passages.length }}/{{ selectedBlock.totalQuestions }} passages
-        selected</span
-      >
-      <button
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-        (click)="modal.close('Close click')"
-      >
+      <span class="">{{ passages.length }}/{{ selectedBlock.totalQuestions }} passages
+        selected</span>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
   </div>
-  <div
-    class="px-5 modal-body"
-    style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
+    ">
     <div *ngIf="passages">
       <div class="py-3 card-body">
         <div class="live-preview">
           <div class="list-group" *ngIf="passages">
-            <a
-              class="list-group-item"
-              *ngFor="let passage of passages; let i = index"
-            >
+            <a class="list-group-item" *ngFor="let passage of passages; let i = index">
               <div class="row" style="height: fit-content">
                 <div class="col-lg-12 col-sm-auto">
-                  <div
-                    class="d-flex flex-wrap mb-2 align-items-center justify-content-between"
-                  >
+                  <div class="d-flex flex-wrap mb-2 align-items-center justify-content-between">
                     <div>
                       <h5 class="list-title fs-18 mb-1">
                         {{ passage.reference }}
@@ -2590,156 +1707,85 @@
                     </div>
                   </div>
                   <div>
-                    <span
-                      >Passage :
-                      <div
-                        class="list-text mb-0"
-                        [innerHTML]="passage.stimulus"
-                      ></div
-                    ></span>
+                    <span>Passage :
+                      <div class="list-text mb-0" [innerHTML]="passage.stimulus"></div>
+                    </span>
                   </div>
                   <div class="d-flex justify-content-between">
                     <div class="flex gap-2">
-                      <span class="badge badge-soft-primary"
-                        >total questions: {{ passage.itemCount }}</span
-                      >
-                      <span
-                        class="badge mx-2"
-                        [ngClass]="{
+                      <span class="badge badge-soft-primary">total questions: {{ passage.itemCount }}</span>
+                      <span class="badge mx-2" [ngClass]="{
                           'badge-soft-success': passage.status == 'PUBLISHED',
                           'badge-soft-warning': passage.status == 'DRAFT'
-                        }"
-                        >Status: {{ passage.status }}</span
-                      >
+                        }">Status: {{ passage.status }}</span>
                     </div>
-                    <button
-                      *ngIf="showPassageItems === false"
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      (click)="viewSelectedPassageItemsInBlock(passage.id)"
-                    >
+                    <button *ngIf="showPassageItems === false" type="button" class="btn btn-primary btn-sm"
+                      (click)="viewSelectedPassageItemsInBlock(passage.id)">
                       <span *ngIf="!loadingPassageItemPreview">
-                        View questions</span
-                      >
+                        View questions</span>
 
-                      <span
-                        *ngIf="loadingPassageItemPreview"
-                        class="d-flex align-items-center"
-                      >
-                        <span
-                          class="spinner-border flex-shrink-0"
-                          style="font-size: 10px; width: 20px; height: 20px"
-                          role="status"
-                        >
+                      <span *ngIf="loadingPassageItemPreview" class="d-flex align-items-center">
+                        <span class="spinner-border flex-shrink-0" style="font-size: 10px; width: 20px; height: 20px"
+                          role="status">
                           <!-- <span class="visually-hidden">loading...</span> -->
                         </span>
                       </span>
                     </button>
-                    <button
-                      *ngIf="
+                    <button *ngIf="
                         showPassageItems === true &&
                         previewData.passage.id === passage.id
-                      "
-                      type="button"
-                      class="btn btn-primary btn-sm"
-                      (click)="hidePassageItems()"
-                    >
+                      " type="button" class="btn btn-primary btn-sm" (click)="hidePassageItems()">
                       Hide
                     </button>
                   </div>
 
                   <div *ngIf="previewData" class="card-body">
                     <div class="live-preview">
-                      <div
-                        class="list-group"
-                        *ngIf="
+                      <div class="list-group" *ngIf="
                           previewData.items &&
                           previewData.passage.id === passage.id
-                        "
-                      >
+                        ">
                         <h4 class="title">Questions</h4>
-                        <a
-                          style="color: #000"
-                          class="list-group-item"
-                          *ngFor="let item of previewData.items; let i = index"
-                        >
+                        <a style="color: #000" class="list-group-item"
+                          *ngFor="let item of previewData.items; let i = index">
                           <div class="card-body">
                             <div *ngIf="item">
-                              <app-preview
-                                *ngIf="item.type === 'MCQ'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-preview>
-                              <app-matching-preview
-                                *ngIf="item.type === 'ASSOCIATION'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-matching-preview>
-                              <app-ordering-preview
-                                *ngIf="item.type === 'ORDER_LIST'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-ordering-preview>
-                              <app-rich-essay-preview
-                                *ngIf="item.type === 'ESSAY_RICH_TEXT'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-rich-essay-preview>
-                              <app-multiple-response-preview
-                                *ngIf="item.type === 'MRQ'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-multiple-response-preview>
-                              <app-short-text-preview
-                                *ngIf="item.type === 'SHORT_TEXT'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-short-text-preview>
-                              <app-yes-or-no-preview
-                                *ngIf="item.type === 'YES_NO'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-yes-or-no-preview>
-                              <app-true-or-false-preview
-                                *ngIf="item.type === 'TRUE_FALSE'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-true-or-false-preview>
-                              <app-cloze-dropdown-preview
-                                *ngIf="item.type === 'CLOZE_DROPDOWN'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-cloze-dropdown-preview>
-                              <app-cloze-text-preview
-                                *ngIf="item.type === 'CLOZE_TEXT'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-cloze-text-preview>
-                              <app-choice-matrix-preview
-                                *ngIf="item.type === 'CHOICE_MATRIX'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              ></app-choice-matrix-preview>
+                              <app-preview *ngIf="item.type === 'MCQ'" [previewData]="item"
+                                [component]="'question-status'"></app-preview>
+                              <app-matching-preview *ngIf="item.type === 'ASSOCIATION'" [previewData]="item"
+                                [component]="'question-status'"></app-matching-preview>
+                              <app-ordering-preview *ngIf="item.type === 'ORDER_LIST'" [previewData]="item"
+                                [component]="'question-status'"></app-ordering-preview>
+                              <app-rich-essay-preview *ngIf="item.type === 'ESSAY_RICH_TEXT'" [previewData]="item"
+                                [component]="'question-status'"></app-rich-essay-preview>
+                              <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="item"
+                                [component]="'question-status'"></app-multiple-response-preview>
+                              <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="item"
+                                [component]="'question-status'"></app-short-text-preview>
+                              <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="item"
+                                [component]="'question-status'"></app-yes-or-no-preview>
+                              <app-true-or-false-preview *ngIf="item.type === 'TRUE_FALSE'" [previewData]="item"
+                                [component]="'question-status'"></app-true-or-false-preview>
+                              <app-cloze-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN'" [previewData]="item"
+                                [component]="'question-status'"></app-cloze-dropdown-preview>
+                              <app-cloze-text-preview *ngIf="item.type === 'CLOZE_TEXT'" [previewData]="item"
+                                [component]="'question-status'"></app-cloze-text-preview>
+                              <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="item"
+                                [component]="'question-status'"></app-choice-matrix-preview>
 
-                              <app-label-image-drag-drop-preview
-                                *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              >
+                              <app-label-image-drag-drop-preview *ngIf="item.type === 'IMAGE_DRAG_AND_DROP'"
+                                [previewData]="item" [component]="'question-status'">
                               </app-label-image-drag-drop-preview>
 
-                              <app-label-image-text-preview
-                                *ngIf="item.type === 'CLOZE_TEXT_IMAGE'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              >
+                              <app-label-image-text-preview *ngIf="item.type === 'CLOZE_TEXT_IMAGE'"
+                                [previewData]="item" [component]="'question-status'">
                               </app-label-image-text-preview>
-                              <app-label-image-dropdown-preview
-                                *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
-                                [previewData]="item"
-                                [component]="'question-status'"
-                              >
+                              <app-label-image-dropdown-preview *ngIf="item.type === 'CLOZE_DROPDOWN_IMAGE'"
+                                [previewData]="item" [component]="'question-status'">
                               </app-label-image-dropdown-preview>
+
+                              <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'"
+                                [previewData]="item" [component]="'question-status'"></app-drawing-and-writing-preview>
                             </div>
                           </div>
                         </a>
@@ -2752,15 +1798,8 @@
           </div>
 
           <div *ngIf="passages.length === 0">
-            <div
-              class="d-flex flex-column justify-content-between align-items-center"
-            >
-              <img
-                src="assets/images/blank_pages/empty-state.png"
-                width="200"
-                height="200"
-                class=""
-              />
+            <div class="d-flex flex-column justify-content-between align-items-center">
+              <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
               <h4 class="text-secondary fw-bold">No Passage(s) Found!</h4>
             </div>
           </div>
@@ -2770,11 +1809,7 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        class="btn btn-danger"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
       <!-- <button
@@ -2798,53 +1833,26 @@
 <ng-template #NewAssessmentTemplateModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Create New Assessment Template</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body px-5">
-    <form
-      #newAssessmentTemplateForm="ngForm"
-      (ngSubmit)="saveAssessmentAsTemplate()"
-      novalidate
-    >
+    <form #newAssessmentTemplateForm="ngForm" (ngSubmit)="saveAssessmentAsTemplate()" novalidate>
       <div class="mt-4">
         <label for="subjectName" class="label">Template Name</label>
-        <input
-          type="text"
-          name="templateName"
-          class="form-control mb-3"
-          placeholder="Enter template name"
-          required
-          [(ngModel)]="newAssessmentTemplate.templateName"
-        />
+        <input type="text" name="templateName" class="form-control mb-3" placeholder="Enter template name" required
+          [(ngModel)]="newAssessmentTemplate.templateName" />
       </div>
     </form>
   </div>
   <div class="card-footer">
     <div class="hstack gap-2 justify-content-end">
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
         Close
       </button>
-      <button
-        *ngIf="!submitted"
-        [disabled]="submitted"
-        type="button"
-        (click)="saveAssessmentAsTemplate()"
-        class="btn btn-primary"
-        data-bs-dismiss="modal"
-      >
+      <button *ngIf="!submitted" [disabled]="submitted" type="button" (click)="saveAssessmentAsTemplate()"
+        class="btn btn-primary" data-bs-dismiss="modal">
         Submit
       </button>
       <ng-template [ngIf]="submitted">
@@ -2864,51 +1872,25 @@
 <ng-template #NewSectionTemplateModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Create New Template</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body px-5">
-    <form
-      #newSectionTemplateForm="ngForm"
-      (ngSubmit)="saveSectionAsTemplate()"
-      novalidate
-    >
+    <form #newSectionTemplateForm="ngForm" (ngSubmit)="saveSectionAsTemplate()" novalidate>
       <div class="mt-4">
         <label for="templateName" class="label">Template Name</label>
-        <input
-          type="text"
-          name="templateName"
-          class="form-control mb-3"
-          placeholder="Enter template name"
-          required
-          [(ngModel)]="newSectionTemplate.templateName"
-        />
+        <input type="text" name="templateName" class="form-control mb-3" placeholder="Enter template name" required
+          [(ngModel)]="newSectionTemplate.templateName" />
       </div>
     </form>
   </div>
   <div class="card-footer">
     <div class="hstack gap-2 justify-content-end">
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
         Close
       </button>
-      <button
-        [disabled]="submitted"
-        type="submit"
-        class="btn btn-primary"
-        data-bs-dismiss="modal"
-      >
+      <button [disabled]="submitted" type="submit" class="btn btn-primary" data-bs-dismiss="modal">
         Submit
       </button>
     </div>
@@ -2918,13 +1900,7 @@
 <ng-template #deleteBlockConfirmationModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Confirm Delete Action</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -2938,20 +1914,10 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2 mt-2">
-      <button
-        type="button"
-        (click)="modal.close('Close click')"
-        class="btn btn-primary"
-      >
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-primary">
         No, Cancel
       </button>
-      <button
-        *ngIf="!submitted"
-        [disabled]="submitted"
-        type="button"
-        (click)="deleteBlock()"
-        class="btn btn-danger"
-      >
+      <button *ngIf="!submitted" [disabled]="submitted" type="button" (click)="deleteBlock()" class="btn btn-danger">
         Yes, Delete It
       </button>
 
@@ -2972,13 +1938,7 @@
 <ng-template #deleteSectionConfirmationModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Confirm Delete Action</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -2993,20 +1953,10 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2 mt-2">
-      <button
-        type="button"
-        (click)="modal.close('Close click')"
-        class="btn btn-outline-primary"
-      >
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-outline-primary">
         No, Cancel
       </button>
-      <button
-        *ngIf="!submitted"
-        type="button"
-        (click)="deleteSection()"
-        class="btn btn-danger"
-        [disabled]="submitted"
-      >
+      <button *ngIf="!submitted" type="button" (click)="deleteSection()" class="btn btn-danger" [disabled]="submitted">
         <span> Yes, Remove It </span>
 
         <!-- <span class="d-flex align-items-center" *ngIf="submitted">
@@ -3033,43 +1983,23 @@
 <ng-template #templateImportModal let-modal>
   <div class="modal-header mb-0">
     <h3 class="modal-title">Import Template</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body px-5">
     <div>
       <label for="template_name">Select Template</label>
-      <ng-select
-        [items]="assessment_templates.content"
-        name="template_name"
-        bindLabel="name"
-        bindValue="id"
-        [(ngModel)]="templateImport.templateId"
-      ></ng-select>
+      <ng-select [items]="assessment_templates.content" name="template_name" bindLabel="name" bindValue="id"
+        [(ngModel)]="templateImport.templateId"></ng-select>
     </div>
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2 mt-2">
-      <button
-        type="button"
-        (click)="modal.close('Close click')"
-        class="btn btn-danger"
-      >
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-danger">
         <i class="ri-close-line align-middle me-2"></i>Cancel
       </button>
-      <button
-        [disabled]="submitted"
-        type="button"
-        (click)="importTemplate()"
-        class="btn btn-success"
-      >
+      <button [disabled]="submitted" type="button" (click)="importTemplate()" class="btn btn-success">
         <i class="ri-download-line align-middle me-2"></i>Import
       </button>
     </div>
@@ -3079,13 +2009,7 @@
 <ng-template #publishAssessmentConfirmationModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">CONFIRM PUBLISH</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -3099,20 +2023,11 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button
-        type="button"
-        (click)="modal.close('Close click')"
-        class="btn btn-outline-danger"
-      >
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-outline-danger">
         No, Cancel
       </button>
-      <button
-        *ngIf="!submitted"
-        type="button"
-        (click)="publishExam()"
-        class="btn btn-success"
-        [disabled]="submitted || assessment.status === 'PUBLISHED'"
-      >
+      <button *ngIf="!submitted" type="button" (click)="publishExam()" class="btn btn-success"
+        [disabled]="submitted || assessment.status === 'PUBLISHED'">
         Yes, Publish
       </button>
 
@@ -3133,26 +2048,18 @@
 <ng-template #examPreviewModal let-modal>
   <div class="modal-header">
     <h4 class="modal-title text-center">Exam Preview</h4>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click'); ngOnInit()"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click'); ngOnInit()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="modal-body"
-    style="
+  <div class="modal-body" style="
       height: 90vh;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
       padding: 0px;
-    "
-  >
+    ">
     <app-exam-page [assessmentId]="assessmentId"></app-exam-page>
   </div>
   <!-- <div class="card-footer">
@@ -3168,8 +2075,5 @@
   </div> -->
 </ng-template>
 
-<app-rightsidebar
-  [currentView]="'Manage Exams'"
-  [pageGuide]="quickGuide"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Manage Exams'" [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>

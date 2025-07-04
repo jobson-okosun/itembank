@@ -27,7 +27,10 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { ViewUserComponent } from './view-user/view-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { ViewItemsComponent } from './view-items/view-items.component';
-import { ModeratorActivitiesComponent } from './moderator-activities/moderator-activities.component'
+import { ModeratorActivitiesComponent } from './moderator-activities/moderator-activities.component';
+import { NoSpaceDirective } from './directives/no-space.directive';
+import { noLettersDirective } from './directives/no-letters.directive';
+import { DrawingAndWritingPreviewComponent } from '../items/drawing-and-writing-preview/drawing-and-writing-preview.component';
 
 @NgModule({
   declarations: [    
@@ -36,7 +39,10 @@ import { ModeratorActivitiesComponent } from './moderator-activities/moderator-a
     ModeratorActivitiesComponent,
     EditUserComponent,
     UserComponent,
-    AddUserComponent
+    AddUserComponent,
+    NoSpaceDirective,
+    noLettersDirective,
+    // DrawingAndWritingPreviewComponent
   ],
   imports: [
     CommonModule,

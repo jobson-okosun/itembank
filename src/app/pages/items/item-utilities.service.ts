@@ -9,6 +9,7 @@ export interface ItemDetails {
   topicName?: string;
   subtopicId?: string;
   subtopicName?: string;
+  assessmentActive?: boolean
 }
 
 @Injectable({
@@ -44,5 +45,13 @@ export class ItemUtilitiesService {
       payload,
       { withCredentials: true }
     );
+  }
+
+  saveCurrentItemTrail(itemTrail?: ItemDetails) {
+    localStorage.setItem('item-trail', JSON.stringify(itemTrail?? this.currentItemTrail))
+  }
+
+  getSavedItemTrail():ItemDetails | null {
+    return localStorage.getItem('item-trail') ? JSON.parse(localStorage.getItem('item-trail')) : null
   }
 }

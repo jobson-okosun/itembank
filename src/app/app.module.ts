@@ -26,6 +26,8 @@ import { TranslateModule, TranslateLoader } from "@ngx-translate/core";
 import { NotifierModule, NotifierOptions } from "angular-notifier";
 import { ButtonModule } from "primeng/button";
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
+// import { DrawingAndWritingPreviewComponent } from "./drawing-and-writing-preview/drawing-and-writing-preview.component";
+import { FormsModule } from "@angular/forms";
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, "assets/i18n/", ".json");
@@ -95,7 +97,7 @@ const customNotifierOptions: NotifierOptions = {
     AppRoutingModule,
     LayoutsModule,
     PagesModule,
-
+    FormsModule,
     ButtonModule,
     NotifierModule.withConfig(customNotifierOptions),
   ],

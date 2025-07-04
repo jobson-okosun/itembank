@@ -1,5 +1,5 @@
-import { ItemType } from "src/app/shared/enum/itemTypes";
-import { IOptionDTO, IPossibleResponse, IResponsePosition } from "./candidate";
+import { ItemType } from 'src/app/shared/enum/itemTypes';
+import { IOptionDTO, IPossibleResponse, IResponsePosition } from './candidate';
 
 export class ExamPreviewData {
   id: string;
@@ -45,56 +45,7 @@ export class ExamPreviewData {
       blockName: string;
       index: number;
       blockType: string;
-      items: Array<{
-        id: string;
-        authorId: string;
-        authorName: string;
-        passageId: string;
-        passageStimulus: string;
-        stimulus: string;
-        scoringOption: {
-          score: number;
-          penalty: number;
-          minimumScoreIfAttempted: number;
-          answers: string[];
-          scoringType: string;
-          autoScore: boolean;
-          matchingRule: string;
-          caseSensitive: boolean;
-          ignoreLeadingAndTrailingSpaces: boolean;
-        };
-        options: Array<IOptionDTO>;
-        stems: Array<string>;
-        possibleResponses: Array<IPossibleResponse>;
-        images: Array<{
-          url: string;
-          height: number;
-          width: number;
-        }>;
-        tags: Array<{
-          tagId: string;
-          tagName: string;
-        }>;
-        responsePositions: Array<IResponsePosition>;
-        itemType: ItemType;
-        numerical: boolean;
-        caseSensitive: boolean;
-        subjectId: string;
-        topicId: string;
-        subtopicId: string;
-        topicName: string;
-        subtopicName: string;
-        difficultyLevel: number;
-        shuffleOptions: boolean;
-        multipleResponse: boolean;
-        maxWords: number;
-        maxLength: number;
-        allowPaste: boolean;
-        allowCopy: boolean;
-        allowCut: boolean;
-        plainText: boolean;
-        reference: string;
-      }>;
+      items: questionItem[];
       passages: Array<{
         id: string;
         stimulus: string;
@@ -169,6 +120,59 @@ export class ExamPreviewData {
     totalQuestions: number;
     totalQuestionsPerCandidate: number;
   }>;
+}
+
+export class questionItem {
+  id: string;
+  authorId: string;
+  authorName: string;
+  passageId: string;
+  passageStimulus: string;
+  stimulus: string;
+  scoringOption: {
+    score: number;
+    penalty: number;
+    minimumScoreIfAttempted: number;
+    answers: string[];
+    scoringType: string;
+    autoScore: boolean;
+    matchingRule: string;
+    caseSensitive: boolean;
+    ignoreLeadingAndTrailingSpaces: boolean;
+  };
+  options: Array<IOptionDTO>;
+  stems: Array<string>;
+  possibleResponses: Array<IPossibleResponse>;
+  images: Array<{
+    url: string;
+    height: number;
+    width: number;
+  }>;
+  tags: Array<{
+    tagId: string;
+    tagName: string;
+  }>;
+  responsePositions: Array<IResponsePosition>;
+  itemType: ItemType;
+  numerical: boolean;
+  caseSensitive: boolean;
+  subjectId: string;
+  topicId: string;
+  subtopicId: string;
+  topicName: string;
+  subtopicName: string;
+  difficultyLevel: number;
+  shuffleOptions: boolean;
+  multipleResponse: boolean;
+  maxWords: number;
+  maxLength: number;
+  allowPaste: boolean;
+  allowCopy: boolean;
+  allowCut: boolean;
+  plainText: boolean;
+  reference: string;
+
+  // Add new model properties
 }
 
 export class SectionPreviewData {

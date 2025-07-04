@@ -1,20 +1,11 @@
-<app-breadcrumbs
-  title="USERS"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<app-breadcrumbs title="USERS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div
-  *ngIf="loading"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="loading" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading users...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading users...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading users...</span>
   </div>
 </div>
 
@@ -27,36 +18,18 @@
       Filtered Results {{ "(" + filteredUsers.length + ")" }}
     </h4>
     <div class="d-flex gap-2 flex-shrink-0">
-      <span
-        *ngIf="selectedUsers.length > 0"
-        class="badge badge-soft-warning fs-14 uppercase"
-        >You have selected
+      <span *ngIf="selectedUsers.length > 0" class="badge badge-soft-warning fs-14 uppercase">You have selected
         {{
-          selectedUsers.length == users.length ? "all" : selectedUsers.length
+        selectedUsers.length == users.length ? "all" : selectedUsers.length
         }}
         user(s).
       </span>
-      <div
-        *ngIf="selectedUsers.length > 0"
-        class="btn-group"
-        role="group"
-        ngbDropdown
-      >
-        <button
-          id="btnGroupDrop1"
-          type="button"
-          class="btn btn-primary dropdown-toggle arrow-none"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-          ngbDropdownToggle
-        >
+      <div *ngIf="selectedUsers.length > 0" class="btn-group" role="group" ngbDropdown>
+        <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+          data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
           Bulk Actions<i class="mdi mdi-chevron-down"></i>
         </button>
-        <ul
-          class="dropdown-menu"
-          aria-labelledby="btnGroupDrop1"
-          ngbDropdownMenu
-        >
+        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
           <!-- <li style="cursor: pointer">
             <a class="dropdown-item" (click)="deleteUsers()"
               ><i class="ri-delete-bin-6-line me-2 align-middle"></i>Delete
@@ -64,20 +37,18 @@
             >
           </li> -->
           <li style="cursor: pointer">
-            <a class="dropdown-item" (click)="bulkActivateDeactivate(true)"
-              ><i class="ri-checkbox-circle-line me-2 align-middle"></i>Activate
-              Users</a
-            >
+            <a class="dropdown-item" (click)="bulkActivateDeactivate(true)"><i
+                class="ri-checkbox-circle-line me-2 align-middle"></i>Activate
+              Users</a>
           </li>
           <li style="cursor: pointer">
-            <a class="dropdown-item" (click)="bulkActivateDeactivate(false)"
-              ><i class="ri-forbid-fill me-2 align-middle"></i>Deactivate
-              Users</a
-            >
+            <a class="dropdown-item" (click)="bulkActivateDeactivate(false)"><i
+                class="ri-forbid-fill me-2 align-middle"></i>Deactivate
+              Users</a>
           </li>
           <li style="cursor: pointer">
-            <a class="dropdown-item" (click)="resendVerificationEmail()"
-              ><i class="ri-mail-send-fill me-2 align-middle"></i>Resend
+            <a class="dropdown-item" (click)="resendVerificationEmail()"><i
+                class="ri-mail-send-fill me-2 align-middle"></i>Resend
               Verification Email
             </a>
           </li>
@@ -86,33 +57,20 @@
 
       <ng-container *ngIf="selectedUsers.length < 1">
         <div class="btn-group" role="group" ngbDropdown>
-          <button
-            id="btnGroupDrop2"
-            type="button"
-            class="btn btn-primary dropdown-toggle arrow-none"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-            ngbDropdownToggle
-          >
+          <button id="btnGroupDrop2" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+            data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
             Create User(s)<i class="mdi mdi-chevron-down"></i>
           </button>
-          <ul
-            class="dropdown-menu"
-            aria-labelledby="btnGroupDrop2"
-            ngbDropdownMenu
-          >
+          <ul class="dropdown-menu" aria-labelledby="btnGroupDrop2" ngbDropdownMenu>
             <li style="cursor: pointer">
               <a (click)="openNewUserModal(newUserModal)" class="dropdown-item">
                 <i class="ri-add-line align-middle me-2"></i> New User
               </a>
             </li>
             <li style="cursor: pointer">
-              <a
-                class="dropdown-item"
-                (click)="openUsersUploadModal(usersUploadModal)"
-                ><i class="ri-upload-2-line me-2 align-middle"></i>Upload
-                Users</a
-              >
+              <a class="dropdown-item" (click)="openUsersUploadModal(usersUploadModal)"><i
+                  class="ri-upload-2-line me-2 align-middle"></i>Upload
+                Users</a>
             </li>
           </ul>
         </div>
@@ -120,18 +78,12 @@
           <i class="ri-download-line me-2 align-middle"></i>
           Download Users
         </button>
-        <button
-          class="btn btn-secomdary"
-          [ngClass]="{ 'btn-secondary': !showFilter, 'btn-danger': showFilter }"
-          (click)="openFilter()"
-        >
-          <i
-            class="me-2 align-middle"
-            [ngClass]="{
+        <button class="btn btn-secomdary" [ngClass]="{ 'btn-secondary': !showFilter, 'btn-danger': showFilter }"
+          (click)="openFilter()">
+          <i class="me-2 align-middle" [ngClass]="{
               'ri-equalizer-fill': !showFilter,
               'ri-close-fill': showFilter
-            }"
-          ></i>
+            }"></i>
           {{ showFilter ? "HIDE FILTER" : "FILTER" }}
         </button>
       </ng-container>
@@ -139,85 +91,50 @@
   </div>
 
   <!-- Filter Form-->
-  <div *ngIf="showFilter" class="card card-animate shadow-lg p-4">
+  <div *ngIf="showFilter" class="card card-animate shadow-lg p-4" style="z-index: 99999;">
     <form #filterUsersForm="ngForm" (ngSubmit)="filterUsers()">
       <div class="row g-3 mb-2">
         <div class="col-lg-3 col-sm-12">
           <div>
             <label for="email" class="form-label">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter email address..."
-              class="form-control"
-              [(ngModel)]="filter.email"
-            />
+            <input type="email" name="email" placeholder="Enter email address..." class="form-control"
+              [(ngModel)]="filter.email" />
           </div>
         </div>
         <div class="col-lg-3 col-sm-12">
           <div>
             <label for="username" class="form-label">Username</label>
-            <input
-              type="text"
-              name="username"
-              placeholder="Enter the username..."
-              class="form-control"
-              [(ngModel)]="filter.username"
-            />
+            <input type="text" name="username" placeholder="Enter the username..." class="form-control"
+              [(ngModel)]="filter.username" />
           </div>
         </div>
         <div class="col-lg-3 col-sm-12">
           <div>
-            <label for="registrationStatus" class="form-label"
-              >Registration Status</label
-            >
-            <select
-              class="form-select"
-              name="registrationStatus"
-              [(ngModel)]="filter.registrationStatus"
-            >
-              <option
-                *ngFor="let regStat of registrationStatus"
-                value="{{ regStat }}"
-              >
+            <label for="registrationStatus" class="form-label">Registration Status</label>
+            <select class="form-select" name="registrationStatus" [(ngModel)]="filter.registrationStatus">
+              <option *ngFor="let regStat of registrationStatus" value="{{ regStat }}">
                 {{ regStat }}
               </option>
             </select>
           </div>
         </div>
         <div class="col-lg-3 col-sm-12">
-          <app-item-topic
-            [label]="'Subject'"
-            [multiple]="false"
-            (sendSubjects)="receiveSubjects($event)"
-          ></app-item-topic>
+          <app-item-topic [label]="'Subject'" [multiple]="false"
+            (sendSubjects)="receiveSubjects($event)"></app-item-topic>
         </div>
         <div class="col-lg-3 col-sm-12">
           <div>
             <label for="role" class="form-label">Role</label>
-            <ng-select
-              [items]="appRoles$ | async"
-              #roleFilterRef="ngModel"
-              bindLabel="role"
-              bindValue="id"
-              name="role"
-              [(ngModel)]="filter.role"
-              ngModel
-            >
+            <ng-select [items]="appRoles$ | async" #roleFilterRef="ngModel" bindLabel="role" bindValue="id" name="role"
+              [(ngModel)]="filter.role" ngModel>
             </ng-select>
           </div>
         </div>
         <div class="col-lg-3 col-sm-12">
           <div>
             <label for="status">Active Status</label>
-            <select
-              class="form-control form-select"
-              data-plugin="choices"
-              data-choices
-              data-choices-search-false
-              name="status"
-              [(ngModel)]="filter.activeStatus"
-            >
+            <select class="form-control form-select" data-plugin="choices" data-choices data-choices-search-false
+              name="status" [(ngModel)]="filter.activeStatus">
               <option *ngFor="let status of accountStatus" value="{{ status }}">
                 {{ status }}
               </option>
@@ -227,11 +144,7 @@
         <div class="col-lg-6 col-sm-12 d-flex align-items-end">
           <div class="d-flex gap-2">
             <!-- <div class="col-6"> -->
-            <button
-              class="btn btn-danger"
-              type="button"
-              (click)="clearFilterInputs()"
-            >
+            <button class="btn btn-danger" type="button" (click)="clearFilterInputs()">
               <i class="ri-close-fill me-2 align-middle"></i> Clear Filter
             </button>
             <!-- </div> -->
@@ -247,26 +160,11 @@
   </div>
 
   <!-- Users table-->
-  <div
-    class="card card-animate"
-    *ngIf="!loading && !filtered && users.length > 0"
-  >
-    <p-table
-      #dt
-      [value]="users$ | async"
-      dataKey="id"
-      styleClass="p-datatable-customers"
-      [rowHover]="true"
-      [rows]="20"
-      [(selection)]="selectedUsers"
-      selectionMode="multiple"
-      dataKey="id"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[20, 30, 50]"
-      responsiveLayout="scroll"
-      [paginator]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    >
+  <div class="card card-animate" *ngIf="!loading && !filtered && users.length > 0">
+    <p-table #dt [value]="users$ | async" dataKey="id" styleClass="p-datatable-customers" [rowHover]="true" [rows]="20"
+      [(selection)]="selectedUsers" selectionMode="multiple" dataKey="id" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[20, 30, 50]" responsiveLayout="scroll" [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 4rem">
@@ -274,27 +172,15 @@
           </th>
           <th pSortableColumn="firstName">
             Fullname<p-sortIcon field="firstName"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="firstname"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="firstname" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="username">
             Username<p-sortIcon field="username"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="username"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="username" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="email">
             Email<p-sortIcon field="email"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="email"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="email" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="subjects">
             Subjects<!-- <p-sortIcon field="subjects"></p-sortIcon>
@@ -321,14 +207,7 @@
           </td>
           <td>{{ user.username }}</td>
           <td>
-            {{ user.email }}<br /><span
-              class="badge text-danger"
-              *ngIf="!user.registrationComplete"
-              >incomplete registration</span
-            >
-            <span class="badge text-success" *ngIf="user.registrationComplete"
-              >completed registration</span
-            >
+            {{ user.email }}<br />
           </td>
           <td>
             <ng-container *ngIf="user.userSubjectsDTOS.length > 0">
@@ -373,83 +252,57 @@
             </ng-container>
           </td>
           <td>
-            <span
-              *ngIf="!user.updatingUserStatus"
-              class="badge badge-border"
-              [ngClass]="{
-                'badge-soft-success': user.activated,
-                'badge-soft-danger': !user.activated
-              }"
-              >{{ user.activated ? "ACTIVE" : "INACTIVE" }}</span
-            >
-            <span *ngIf="user.updatingUserStatus" class="text-info"
-              ><i
-                _ngcontent-urx-c230=""
-                class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"
-              ></i
-              >{{ user.activated ? "de-activating..." : "activating..." }}</span
-            >
-            <!-- <span class="fs-10 spinner-border text-info" role="status">
+            <div>
+              <div class="flex justify-content-center">
+                <span *ngIf="!user.updatingUserStatus" class="badge badge-border"
+                  [ngClass]="{ 'badge-soft-success': user.activated,'badge-soft-danger': !user.activated }">{{
+                  user.activated ? "ACTIVE" : "INACTIVE" }}</span>
+              </div>
+              <div class="mt-1">
+                <span *ngIf="user.updatingUserStatus" class="text-info"><i _ngcontent-urx-c230=""
+                    class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i>{{ user.activated ? "de-activating..."
+                  : "activating..." }}</span>
+              </div>
+              <!-- <span class="fs-10 spinner-border text-info" role="status">
             <span class="visually-hidden">Loading...</span>
           </span> -->
+              <span class="badge text-danger p-0 mt-1" *ngIf="!user.registrationComplete">Registration incomplete</span>
+              <span class="badge text-success p-0 mt-1" *ngIf="user.registrationComplete">Registration complete</span>
+            </div>
           </td>
           <td>
             <span>
               <div class="dropdown" ngbDropdown>
-                <button
-                  class="btn btn-soft-secondary btn-sm dropdown arrow-none"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  ngbDropdownToggle
-                >
+                <button class="btn btn-soft-secondary btn-sm dropdown arrow-none" type="button"
+                  data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   <i class="ri-more-fill"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                   <li style="cursor: pointer">
-                    <button
-                      [disabled]="!user.registrationComplete"
-                      class="dropdown-item"
-                      routerLink="/examalpha/users/view/{{ user.id }}"
-                    >
+                    <button [disabled]="!user.registrationComplete" class="dropdown-item"
+                      routerLink="/examalpha/users/view/{{ user.id }}">
                       <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
                       View Account
                     </button>
                   </li>
                   <li style="cursor: pointer">
-                    <a
-                      class="dropdown-item"
-                      routerLink="/examalpha/users/edit/{{ user.id }}"
-                      ><i
-                        class="ri-pencil-fill align-bottom me-2 text-muted"
-                      ></i>
-                      Manage Account</a
-                    >
+                    <a class="dropdown-item" routerLink="/examalpha/users/edit/{{ user.id }}"><i
+                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                      Manage Account</a>
                   </li>
                   <li style="cursor: pointer">
-                    <button
-                      class="dropdown-item"
-                      [disabled]="!user.activated"
-                      (click)="resendEmailVerification(user.id)"
-                    >
-                      <i class="ri-mail-send-fill me-2 align-middle"></i> Resend
-                      Email Verification
+                    <button class="dropdown-item" [disabled]="user.activated"
+                      (click)="resendEmailVerification(user.id)">
+                      <i class="ri-mail-send-fill me-2 align-middle"></i> Resend Email Verification
                     </button>
                   </li>
                   <li class="dropdown-divider"></li>
                   <li style="cursor: pointer">
-                    <button
-                      [disabled]="!user.registrationComplete"
-                      class="dropdown-item"
-                      (click)="activateUser(user)"
-                    >
-                      <i
-                        class="align-middle me-2 text-muted"
-                        [ngClass]="{
+                    <button [disabled]="!user.registrationComplete" class="dropdown-item" (click)="activateUser(user)">
+                      <i class="align-middle me-2 text-muted" [ngClass]="{
                           'ri-forbid-fill': user.activated,
                           'ri-checkbox-circle-fill': !user.activated
-                        }"
-                      ></i>
+                        }"></i>
                       {{ user.activated ? "De-activate" : "Activate" }}
                     </button>
                   </li>
@@ -465,18 +318,10 @@
 
   <div class="" *ngIf="!loading && !filtered && users.length < 1">
     <div class="d-flex flex-column justify-content-between align-items-center">
-      <img
-        src="assets/images/blank_pages/empty-state.png"
-        width="300"
-        height="300"
-        class=""
-      />
+      <img src="assets/images/blank_pages/empty-state.png" width="300" height="300" class="" />
       <h4 class="text-secondary fw-bold">No User(s) Found!</h4>
-      <a
-        (click)="openNewUserModal(newUserModal)"
-        class="btn btn-outline-primary"
-        ><i class="ri-add-line me-2"></i>Add User</a
-      >
+      <a (click)="openNewUserModal(newUserModal)" class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add
+        User</a>
     </div>
   </div>
 </div>
@@ -484,21 +329,10 @@
 <!-- Filtered users-->
 <div class="card card-animate" *ngIf="!loading && filtered">
   <ng-container *ngIf="!loading && filteredUsers.length > 0">
-    <p-table
-      #datatable
-      [value]="filteredUsers$ | async"
-      dataKey="id"
-      styleClass="p-datatable-customers"
-      [rowHover]="true"
-      [rows]="20"
-      selectionMode="multiple"
-      dataKey="id"
-      [showCurrentPageReport]="true"
-      [rowsPerPageOptions]="[20, 30, 50]"
-      responsiveLayout="scroll"
-      [paginator]="true"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-    >
+    <p-table #datatable [value]="filteredUsers$ | async" dataKey="id" styleClass="p-datatable-customers"
+      [rowHover]="true" [rows]="20" selectionMode="multiple" dataKey="id" [showCurrentPageReport]="true"
+      [rowsPerPageOptions]="[20, 30, 50]" responsiveLayout="scroll" [paginator]="true"
+      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 4rem">
@@ -506,27 +340,15 @@
           </th>
           <th pSortableColumn="firstName">
             Fullname<p-sortIcon field="firstName"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="firstname"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="firstname" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="username">
             Username<p-sortIcon field="username"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="username"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="username" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="email">
             Email<p-sortIcon field="email"></p-sortIcon>
-            <p-columnFilter
-              type="text"
-              field="email"
-              display="menu"
-            ></p-columnFilter>
+            <p-columnFilter type="text" field="email" display="menu"></p-columnFilter>
           </th>
           <th pSortableColumn="subjects">
             Subjects<!-- <p-sortIcon field="subjects"></p-sortIcon>
@@ -554,12 +376,8 @@
           <td>{{ user.username }}</td>
           <td>
             {{ user.email }}
-            <span class="badge text-danger" *ngIf="!user.registrationComplete"
-              >incomplete registration</span
-            >
-            <span class="badge text-success" *ngIf="user.registrationComplete"
-              >completed registration</span
-            >
+            <!-- <span class="badge text-danger" *ngIf="!user.registrationComplete">Registration incomplete</span>
+            <span class="badge text-success" *ngIf="user.registrationComplete">Registration complete</span> -->
           </td>
           <td>
             <ng-container *ngIf="user.userSubjectsDTOS.length > 0">
@@ -576,70 +394,51 @@
             </ng-container>
           </td>
           <td>
-            <span
-              style="cursor: pointer"
-              *ngIf="!user.updatingUserStatus"
-              class="badge badge-border"
-              [ngClass]="{
-                'badge-soft-success': user.activated,
-                'badge-soft-danger': !user.activated
-              }"
-              >{{ user.activated ? "ACTIVE" : "INACTIVE" }}</span
-            >
-            <span *ngIf="user.updatingUserStatus" class="text-info"
-              ><i
-                _ngcontent-urx-c230=""
-                class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"
-              ></i
-              >{{ user.activated ? "de-activating..." : "activating..." }}</span
-            >
-            <!-- <span class="fs-10 spinner-border text-info" role="status">
+            <div>
+              <div class="flex justify-content-center">
+                <span *ngIf="!user.updatingUserStatus" class="badge badge-border"
+                  [ngClass]="{ 'badge-soft-success': user.activated,'badge-soft-danger': !user.activated }">{{
+                  user.activated ? "ACTIVE" : "INACTIVE" }}</span>
+              </div>
+              <div class="mt-1">
+                <span *ngIf="user.updatingUserStatus" class="text-info"><i _ngcontent-urx-c230=""
+                    class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i>{{ user.activated ? "de-activating..."
+                  : "activating..." }}</span>
+              </div>
+              <!-- <span class="fs-10 spinner-border text-info" role="status">
             <span class="visually-hidden">Loading...</span>
           </span> -->
+              <span class="badge text-danger p-0 mt-1" *ngIf="!user.registrationComplete">Registration incomplete</span>
+              <span class="badge text-success p-0 mt-1" *ngIf="user.registrationComplete">Registration complete</span>
+            </div>
           </td>
           <td>
             <span>
               <div class="dropdown" ngbDropdown>
-                <button
-                  class="btn btn-soft-secondary btn-sm dropdown arrow-none"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                  ngbDropdownToggle
-                >
+                <button class="btn btn-soft-secondary btn-sm dropdown arrow-none" type="button"
+                  data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   <i class="ri-more-fill"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                   <li *ngIf="user.username" style="cursor: pointer">
-                    <a
-                      class="dropdown-item"
-                      routerLink="/examalpha/users/view/{{ user.id }}"
-                      ><i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                    <a class="dropdown-item" routerLink="/examalpha/users/view/{{ user.id }}"><i
+                        class="ri-eye-fill align-bottom me-2 text-muted"></i>
                       View Account
                     </a>
                   </li>
                   <li style="cursor: pointer">
-                    <a
-                      class="dropdown-item"
-                      routerLink="/examalpha/users/edit/{{ user.id }}"
-                      ><i
-                        class="ri-pencil-fill align-bottom me-2 text-muted"
-                      ></i>
-                      Manage Account</a
-                    >
+                    <a class="dropdown-item" routerLink="/examalpha/users/edit/{{ user.id }}"><i
+                        class="ri-pencil-fill align-bottom me-2 text-muted"></i>
+                      Manage Account</a>
                   </li>
                   <li class="dropdown-divider"></li>
                   <li style="cursor: pointer">
-                    <a class="dropdown-item" (click)="activateUser(user)"
-                      ><i
-                        class="align-middle me-2 text-muted"
+                    <a class="dropdown-item" (click)="activateUser(user)"><i class="align-middle me-2 text-muted"
                         [ngClass]="{
                           'ri-forbid-fill': user.activated,
                           'ri-checkbox-circle-fill': !user.activated
-                        }"
-                      ></i>
-                      {{ user.activated ? "De-activate" : "Activate" }}</a
-                    >
+                        }"></i>
+                      {{ user.activated ? "De-activate" : "Activate" }}</a>
                   </li>
                 </ul>
               </div>
@@ -651,12 +450,7 @@
   </ng-container>
   <div class="" *ngIf="!loading && filteredUsers.length < 1">
     <div class="d-flex flex-column justify-content-between align-items-center">
-      <img
-        src="assets/images/blank_pages/empty-state.png"
-        width="300"
-        height="300"
-        class=""
-      />
+      <img src="assets/images/blank_pages/empty-state.png" width="300" height="300" class="" />
       <h4 class="text-secondary fw-bold">No User(s) Found!</h4>
     </div>
   </div>
@@ -665,244 +459,128 @@
 <ng-template #newUserModal let-modal>
   <div class="modal-header">
     <h3 class="modal-title">Create New User</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click'); clearSelectedRoles()"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click'); clearSelectedRoles()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="p-4 modal-body">
-    <form
-      class="row g-3"
-      #userForm="ngForm"
-      (ngSubmit)="userForm.valid && createUser(userForm.value)"
-    >
+    <form class="row g-3" #userForm="ngForm" (ngSubmit)="userForm.valid && createUser(userForm.value)">
       <div class="col-6">
-        <label for="firstname" class="form-label"
-          >Firstname <span [ngStyle]="{ color: 'red' }">*</span></label
-        >
-        <input
-          type="text"
-          name="firstname"
-          #firstname="ngModel"
-          class="form-control"
-          id="firstname"
-          placeholder="Enter your First name"
-          [class.is-invalid]="firstname.invalid && firstname.touched"
-          required
-          ngModel
-        />
-        <span
-          *ngIf="firstname.invalid && firstname.touched"
-          [ngStyle]="{ color: 'red' }"
-          >Firstname is required.</span
-        >
+        <label for="firstname" class="form-label">Firstname <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <input type="text" name="firstname" #firstname="ngModel" class="form-control" id="firstname"
+          placeholder="Enter your First name" [class.is-invalid]="firstname.invalid && firstname.touched" required
+          ngModel noInputSpace />
+        <div *ngIf="firstname.invalid && firstname.touched" [ngStyle]="{ color: 'red' }">
+          <span *ngIf="firstname.hasError('required')">First name is required.</span>
+          <span *ngIf="firstname.hasError('noSpaces')"> No spaces allowed in first name </span>
+        </div>
       </div>
       <div class="col-6">
-        <label for="lastnameInput" class="form-label"
-          >Lastname <span [ngStyle]="{ color: 'red' }">*</span></label
-        >
-        <input
-          type="text"
-          name="lastname"
-          #lastname="ngModel"
-          class="form-control"
-          id="lastnameInput"
-          placeholder="Enter your Lastname"
-          [class.is-invalid]="lastname.invalid && lastname.touched"
-          required
-          ngModel
-        />
-        <span
-          *ngIf="lastname.invalid && lastname.touched"
-          [ngStyle]="{ color: 'red' }"
-          >Lastname is required.</span
-        >
+        <label for="lastnameInput" class="form-label">Lastname <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <input type="text" name="lastname" #lastname="ngModel" class="form-control" id="lastnameInput"
+          placeholder="Enter your Lastname" [class.is-invalid]="lastname.invalid && lastname.touched" required ngModel
+          noInputSpace />
+        <div *ngIf="lastname.invalid && lastname.touched" [ngStyle]="{ color: 'red' }">
+          <span *ngIf="lastname.hasError('required')">Last name is required.</span>
+          <span *ngIf="lastname.hasError('noSpaces')"> No spaces allowed in last name </span>
+        </div>
       </div>
 
       <div class="col-12">
-        <label for="email" class="form-label"
-          >Email <span [ngStyle]="{ color: 'red' }">*</span></label
-        >
-        <input
-          type="email"
-          name="email"
-          #emailRef="ngModel"
-          class="form-control"
-          id="email"
-          placeholder="enter email"
-          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-          [class.is-invalid]="emailRef.invalid && emailRef.touched"
-          required
-          ngModel
-        />
+        <label for="email" class="form-label">Email <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <input type="email" name="email" #emailRef="ngModel" class="form-control" id="email" placeholder="enter email"
+          pattern="^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" [class.is-invalid]="emailRef.invalid && emailRef.touched"
+          required ngModel />
         <div *ngIf="emailRef.invalid && emailRef.touched">
-          <span
-            *ngIf="emailRef.errors?.['required']"
-            [ngStyle]="{ color: 'red' }"
-            >Email is required.</span
-          >
-          <span
-            *ngIf="emailRef.errors?.['pattern']"
-            [ngStyle]="{ color: 'red' }"
-            >Invalid Email</span
-          >
+          <span *ngIf="emailRef.errors?.['required']" [ngStyle]="{ color: 'red' }">Email is required.</span>
+          <span *ngIf="emailRef.errors?.['pattern']" [ngStyle]="{ color: 'red' }">Invalid Email</span>
         </div>
       </div>
 
       <div class="col-6">
-        <label for="phone" class="form-label"
-          >Phone number <span [ngStyle]="{ color: 'red' }">*</span></label
-        >
-        <input
-          type="text"
-          name="phone"
-          #phone="ngModel"
-          class="form-control"
-          id="phone"
-          placeholder="enter your phone number"
-          [class.is-invalid]="phone.invalid && phone.touched"
-          required
-          ngModel
-        />
-        <span
-          *ngIf="phone.invalid && phone.touched"
-          [ngStyle]="{ color: 'red' }"
-          >Please enter phone number.</span
-        >
+        <label for="phone" class="form-label">Phone number <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <input type="text" name="phone" #phone="ngModel" class="form-control" id="phone"
+          placeholder="enter your phone number" [class.is-invalid]="phone.invalid && phone.touched" required ngModel
+          noLetters />
+        <div *ngIf="phone.invalid && phone.touched" [ngStyle]="{ color: 'red' }">
+          <span *ngIf="phone.hasError('required')">Please enter phone number.</span>
+          <span *ngIf="phone.hasError('lettersNotAllowed')"> Phone number must not contain letters. </span>
+        </div>
       </div>
 
       <div class="col-6">
         <div class="d-flex justify-content-between">
-          <label for="role" class="form-label"
-            >Role <span [ngStyle]="{ color: 'red' }">*</span></label
-          >
+          <label for="role" class="form-label">Role <span [ngStyle]="{ color: 'red' }">*</span></label>
           <div>
-            <i
-              style="cursor: pointer"
-              class="ri-question-fill text-info"
-              placement="top"
-              data-bs-container="body"
-              data-bs-toggle="popover"
-              [ngbPopover]="rolesInfoPopOver"
-              triggers="mouseenter:mouseleave"
-              popoverClass="popOverClass"
-            ></i>
+            <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
+              data-bs-toggle="popover" [ngbPopover]="rolesInfoPopOver" triggers="mouseenter:mouseleave"
+              popoverClass="popOverClass"></i>
 
             <ng-template #rolesInfoPopOver>
               <ul>
                 <li>
-                  <span class="fs-10"
-                    >ADMIN: <span class="fs-10"> Has all privileges</span></span
-                  >
+                  <span class="fs-10">ADMIN: <span class="fs-10"> Has all privileges</span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >ANALYTICS:<span class="">
+                  <span class="fs-10">ANALYTICS:<span class="">
                       Has ability to process and analyze data from reports and
-                      results</span
-                    ></span
-                  >
+                      results</span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >AUTHOR:<span class="">
+                  <span class="fs-10">AUTHOR:<span class="">
                       Has ability to create and edit question on assigned
-                      subjects</span
-                    ></span
-                  >
+                      subjects</span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >CENTER_ADMIN:<span class="">
+                  <span class="fs-10">CENTER_ADMIN:<span class="">
                       Has ability to manage a center and deliver an exam
-                    </span></span
-                  >
+                    </span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >MARKER:<span class="">
+                  <span class="fs-10">MARKER:<span class="">
                       Has ability to mark theory questions on assigned
-                      subjects</span
-                    ></span
-                  >
+                      subjects</span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >MODERATOR:<span class="fs-10">
+                  <span class="fs-10">MODERATOR:<span class="fs-10">
                       Has ability to validate questions by either approving or
-                      rejecting</span
-                    ></span
-                  >
+                      rejecting</span></span>
                 </li>
                 <li>
-                  <span class="fs-10"
-                    >MONITOR:<span class="fw-small">
-                      Has ability to track the progress of an ongoing exam</span
-                    ></span
-                  >
+                  <span class="fs-10">MONITOR:<span class="fw-small">
+                      Has ability to track the progress of an ongoing exam</span></span>
                 </li>
               </ul>
             </ng-template>
           </div>
         </div>
-        <ng-select
-          [items]="appRoles$ | async"
-          #roleRef="ngModel"
-          bindLabel="role"
-          name="role"
-          [(ngModel)]="role"
-          ngModel
-        >
-        </ng-select>
+        <ng-select (change)="onRoleSelectChange()" #roleSelect [items]="appRoles$ | async" #roleRef="ngModel" bindLabel="role" name="role" [(ngModel)]="role" [required]="true" ngModel></ng-select>
       </div>
-      <div
-        class="col-12"
-        *ngIf="
+      <div class="col-12" *ngIf="
           role.role == 'AUTHOR' ||
           role.role == 'MODERATOR' ||
           role.role == 'MARKER'
-        "
-      >
+        ">
         <div class="mb-3">
-          <app-item-topic
-            [label]="'Subject'"
-            (sendSubjects)="receiveSubjects($event)"
-          ></app-item-topic>
+          <app-item-topic [label]="'Subject'" (sendSubjects)="receiveSubjects($event)"></app-item-topic>
         </div>
       </div>
     </form>
   </div>
   <div class="card-footer">
     <div class="d-flex gap-2 justify-content-end">
-      <button
-        type="button"
-        class="btn btn-outline-danger"
-        data-bs-dismiss="modal"
-        (click)="modal.close('Close click'); clearSelectedRoles()"
-      >
+      <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"
+        (click)="modal.close('Close click'); clearSelectedRoles()">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
 
-      <button
-        *ngIf="!submitted"
-        type="button"
-        (click)="createUser(userForm.value)"
-        class="btn btn-primary"
-        [disabled]="userForm.invalid"
-      >
-        Create User
+      <button *ngIf="!submitted" type="button" (click)="createUser(userForm.value)" class="btn btn-primary"
+        [disabled]="userForm.invalid || !role.id || disableSubmit">
+        Create User {{ role.role }}
       </button>
 
-      <button
-        *ngIf="submitted"
-        class="btn btn-outline-primary btn-load"
-        [disabled]="submitted"
-      >
+      <button *ngIf="submitted" class="btn btn-outline-primary btn-load" [disabled]="submitted">
         <span class="d-flex align-items-center">
           <span class="spinner-border flex-shrink-0" role="status">
             <span class="visually-hidden">Saving...</span>
@@ -918,13 +596,7 @@
   <div class="modal-header">
     <h3 class="modal-title">UPLOAD USERS</h3>
     <div class="d-flex gap-2">
-      <button
-        type="button"
-        class="close"
-        data-dismiss="modal"
-        aria-label="Close"
-        (click)="modal.close('Close click')"
-      >
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -935,14 +607,8 @@
         <div class="col-lg-12">
           <div>
             <label for="formFile" class="form-label">Select File</label>
-            <input
-              class="form-control"
-              name="file"
-              type="file"
-              id="formFile"
-              accept=".csv, application/vnd.ms-excel"
-              (change)="onFileSelected($event)"
-            />
+            <input #fileSelect class="form-control" name="file" type="file" id="formFile" accept=".csv, application/vnd.ms-excel"
+              (change)="onFileSelected($event)" />
           </div>
         </div>
         <!--end col-->
@@ -951,37 +617,21 @@
   </div>
   <div class="card-footer">
     <div class="d-flex align-items-center justify-content-between flex-wrap">
-      <button
-        class="btn btn-sm btn-outline-primary"
-        (click)="downloadUsersTemplateFile()"
-      >
+      <button class="btn btn-sm btn-outline-primary" (click)="downloadUsersTemplateFile()">
         download template
       </button>
       <div class="d-flex align-items-center gap-2">
-        <button
-          type="button"
-          class="btn btn-outline-danger"
-          data-bs-dismiss="modal"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
           <i class="ri-close-line me-2 align-middle"></i>Close
         </button>
 
-        <button
-          *ngIf="!submitted"
-          type="button"
-          (click)="uploadForm()"
-          class="btn btn-primary"
-          [disabled]="uploadUsersForm.invalid"
-        >
+        <button *ngIf="!submitted" type="button" (click)="uploadForm()" class="btn btn-primary"
+          [disabled]="uploadUsersForm.invalid || !fileSelect.files?.length">
           Upload Users
         </button>
 
-        <button
-          *ngIf="submitted"
-          class="btn btn-outline-primary btn-load"
-          [disabled]="submitted"
-        >
+        <button *ngIf="submitted" class="btn btn-outline-primary btn-load" [disabled]="submitted">
           <span class="d-flex align-items-center">
             <span class="spinner-border flex-shrink-0" role="status">
               <span class="visually-hidden">Uploading...</span>
@@ -994,8 +644,5 @@
   </div>
 </ng-template>
 
-<app-rightsidebar
-  [currentView]="'Users'"
-  [pageGuide]="quickGuide"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Users'" [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>

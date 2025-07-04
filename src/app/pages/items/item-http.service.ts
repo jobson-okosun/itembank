@@ -41,6 +41,7 @@ import DOMPurify from "dompurify";
 import { LabelImageDropdown } from "./label-image-dropdown/models/label-image-dropdown";
 import { LabelImageDragDrop } from "./label-image-drag-drop/models/label-image-drag-drop";
 import { RejectItemRequest } from "../assessment/model/reject-item";
+import { DrawAndWritingModel } from "./drawing-and-writing/model/drawing-and-writing..model";
 
 @Injectable({
   providedIn: "root",
@@ -101,7 +102,7 @@ export class ItemHttpService {
   }
 
   validateItem(item: any): boolean {
-    console.log(item);
+    // console.log('=>', {item});
     if (item.stimulus == "") {
       this.notifier.notify("error", `Please compose a question!`);
       return false;
@@ -171,7 +172,8 @@ export class ItemHttpService {
       item.itemType !== ItemTypes.ESSAY_RICH_TEXT &&
       item.itemType !== ItemTypes.SHORT_TEXT &&
       item.itemType !== ItemTypes.CLOZE_DROPDOWN &&
-      item.itemType !== ItemTypes.CLOZE_DROPDOWN_IMAGE
+      item.itemType !== ItemTypes.CLOZE_DROPDOWN_IMAGE &&
+      item.itemType !== ItemTypes.DRAW_WRITING
     ) {
       // console.log(item.itemType);
       for (let i = 0; i < item.options.length; i++) {
@@ -554,6 +556,22 @@ export class ItemHttpService {
     return this.http.post(
       `${environment.developmentIP}/itembank/items/essay`,
       newEssayItem,
+      { withCredentials: true }
+    );
+  }
+
+  createDrawWritingItem(newDrawWritingItem: DrawAndWritingModel): Observable<ResourceCreated> {
+    return this.http.post(
+      `${environment.developmentIP}/itembank/items/draw_write`,
+      newDrawWritingItem,
+      { withCredentials: true }
+    );
+  }
+
+  editDrawWritingItem(newDrawWritingItem: DrawAndWritingModel): Observable<ResourceCreated> {
+    return this.http.put(
+      `${environment.developmentIP}/itembank/items/${ newDrawWritingItem.itemId  }/item/draw-write`,
+      newDrawWritingItem,
       { withCredentials: true }
     );
   }

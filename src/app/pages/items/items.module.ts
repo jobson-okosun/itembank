@@ -87,6 +87,8 @@ import { ItemUsageHistoryComponent } from "./item-usage-history/item-usage-histo
 import { ItemOfflineComponent } from "./item-offline/item-offline.component";
 import { HtmlSanitizerPipe } from "src/app/shared/pipes/html-sanitizer.pipe";
 import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
+import { DrawingAndWritingComponent } from './drawing-and-writing/drawing-and-writing.component';
+import { DrawingAndWritingPreviewComponent } from './drawing-and-writing-preview/drawing-and-writing-preview.component'; 
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   url: "https://httpbin.org/post",
@@ -143,6 +145,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ItemUsageHistoryComponent,
     HtmlSanitizerPipe,
     ItemOfflineComponent,
+    DrawingAndWritingComponent,
+    DrawingAndWritingPreviewComponent,
   ],
   imports: [
     CommonModule,
@@ -173,7 +177,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     DropzoneModule,
     TableModule,
     ButtonModule,
-    ExamPreviewModule
+    ExamPreviewModule,
+    // DrawingAndWritingPreviewComponent
   ],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: "tinymce/tinymce.min.js" },
@@ -211,7 +216,9 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     LabelImageTextPreviewComponent,
     LabelImageDropdownPreviewComponent,
     LabelImageDragDropPreviewComponent,
+    DrawingAndWritingPreviewComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ItemsModule {}
+ 

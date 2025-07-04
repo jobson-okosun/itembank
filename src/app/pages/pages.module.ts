@@ -19,6 +19,7 @@ import { LightboxModule } from "ngx-lightbox";
 // Pages Routing
 import { PagesRoutingModule } from "./pages-routing.module";
 import { SharedModule } from "../shared/shared.module";
+// import { DrawingAndWritingPreviewComponent } from "./items/drawing-and-writing-preview/drawing-and-writing-preview.component";
 // import { WidgetModule } from '../shared/widget/widget.module';
 // import { DashboardComponent } from './dashboards/dashboard/dashboard.component';
 // import { DashboardsModule } from "./dashboards/dashboards.module";
@@ -31,6 +32,7 @@ const DEFAULT_SWIPER_CONFIG: SwiperConfigInterface = {
 @NgModule({
   declarations: [
     // DashboardComponent,
+    // DrawingAndWritingPreviewComponent
   ],
   imports: [
     CommonModule,

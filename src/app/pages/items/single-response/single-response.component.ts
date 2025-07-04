@@ -118,15 +118,17 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit(): void {
-    console.log("hello");
-    this.passageId = this.ar.snapshot.params["passageId"];
-    console.log(this.passageId);
+    // console.log("hello");
+    // this.passageId = this.ar.snapshot.params["passageId"];
+    // console.log(this.passageId);
+
+  // console.log(this.recycleService.recycleActive)
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log(this.passageForPreview);
+          // console.log(this.passageForPreview);
         },
       });
     }

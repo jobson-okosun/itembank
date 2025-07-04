@@ -1,7 +1,7 @@
-<app-breadcrumbs
+<!-- <app-breadcrumbs
   title="{{ itemTrail.subjectName }} | {{ itemTrail.topicName }}"
   [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+></app-breadcrumbs> -->
 
 <button
   type="button"
@@ -899,6 +899,14 @@
                 [previewData]="item"
                 [component]="'passageItem'"
               ></app-cloze-dropdown-preview>
+            </div>
+
+            <div *ngIf="item.type === 'DRAWING_AND_WRITING'" class="mb-4">
+              <app-drawing-and-writing-preview
+                (reload)="ngOnInit()"
+                [previewData]="item"
+                [component]="'passageItem'"
+              ></app-drawing-and-writing-preview>
             </div>
           </ng-container>
         </div>

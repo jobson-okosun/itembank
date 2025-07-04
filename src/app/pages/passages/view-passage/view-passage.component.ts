@@ -23,6 +23,7 @@ export class ViewPassageComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.ar.snapshot.params['id'];
+    // console.log(this.passage)
     //console.log(this.itemTrail);
     /* this.itemService.fetchPassageItem(this.id).subscribe((res) => {
       if(res){

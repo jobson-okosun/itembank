@@ -23,7 +23,7 @@
         {{ itemTrailInformation.subjectName.toUpperCase() }}
       </span>
       <span
-        class="d-flex align-items-center text-muted"
+        class="d-flex align-items-center text-muted" 
         *ngIf="itemTrailInformation.topicName"
         ngbTooltip="TOPIC"
       >
@@ -180,5 +180,12 @@
       (savedItem)="saved($event)"
     >
     </app-label-image-text>
+
+    <app-drawing-and-writing
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'DRAWING_AND_WRITING'"
+      (savedItem)="saved($event)"
+    ></app-drawing-and-writing>
   </div>
 </div>

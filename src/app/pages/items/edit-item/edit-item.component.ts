@@ -86,17 +86,20 @@ export class EditItemComponent implements OnInit, OnDestroy {
     } else if (this.itemType === ItemTypes.CLOZE_TEXT_IMAGE){
       this.formType = "Label Image with Text";
     }
+    else if (this.itemType === ItemTypes.DRAW_WRITING){
+      this.formType = "DRAWING_AND_WRITING";
+    }
   }
 
   ngOnInit(): void {
-    console.log(this.itemTrailInformation);
+    // console.log(this.itemTrailInformation);
     this.breadCrumbItems = [
       {
-        label: "edit-question",
+        label: "Edit-question",
         active: false,
       },
       {
-        label: this.itemService.subjectName,
+        label: this.itemService.subjectName ?? `${ this.itemUtil.getSavedItemTrail().subjectName ?? '' } ${ this.itemUtil.getSavedItemTrail().subtopicName ? (' > ' + this.itemUtil.getSavedItemTrail().subtopicName) : '' }`,
         active: true,
       },
     ];
@@ -104,7 +107,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
     this.itemService.fetchIndividualItem(this.itemId).subscribe((item) => {
       this.item = item;
 
-      console.log(this.item);
+      // console.log(this.item);
     });
   }
 

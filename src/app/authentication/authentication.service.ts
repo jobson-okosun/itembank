@@ -14,12 +14,17 @@ import { SignIn } from './sign-in/model/sign-in';
 import { Role } from '../shared/enum/role';
 import { UserService } from '../shared/user.service';
 import { IResourceCreated } from '../pages/scheduler/models/resource-created';
+import { SecureStorageService } from '../services/secure-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  constructor(private http: HttpClient, private userService: UserService) {}
+  constructor(
+    private http: HttpClient,
+    private userService: UserService,
+    private secureStorage: SecureStorageService
+  ) {}
 
   registerOrganization(signupModel: SignUp): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
@@ -59,9 +64,7 @@ export class AuthenticationService {
     );
   }
 
-  checkLogin() {
-    
-  }
+  checkLogin() {}
 
   schedulerLogin(signInModel: SignIn): Observable<Account> {
     /* const data =
@@ -100,6 +103,7 @@ export class AuthenticationService {
           value.authority = Role[value.authorities[0]];
 
           this.userService.setCurrentUser(value);
+          this.secureStorage.setItem(environment.secureStorageId, value);
           return value;
         })
       );
@@ -118,12 +122,9 @@ export class AuthenticationService {
 
   logoutUser(): Observable<any> {
     // console.log('logged out!');
-    return this.http.get<any>(
-      `${environment.developmentIP}/logout`,
-      {
-        withCredentials: true,
-      }
-    );
+    return this.http.get<any>(`${environment.developmentIP}/logout`, {
+      withCredentials: true,
+    });
   }
 
   getSchedulerRefreshToken(): Observable<any> {
@@ -136,7 +137,7 @@ export class AuthenticationService {
   doPasswordReset(email: string): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.developmentIP}/account/reset_password`,
-      {email}
+      { email }
     );
   }
 

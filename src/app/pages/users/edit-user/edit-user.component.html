@@ -1,5 +1,11 @@
 <div *ngIf="userDetail">
   <div class="position-relative mx-n4 mt-n4">
+      <div class="py-2 d-flex align-items-center flex-row gap-2">
+    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
+    </svg>
+    <a (click)="routeBack()">Back to account</a>
+  </div>
     <div class="profile-wid-bg profile-setting-img">
       <!-- <img src="assets/images/profile-bg.jpg" class="profile-wid-img" alt="" /> -->
       <div class="overlay-content">
@@ -411,6 +417,59 @@
                 </form>
               </ng-template>
             </li>
+            <!-- <li
+              *ngIf="roles.includes('MODERATOR')"
+              [ngbNavItem]="3"
+              class="nav-item"
+            >
+              <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+                <i class="far fa-envelope"></i>
+                Moderation Levels
+              </a>
+              <ng-template ngbNavContent>
+                <form
+                  #editUserModerationLevelForm="ngForm"
+                  (ngSubmit)="editUserModerationLevels()"
+                  novalidate
+                >
+                  <div id="newlink">
+                    <div id="1">
+                      <div class="row">
+                        <div class="col-lg-12">
+                          <div class="mb-3">
+                            <app-item-topic [label]="'Subjects'" (sendSubjects)="recieveSubjects($events)"></app-item-topic>
+                            <label
+                              for="choices-multiple-default"
+                              class="form-label"
+                              >Moderation Level
+                            </label>
+                            <ng-select
+                              [items]="subjects"
+                              [multiple]="true"
+                              bindLabel="subjectName"
+                              name="subject"
+                              [(ngModel)]="selectedSubjects"
+                            >
+                              <ng-template ng-optgroup-tmp let-item="item">
+                                {{ item[0].subjectName | uppercase }}
+                              </ng-template>
+                            </ng-select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-12">
+                    <div class="d-flex gap-2">
+                      <button type="submit" class="btn btn-sm btn-success">
+                        Update
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </ng-template>
+            </li> -->
             <!-- <li
               *ngIf="roles.includes('MODERATOR')"
               [ngbNavItem]="3"

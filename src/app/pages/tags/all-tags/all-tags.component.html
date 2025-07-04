@@ -245,7 +245,7 @@
       class="close"
       data-dismiss="modal"
       aria-label="Close"
-      (click)="modal.close('Close click')"
+      (click)="closeModal()"
     >
       <span aria-hidden="true">&times;</span>
     </button>
@@ -266,6 +266,9 @@
             placeholder="Enter Tag name"
             required
             [(ngModel)]="newTag.tagName"
+            #tag="ngModel"
+            
+            [ngClass]="{'border-danger': tag.hasError('noSpaces')}"
           />
         </div>
       </div>
@@ -287,6 +290,8 @@
         (click)="updateTagName(renameTagForm)"
         class="btn btn-primary"
         data-bs-dismiss="modal"
+        [disabled]=" !tag.value?.length"
+        
       >
         <i class="ri-save-fill align-middle me-2"></i>Save
       </button>

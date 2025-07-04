@@ -56,6 +56,7 @@ export class UserComponent implements OnInit {
   downloadingFile: boolean = false;
   filterSubject: AddSubjectToUser = new AddSubjectToUser();
   filtered: boolean = false;
+  disableSubmit: boolean = false
 
   appRoles$: Observable<AppRoleModel[]>;
   quickGuide = `<div class="p-4">
@@ -207,7 +208,7 @@ export class UserComponent implements OnInit {
   ) {
     this.appRoles$ = this.userService.listRoles();
 
-    console.log(this.appRoles$);
+    // console.log(this.appRoles$);
   }
 
   /** Handler function for the quick guide pull out */
@@ -251,12 +252,16 @@ export class UserComponent implements OnInit {
         if (value) {
           this.notifier.notify("success", `${value.id}`);
           this.submitted = false;
+          (document.querySelector('[name="file"]') as HTMLInputElement).value = '';
+          this.dismissModal()
           this.ngOnInit();
         }
       },
       (error: HttpErrorResponse) => {
         this.notifier.notify("error", `${error.error.message}`);
         this.submitted = false;
+        (document.querySelector('[name="file"]') as HTMLInputElement).value = '';
+        this.dismissModal()
       }
     );
   }
@@ -542,7 +547,9 @@ export class UserComponent implements OnInit {
     this.receivedSubjects = $event;
 
     this.filterSubject = $event;
-    console.log(this.filterSubject);
+    // console.log(this.filterSubject);
+
+    this.disableSubmit = false
     // console.log('added subject to filter', $event);
     // console.log('assigned subject', this.subjects);
   }
@@ -670,5 +677,14 @@ export class UserComponent implements OnInit {
         Swal.showLoading();
       },
     });
+  }
+
+  onRoleSelectChange() {
+    if(['AUTHOR', 'MODERATOR', 'MARKER'].includes(this.role.role)) {
+       this.disableSubmit = true
+       return
+    }
+
+    this.disableSubmit = false
   }
 }

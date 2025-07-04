@@ -5,6 +5,7 @@ import { ItemAnalysis } from '../pages/users/model/item-analysis.model';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { SecureStorageService } from '../services/secure-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,10 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   public currentUser?: Account;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private secureStorage: SecureStorageService
+  ) {}
 
   setCurrentUser(account: Account) {
     this.currentUser = account;
@@ -20,7 +24,12 @@ export class UserService {
   }
 
   getCurrentUser(): Account {
-    return this.currentUser;
+    return this.currentUser ? this.currentUser : this.getCurrentUserAfterReload();
+  }
+
+  getCurrentUserAfterReload(): Account {
+    const user = this.secureStorage.getItem(environment.secureStorageId);
+    return user as any;
   }
 
   getUserRole(): Role {
