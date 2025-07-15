@@ -105,6 +105,7 @@ export class ICandidateItem {
   image_data:any
   answers?: Array<string>;
   showAnswer: boolean = false;
+  background_type?: string
 }
 
 export interface IOptionDTO {

@@ -28,6 +28,7 @@ import { SinglePassageModel } from '../passage-item/model/single-passage-model.m
 import { Location } from '@angular/common';
 import { Background } from '../models/background';
 import { DrawAndWritingModel } from './model/drawing-and-writing..model';
+import { DRAWING_AND_WRITING_SPLIT_MODE } from '../models/drawing-and-writing-split-mode';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -89,6 +90,9 @@ export class DrawingAndWritingComponent implements OnInit {
   background: string = '';
   defaultBackground: Background[];
 
+  splitMode: string = 'SPLIT'
+  layoutModes: DRAWING_AND_WRITING_SPLIT_MODE[] 
+
   constructor(
     private itemService: ItemHttpService,
     public itemUtil: ItemUtilitiesService,
@@ -136,6 +140,9 @@ export class DrawingAndWritingComponent implements OnInit {
     this.defaultBackground = Object.values(Background);
     this.background = Background.None;
 
+    this.layoutModes = Object.values(DRAWING_AND_WRITING_SPLIT_MODE)
+    this.splitMode = DRAWING_AND_WRITING_SPLIT_MODE.SPLIT
+
     this.defaultItemProperties.scoringOption.matchingRule ==
       MatchingRuleEnums.EXACT_MATCH;
     this.itemUtil.setSelectedTags(this.tags);
@@ -182,6 +189,7 @@ export class DrawingAndWritingComponent implements OnInit {
       
       //  console.log(this.editData.backgroundType)
       this.background = this.editData.backgroundType;
+      this.splitMode = this.editData?.splitType 
       // (document.querySelector('[name="background"]') as HTMLInputElement)!.value = this.editData.backgroundType
 
       this.defaultItemProperties = { ...this.defaultItemProperties, ...this.editData}
@@ -354,6 +362,7 @@ export class DrawingAndWritingComponent implements OnInit {
 
     // return confirm(this.background) ? true : false
     item.backgroundType = this.background
+    item.splitType = this.splitMode
     // console.log({ item })
     return item;
   }

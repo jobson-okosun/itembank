@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-lg-4" *ngIf="showQuestionPanel">
+    <div style="overflow-y: auto;height: 500px;overflow-y: auto" class="rounded-md border p-2">
+        <div class="fw-bold py-2 text-primary ">Question {{ currentQuestionIndex + 1 }}</div>
+        <div [innerHTML]="currentQuestion.item.stimulus" class="pe-2" style="text-align: justify;"></div>
+    </div>
+  </div>
+  
+  <div class="col-lg-8 border rounded" [ngClass]="{'col-lg-8': showQuestionPanel, 'col-lg-12': !showQuestionPanel}">
+    <ng-container *ngIf="currentQuestion?.item_score?.un_graded_response?.length > 0; else noResponse">
+      <div class="py-2 d-flex gap-1" style="transform: translate( -15px, -63px);width: fit-content;">
+        <div *ngFor="let item of pages; let i=index;" class="btn btn-md border" ngbTooltip="Page {{ item + 1 }}" (click)="selectPage(i)" [ngClass]="{'bg-soft-secondary': currentPage === i}">
+          Page {{ item + 1 }}
+        </div>
+      </div>
+      <div  [style.height.px]="containerSize" style="overflow-y: hidden; overflow-x: hidden;transform: translateY(-40px);" class="border w-100">
+          <div id="canvas" [style.height]="canvasSize" class="w-100"></div>
+      </div>
+    </ng-container>
+    <ng-template #noResponse>
+      <div class="p-5 text-center text-secondary">
+          No Response for this question
+      </div>
+    </ng-template>
+  </div>
+</div>

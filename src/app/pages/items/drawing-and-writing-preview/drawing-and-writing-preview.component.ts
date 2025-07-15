@@ -22,6 +22,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import { NotifierService } from 'angular-notifier';
+import { PerfectFreehandKonvaDrawingService } from './services/perfect-freehand.konva';
 
 @Component({
   selector: 'app-drawing-and-writing-preview',
@@ -56,6 +57,7 @@ export class DrawingAndWritingPreviewComponent
   
   constructor( 
     private konvaDrawingService: KonvaDrawingService,
+    private konvaFreehandDrawing: PerfectFreehandKonvaDrawingService,
     private itemUtil: ItemUtilitiesService,
     private userService: UserService,
     private modalService: NgbModal,
@@ -79,7 +81,7 @@ export class DrawingAndWritingPreviewComponent
     const width = canvasContainer.offsetWidth;
     const height = canvasContainer.offsetHeight;
 
-    this.konvaDrawingService.resizeStage(width, height, this.containerSize);
+     this.useDrawingService().resizeStage(width, height, this.containerSize);
   }
 
   ngAfterViewInit(): void {
@@ -87,14 +89,22 @@ export class DrawingAndWritingPreviewComponent
     if (canvasContainer) {
       const width = canvasContainer.offsetWidth;
 
-      this.konvaDrawingService.initialize('canvas', width, this.canvasSize, this.containerSize);
-      this.konvaDrawingService.mode = this._currentTool;
-      this.konvaDrawingService.gridType = this.previewData.backgroundType;
+       this.useDrawingService().initialize('canvas', width, this.canvasSize, this.containerSize);
+       this.useDrawingService().mode = this._currentTool;
+       this.useDrawingService().gridType = this.previewData.backgroundType;
     } else {
-      this.konvaDrawingService.initialize('canvas', 800, this.canvasSize, this.containerSize);
-      this.konvaDrawingService.mode = this._currentTool;
-      this.konvaDrawingService.gridType = this.previewData.backgroundType;
+       this.useDrawingService().initialize('canvas', 800, this.canvasSize, this.containerSize);
+       this.useDrawingService().mode = this._currentTool;
+       this.useDrawingService().gridType = this.previewData.backgroundType;
     }
+  }
+
+  useDrawingService(type: string = 'perfect-freehand'): KonvaDrawingService | PerfectFreehandKonvaDrawingService {
+    if(type == 'perfect-freehand') {
+      return this.konvaFreehandDrawing
+    }
+
+    return this.konvaDrawingService
   }
 
   edit() {
@@ -116,7 +126,7 @@ export class DrawingAndWritingPreviewComponent
   }
 
   ngOnDestroy(): void {
-    this.konvaDrawingService.destroy();
+     this.useDrawingService().destroy();
   }
 
   get CurrentTool(): 'brush' | 'eraser' {
@@ -125,8 +135,8 @@ export class DrawingAndWritingPreviewComponent
 
   set CurrentTool(value: 'brush' | 'eraser') {
     this._currentTool = value;
-    if (this.konvaDrawingService) {
-      this.konvaDrawingService.mode = value;
+    if ( this.useDrawingService()) {
+       this.useDrawingService().mode = value;
     }
   }
 
@@ -136,8 +146,8 @@ export class DrawingAndWritingPreviewComponent
 
   set selectedGridType(value: string) {
     this._selectedGridType = value;
-    if (this.konvaDrawingService) {
-      this.konvaDrawingService.gridType = value;
+    if ( this.useDrawingService()) {
+       this.useDrawingService().gridType = value;
     }
   }
 
@@ -146,7 +156,7 @@ export class DrawingAndWritingPreviewComponent
   }
 
   clearCanvas(): void {
-    this.konvaDrawingService.clearDrawing();
+     this.useDrawingService().clearDrawing();
   }
 
   openDeleteItemModal(deleteConfirmationModal: any, itemId: any) {

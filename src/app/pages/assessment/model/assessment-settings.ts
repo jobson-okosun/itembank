@@ -5,7 +5,8 @@ export class AssessmentSettings {
   allowEndExamAfterXQuestions: number;
   assessmentSettingsId:string;
   inactivityWaringSec: number;
-  instructionReadTimeSec: number = 20;
+  // instructionReadTimeSec: number = 20;
+  instructionReadTimeSec: number = 120;
   warnEndOfReadingTimeSec: number;
   startDate: Date | string = '';
   deliveryMethod: string;

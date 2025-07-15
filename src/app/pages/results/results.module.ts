@@ -27,6 +27,7 @@ import { TranscriptViewComponent } from "./transcript-view/transcript-view.compo
 import { ReportsDashboardComponent } from "./reports-dashboard/reports-dashboard.component";
 import { PaginatorModule } from "primeng/paginator";
 import { McqComponent } from './transcript/question-types/mcq/mcq.component';
+import { DrawingAndWritingComponent } from "./grading-item-types/drawing-and-writing/drawing-and-writing.component";
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { McqComponent } from './transcript/question-types/mcq/mcq.component';
     TranscriptViewComponent,
     ReportsDashboardComponent,
     McqComponent,
+    DrawingAndWritingComponent
   ],
   imports: [
     CommonModule,

@@ -1,10 +1,18 @@
 import { Injectable, NgZone } from '@angular/core';
 import Konva from 'konva';
+import { getStroke } from 'perfect-freehand';
+
+interface StoredStroke {
+  points: number[][];
+  mode: 'brush' | 'eraser';
+  color?: string;
+  size: number;
+}
 
 @Injectable({
   providedIn: 'root'
 })
-export class KonvaDrawingService {
+export class PerfectFreehandKonvaDrawingService {
   private stage!: Konva.Stage;
   private layer!: Konva.Layer;
   private gridLayer!: Konva.Layer;
@@ -12,7 +20,9 @@ export class KonvaDrawingService {
   private context!: CanvasRenderingContext2D;
 
   private isPaint = false;
-  private lastPointerPosition: { x: number; y: number } | null = null;
+  private currentPoints: number[][] = [];
+  private completedStrokes: StoredStroke[] = [];
+
   private _mode: 'brush' | 'eraser' = 'brush';
   private brushColor = '#000000';
   private brushSize = 2;
@@ -50,12 +60,6 @@ export class KonvaDrawingService {
       this.stage.add(this.gridLayer);
 
       this.layer = new Konva.Layer(); 
-
-      // this.layer.on('dragmove', () => {
-      //   this.image.removeEventListener('pointerdown')
-      //   this.image.removeEventListener('pointerup')
-      //   this.image.removeEventListener('pointermove')
-      // })
 
       this.stage.add(this.layer);
 
@@ -110,13 +114,11 @@ export class KonvaDrawingService {
   }
 
   private setBrushStyle(): void {
-    this.context.strokeStyle = this.brushColor;
-    this.context.lineWidth = this.brushSize;
+    this.context.fillStyle = this.brushColor; 
     this.context.globalCompositeOperation = 'source-over';
   }
 
   private setEraserStyle(): void {
-    this.context.lineWidth = this.eraserSize;
     this.context.globalCompositeOperation = 'destination-out';
   }
 
@@ -128,7 +130,11 @@ export class KonvaDrawingService {
 
     if (e.evt.pointerType === 'pen') {
       this.isPaint = true;
-      this.lastPointerPosition = this.image.getRelativePointerPosition();
+      const pos = this.image.getRelativePointerPosition();
+      if (pos) {
+        this.currentPoints = [[pos.x, pos.y, e.evt.pressure || 0.5]]; 
+      }
+      
       if (e.evt) {
         e.evt.preventDefault();
       }
@@ -136,34 +142,49 @@ export class KonvaDrawingService {
   }
 
   private handleMouseUp(): void {
+    if (!this.isPaint) {
+      return;
+    }
     this.isPaint = false;
-    this.lastPointerPosition = null;
+
+    if (this.currentPoints.length > 0) {
+      this.completedStrokes.push({
+        points: [...this.currentPoints],
+        mode: this._mode,
+        color: this._mode === 'brush' ? this.brushColor : undefined,
+        size: this._mode === 'brush' ? this.brushSize : this.eraserSize,
+      });
+    }
+    
+    this.currentPoints = []; 
+    this.redrawAllStrokes();
+    this.layer.batchDraw();
   }
 
   private handleMouseMove(e: any): void {
-    if ((this.verticalScrollBar && e.target === this.verticalScrollBar && this.verticalScrollBar.isDragging()) || !this.isPaint || !this.lastPointerPosition) {
+    if ((this.verticalScrollBar && e.target === this.verticalScrollBar && this.verticalScrollBar.isDragging()) || !this.isPaint) {
       return;
     }
 
     if (e.evt.pointerType === 'pen') {
-      if (this._mode === 'brush') {
-        this.setBrushStyle();
-      } else if (this._mode === 'eraser') {
-        this.setEraserStyle();
-      }
-
-      this.context.beginPath();
-
-      this.context.moveTo(this.lastPointerPosition.x, this.lastPointerPosition.y);
-
       const currentPointerPos = this.image.getRelativePointerPosition();
       if (!currentPointerPos) return;
 
-      this.context.lineTo(currentPointerPos.x, currentPointerPos.y);
-      this.context.closePath();
-      this.context.stroke();
+      this.currentPoints.push([currentPointerPos.x, currentPointerPos.y, e.evt.pressure || 0.5]);
 
-      this.lastPointerPosition = currentPointerPos;
+      this.redrawAllStrokes();
+
+      if (this.currentPoints.length > 0) {
+        const stroke = getStroke(this.currentPoints, {
+          size: this._mode === 'brush' ? this.brushSize : this.eraserSize, 
+          thinning: 0.5,
+          smoothing: 0.5,
+          streamline: 0.5,
+          simulatePressure: true,
+        });
+
+        this.drawStrokePath(stroke, this._mode, this._mode === 'brush' ? this.brushColor : undefined);
+      }
 
       this.layer.batchDraw();
 
@@ -172,6 +193,42 @@ export class KonvaDrawingService {
       }
     }
   }
+
+  private drawStrokePath(strokePoints: number[][], mode: 'brush' | 'eraser', color?: string): void {
+    const path = new Path2D();
+    if (strokePoints.length > 0) {
+      path.moveTo(strokePoints[0][0], strokePoints[0][1]);
+      for (let i = 1; i < strokePoints.length; i++) {
+        path.lineTo(strokePoints[i][0], strokePoints[i][1]);
+      }
+      path.closePath();
+    }
+
+    if (mode === 'brush') {
+      this.context.fillStyle = color || this.brushColor; 
+      this.context.globalCompositeOperation = 'source-over';
+      this.context.fill(path);
+    } else if (mode === 'eraser') {
+      this.context.globalCompositeOperation = 'destination-out';
+      this.context.fill(path);
+    }
+  }
+
+  private redrawAllStrokes(): void {
+    this.context.clearRect(0, 0, this.image.width(), this.image.height()); 
+
+    this.completedStrokes.forEach(strokeData => {
+      const strokeOutline = getStroke(strokeData.points, {
+        size: strokeData.size,
+        thinning: 0.5,
+        smoothing: 0.5,
+        streamline: 0.5,
+        simulatePressure: true,
+      });
+      this.drawStrokePath(strokeOutline, strokeData.mode, strokeData.color);
+    });
+  }
+
 
   private drawGrid(): void {
     this.gridLayer.destroyChildren();
@@ -295,6 +352,7 @@ export class KonvaDrawingService {
 
   clearDrawing(): void {
     if (this.context && this.image) {
+      this.completedStrokes = [];
       this.context.globalCompositeOperation = 'source-over';
       this.context.clearRect(0, 0, this.image.width(), this.image.height());
       this.layer.batchDraw();
@@ -304,14 +362,15 @@ export class KonvaDrawingService {
   resizeStage(newWidth: number, newHeight: number, containerSize: number): void {
     if (this.stage) {
       const drawingCanvas = this.image.image() as HTMLCanvasElement;
-      const currentDrawingDataURL = drawingCanvas.toDataURL();
+      
+      const currentDrawingDataURL = drawingCanvas.toDataURL(); 
 
       this.stage.width(newWidth);
       this.stage.height(newHeight);
       this._contentScrollHeight = containerSize + newHeight;
-      // this._contentScrollWidth = Math.max(this._contentScrollWidth, newWidth);
+      this._contentScrollWidth = newWidth; 
 
-      // drawingCanvas.width = this._contentScrollWidth;
+      drawingCanvas.width = this._contentScrollWidth;
       drawingCanvas.height = this._contentScrollHeight;
 
       this.context.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
@@ -319,26 +378,17 @@ export class KonvaDrawingService {
       const img = new Image();
       img.onload = () => {
         this.context.drawImage(img, 0, 0);
-        this.layer.batchDraw();
+        this.layer.batchDraw(); 
       };
       img.src = currentDrawingDataURL;
 
+      this.layer.x(0);
+      this.layer.y(0);
+      this.gridLayer.x(0);
+      this.gridLayer.y(0);
+
       this.drawGrid();
       this.drawScrollBar();
-
-      return 
-      
-      if(screen.orientation.type === 'portrait-primary') {
-        // orientation when initalized
-        if(this.deviceOrientation === screen.orientation.type) {
-          return
-        }
-
-        this.stage.draggable(true)
-        return 
-      }
-
-      this.stage.draggable(false)
     }
   }
 
@@ -353,6 +403,7 @@ export class KonvaDrawingService {
       this.context = null!;
       this.scrollLayers = null!;
       this.verticalScrollBar = null!;
+      this.completedStrokes = [];
     }
   }
 }

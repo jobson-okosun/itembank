@@ -22,5 +22,6 @@ export class DrawAndWritingModel {
   // plainText: boolean;
   // maxWords: number;
   moderation_status: string = null;
-  backgroundType: string
+  backgroundType: string;
+  splitType: string
 }

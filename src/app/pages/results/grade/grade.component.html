@@ -1,215 +1,259 @@
-<app-breadcrumbs
-  title="{{ assessmentName }} | GRADER"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
-
-<div class="row my-2">
-  <div class="col-xxl-3 col-lg-3 col-md-12 border">
-    <div class="d-flex flex-column mt-2">
-      <div class="card card-animate flex-shrink-0">
-        <div class="d-flex align-items-center bg-soft-secondary p-2">
-          <h4 class="card-title mb-0">PARTICIPANT DETAILS</h4>
-        </div>
-        <div class="card-body">
-          <div class="mx-n4">
-            <ngx-simplebar class="px-3" style="max-height: 250px">
-              <ul class="ps-4 vstack" style="list-style-type: none">
-                <li>
-                  <div>
-                    <span class="fs-14"
-                      ><span class="fs-14 fw-bold">Okoisor Ochael</span><br />
-                      <span class="fs-12 text-muted fw-semibold"
-                        >okoisorjr@gmail.com</span
-                      ></span
-                    >
-                  </div>
-                </li>
-                <li>
-                  Section Group:&nbsp;<span class="badge badge-soft-info"
-                    >ENG & PHY</span
-                  >
-                </li>
-                <li>
-                  Total Questions:&nbsp;<span
-                    class="badge bg-primary rounded-pill"
-                    >80</span
-                  >
-                </li>
-                <li>
-                  Pending Questions:&nbsp;<span
-                    class="badge bg-danger rounded-pill"
-                    >20</span
-                  >
-                </li>
-                <li>
-                  Score: <span class="badge bg-warning rounded-pill">74</span>
-                </li>
-              </ul>
-            </ngx-simplebar>
-          </div>
-        </div>
-      </div>
-      <div class="card card-animate flex-grow-1">
-        <div class="d-flex align-items-center p-2 bg-soft-secondary">
-          <h4 class="card-title mb-0">PENDING QUESTIONS</h4>
-        </div>
-        <div class="card-body">
-          <div class="mx-n3">
-            <ngx-simplebar style="max-height: 380px" class="px-3">
-              <ul
-                class="list-unstyled chat-list chat-user-list"
-                id="questionsList"
-              >
-                <li
-                  *ngFor="let data of questionsList; let i = index"
-                  [ngClass]="{ active: data.id == currentQuestionId }"
-                >
-                  <a
-                    href="javascript: void(0);"
-                    (click)="setActiveQuestionId(data.id)"
-                  >
-                    <div class="d-flex align-items-center">
-                      <div
-                        class="flex-shrink-0 chat-user-img {{
-                          data.status
-                        }} align-self-center me-2 ms-0"
-                      >
-                        <!-- <div class="avatar-xxs" *ngIf="data.image">
-                                      <img src="{{data.image}}" class="rounded-circle img-fluid userprofile" alt="">
-                                  </div>
-                                  <div class="avatar-xxs" *ngIf="!data.image">
-                                      <span class="avatar-title rounded-circle bg-danger userprofile">{{ data.name.charAt(0) }}</span>
-                                    </div>
-                                  <span class="user-status"></span> -->
-                        <div class="">
-                          <span class="text-truncate mb-0">Q{{ i + 1 }}</span>
-                        </div>
-                      </div>
-                      <div class="flex-grow-1 overflow-hidden">
-                        <div class="">
-                          <span class="text-truncate mb-0">{{
-                            data.reference
-                          }}</span
-                          ><br />
-                          <span class="text-truncate mb-0">{{
-                            data.itemType
-                          }}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              </ul>
-            </ngx-simplebar>
-          </div>
-        </div>
-      </div>
+<div *ngIf="loadingPageData" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-  </div>
-  <div class="col-xxl-4 col-lg-4 col-md-12 border">
-    <div class="d-flex flex-column mt-2">
-      <div class="card card-animate">
-        <div class="d-flex align-items-center bg-soft-primary p-2">
-          <h4 class="card-title mb-0">QUESTION</h4>
-        </div>
-        <div class="card-body">
-          <div class="mx-n4">
-            <ngx-simplebar class="px-3" style="max-height: 250px">
-              <div>
-                <p>What is the name of the president of Nigeria?</p>
-              </div>
-            </ngx-simplebar>
-          </div>
-        </div>
-      </div>
-      <div class="card card-animate">
-        <div class="d-flex align-items-center bg-soft-primary p-2">
-          <h4 class="card-title mb-0">RESPONSE</h4>
-        </div>
-        <div class="card-body">
-          <div class="mx-n4">
-            <ngx-simplebar class="px-4" style="max-height: 500px">
-              <div class="">
-                <p class="">Bola Ahmed Tinubu</p>
-              </div>
-            </ngx-simplebar>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-xxl-5 col-lg-5 col-md-12 border">
-    <div class="card card-animate mt-2">
-      <div class="d-flex align-items-center bg-soft-success p-2">
-        <h3 class="card-title mb-0">GRADING</h3>
-      </div>
-      <div class="card-body">
-        <div class="mx-n3">
-          <ngx-simplebar style="max-height: 600px" class="px-3">
-            <form #gradingForm="ngForm" (ngSubmit)="saveGrade()">
-              <div class="row mb-3">
-                <label for="" class="d-flex justify-content-between form-label"
-                  ><span
-                    >Award Mark&nbsp;<span class="text-danger">*</span></span
-                  >
-                  <i
-                    class="ri-question-fill fs-14 me-2 align-middle justify-content-end"
-                  ></i
-                ></label>
-                <div class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    name="score"
-                    placeholder="Enter score"
-                    aria-label="Recipient's username"
-                    aria-describedby="basic-addon2"
-                    [(ngModel)]="grade.score"
-                    ngModel
-                    required
-                  />
-                  <span class="input-group-text" id="basic-addon2"
-                    >/ 2 Marks</span
-                  >
-                </div>
-              </div>
-
-              <div class="row mb-3">
-                <label for="" class="form-label"
-                  >Remark(s)&nbsp;<span class="text-danger">*</span></label
-                >
-                <editor
-                  name="remarks"
-                  #remark="ngModel"
-                  [(ngModel)]="grade.remarks"
-                  [init]="{
-                    branding: false,
-                    base_url: '/tinymce',
-                    height: 200,
-                    suffix: '.min',
-                    menubar: true,
-                    plugins: 'table quickbars lists autoresize charmap',
-                    quickbars_insert_toolbars: false,
-                    toolbar:
-                      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap'
-                  }"
-                ></editor>
-              </div>
-
-              <div class="row">
-                <div class="d-flex gap-2">
-                  <button type="button" class="btn btn-outline-danger w-50">
-                    Cancel
-                  </button>
-                  <button type="submit" class="btn btn-success w-50">
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
-          </ngx-simplebar>
-        </div>
-      </div>
-    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
   </div>
 </div>
+
+<ng-container *ngIf="!loadingPageData">
+  <div class="col-lg-12">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex gap-5 justify-content-between align-items-center">
+        <div class="d-flex gap-2 align-items-center">
+          <div class="rounded-circle d-flex flex-colum align-items-center justify-content-center bg-soft-secondary" style="width: 50px;height: 50px;">
+            <span class="fs-12 fw-bold text-uppercase"> {{ getParticipantOverviewData().initials }} </span>
+          </div>
+          <div>
+            <div class="fs-14 fw-bold">{{ getParticipantOverviewData().participantName }}</div>
+            <span class="small">{{ getParticipantOverviewData().loginField }}</span>
+          </div>
+        </div>
+        <div class="d-flex justify-content-between gap-3">
+          <div>
+              <h6>Total questions</h6>
+              <div class="small fw-bold fs-12">{{ getParticipantOverviewData().totalQuestions }}</div>
+          </div>
+          <div>
+              <h6>Score</h6>
+              <div class="small fw-bold fs-12">{{ cummulativeGradingScore }}</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="d-flex align-items-center gap-1">
+          <div class="small">{{ getParticipantOverviewData().section.name }}</div> 
+          <div *ngIf="currentQuestion.item.topicName" class="small">&middot; {{ currentQuestion.item.topicName }}</div>
+          <div *ngIf="currentQuestion.item.subtopicName" class="small">&middot;{{ currentQuestion.item.subtopicName }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div [ngClass]="{'d-flex justify-content-between': showQuestionPanel}" class="mt-2 py-3 border-top">
+    <div class="d-flex gap-2 align-items-center" *ngIf="showQuestionPanel">
+      <button (click)="previousQuestionItem();hideSideBar()" [disabled]="isPreviousDisabled()"
+        class="btn p-2 bg-transparent border small d-flex align-items-center gap-2"
+        style="background-color: #cccccc">
+        <i class="ri-arrow-left-s-line"></i>Prev
+      </button>
+      <span>{{ currentQuestionIndex + 1 }} of {{ sections.length }}</span>
+      <button (click)="nextQuestionItem();hideSideBar()" [disabled]="isNextDisabled()"
+        class="btn p-2 bg-transparent border small d-flex align-items-center gap-2"
+        style="background-color: #cccccc">
+        Next<i class="ri-arrow-right-s-line"></i>
+      </button>
+      <div class="d-flex justify-content-between">
+          <span [ngClass]="{'text-danger': getQuestionGrading().score <= 0,  'text-success': getQuestionGrading().score > 0}" class="small rounded border p-2" *ngIf="getQuestionGrading().graded">
+            Graded: 
+            <span>{{ getQuestionGrading().score }} </span>
+            (Mrk)
+          </span>
+          <span class="small text-warning rounded border p-2" *ngIf="!getQuestionGrading().graded"> Not graded </span>
+      </div>
+    </div>
+
+    <div [ngbTooltip]="showQuestionPanel ? 'Hide question' : 'Show Question'" [ngClass]="{'': showQuestionPanel}" class="d-flex gap-2 justify-content-end">
+      <button (click)="ToggleQuestionPane()" class="btn btn-md border">
+        <svg class="text-secondary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.03v13m0-13c-2.819-.831-4.715-1.076-8.029-1.023A.99.99 0 0 0 3 6v11c0 .563.466 1.014 1.03 1.007 3.122-.043 5.018.212 7.97 1.023m0-13c2.819-.831 4.715-1.076 8.029-1.023A.99.99 0 0 1 21 6v11c0 .563-.466 1.014-1.03 1.007-3.122-.043-5.018.212-7.97 1.023"/>
+        </svg>
+      </button>
+      <button [ngbTooltip]="'Grade question'" triggers="mouseenter:mouseleave" (click)="showGrading()"
+        aria-controls="gradingSideBar"
+        class="btn btn-md border text-primary align-items-center d-none d-md-block"
+        data-bs-target="#gradingSideBar" data-bs-toggle="offcanvas" type="button">
+        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+          </svg>
+      </button>
+      <button [disabled]="allQuestionsFullyGraded()" (click)="openSaveGradesConfirmation(saveGradesConfirmationModal)" type="submit" class="btn btn-success">
+        Save all grading
+      </button>
+    </div>
+  </div>
+
+  <!-- <div> -->
+    <div>
+      <div>
+        <app-drawing-and-writing 
+          *ngIf="(currentQuestion && currentQuestion.item.itemType) === itemType.DRAWING_AND_WRITING" 
+          [currentQuestion]="currentQuestion"
+          [currentQuestionIndex]= "currentQuestionIndex"
+          [showQuestionPanel]="showQuestionPanel"
+        ></app-drawing-and-writing>
+
+      </div>
+
+      <!-- <div class="border p-3 rounded" style="min-height: 400px;">
+        <div class="d-flex flex-column">
+          <div class="card">
+            <div class="d-flex align-items-center bg-soft-primary p-2">
+              <h4 class="card-title mb-0">QUESTION</h4>
+            </div>
+            <div class="card-body">
+              <div class="mx-n4">
+                <ngx-simplebar class="px-3" style="max-height: 250px">
+                  <div>
+                    <p>What is the name of the president of Nigeria?</p>
+                  </div>
+                </ngx-simplebar>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="d-flex align-items-center bg-soft-primary p-2">
+              <h4 class="card-title mb-0">RESPONSE</h4>
+            </div>
+            <div class="card-body">
+              <div class="mx-n4">
+                <ngx-simplebar class="px-4" style="max-height: 500px">
+                  <div class="">
+                    <p class="">Bola Ahmed Tinubu</p>
+                  </div>
+                </ngx-simplebar>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+    <!-- </div> -->
+  </div>
+</ng-container>
+
+<div class="offcanvas offcanvas-end border-l" id="gradingSideBar" tabindex="-1" *ngIf="currentQuestion">
+  <div class="p-4 d-flex flex-column h-100">
+    <div class="pb-1">
+      <div class="row">
+        <div class="col">
+          <div class="d-flex justify-content-between align-center align-items-center">
+            <div class="d-flex g-1">
+              <h5 class="text-primary">Grading</h5>
+              <i class="ri-information-line text-primary"></i>
+            </div>
+
+            <button (click)="hideSideBar()" class="btn btn-soft-primary btn-icon btn-sm fs-16" type="button">
+              <i class="ri-close-fill align-bottom"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ngx-simplebar class="mx-n4 px-4 mt-3">
+     <div>
+        <div class="fw-bold py-2 border-bottom">Question {{ currentQuestionIndex + 1 }}</div>
+        <form #gradingForm="ngForm">
+          <div class="row mb-3 mt-2">
+            <label for="" class="d-flex justify-content-between form-label"
+              ><span
+                >Award Mark&nbsp;<span class="text-danger">*</span></span
+              >
+              <i
+                class="ri-question-fill fs-14 me-2 align-middle justify-content-end"
+              ></i
+            ></label>
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control"
+                name="score"
+                placeholder="Enter score"
+                aria-label="Recipient's username"
+                aria-describedby="basic-addon2"
+                [(ngModel)]="getQuestionGrading().score"
+                (keyup)="validateGradingFormForAllSections();gradingInputTouched = true;"
+                ngModel
+                required
+                #grade
+                [ngClass]="{'border-danger': !getQuestionGrading().valid && gradingInputTouched == true}"
+                [disabled]="getQuestionGrading().noResponse"
+              />
+              <span class="input-group-text" id="basic-addon2"
+                >/ {{ currentQuestion.item.scoringOption.score }} Marks</span
+              >
+            </div>
+            <div class="small text-danger mt-1" *ngIf="!getQuestionGrading().valid && gradingInputTouched == true">Grade is not valid</div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="" class="form-label"
+              >Remark(s)</label
+            >
+            <editor
+              name="remark"
+              #remark="ngModel"
+              [(ngModel)]="getQuestionGrading().remark"
+              [init]="{
+                branding: false,
+                base_url: '/tinymce',
+                height: 200,
+                suffix: '.min',
+                menubar: true,
+                plugins: 'table quickbars lists autoresize charmap',
+                quickbars_insert_toolbars: false,
+                toolbar:
+                  'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap'
+              }"
+            ></editor>
+          </div>
+          <div>
+            <button type="button" [disabled]="!getQuestionGrading().valid" (click)="openAssignGradeToQuestionModal(assignGradeToQuestionConfirmationModal)" type="submit" class="btn btn-success">
+               Assign Grade
+            </button>
+          </div>
+        </form>
+      </div>
+    </ngx-simplebar>
+  </div>
+</div>
+
+<ng-template #assignGradeToQuestionConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to assign grade ({{ getQuestionGrading().score }}) to question {{ currentQuestionIndex + 1 }}?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
+        No, Cancel
+      </button>
+      <button type="button" (click)="assignGradeToQuestion()" class="btn btn-primary">
+        Yes, Assign It
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #saveGradesConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to save all grading?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
+        No, Cancel
+      </button>
+      <button type="button" (click)="saveGrade()" class="btn btn-primary">
+        Yes, Assign save grades
+      </button>
+    </div>
+  </div>
+</ng-template>

@@ -6977,6 +6977,11 @@ pdfmake@^0.2.2:
     iconv-lite "^0.6.3"
     xmldoc "^2.0.1"
 
+perfect-freehand@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/perfect-freehand/-/perfect-freehand-1.2.0.tgz"
+  integrity sha512-h/0ikF1M3phW7CwpZ5MMvKnfpHficWoOEyr//KVNTxV4F6deRK1eYMtHyBKEAKFK0aXIEUK9oBvlF6PNXMDsAw==
+
 picocolors@^0.2.1:
   version "0.2.1"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-0.2.1.tgz"

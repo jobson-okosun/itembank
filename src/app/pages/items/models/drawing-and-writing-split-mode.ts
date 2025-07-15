@@ -1,0 +1,4 @@
+export enum DRAWING_AND_WRITING_SPLIT_MODE {
+  SPLIT = 'SPLIT',
+  FULL = 'FULL'
+}

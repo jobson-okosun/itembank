@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import {
   AssessmentResultSummary,
+  Participant_Result_Data_DTO,
   ParticipantSectionTranscript,
   ParticipantsParams,
   ParticipantsScoreList,
@@ -25,7 +26,7 @@ export class DataService {
     assessmentId: string,
     queryParams?: ResultSummaryParams
   ): Observable<AssessmentResultSummary> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const centerId = '0196a9b9-9c4a-7fc0-abb8-50e93b2852bf'; // This variable is declared but not used.
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/result_summary/${assessmentId}`;
 
@@ -39,7 +40,7 @@ export class DataService {
     assessmentId: string,
     queryParams?: ScoreDistributionParams
   ): Observable<ScoreDistributionScaledScore> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/score_distribution/${assessmentId}`;
 
     return this._http.get<ScoreDistributionScaledScore>(
@@ -52,7 +53,7 @@ export class DataService {
     assessmentId: string,
     queryParams?: ScoreAnalysisParams
   ): Observable<ScoreAnalysisScaledScore> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/score_analysis/${assessmentId}`;
 
     return this._http.get<ScoreAnalysisScaledScore>(
@@ -65,7 +66,7 @@ export class DataService {
     assessmentId: string,
     queryParams?: ParticipantsParams
   ): Observable<ParticipantsScoreList> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/list_participants/${assessmentId}`;
 
     return this._http.get<ParticipantsScoreList>(
@@ -78,7 +79,7 @@ export class DataService {
     assessmentId: string,
     queryParams: TranscriptListParams
   ): Observable<ParticipantsScoreList> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/list_participants_transcript/${assessmentId}`;
 
     return this._http.get<ParticipantsScoreList>(
@@ -95,7 +96,7 @@ export class DataService {
     sectionId: string,
     participantId: string
   ): Observable<ParticipantSectionTranscript[]> {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/participant_transcript/assessment/${assessmentId}/section/${sectionId}/participant/${participantId}`;
 
     return this._http.get<ParticipantSectionTranscript[]>(
@@ -104,11 +105,11 @@ export class DataService {
     );
   }
 
-  getCandidateResult(assessmentId: string, participantId: string): any {
-    assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+  getCandidateResult(assessmentId: string, participantId: string): Observable<Participant_Result_Data_DTO> {
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/participant_result/assessment/${assessmentId}/participant/${ participantId }`;
 
-    return this._http.get<any[]>(
+    return this._http.get<Participant_Result_Data_DTO>(
       environment.schedulerIP + url,
       { withCredentials: true }
     );

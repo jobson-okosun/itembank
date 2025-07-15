@@ -189,11 +189,19 @@
         <app-item-tag #tagRef [recievedTag]="tags" (sendTags)="recieveTag($event)"></app-item-tag>
       </div>
       <div class="row g-3">
-        <div class="col-span-full">
-          <label for="background" class="form-label">Background {{ background }}</label>
+        <div class="col-lg-6">
+          <label for="background" class="form-label">Background</label>
           <select class="form-select" name="background" [(ngModel)]="background">
             <option *ngFor="let item of backgrounds | keyvalue" value="{{ item.value }}">
               {{ item.value | titlecase }}
+            </option>
+          </select>
+        </div>
+        <div class="col-lg-6">
+          <label for="background" class="form-label">Layout Split Mode</label>
+          <select class="form-select" name="splitmode" [(ngModel)]="splitMode">
+            <option *ngFor="let item of layoutModes" value="{{ item }}">
+              {{ item | titlecase }}
             </option>
           </select>
         </div>
@@ -375,7 +383,7 @@
                       <label for="choices-privacy-status-input" class="form-label">Difficulty level</label>
                       <select class="form-select" data-choices data-choices-search-false
                         id="choices-privacy-status-input" name="difficultyLevel"
-                        [(ngModel)]="defaultItemProperties.difficultyLevel">
+                        [(ngModel)]="defaultItemProperties.difficultyLevel" [value]="1">
                         <option *ngFor="let difficulty of difficultyLevel" value="{{ difficulty }}">
                           {{ difficulty }}
                         </option>

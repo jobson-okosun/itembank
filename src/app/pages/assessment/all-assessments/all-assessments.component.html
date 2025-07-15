@@ -95,7 +95,7 @@
                 <a
                   class="dropdown-item"
                   (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/reports/{{ assessment.id }}/results"
+                  routerLink="/examalpha/reports/{{ assessment.schId }}/results"
                   data-bs-toggle="modal"
                 >
                   <i class="ri-survey-line align-bottom me-2 text-muted"></i>
@@ -116,7 +116,7 @@
                 <a
                   class="dropdown-item"
                   (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/exams/{{ assessment.id }}/grading"
+                  routerLink="/examalpha/exams/{{ assessment.schId }}/grading"
                   data-bs-toggle="modal"
                 >
                   <i

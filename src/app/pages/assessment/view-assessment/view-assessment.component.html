@@ -588,7 +588,7 @@
           <div class="form-check">
             <div class="d-flex flex-wrap gap-2 align-items-center">
               <input class="form-check-input" type="checkbox" #instructionReadingTime
-                [checked]="assessmentSettings.instructionReadTimeSec"
+                [checked]="assessmentSettings.instructionReadTimeSec > 0"
                 (change)="onInstructionReadingTimeSecChange($event)" />
               <label (click)="
               instructionReadingTime.checked =
@@ -741,7 +741,7 @@
             <div class="form-check mt-2">
               <input #displayAllSections class="form-check-input" type="checkbox" name="displayAllSections"
                 [(ngModel)]="assessmentSettings.displayAllSectionsAtOnce"
-                [checked]="assessmentSettings.displayAllSectionsAtOnce" />
+                [checked]="assessmentSettings.displayAllSectionsAtOnce"/>
               <label (click)="
                   assessmentSettings.displayAllSectionsAtOnce =
                     !assessmentSettings.displayAllSectionsAtOnce
@@ -752,7 +752,7 @@
 
             <div>
               <select #displayRef (change)="handleDispayAllSectionOption(displayRef.value)"
-                class="form-select form-select-md">
+                class="form-select form-select-md" [value]="assessmentSettings.displayAllSectionsAtOnce">
                 <option selected disabled>Select one</option>
                 <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
                   One at a time
@@ -760,6 +760,12 @@
                 <option value="allAtOnce" [selected]="assessmentSettings.displayAllSectionsAtOnce">
                   All At Once
                 </option>
+                <!-- <option value="oneAtTime" [selected]="true">
+                  One at a time
+                </option>
+                <option value="allAtOnce">
+                  All At Once
+                </option> -->
               </select>
             </div>
           </div>
@@ -813,7 +819,7 @@
   </div>
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
-      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+      <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
       <button *ngIf="!submitted" (click)="saveAssessmentSettings()" class="btn btn-primary">
@@ -1622,7 +1628,8 @@
                   [itemTrailInfo]="itemProps">
                 </app-label-image-text-preview>
 
-                <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData" [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
+                <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
               </div>
             </div>
           </a>

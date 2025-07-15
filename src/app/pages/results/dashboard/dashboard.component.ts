@@ -87,6 +87,7 @@ export class DashboardComponent implements OnInit {
 
   getAssessmentId() {
     this.ar.paramMap.subscribe((route) => {
+      // console.log(route)
       this.assessmentId = route.get('exam_id');
     });
   }
@@ -256,7 +257,7 @@ export class DashboardComponent implements OnInit {
     this.transcriptFilterParams = {
       ...this.transcriptFilterParams,
       size: event.rows,
-      page: event.page,
+      page: event.page * event.rows,
     };
 
     this.applyTranscriptFilter();
@@ -358,7 +359,7 @@ export class DashboardComponent implements OnInit {
     this.participantFilterParams = {
       ...this.participantFilterParams,
       size: event.rows,
-      page: event.page,
+      page: event.page * event.rows,
     };
 
     this.applyParticipantListFilter();
@@ -425,6 +426,10 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  numberToPrecision(num: number) {
+    return num.toFixed(1)
+  }
+
 
   async formatParticipantData(participants: Participant[]): Promise<any> {
     const participantList = participants.map((item) => {
@@ -447,7 +452,7 @@ export class DashboardComponent implements OnInit {
           : 'N/A'
         : 'N/A';
 
-      const participantName = `${item.reg_fields['FIRST NAME']} ${item.reg_fields['LAST NAME']}`;
+      const participantName = `${item.reg_fields['FIRST NAME'] ?? ''} ${item.reg_fields['LAST NAME'] ?? ''}`;
 
       const sectionItems = item?.score?.section_scores ?? [];
 
@@ -461,6 +466,8 @@ export class DashboardComponent implements OnInit {
           total_attempted: attempt?.total_attempted ?? 0
         };
       });
+
+      const distinctLoginIps = new Set(item.logins_ips?.ip_addresses?.map( ip => ip?.ip_address))
 
       return {
         name: participantName,
@@ -482,12 +489,14 @@ export class DashboardComponent implements OnInit {
         center: item.center_id,
         sectionGroup: item.group_name,
         attempted: item.section_attempts?.total_attempted !== null ? item.section_attempts?.total_attempted: false,
-        systemSwaps: item?.logins_ips?.ip_addresses.length,
+        systemSwaps: distinctLoginIps.size,
         status: item.status.toLowerCase(),
         loginField: item?.login_field,
         loginFieldVaue: item?.reg_fields[item?.login_field],
         loginIps: item?.logins_ips?.ip_addresses,
-        participantId: item.participants_id
+        participantId: item.participants_id,
+        totalRelogins: item?.logins_ips?.ip_addresses?.length,
+        relogin: item.re_login
       };
     });
 

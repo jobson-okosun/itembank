@@ -188,6 +188,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log(this.assessmentService.activeAssessment)
+
+    
     this.totalPassages = 0;
     this.itemService.assessmentActive = true;
     this.getAssessment();
@@ -234,7 +237,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.breadCrumbItems = [
       { label: "Exams", active: false },
       {
-        label: this.assessmentService.activeAssessment.toLowerCase(),
+        label: this.assessmentService?.activeAssessment?.toLowerCase(),
         active: true,
       },
     ];
@@ -553,10 +556,10 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   onInstructionReadingTimeSecChange(event: any) {
-    console.log(event.target.checked);
+    // console.log(event.target.checked);
     this.instructionReadTimeChecked = event.target.checked;
     if (!event.target.checked) {
-      this.assessmentSettings.instructionReadTimeSec = 0;
+      this.assessmentSettings.instructionReadTimeSec = 120;
     }
   }
 
@@ -951,9 +954,10 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           if (value) {
             Swal.fire({
               title: "Congratulations!",
-              text: "Your exam settings has been saved successfully.",
+              text: "Your exam settings has been saved successfully.....",
               icon: "success",
             });
+
             this.ngOnInit();
             this.submitted = false;
             this.modalService.dismissAll();
@@ -1050,6 +1054,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
               icon: "success",
             });
           }
+          
+          (document.getElementById('modalbtn') as HTMLButtonElement)?.click()
           this.getAssessment();
           this.getTotalItemsAndScores();
           this.submitted = false;
