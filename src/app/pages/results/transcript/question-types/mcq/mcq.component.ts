@@ -6,13 +6,9 @@ import { ParticipantSectionTranscript } from 'src/app/pages/items/models/result'
   templateUrl: './mcq.component.html',
   styleUrls: ['./mcq.component.scss']
 })
-export class McqComponent implements OnInit {
+export class McqComponent {
   @Input() currentQuestion: ParticipantSectionTranscript | null = null;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  @Input() currentQuestionIndex: number = 0;
 
   stripSpaceFormat(str: string) {
     return str
@@ -21,5 +17,4 @@ export class McqComponent implements OnInit {
     ?.replace(/<p>|<\/p>/g, '')
     .replace(/&nbsp;/g, ' ')
   }
-
 }

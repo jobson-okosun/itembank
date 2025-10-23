@@ -1,0 +1,63 @@
+<div *ngIf="loadingDashboardResources" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+  </div>
+</div>
+
+<ng-container *ngIf="!loadingDashboardResources">
+  <div class="d-flex justify-content-between mb-3">
+    <button (click)="back()" class="btn btn-md btn-outline-primary">
+      Back
+    </button>
+    <app-breadcrumbs [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+  </div>
+  
+  <div class="card p-3">
+    <!-- title -->
+    <div class="row align-items-end">
+      <div class="col-lg-6">
+          <h3 class="modal-title" *ngIf="sections">{{ assessmentName }}</h3>
+      </div>
+    </div>
+
+    <!-- Cards section-->
+    <div class="mt-4">
+      <div class="row ">
+        <div style="cursor: pointer;" class="col-lg-3 col-md-3 col-sm-12" *ngFor="let item of sections; let i = index">
+          <div class="card p-2 ">
+            <div class="d-flex flex-row justify-content-between">
+              <div class="d-flex align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="p-3 avatar-title bg-soft-secondary rounded-2 fs-4">
+                    <i class="pi pi-book text-secondary"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <div class="fs-14 fw-bold ">
+                    {{ item.name }} 
+                  </div>
+                  <div *ngIf="item.scheme_id" class="fs-12 mt-2 d-flex align-items-center text-success" ngbTooltip="Marking guid has been added">
+                      <span><i class="pi pi-check-circle" style="font-size: 0.7rem;"></i> Making Guide</span>
+                  </div>
+                </div>
+              </div>
+              <div class="d-flex align-items-center">
+                <button *ngIf="!item.scheme_id"  [disabled]="isAddingMarkingGuide" (click)="addSectionMarkingGuide(item.id)" class="btn btn-sm btn-outline-primary">
+                  <span><i class="pi pi-plus" style="font-size: 0.7rem;"></i> Guide</span>
+                </button>
+
+                <button *ngIf="item.scheme_id" (click)="viewSectionMarkingGuide(item)" class="btn btn-sm btn-outline-primary">
+                  <span><i class="pi pi-eye" style="font-size: 0.7rem;"></i> View</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</ng-container>

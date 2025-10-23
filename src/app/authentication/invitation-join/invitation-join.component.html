@@ -1,0 +1,107 @@
+<div class="auth-page-wrapper pt-1">
+  <div class="auth-one-bg-position auth-one-bg auth-bg-cover" id="auth-particles">
+    <div class="bg-overlay"></div>
+
+    <div class="shape">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+        viewBox="0 0 1440 120">
+        <path d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"></path>
+      </svg>
+    </div>
+  </div>
+
+  <div class="auth-page-content">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center mt-sm-5 text-white-50">
+            <p class="mt-3 fs-15 fw-medium">
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6 col-xl-5">
+          <div class="card shadow" style="min-height: 500px; border-radius: 15px">
+            <div class="card-body p-3">
+              <div class="text-center">
+                <div class="text-white-50">
+                  <div>
+                    <a routerLink="/" class="d-inline-block auth-logo">
+                      <img src="assets/logo/EXPryLogoHor.png" alt="" height="20" />
+                    </a>
+                  </div>
+                </div>
+                <h6 class="text-secondary fw-bold mt-5 text-uppercase">
+                  Create Profile
+                </h6>
+                <p class="text-muted">
+                  Input your username and password for your account
+                </p>
+              </div>
+
+              <div *ngIf="error" class="alert alert-borderless alert-danger text-center mb-2" role="alert">
+                 {{ error_msg }}
+              </div>
+              <div *ngIf="!error" [style]="{'padding: 0': !error_msg.length}" class="alert alert-borderless alert-success text-center mb-2" role="alert">
+                 {{ error_msg }}
+              </div>
+
+              <div class="p-2">
+                <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                  <div class="mb-1">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" id="username" placeholder="Enter User name" formControlName="username" [ngClass]="{'border-danger': form.get('username').invalid && form.get('username').touched }" />
+                    
+                    <div *ngIf="form.get('username').invalid && form.get('username').touched" class="invalid-feedback" align="left">
+                      <div *ngIf="form.get('username').hasError('required')">
+                        Username is required
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mb-1">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter Password" formControlName="password" [ngClass]="{'border-danger': form.get('password').invalid && form.get('password').touched }" />
+                    
+                    <div *ngIf="form.get('password').invalid && form.get('password').touched" class="invalid-feedback" align="left">
+                      <div *ngIf="form.get('password').hasError('required')">
+                        Password is required
+                      </div>
+                      <div *ngIf="form.get('password').hasError('minlength')">
+                        Password must be at least 6 characters
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Enter Confirm Password" formControlName="confirmPassword" [ngClass]="{'border-danger': form.get('confirmPassword').invalid && form.get('confirmPassword').touched }" />
+                    
+                    <div *ngIf="form.get('confirmPassword').invalid && form.get('confirmPassword').touched" class="invalid-feedback" align="left">
+                      <div *ngIf="form.get('confirmPassword').hasError('required')">
+                        Confirm Password is required
+                      </div>
+                    </div>
+                    <div *ngIf="form.hasError('mismatch') && form.get('confirmPassword').touched" class="text-sm text-danger"> 
+                        Passwords do not match
+                    </div>
+                  </div>
+
+                  <div class="text-center mt-4">
+                    <button [disabled]="isLoading" class="btn btn-success w-100" type="submit">
+                      <span *ngIf="isLoading"> Processing...</span>
+                      <span *ngIf="!isLoading"> Submit</span>
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

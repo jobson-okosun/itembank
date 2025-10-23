@@ -20,6 +20,8 @@ import {
   TranscriptListParams,
 } from '../../items/models/result';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-dashboard',
@@ -37,10 +39,13 @@ export class DashboardComponent implements OnInit {
 
   scoreAnalysis: ScoreAnalysisScaledScore | null = null;
   transcriptData: ParticipantsScoreList | null = null;
+  isLoadingAnalysis: boolean = false;
+  isLoadingDistribution: boolean = false;
+  isLoadingAssessment: boolean = false;
 
   scoreDistribution: ScoreDistributionScaledScore | null = null;
   loadingDashboardResources: boolean = false;
-  
+
   assessmentSummary: AssessmentResultSummary | null = null;
   assessmentFilterForm: FormGroup;
   scoreDistributionFilterForm: FormGroup;
@@ -48,7 +53,6 @@ export class DashboardComponent implements OnInit {
   questionAnalysisFilterForm: FormGroup;
   transcriptFilterForm: FormGroup;
   participantsListFilterForm: FormGroup;
-
 
   formatedTranscriptData: any[];
   isLoadingTranscript: boolean = false;
@@ -61,23 +65,35 @@ export class DashboardComponent implements OnInit {
   currentQuestion: ParticipantSectionTranscript | null = null;
   selectedTranscriptSection: string = '';
   selectedTranscriptParticipantName: string = '';
+  selectedTranscriptUserInformation: any 
   transcriptFilterParams: TranscriptListParams = {
     section_id: '',
     page: 0,
     size: 10,
   };
 
-  isLoadingParticipants: boolean = false
-  participantList: ParticipantsScoreList | null = null
+  isLoadingParticipants: boolean = false;
+  participantList: ParticipantsScoreList | null = null;
   participants: any[] = [];
   participantFilterParams: ParticipantsParams = {
     page: 0,
     size: 10,
   };
 
+  scoreAnalysisFilterSubjectName: string = 'ALL'
+  scoreDistributionFilterSubjectName: string = 'ALL'
+  downloadingResult: boolean =  false
+
+  transcriptMode: 'ONE' | 'ALL' = 'ONE'
+  currentTranscriptParams: any = {}
+  downloadingTranscript: boolean = false
+
+
   constructor(
     private readonly ar: ActivatedRoute,
-    private dataService: DataService
+    private dataService: DataService,
+    private sanitizer: DomSanitizer,
+    private notifier: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -111,7 +127,10 @@ export class DashboardComponent implements OnInit {
       scoreDistribution: this.dataService.getScoreDistribution(
         this.assessmentId
       ),
-      participants: this.dataService.getParticipants(this.assessmentId, this.participantFilterParams),
+      participants: this.dataService.getParticipants(
+        this.assessmentId,
+        this.participantFilterParams
+      ),
     };
 
     forkJoin(requests)
@@ -141,7 +160,7 @@ export class DashboardComponent implements OnInit {
           this.assessmentSummary = assessmentSummary as any;
           this.scoreDistribution = scoreDistribution as any;
           this.scoreAnalysis = scoreAnalysis as any;
-          this.updateParticipantsData(participants as any)
+          this.updateParticipantsData(participants as any);
           this.initializeBreadCrumbs();
           this.initalizeScoreDistributionChart();
           this.loadingDashboardResources = false;
@@ -197,7 +216,8 @@ export class DashboardComponent implements OnInit {
       return this.transcriptFilterForm.markAllAsTouched();
 
     this.isLoadingTranscript = true;
-    this.showTranscriptQuestion = false;
+    this.showTranscriptQuestion = true;
+
     this.transcriptData = null;
 
     const { section, center, loginField } = this.transcriptFilterForm.value;
@@ -213,7 +233,7 @@ export class DashboardComponent implements OnInit {
     if (loginField) {
       params.login_field_value = loginField;
     }
-
+    
     this.dataService
       .getTranscriptParticipants(this.assessmentId, params)
       .subscribe(
@@ -223,6 +243,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async initializeTranscriptTable(res: ParticipantsScoreList) {
+    this.transcriptMode = 'ONE'
     const data = res.content.map((item) => {
       const participantName = `${item.reg_fields['FIRST NAME'] ?? 'N/A'} ${
         item.reg_fields['LAST NAME'] ?? 'N/A'
@@ -243,6 +264,8 @@ export class DashboardComponent implements OnInit {
         status: item.status,
         participantId: item.participants_id,
         sectionId: participantSection?.section_id,
+        loginField: item?.login_field,
+        loginFieldValue: item?.reg_fields[item?.login_field],
       };
 
       return tableData;
@@ -266,7 +289,9 @@ export class DashboardComponent implements OnInit {
   showTranscriptQuestionDetails(
     participantId: string,
     section: string,
-    name: string
+    name: string,
+    loginField: string,
+    loginFieldValue: string
   ) {
     const participant = this.formatedTranscriptData.find(
       (item: any) => item.participantId == participantId
@@ -275,6 +300,13 @@ export class DashboardComponent implements OnInit {
 
     this.showTranscriptQuestion = true;
     this.isLoadingParticipantTranscript = true;
+
+    this.currentTranscriptParams = {
+      assessmentId: this.assessmentId,
+      sectionId: participant.sectionId,
+      participantId: participant.participantId
+    }
+
     this.dataService
       .getParticipantTranscript(
         this.assessmentId,
@@ -285,8 +317,16 @@ export class DashboardComponent implements OnInit {
         (res) => {
           this.transcriptQuestions = res;
           this.currentQuestion = res[0];
+          this.currentQuestionIndex = 0;
           this.selectedTranscriptSection = section;
           this.selectedTranscriptParticipantName = name;
+          this.selectedTranscriptUserInformation = {
+            name,
+            loginField,
+            loginFieldValue
+          }
+
+          // console.log(this.selectedTranscriptUserInformation)
           this.isLoadingParticipantTranscript = false;
         },
         () => {
@@ -324,13 +364,13 @@ export class DashboardComponent implements OnInit {
   applyParticipantListFilter() {
     if (this.participantsListFilterForm.invalid) {
       this.participantsListFilterForm.markAllAsTouched();
-      return; 
+      return;
     }
 
     const params: ParticipantsParams = {
-      ...this.participantFilterParams
+      ...this.participantFilterParams,
     };
-    const formValues = this.participantsListFilterForm.value; 
+    const formValues = this.participantsListFilterForm.value;
 
     Object.keys(formValues).forEach((key) => {
       const value = formValues[key];
@@ -340,19 +380,21 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    this.isLoadingParticipants = true
+    this.isLoadingParticipants = true;
     this.dataService.getParticipants(this.assessmentId, params).subscribe(
       (res) => this.updateParticipantsData(res),
-      () => this.isLoadingParticipants = false
+      () => (this.isLoadingParticipants = false)
     );
   }
 
   async updateParticipantsData(data: ParticipantsScoreList) {
-    const formatParticipantList = await this.formatParticipantData(data.content);
+    const formatParticipantList = await this.formatParticipantData(
+      data.content
+    );
 
-    this.participants = formatParticipantList
-    this.participantList = data
-    this.isLoadingParticipants = false
+    this.participants = formatParticipantList;
+    this.participantList = data;
+    this.isLoadingParticipants = false;
   }
 
   onParticipantPageChange(event: any) {
@@ -365,74 +407,94 @@ export class DashboardComponent implements OnInit {
     this.applyParticipantListFilter();
   }
 
-
   applyAssementFilter() {
-    if (this.assessmentFilterForm.invalid) return this.assessmentFilterForm.markAllAsTouched();
+    if (this.assessmentFilterForm.invalid)
+      return this.assessmentFilterForm.markAllAsTouched();
 
     const { center_id, batch_id } = this.assessmentFilterForm.value;
     const params: ResultSummaryParams = {};
 
-    if(center_id) {
-      params.center_id = center_id
+    if (center_id) {
+      params.center_id = center_id;
     }
 
-    if(batch_id) {
-      params.batch_id = batch_id
+    if (batch_id) {
+      params.batch_id = batch_id;
     }
 
+    this.isLoadingAssessment = true;
     this.dataService
       .getAssessmentSummary(this.assessmentId, params)
-      .subscribe((res) => this.assessmentSummary = res);
+      .subscribe({
+        next: (res) => {
+          this.assessmentSummary = res
+            this.isLoadingAssessment = false;
+        },
+        error: (err) => {
+          this.isLoadingAssessment = false;
+        },
+      });
   }
 
   applyScoreAnalysisFilter() {
-    if (this.scoreAnalysisFilterForm.invalid) return this.scoreAnalysisFilterForm.markAllAsTouched();
+    if (this.scoreAnalysisFilterForm.invalid)
+      return this.scoreAnalysisFilterForm.markAllAsTouched();
 
     const { center_id, section_id } = this.scoreAnalysisFilterForm.value;
+    this.scoreAnalysisFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
+
     const params: ScoreAnalysisParams = {};
 
-    if(center_id) {
-      params.center_id = center_id
+    if (center_id) {
+      params.center_id = center_id;
     }
 
-    if(section_id) {
-      params.section_id = section_id
+    if (section_id) {
+      params.section_id = section_id;
     }
 
-    this.dataService
-      .getScoreAnalysis(this.assessmentId, params)
-      .subscribe((res) =>  this.scoreAnalysis = res);
+    this.isLoadingAnalysis = true;
+    this.dataService.getScoreAnalysis(this.assessmentId, params).subscribe({
+      next: (res) => {
+        this.isLoadingAnalysis = false;
+        this.scoreAnalysis = res;
+      },
+      error: (err) => {
+        this.isLoadingAnalysis = false;
+      },
+    });
   }
 
   applyDistributionFilter() {
     if (this.scoreDistributionFilterForm.invalid) return this.scoreDistributionFilterForm.markAllAsTouched();
 
     const { center_id, section_id } = this.scoreDistributionFilterForm.value;
+    this.scoreDistributionFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
+    
     const params: ScoreDistributionParams = {};
 
-    if(center_id) {
-      params.center_id = center_id
+    if (center_id) {
+      params.center_id = center_id;
     }
 
-    if(section_id) {
-      params.section_id = section_id
+    if (section_id) {
+      params.section_id = section_id;
     }
 
     this.dataService
       .getScoreDistribution(this.assessmentId, params)
-    .subscribe((res) =>  {
-      this.scoreDistribution = res;
-      this.initalizeScoreDistributionChart();
-    });
+      .subscribe((res) => {
+        this.scoreDistribution = res;
+        this.initalizeScoreDistributionChart();
+      });
   }
 
   numberToPrecision(num: number) {
-    return num.toFixed(1)
+    return num?.toFixed(1);
   }
 
-
   async formatParticipantData(participants: Participant[]): Promise<any> {
-    const participantList = participants.map((item) => {
+    const participantList = participants?.map((item) => {
       const formatDateTime = (isoString: string) => {
         if (!isoString) return '';
         const date = new Date(isoString);
@@ -452,22 +514,26 @@ export class DashboardComponent implements OnInit {
           : 'N/A'
         : 'N/A';
 
-      const participantName = `${item.reg_fields['FIRST NAME'] ?? ''} ${item.reg_fields['LAST NAME'] ?? ''}`;
+      const participantName = `${item.reg_fields['FIRST NAME'] ?? ''} ${
+        item.reg_fields['LAST NAME'] ?? ''
+      }`;
 
       const sectionItems = item?.score?.section_scores ?? [];
 
-      const sectionItemsMap = sectionItems.map(sectionItem => {
+      const sectionItemsMap = sectionItems.map((sectionItem) => {
         const attempt = item?.section_attempts?.sections?.find(
-          attempt => attempt.id === sectionItem.section_id
+          (attempt) => attempt.id === sectionItem.section_id
         );
 
         return {
           ...sectionItem,
-          total_attempted: attempt?.total_attempted ?? 0
+          total_attempted: attempt?.total_attempted ?? 0,
         };
       });
 
-      const distinctLoginIps = new Set(item.logins_ips?.ip_addresses?.map( ip => ip?.ip_address))
+      const distinctLoginIps = new Set(
+        item.logins_ips?.ip_addresses?.map((ip) => ip?.ip_address)
+      );
 
       return {
         name: participantName,
@@ -488,15 +554,18 @@ export class DashboardComponent implements OnInit {
           : 'N/A',
         center: item.center_id,
         sectionGroup: item.group_name,
-        attempted: item.section_attempts?.total_attempted !== null ? item.section_attempts?.total_attempted: false,
+        attempted:
+          item.section_attempts?.total_attempted !== null
+            ? item.section_attempts?.total_attempted
+            : false,
         systemSwaps: distinctLoginIps.size,
         status: item.status.toLowerCase(),
         loginField: item?.login_field,
-        loginFieldVaue: item?.reg_fields[item?.login_field],
+        loginFieldValue: item?.reg_fields[item?.login_field],
         loginIps: item?.logins_ips?.ip_addresses,
         participantId: item.participants_id,
         totalRelogins: item?.logins_ips?.ip_addresses?.length,
-        relogin: item.re_login
+        relogin: item.re_login,
       };
     });
 
@@ -504,26 +573,119 @@ export class DashboardComponent implements OnInit {
   }
 
   clearFilter(target: string) {
-    if(target == 'participant') {
-       this.participantsListFilterForm.reset()
-       this.applyParticipantListFilter()
+    if (target == 'participant') {
+      this.participantsListFilterForm.reset();
+      this.applyParticipantListFilter();
     }
 
-    if(target == 'assessment') {
-       this.assessmentFilterForm.reset()
-       this.applyAssementFilter()
+    if (target == 'assessment') {
+      this.assessmentFilterForm.reset();
+      this.applyAssementFilter();
     }
 
-    if(target == 'distribution') {
-       this.scoreDistributionFilterForm.reset()
-       this.applyDistributionFilter()
+    if (target == 'distribution') {
+      this.scoreDistributionFilterForm.reset();
+      this.applyDistributionFilter();
     }
 
-    if(target == 'scoreanalysis') {
-       this.scoreAnalysisFilterForm.reset()
-       this.applyScoreAnalysisFilter()
+    if (target == 'scoreanalysis') {
+      this.scoreAnalysisFilterForm.reset();
+      this.applyScoreAnalysisFilter();
     }
   }
+
+  async downloadResult() {
+    try {
+      this.downloadingResult = true
+      const params: ParticipantsParams = {
+        ...this.participantFilterParams,
+      };
+      const formValues = this.participantsListFilterForm.value;
+
+      Object.keys(formValues).forEach((key) => {
+        const value = formValues[key];
+
+        if (value !== null && value !== undefined && value !== '') {
+          (params as any)[key] = value;
+        }
+      });
+      const response = await this.dataService.downloadResult(this.assessmentId, params);
+
+      if (!response.ok) {
+        this.downloadingResult = false
+        throw new Error();
+      }
+      const data = await response.text()
+
+      const blob = new Blob([data], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${this.assessmentSummary?.exam_name ?? 'assessment'}-result-${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      this.downloadingResult = false
+
+    } catch (error) {
+      this.downloadingResult = false
+      this.notifier.notify('error', `${error.error.message}`);
+    }
+  }
+
+  async downloadTranscript() {
+    try {
+      this.downloadingTranscript = true;
+
+      const { section, center, loginField } = this.transcriptFilterForm.value;
+      const params: TranscriptListParams = {
+        ...this.transcriptFilterParams,
+        section_id: section,
+      };
+
+      if (center) {
+        params.center_id = center;
+      }
+
+      if (loginField) {
+        params.login_field_value = loginField;
+      }
+
+      const selectedSection = this.assessmentSummary?.sections.find(
+        item => item.id === section
+      );
+
+      const response = await this.dataService.downloadTranscript(
+        this.assessmentId,
+        selectedSection?.name ?? 'section',
+        params
+      );
+
+      if (!response.ok) {
+        this.downloadingTranscript = false;
+        throw new Error('Transcript download failed');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${this.assessmentSummary?.exam_name ?? 'assessment'}-transcript-${Date.now()}.zip`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+      URL.revokeObjectURL(url);
+      this.downloadingTranscript = false;
+
+    } catch (error) {
+      this.downloadingTranscript = false;
+      this.notifier.notify('error', 'Transcript download failed');
+    }
+  }
+
 
   initalizeScoreDistributionChart() {
     this._scoreDistributionChart('["--vz-success"]');
@@ -604,6 +766,16 @@ export class DashboardComponent implements OnInit {
         },
       },
     };
+  }
+
+  scrollTransscriptQuestionsContainerToTop() {
+    const container = document.getElementById('transcript-subjects');
+    if (container) {
+      container.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
   }
 
   // for testing

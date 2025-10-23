@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { AssessmentsService } from "../../assessment/service/assessments.service";
 
 @Component({
@@ -6,7 +6,7 @@ import { AssessmentsService } from "../../assessment/service/assessments.service
   templateUrl: "./schedule-page.component.html",
   styleUrls: ["./schedule-page.component.scss"],
 })
-export class SchedulePageComponent implements OnInit {
+export class SchedulePageComponent implements OnInit, AfterViewInit {
   breadCrumbItems!: Array<{}>;
   currentAssessment: string;
   deliveryMethod: string;
@@ -20,8 +20,23 @@ export class SchedulePageComponent implements OnInit {
     this.getAssessmemtDetails()
   }
 
+  ngAfterViewInit(): void {
+    const trailTab = sessionStorage.getItem('schedule-trail-tab')
+    if(!trailTab) {
+      return
+    }
+
+    const tabs = document.querySelector('.navtabs')
+
+    if(trailTab == 'centers'){
+      (tabs.children[1].firstElementChild as HTMLElement)?.click()
+    }
+
+    sessionStorage.removeItem('schedule-trail-tab')
+  }
+
    getAssessmemtDetails() {
-    console.log( this.assessmentService.activeAssessmentDeliveryMethod)
+    // console.log( this.assessmentService.activeAssessmentDeliveryMethod)
     this.currentAssessment = this.assessmentService.activeAssessment
     this.deliveryMethod = this.assessmentService.activeAssessmentDeliveryMethod
    

@@ -321,7 +321,7 @@ export class EditAssessmentGroupSectionComponent implements OnInit {
   save() {
     this.processingEdit = true;
     const payload: INewSectionGroup = {
-      name: this.sectionGroupDetails.groupName,
+      name: this.sectionGroupDetails.groupName?.trim(),
       sections: this.sectionGroupDetails.sections,
       id: this.sectionGroupId,
     };
@@ -338,13 +338,11 @@ export class EditAssessmentGroupSectionComponent implements OnInit {
           );
           this.processingEdit = false;
           this.notifierService.notify("success", "Edited Successfully");
-          // this.router.navigate([
-          //   `examalpha/exams/${this.itemBankAssessmentService.activeAssessmentId}`,
-          // ]);
+          this.goBack()
         },
         error: (err: HttpErrorResponse) => {
           this.processingEdit = false;
-          this.notifierService.notify("error", err.error.message);
+          this.notifierService.notify("error", err.error.message ?? err.error.error);
         },
       });
   }

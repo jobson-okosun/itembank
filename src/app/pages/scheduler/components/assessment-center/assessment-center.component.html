@@ -39,7 +39,7 @@
 
     <div class="input-group" style="width: 35%">
       <select
-        (change)="onCenterFieldChange(selectedFieldRef.value)"
+        (change)="onCenterFieldChange(selectedFieldRef.value);searchValueInput.value = ''"
         #selectedFieldRef
         class="form-select form-select-sm"
         name="searchField"
@@ -54,6 +54,7 @@
       </select>
 
       <input
+        #searchValueInput
         [(ngModel)]="searchValue"
         type="text"
         class="form-control"
@@ -64,6 +65,7 @@
         [disabled]="!selectedField || !searchValue"
         class="btn btn-sm btn-success"
         (click)="filterCenterByField()"
+        [disabled]="!searchValueInput.value?.trim()?.length"
       >
         Search
       </button>

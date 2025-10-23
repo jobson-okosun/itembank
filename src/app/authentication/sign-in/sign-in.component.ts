@@ -39,6 +39,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
   error: boolean = false;
 
   itembankForm: boolean = true;
+  showAppAssets = environment.showAppAssets
 
   constructor(
     private formBuilder: FormBuilder,

@@ -33,6 +33,13 @@
       <i class="ri-eye-line label-icon align-middle me-2"></i>Preview
     </button>
 
+    <!-- for testing only -->
+    <!-- <a [routerLink]="['/print']" [queryParams]="{ assessmentId: assessmentId }"
+      class="btn btn-outline-primary btn-label waves-effect waves-light"
+      target="_blank" rel="noopener">
+      <i class="ri-eye-line label-icon align-middle me-2"></i>Print Preview
+    </a> -->
+
     <div ngbDropdown>
       <button type="button"
         class="btn btn-soft-info btn-label waves-effect right waves-light dropdown-toggle arrow-none"
@@ -661,7 +668,7 @@
                 <input type="number" min="0" class="form-control" placeholder="3" name="triggerInactivityWarningSeconds"
                   [(ngModel)]="assessmentSettings.inactivityWaringSec" />
               </div>
-              seconds.
+              Minutes.
             </div>
           </div>
           <div class="form-check">
@@ -717,7 +724,7 @@
                 <input type="number" class="form-control col-xl-1" placeholder="100" name="percentageSubmissionCheck"
                   [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" />
               </div>
-              % questions have been attempted.
+              % of total exam duration has been spent.
             </div>
           </div>
           <div class="form-check">

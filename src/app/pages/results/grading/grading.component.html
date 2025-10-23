@@ -698,11 +698,8 @@
                   <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
                     <li>
                     <a
-                      class="dropdown-item"
-                      [routerLink]="['/examalpha/reports', assessmentId, 'grading', 'grader']"
-                      [queryParams]="{ participant: participant.participantId, section_id: participantFilterParams.section_id }"
-                    >
-                      <i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                      class="dropdown-item" (click)="goToGrading(participant)">
+                      <!-- <i class="ri-eye-fill align-bottom me-2 text-muted"></i> -->
                       Grade
                     </a>
 

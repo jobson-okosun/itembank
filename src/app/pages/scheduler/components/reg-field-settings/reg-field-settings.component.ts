@@ -34,7 +34,7 @@ export class RegFieldSettingsComponent implements OnInit {
   ) {}
   breadCrumbItems!: Array<{}>;
   fields: IRegField[] = [];
-  fieldTypes: string[] = ["TEXTBOX", "SELECT", "CALENDAR", "IMAGE"];
+  fieldTypes: string[] = ["TEXTBOX", "SELECT", "CALENDAR"];
   selectBoxValues: any[] = [];
   routeSub!: Subscription;
   assessmentId: string = "";
@@ -281,8 +281,16 @@ export class RegFieldSettingsComponent implements OnInit {
   }
 
   addSelectOption(index: number) {
+    const values = this.fields[index].values.map( item => item?.toLowerCase())
+    // check if duplicates exists
+    if(values.length !== new Set(values).size) {
+      this.notifierService.notify('error', 'Duplicate values for select options');
+      return;
+    }
+
     this.fields[index].values.push("");
   }
+  
 
   deleteSelectOption(
     fieldId: string,
@@ -308,6 +316,17 @@ export class RegFieldSettingsComponent implements OnInit {
 
   openConfirmationModal(content: any) {
     this.modalService.open(content);
+  }
+
+  canSelectLoginField() {
+    const hasLoginFieldEnabled = this.fields.map( item => item.login ).filter(item => item).length
+
+    if(hasLoginFieldEnabled) {
+      this.notifierService.notify('error', 'Login field is already enabled!');
+      return false;
+    }
+    
+    return true
   }
 
   // checkIfInselectBoxValuesArrray(value: any, registrationFieldIndex: number): boolean {
@@ -356,7 +375,7 @@ export class RegFieldSettingsComponent implements OnInit {
     delete payload.assessment_id;
     delete payload.id;
 
-    console.log(payload, "payload");
+    // console.log(payload, "payload");
     this.addRegField(payload);
     // return capturedData;
     // console.log(capturedData);
@@ -421,7 +440,7 @@ export class RegFieldSettingsComponent implements OnInit {
     fieldName: string,
     placement: any,
     display: boolean,
-    login: boolean,
+    // login: boolean,
     mandatory: boolean
   ) {
     this.processingFieldEdit = true;
@@ -432,18 +451,18 @@ export class RegFieldSettingsComponent implements OnInit {
       field_id: fieldId,
       name: fieldName,
       placement: parseInt(placement),
-      login: login,
+      // login: login,
       mandatory,
     };
 
-    if (payload.login == true && payload.mandatory == false) {
-      this.notifierService.notify(
-        "error",
-        "Login field must be a mandatory field"
-      );
-      this.processingFieldEdit = false;
-      return;
-    }
+    // if (payload.login == true && payload.mandatory == false) {
+    //   this.notifierService.notify(
+    //     "error",
+    //     "Login field must be a mandatory field"
+    //   );
+    //   this.processingFieldEdit = false;
+    //   return;
+    // }
     this.schedulerService.editRegistrationField(payload).subscribe({
       next: (value) => {
         this.notifierService.notify("success", "Edit was successful");

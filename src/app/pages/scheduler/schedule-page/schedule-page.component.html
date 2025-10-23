@@ -9,7 +9,7 @@
   ngbNav
   #Pills="ngbNav"
   [activeId]="1"
-  class="nav nav-pills nav-primary mb-3"
+  class="nav nav-pills nav-primary mb-3 navtabs"
 >
   <li [ngbNavItem]="1">
     <a ngbNavLink>
@@ -37,7 +37,7 @@
   </li>
   <li
     [ngbNavItem]="4"
-    *ngIf="!deliveryMethod.includes('ONLINE')"
+    *ngIf="!deliveryMethod?.includes('ONLINE')"
   >
     <a ngbNavLink>
       <span class="d-sm-block">Center Admin</span>

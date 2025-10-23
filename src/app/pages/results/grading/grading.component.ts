@@ -6,6 +6,9 @@ import { catchError } from 'rxjs/operators';
 import { DataService } from 'src/app/services/data.service';
 import { AssessmentResultSummary, Participant, ParticipantsParams, ParticipantsScoreList, ResultSummaryParams, ScoreAnalysisParams, ScoreAnalysisScaledScore, ScoreDistributionParams, ScoreDistributionScaledScore } from '../../items/models/result';
 import { FormControl, FormGroup } from '@angular/forms';
+import { MarkingGuideService } from '../../assessment/service/marking-guide.service';
+import { SchemeSectionsResponseDTO } from '../../assessment/model/marking-guide-types';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-grading',
@@ -38,12 +41,14 @@ export class GradingComponent implements OnInit {
   scoreDistributionFilterForm: FormGroup;
 
   scoreAnalysis: ScoreAnalysisScaledScore | null = null;
-
+  markingGuideSections: SchemeSectionsResponseDTO[]
 
   constructor(
     private readonly ar: ActivatedRoute,
     private router: Router,
-    private dataService: DataService
+    private dataService: DataService,
+    private markingGuideService: MarkingGuideService,
+    private notifier: NotifierService
   ) {}
 
   getAssessmentId() {
@@ -64,6 +69,7 @@ export class GradingComponent implements OnInit {
        this.assessmentSummary = res as any;
        this.participantFilterParams.section_id = res.sections[0].id     
        this.fetchDashboardData()
+       this.fetchMakingGuideSections()
     }})
   }
 
@@ -100,6 +106,34 @@ export class GradingComponent implements OnInit {
       );
   }
   
+  fetchMakingGuideSections() {
+      this.markingGuideService.fetchMarkingGuideAssessmentSections(this.assessmentId)
+      .subscribe({
+        next: (res) => {
+          this.markingGuideSections = res
+        }
+      })
+  }
+  
+  goToGrading(participant: any) {
+    const filteredSection = this.participantsListFilterForm.get('section_id')
+    console.log('filteredSection', filteredSection.value)
+
+    const section = this.assessmentSummary?.sections.find( item => item.id == filteredSection.value)
+    const markingGuideSection = this.markingGuideSections.find( item => item.name == section.name)
+
+    if(!markingGuideSection) {
+      this.notifier.notify('warning', 'This subject does not have a marking guide')
+      return
+    } 
+
+    this.router.navigate([
+      '/examalpha/reports', 
+      this.assessmentId, 
+      'grading', 
+      'grader'], 
+      { queryParams: { participant: participant.participantId, section_id: filteredSection.value, schemeId: markingGuideSection.scheme_id }})
+  }
 
   applyParticipantListFilter() {
     if (this.participantsListFilterForm.invalid) {
@@ -146,7 +180,7 @@ export class GradingComponent implements OnInit {
   }
 
   async formatParticipantData(participants: Participant[]): Promise<any> {
-    const participantList = participants.map((item) => {
+    const participantList = participants?.map((item) => {
       const formatDateTime = (isoString: string) => {
         if (!isoString) return '';
         const date = new Date(isoString);
@@ -347,7 +381,7 @@ export class GradingComponent implements OnInit {
   }
 
   numberToPrecision(num: number) {
-    return num.toFixed(1)
+    return num?.toFixed(1)
   }
   
   gotoGrader() {

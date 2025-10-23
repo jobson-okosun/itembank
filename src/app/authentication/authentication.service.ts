@@ -13,7 +13,7 @@ import { Injectable } from '@angular/core';
 import { SignIn } from './sign-in/model/sign-in';
 import { Role } from '../shared/enum/role';
 import { UserService } from '../shared/user.service';
-import { IResourceCreated } from '../pages/scheduler/models/resource-created';
+import { ActivateUsernamePassword, IResourceCreated } from '../pages/scheduler/models/resource-created';
 import { SecureStorageService } from '../services/secure-storage.service';
 
 @Injectable({
@@ -128,8 +128,10 @@ export class AuthenticationService {
   }
 
   getSchedulerRefreshToken(): Observable<any> {
+    // const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/auth_token/auth_refresh/refresh-token`
+    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/authentication/account/refresh`
     return this.http.get(
-      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/auth_token/auth_refresh/refresh-token`,
+      url,
       { withCredentials: true }
     );
   }
@@ -147,4 +149,12 @@ export class AuthenticationService {
       payload
     );
   }
+
+  updateExistingUserUsernameAndPassword(payload: ActivateUsernamePassword): Observable<IResourceCreated> {
+    return this.http.post<IResourceCreated>(
+      `${environment.developmentIP}/accounts/new-user-account/set-credentials`,
+      payload
+    );
+  }
+
 }

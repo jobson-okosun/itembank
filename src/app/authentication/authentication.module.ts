@@ -12,6 +12,7 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
 import { EditorModule } from "@tinymce/tinymce-angular";
 import { ItemOfflineComponent } from "../pages/items/item-offline/item-offline.component";
 import { ItemsModule } from "../pages/items/items.module";
+import { InvitationJoinComponent } from './invitation-join/invitation-join.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { ItemsModule } from "../pages/items/items.module";
     LoginComponent,
     NewPasswordComponent,
     ResetPasswordComponent,
+    InvitationJoinComponent,
     // ItemOfflineComponent
   ],
   imports: [

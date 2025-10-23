@@ -38,7 +38,9 @@ import { defineLordIconElement } from "lord-icon-element";
 import lottie from "lottie-web";
 import { ViewAssessmentComponent } from "./view-assessment/view-assessment.component";
 import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
-
+import { AssessmentSectionsComponent } from './marking-guide/assessment-sections/assessment-sections.component';
+import { SectionComponent } from './marking-guide/section/section.component';
+import {TabMenuModule} from 'primeng/tabmenu';
 // import { AssessmentPreviewComponent } from './assessment-preview/assessment-preview.component';
 
 @NgModule({
@@ -46,6 +48,8 @@ import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
     CreateAssessmentComponent,
     AllAssessmentsComponent,
     ViewAssessmentComponent,
+    AssessmentSectionsComponent,
+    SectionComponent,
     // ExamPageComponent
     // AssessmentPreviewComponent,
   ],
@@ -72,6 +76,8 @@ import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
     NgbPopoverModule,
     NgbModule,
     PaginatorModule,
+    SharedModule,
+    TabMenuModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

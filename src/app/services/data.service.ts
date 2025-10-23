@@ -114,4 +114,56 @@ export class DataService {
       { withCredentials: true }
     );
   }
+
+  
+  downloadResult( assessmentId: string, queryParams?: ParticipantsParams): Promise<any> {
+    const url = `/examalpha/api/v1/sch_mon_grd/reports/result/download_result/${assessmentId}`;
+
+    // Remove pagination params if present
+    if (queryParams) {
+      delete queryParams.size;
+      delete queryParams.page;
+    }
+
+    // Build query string
+    const queryString = queryParams
+      ? '?' + new URLSearchParams(queryParams as Record<string, string>).toString()
+      : '';
+
+    return fetch(environment.schedulerIP + url + queryString, {
+      method: 'GET',
+      credentials: 'include' 
+    });
+  }
+
+  fetchTranscript(params: any): Observable<ParticipantSectionTranscript[]> {
+    // assessmentId = '0196a9b3-85b2-794d-8ad5-a8abac57fa57';
+    const url = `/examalpha/api/v1/sch_mon_grd/exam_server/participant_transcript/assessment/${ params.assessmentId }/section/${ params.sectionId }/participant/${ params.participantId }/o/${ params.oId }`;
+
+    // /section_name/${ params.sectionName }
+
+    return this._http.get<ParticipantSectionTranscript[]>(
+      environment.schedulerIP + url,
+      { withCredentials: true }
+    );
+  }
+
+  downloadTranscript(assessmentId: string, sectionName: string, queryParams: any): Promise<any> {
+    
+    const url = `/examalpha/api/v1/sch_mon_grd/reports/result/download_transcript/${assessmentId}/section_name/${ sectionName }`;
+
+    if (queryParams) {
+      delete queryParams.size;
+      delete queryParams.page;
+    }
+
+    const queryString = queryParams
+      ? '?' + new URLSearchParams(queryParams as Record<string, string>).toString()
+      : ''
+
+    return fetch(environment.schedulerIP + url + queryString, {
+      method: 'GET',
+      credentials: 'include'
+    });
+  }
 }

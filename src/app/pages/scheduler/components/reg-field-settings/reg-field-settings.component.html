@@ -182,20 +182,20 @@
                 <span
                   href="javascript:void(0)"
                   (click)="openConfirmationModal(disableLoginConfirmationModal)"
-                   style="text-decoration: underline;"
+                   style="text-decoration: underline;cursor: pointer;"
                   class="text-danger underline"
                   *ngIf="fields[fieldIndex].login &&  fields[fieldIndex].id"
                 
                 >
-                  remove login field
+                  Remove login field
                 </span>
               </div>
 
               <ng-container>
                 <div
-                (click)="openConfirmationModal(enableLoginConfirmationModal)"
+                  (click)="canSelectLoginField() && openConfirmationModal(enableLoginConfirmationModal)"
                   class="text-danger underline "
-                  style="text-decoration: underline;"
+                  style="text-decoration: underline;cursor: pointer;"
                   *ngIf="
                     !fields[fieldIndex].login &&
                     fields[fieldIndex].mandatory &&
@@ -203,7 +203,7 @@
                     fields[fieldIndex].id
                   "
                 >
-                  add login field
+                  Add login field
                 </div>
               </ng-container>
             </td>
@@ -449,7 +449,7 @@
                         </div>
                       </div>
 
-                      <div class="col-lg-12">
+                      <!-- <div class="col-lg-12">
                         <div class="mb-3">
                           <div class="d-flex gap-3">
                             <label for="contactInput" class="form-label"
@@ -468,7 +468,7 @@
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </div> -->
 
                       <div class="col-lg-12">
                         <div class="mb-3">
@@ -496,6 +496,7 @@
                         </div>
                       </div>
 
+                      <!-- // isLoginRef.checked, -->
                       <div class="col-lg-12">
                         <div class="hstack gap-2 justify-content-end">
                           <button
@@ -508,7 +509,7 @@
                                 fieldNameRef.value,
                                 placementRef.value,
                                 displayRef.checked,
-                                isLoginRef.checked,
+                                
                                 mandatoryRef.checked
                               )
                             "

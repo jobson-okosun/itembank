@@ -77,7 +77,7 @@ import { SimplebarAngularModule } from "simplebar-angular";
     NgbCarouselModule,
     NgbTooltipModule,
   ],
-  exports: [ExamPageComponent],
+  exports: [ExamPageComponent, ExamPageComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class ExamPreviewModule {}

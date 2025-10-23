@@ -9,6 +9,8 @@ import { GradingComponent } from '../results/grading/grading.component';
 import { GradeComponent } from '../results/grade/grade.component';
 import { CandidateResultComponent } from '../results/candidate-result/candidate-result.component';
 import { TranscriptViewComponent } from '../results/transcript-view/transcript-view.component';
+import { AssessmentSectionsComponent } from './marking-guide/assessment-sections/assessment-sections.component';
+import { SectionComponent } from './marking-guide/section/section.component';
 
 const routes: Routes = [
   { path: '', component: AllAssessmentsComponent },
@@ -57,6 +59,14 @@ const routes: Routes = [
   {
     path: ':assessmentId',
     component: ViewAssessmentComponent,
+  },
+  {
+    path: ':assessmentId/marking-guide/sections',
+    component: AssessmentSectionsComponent,
+  },
+  {
+    path: ':assessmentId/marking-guide/sections/:sectionId/scheme/:schemeId',
+    component: SectionComponent,
   },
 ];
 

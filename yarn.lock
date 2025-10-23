@@ -48,6 +48,14 @@
     "@jridgewell/resolve-uri" "1.0.0"
     sourcemap-codec "1.4.8"
 
+"@angular-devkit/architect@0.1301.0":
+  version "0.1301.0"
+  resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.1301.0.tgz"
+  integrity sha512-XKjdCx4RFRT8Czl0UN9MUXkMzOq/T2l2K1NgnRv15KqiRKtX3rftedEE7vqCw525S1Xzv8sl+AxXac6Dd2gw6w==
+  dependencies:
+    "@angular-devkit/core" "13.1.0"
+    rxjs "6.6.7"
+
 "@angular-devkit/architect@0.1301.4":
   version "0.1301.4"
   resolved "https://registry.npmjs.org/@angular-devkit/architect/-/architect-0.1301.4.tgz"
@@ -136,6 +144,18 @@
     "@angular-devkit/architect" "0.1301.4"
     rxjs "6.6.7"
 
+"@angular-devkit/core@13.1.0":
+  version "13.1.0"
+  resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-13.1.0.tgz"
+  integrity sha512-/blrRk0y53TAaRj6yC+3JQeEPsq4bta5HcRqFWCgLH8m3auoPtQWuvFTpVHE2mOA5dXDRQAOQRWeIi8kE5C//g==
+  dependencies:
+    ajv "8.8.2"
+    ajv-formats "2.1.1"
+    fast-json-stable-stringify "2.1.0"
+    magic-string "0.25.7"
+    rxjs "6.6.7"
+    source-map "0.7.3"
+
 "@angular-devkit/core@13.1.4":
   version "13.1.4"
   resolved "https://registry.npmjs.org/@angular-devkit/core/-/core-13.1.4.tgz"
@@ -148,12 +168,12 @@
     rxjs "6.6.7"
     source-map "0.7.3"
 
-"@angular-devkit/schematics@13.1.4":
-  version "13.1.4"
-  resolved "https://registry.npmjs.org/@angular-devkit/schematics/-/schematics-13.1.4.tgz"
-  integrity sha512-yBa7IeC4cLZ7s137NAQD+sMB5c6SI6UJ6xYxl6J/CvV2RLGOZZA93i4GuRALi5s82eLi1fH+HEL/gvf3JQynzQ==
+"@angular-devkit/schematics@13.1.0":
+  version "13.1.0"
+  resolved "https://registry.npmjs.org/@angular-devkit/schematics/-/schematics-13.1.0.tgz"
+  integrity sha512-kGA2HKMSvfAi3WxJAVlm0ms2E/NWzwMXxI8IoslCrY0+ziGAppIiiNJqaKauL5y5TMzeW8sYuHeNcWtbT4nwAw==
   dependencies:
-    "@angular-devkit/core" "13.1.4"
+    "@angular-devkit/core" "13.1.0"
     jsonc-parser "3.0.0"
     magic-string "0.25.7"
     ora "5.4.1"
@@ -184,15 +204,15 @@
   optionalDependencies:
     parse5 "^5.0.0"
 
-"@angular/cli@~13.1.4":
-  version "13.1.4"
-  resolved "https://registry.npmjs.org/@angular/cli/-/cli-13.1.4.tgz"
-  integrity sha512-PP9xpvDDCHhLTIZjewQQzzf+JbpF2s5mXTW2AgIL/E53ukaVvXwwjFMt9dQvECwut/LDpThoc3OfqcGrmwtqnA==
+"@angular/cli@^13.1.0":
+  version "13.1.0"
+  resolved "https://registry.npmjs.org/@angular/cli/-/cli-13.1.0.tgz"
+  integrity sha512-nJRvD9WR4cZwvNfFG8dTMfpx0RlNilfA+n9VCscg5UjU8J74ytVvhWpohvf3JRhZIEfH+lth84UX6y79S7Z/HQ==
   dependencies:
-    "@angular-devkit/architect" "0.1301.4"
-    "@angular-devkit/core" "13.1.4"
-    "@angular-devkit/schematics" "13.1.4"
-    "@schematics/angular" "13.1.4"
+    "@angular-devkit/architect" "0.1301.0"
+    "@angular-devkit/core" "13.1.0"
+    "@angular-devkit/schematics" "13.1.0"
+    "@schematics/angular" "13.1.0"
     "@yarnpkg/lockfile" "1.1.0"
     ansi-colors "4.1.1"
     debug "4.3.3"
@@ -2335,17 +2355,22 @@
   resolved "https://registry.npmjs.org/@protobufjs/utf8/-/utf8-1.1.0.tgz"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@schematics/angular@13.1.4":
-  version "13.1.4"
-  resolved "https://registry.npmjs.org/@schematics/angular/-/angular-13.1.4.tgz"
-  integrity sha512-P1YsHn1LLAmdpB9X2TBuUgrvEW/KaoBbHr8ifYO8/uQEXyeiIF+So8h/dnegkYkdsr3OwQ2X/j3UF6/+HS0odg==
+"@schematics/angular@13.1.0":
+  version "13.1.0"
+  resolved "https://registry.npmjs.org/@schematics/angular/-/angular-13.1.0.tgz"
+  integrity sha512-KOjAtXQgr5sKENPeHrAtwVY+19scXVO3wfS2SyzwjHtI9vlRUWdtKF1k8z3QaXoHlplKbmWH4StuMxM/8tj9sA==
   dependencies:
-    "@angular-devkit/core" "13.1.4"
-    "@angular-devkit/schematics" "13.1.4"
+    "@angular-devkit/core" "13.1.0"
+    "@angular-devkit/schematics" "13.1.0"
     jsonc-parser "3.0.0"
 
 "@socket.io/base64-arraybuffer@~1.0.2":
   version "1.0.2"
+
+"@tauri-apps/api@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.npmjs.org/@tauri-apps/api/-/api-2.7.0.tgz"
+  integrity sha512-v7fVE8jqBl8xJFOcBafDzXFc8FnicoH3j8o8DNNs0tHuEBmXUDqrCOAzMRX0UkfpwqZLqvrvK0GNQ45DfnoVDg==
 
 "@thisissoon/angular-inviewport@^4.2.2", "@thisissoon/angular-inviewport@>=4.0.0":
   version "4.2.2"
@@ -7693,7 +7718,7 @@ rw@1:
   resolved "https://registry.npmjs.org/rw/-/rw-1.3.3.tgz"
   integrity sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==
 
-"rxjs@^6.0.0 || ^7.0.0", rxjs@^6.5.2, "rxjs@^6.5.3 || ^7.4.0", rxjs@^6.5.5, rxjs@>=6.0.0, rxjs@~6.6.0:
+"rxjs@^6.0.0 || ^7.0.0", rxjs@^6.5.2, "rxjs@^6.5.3 || ^7.4.0", rxjs@^6.5.5, rxjs@>=6.0.0, rxjs@~6.6.0, rxjs@6.6.7:
   version "6.6.7"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.6.7.tgz"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
@@ -7706,13 +7731,6 @@ rxjs@^7.2.0:
   integrity sha512-h5M3Hk78r6wAheJF0a5YahB1yRQKCsZ4MsGdZ5O9ETbVtjPcScGfrMmoOq7EBsCRzd4BDkvDJ7ogP8Sz5tTFiQ==
   dependencies:
     tslib "^2.1.0"
-
-rxjs@6.6.7:
-  version "6.6.7"
-  resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.6.7.tgz"
-  integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
-  dependencies:
-    tslib "^1.9.0"
 
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@>=5.1.0, safe-buffer@~5.1.0, safe-buffer@~5.1.1, safe-buffer@5.1.2:
   version "5.1.2"

@@ -1,6 +1,11 @@
 <div class="row">
   <div class="col-lg-4" *ngIf="showQuestionPanel">
-    <div style="overflow-y: auto;height: 500px;overflow-y: auto" class="rounded-md border p-2">
+    <div style="overflow-y: auto;height: 500px;overflow-y: auto" class="rounded-md border p-3">
+        <div class="d-flex justify-content-between gap-3 border-bottom border-bottom-dashed pb-2">
+          <div class="small fw-bold fs-12 text-center text-success">Correct: {{ currentQuestionGradingSummary?.score ?? 0 }}</div>
+          <div class="small fw-bold fs-12 text-center text-danger">Penalty: {{ currentQuestionGradingSummary?.penalty ?? 0 }}</div>
+          <div class="small fw-bold fs-12 text-center text-danger">Violations: {{ currentQuestionGradingSummary?.violations ?? 0 }}</div>
+        </div>
         <div class="fw-bold py-2 text-primary ">Question {{ currentQuestionIndex + 1 }}</div>
         <div [innerHTML]="currentQuestion.item.stimulus" class="pe-2" style="text-align: justify;"></div>
     </div>
@@ -13,8 +18,293 @@
           Page {{ item + 1 }}
         </div>
       </div>
-      <div  [style.height.px]="containerSize" style="overflow-y: hidden; overflow-x: hidden;transform: translateY(-40px);" class="border w-100">
-          <div id="canvas" [style.height]="canvasSize" class="w-100"></div>
+      <div  [style.height.px]="containerSize" style="overflow-y: hidden; display: relative; overflow-x: hidden;transform: translateY(-40px);" class="border w-100">
+        <div id="canvas" [style.height]="canvasSize" class="w-100"></div>
+        <div class="child" style="height: 100%;position: absolute;top:0;left:0;width: 100%;z-index: 1;" (click)="onCanvasClick($event)">
+          <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:center;height:100%;width:100%;">
+
+            <ng-container *ngIf="currentPageGradingData?.length">
+              <ng-container *ngFor="let item of currentPageGradingData;let i=index">
+                <ng-container>
+                  <form [formGroup]="item.form" [style.opacity]="item.versioned ? 0.5: 1">
+                    <div style="position: absolute;" [ngStyle]="{zIndex: item.isOpen ? '99999': '0'}" (dragEnd)="onDragEnd($event, i)" (clicked)="expandGradingFormContextMenuItem(i, item)" appDraggable [annotation]="item" [style.left.px]="item.position[0]" [style.top.px]="item.position[1]">
+                      <!-- placeholder -->
+                      <div class="mb-1">
+                        <div style="max-width: max-content;">
+                          <div class="d-flex justify-content-end">
+                            <svg *ngIf="item?.placeholderType === markTypeCategories.SCORE" class="w-10 h-10 text-success" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 11.917 9.724 16.5 19 7.5"/>
+                            </svg>
+                            <svg *ngIf="item?.placeholderType === markTypeCategories.PENALTY" class="w-10 h-10 text-warning"  width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="3"/>
+                              <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="3"/>
+                            </svg>
+                            <svg *ngIf="item?.placeholderType === markTypeCategories.VIOLATION" class="w-10 h-10 text-danger" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m6 6 12 12m3-6a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
+                            </svg>
+                          </div>
+                          <div
+                            [ngClass]="{
+                              'bg-soft-success border-success': item?.placeholderType === markTypeCategories.SCORE,
+                              'bg-soft-warning border-warning': item?.placeholderType === markTypeCategories.PENALTY,
+                              'bg-soft-danger border-danger': item?.placeholderType === markTypeCategories.VIOLATION,
+                              'bg-soft-secondary border-secondary': item?.placeholderType !== markTypeCategories.SCORE && item?.placeholderType !== markTypeCategories.PENALTY && item?.placeholderType !== markTypeCategories.VIOLATION
+                            }"
+                            class="score-placeholder w-100 px-2 border text-uppercase d-flex justify-content-center align-items-center fw-bold"
+                            style="height: 30px"
+                          >
+                            <span *ngIf="item?.placeholderCode">{{ item.sectionName }}&nbsp;|&nbsp;{{ item.placeholderCode }}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- tab and contents -->
+                      <div [ngClass]="{'bg-white': item.isOpen }" *ngIf="item.isOpen" class="rounded card score-cards" style="position: relative;width: 350px;box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+                        <div *ngIf="item?.placeholderType">
+                            <div class="d-flex align-items-center justify-content-between px-3 py-2">
+                                <div class="fw-bold" style="font-size: 14px">Delete this item?</div>
+                                <div class="d-flex gap-2">
+                                  <button type="button" (click)="collapseGradingFormContextMenuItem(i);$event.stopPropagation()" class="btn btn-sm btn-primary">
+                                        <i class="pi pi-times" style="font-size: 12px;"></i> No
+                                  </button>
+                                  <button (click)="createScoreVersion(i)" class="btn btn-sm btn-danger">Yes</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ng-container *ngIf="!item?.placeholderType">
+                            <div>
+                              <div class="d-flex align-items-center justify-content-between px-3 py-2">
+                                  <div class="fw-bold" style="font-size: 14px">Scoring {{ scoringTabs[activeScoringTab]}}</div>
+                                  <button type="button" (click)="collapseGradingFormContextMenuItem(i);$event.stopPropagation()" class="btn btn-sm btn-primary">
+                                      <i class="pi pi-times" style="font-size: 12px;"></i> Close
+                                  </button>
+                              </div>
+                              <div class="text-primary px-3 py-2 border-top border-bottom border-bottom-dashed border-top-dashed mt-2 fw-bold" style="font-size: 13px">{{ currentQuestionMarkingSection.name?.[0].toUpperCase().concat(currentQuestionMarkingSection.name.slice(1)) }}</div>
+                              <div class="tab-menu py-2">
+                                  <button type="button" [disabled]="(item?.placeholderType) && (item?.placeholderType !== tab)" *ngFor="let tab of scoringTabs; let i = index" (click)="activeScoringTab = i" [class.active]="activeScoringTab === i">
+                                      {{ tab }}
+                                  </button>
+                              </div>
+                              <div class="tab-content">
+                                  <!-- <ng-container *ngFor="let tab of scoringTabs"> -->
+
+                                    <ng-container *ngIf="scoringTabs[activeScoringTab] == markTypeCategories.SCORE">
+                                      <div>
+                                        <div class="flex flex-column p-3" style="max-height: 250px;overflow-y: auto;overflow-x: hidden;">
+
+                                          <!-- general scores -->
+                                          <div *ngFor="let score of pageSchemeData?.general_scores_correct; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+
+                                            <div  class="d-flex justify-content-between align-items-center pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-primary">General Score</div>
+                                              <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div> 
+
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                                <div>
+                                                    <div class="fw-bold mb-1 truncate" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name  }}</div>
+                                                    <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                                </div>
+
+                                                <div class="d-flex gap-2">
+                                                  <ng-container *ngIf="!score.marker_discretion;">
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE)" class="btn btn-sm btn-outline-success fw-bold">+{{ score.max_score }} Mrk</button>
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE, true)" class="btn btn-sm btn-outline-secondary fw-bold">0 Mrk</button>
+                                                  </ng-container>
+
+                                                  <ng-container *ngIf="score.marker_discretion;">
+                                                    <div style="max-width: 120px;" class="d-flex gap-1">
+                                                      <input #btn type="number" class="form-control"  />
+                                                      <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                    </div>
+                                                  </ng-container>
+                                                </div>
+                                            </div>
+                                          </div>
+
+                                          <!-- section score -->
+                                          <div *ngFor="let score of currentQuestionMarkingSection?.scores_correct; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+                                            <div class="d-flex justify-content-between pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-success">Section Score</div>
+                                              <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div>
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                                <div>
+                                                    <div class="fw-bold mb-1 truncate" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name }}</div>
+                                                    <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                                </div>
+
+                                                <div class="d-flex gap-2">
+                                                  <ng-container *ngIf="!score.marker_discretion;">
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE)" class="btn btn-sm btn-outline-success fw-bold">+{{ score.max_score }} Mrk</button>
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE, true)" class="btn btn-sm btn-outline-secondary fw-bold">0 Mrk</button>
+                                                  </ng-container>
+
+                                                  <ng-container *ngIf="score.marker_discretion;">
+                                                    <div style="max-width: 120px; " class="d-flex gap-1">
+                                                      <input #btn type="number" class="form-control"  />
+                                                      <button (click)="selectGradingScore(item, score, markTypeCategories.SCORE, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                    </div>
+                                                  </ng-container>
+                                                </div>
+                                              </div>
+                                          </div>
+
+                                        </div>
+                                      </div>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="scoringTabs[activeScoringTab] == markTypeCategories.PENALTY">
+                                      <div>
+                                        <div class="flex flex-column p-3" style="max-height: 250px;overflow-y: auto;overflow-x: hidden;">
+                                          <!-- general scores -->
+                                          <div *ngFor="let score of pageSchemeData?.general_scores_penalty; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+                                            <div  class="d-flex justify-content-between align-items-center pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-primary">General Score</div>
+                                              <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div> 
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                              <div>
+                                                  <div class="fw-bold mb-1 truncate" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name  }}</div>
+                                                  <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                              </div>
+
+                                              <div class="d-flex gap-2">
+                                                <ng-container *ngIf="!score.marker_discretion;">
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY)" class="btn btn-sm btn-outline-danger fw-bold">-{{ score.max_score }} Mrk</button>
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY, true)" class="btn btn-sm btn-outline-danger fw-bold">0 Mrk</button>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="score.marker_discretion;">
+                                                  <div style="max-width: 120px;" class="d-flex gap-1">
+                                                    <input #btn type="number" class="form-control"  />
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                  </div>
+                                                </ng-container>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <div *ngFor="let score of currentQuestionMarkingSection?.scores_penalty; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+                                            <div class="d-flex justify-content-between pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-success">Section Score</div>
+                                              <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div>
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                              <div>
+                                                  <div class="fw-bold mb-1" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name }}</div>
+                                                  <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                              </div>
+
+                                              <div class="d-flex gap-2">
+                                                <ng-container *ngIf="!score.marker_discretion;">
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY)" class="btn btn-sm btn-outline-danger fw-bold">-{{ score.max_score }} Mrk</button>
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY, true)" class="btn btn-sm btn-outline-danger fw-bold">0 Mrk</button>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="score.marker_discretion;">
+                                                  <div style="max-width: 120px;"class="d-flex gap-1" >
+                                                    <input #btn type="number" class="form-control"  />
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.PENALTY, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                  </div>
+                                                </ng-container>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-container>
+
+                                    <ng-container *ngIf="scoringTabs[activeScoringTab] == markTypeCategories.VIOLATION">
+                                      <div>
+                                        <div class="flex flex-column p-3" style="max-height: 250px;overflow-y: auto;overflow-x: hidden;">
+                                          <!-- general scores -->
+                                          <div *ngFor="let score of pageSchemeData?.general_scores_violation; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+                                            <div  class="d-flex justify-content-between align-items-center pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-primary">General Score</div>
+                                               <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div> 
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                              <div>
+                                                  <div class="fw-bold mb-1 truncate" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name  }}</div>
+                                                  <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                              </div>
+
+                                              <div class="d-flex gap-2">
+                                                <ng-container *ngIf="!score.marker_discretion;">
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION)" class="btn btn-sm btn-outline-danger fw-bold">-{{ score.max_score }} Mrk</button>
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION, true)" class="btn btn-sm btn-outline-danger fw-bold">0 Mrk</button>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="score.marker_discretion;">
+                                                  <div style="max-width: 120px;" class="d-flex gap-1">
+                                                    <input #btn type="number" class="form-control"  />
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                  </div>
+                                                </ng-container>
+                                              </div>
+                                            </div>
+                                          </div>
+
+                                          <div *ngFor="let score of currentQuestionMarkingSection?.scores_violation; let i=index" class="w-100 bg-white rounded border p-2 mb-2">
+                                            <div class="d-flex justify-content-between pb-1 border-bottom border-bottom-dashed">
+                                              <div class="fw-bold small text-success">Section Score</div>
+                                              <div>Usage: &nbsp; <b> {{ score.appliedNo ?? 0 }} of {{ score.max_occurrence }}</b></div>
+                                            </div>
+                                            <div class="d-flex gap-3 align-items-center justify-content-between pt-1">
+                                              <div>
+                                                  <div class="fw-bold mb-1" style="font-size: 13px"> {{ score.name.length > 14 ? score.name.slice(0, 15).concat('...') : score.name }}</div>
+                                                  <div class="text-start">
+                                                    {{ score.code }}<span *ngIf="!score.marker_discretion">{{ score.max_score }} </span>
+                                                  </div>
+                                              </div>
+
+                                              <div class="d-flex gap-2">
+                                                <ng-container *ngIf="!score.marker_discretion;">
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION)" class="btn btn-sm btn-outline-danger fw-bold">-{{ score.max_score }} Mrk</button>
+                                                  <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION, true)" class="btn btn-sm btn-outline-danger fw-bold">0 Mrk</button>
+                                                </ng-container>
+
+                                                <ng-container *ngIf="score.marker_discretion;">
+                                                  <div style="max-width: 120px;" class="d-flex gap-1">
+                                                    <input #btn type="number" class="form-control"  />
+                                                    <button (click)="selectGradingScore(item, score, markTypeCategories.VIOLATION, false, +(btn.value))" type="button" class="btn btn-primary btn-sm w-100">Save</button>
+                                                  </div>
+                                                </ng-container>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </ng-container>
+                              </div>
+                            </div>
+
+                            <!-- action buttons -->
+                            <!-- <div class="d-flex justify-content-end p-2 mt-1 border border-top border-top-dashed">
+                              <button (click)="deleteGradingFormContextMenuItem(i)" class="btn btn-sm btn-danger">Delete</button>
+                            </div> -->
+                          </ng-container>
+                        </div>
+
+                    </div>
+                  </form>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
       </div>
     </ng-container>
     <ng-template #noResponse>

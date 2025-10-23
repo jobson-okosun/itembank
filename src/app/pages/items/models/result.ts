@@ -1,4 +1,6 @@
 import { questionItem } from "../../exam-preview/models/exam-preview-data";
+import { QuestionAnnotation } from "../../results/grading-item-types/drawing-and-writing/model/question-annotation.mode";
+import { ContextMenuGradingForm } from "../../results/grading-item-types/drawing-and-writing/model/store.model";
 
 export class ResultSummaryParams {
   center_id?: string;
@@ -191,6 +193,7 @@ export class CandidateItemScore {
   subtopic_id: string | null;
   subtopic_name: string | null;
   manual_grade_remark: string;
+  annotations: QuestionAnnotation[]
 }
 
 export class ItemPublishDTO {
@@ -205,6 +208,12 @@ export class ItemPublishDTO {
 export class ParticipantSectionTranscript {
   item_score: CandidateItemScore;
   item: questionItem;
+  graded?: boolean 
+}
+
+export interface Annotation { 
+  page: number, 
+  grading: ContextMenuGradingForm
 }
 
 export enum ParticipantsStatus {

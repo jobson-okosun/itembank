@@ -36,6 +36,7 @@ export class TopbarComponent implements OnInit {
   countryName: any;
   cookieValue: any;
   currentUser!: Account;
+  showAppAssets =  environment.showAppAssets
 
   constructor(
     @Inject(DOCUMENT) private document: any,

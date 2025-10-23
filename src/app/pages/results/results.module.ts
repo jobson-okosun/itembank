@@ -28,6 +28,10 @@ import { ReportsDashboardComponent } from "./reports-dashboard/reports-dashboard
 import { PaginatorModule } from "primeng/paginator";
 import { McqComponent } from './transcript/question-types/mcq/mcq.component';
 import { DrawingAndWritingComponent } from "./grading-item-types/drawing-and-writing/drawing-and-writing.component";
+import {AccordionModule} from 'primeng/accordion';
+import { CustomContextMenuComponent } from './grading-item-types/drawing-and-writing/custom-context-menu/custom-context-menu.component';
+import { DraggableDirective } from "./grading-item-types/drawing-and-writing/directives/draggable.directive";
+import { CloseDropdownComponent } from './transcript/question-types/close-dropdown/close-dropdown.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +42,10 @@ import { DrawingAndWritingComponent } from "./grading-item-types/drawing-and-wri
     TranscriptViewComponent,
     ReportsDashboardComponent,
     McqComponent,
-    DrawingAndWritingComponent
+    DrawingAndWritingComponent,
+    CustomContextMenuComponent,
+    DraggableDirective,
+    CloseDropdownComponent   
   ],
   imports: [
     CommonModule,
@@ -46,6 +53,7 @@ import { DrawingAndWritingComponent } from "./grading-item-types/drawing-and-wri
     TableModule,
     NgbDropdownModule,
     NgbAccordionModule,
+    AccordionModule,
     NgbTooltipModule,
     NgbNavModule,
     NgbPopoverModule,
@@ -61,6 +69,7 @@ import { DrawingAndWritingComponent } from "./grading-item-types/drawing-and-wri
     NgbProgressbarModule,
     PaginatorModule,
   ],
+  exports: [],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: "tinymce/tinymce.min.js" },
   ],

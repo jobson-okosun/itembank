@@ -22,6 +22,8 @@ import { NewTopic } from "../../items/models/new-topic.model";
 import { ItemUsed } from "../../items/models/filter-items.model";
 import { UsageHistory } from "../../items/models/usage-history";
 import { BlockDetails } from "../../assessment/model/section-details";
+import { Location } from '@angular/common';
+import { timer } from "rxjs";
 
 @Component({
   selector: "app-list-passages",
@@ -118,7 +120,8 @@ export class ListPassagesComponent implements OnInit {
     private notifier: NotifierService,
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
-    private userService: UserService
+    private userService: UserService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -330,6 +333,16 @@ export class ListPassagesComponent implements OnInit {
     //   // todo: display selcet topic if there is no subject id
 
     // }
+
+    let passageTrail = localStorage.getItem('passage-trail')
+    if(passageTrail) {
+      passageTrail = JSON.parse(passageTrail)
+
+      timer(1000).subscribe(() => {
+        this.getPassages(passageTrail)
+        localStorage.removeItem('passage-trail')
+      })
+    }
   }
 
   handleSubjectSelection(subject: ListAllSubjects){
@@ -588,8 +601,20 @@ export class ListPassagesComponent implements OnInit {
     this.itemUtil.saveCurrentItemTrail()
   }
 
-  getPassages(topic?: any) {
-    console.log("get opassages");
+  setTreeItemIndex(topic: any, index: number) {
+    if(index == undefined) {
+      return 
+    }
+
+    const passageTrail = {...topic, treeIndex: index}
+    localStorage.setItem('passage-trail', JSON.stringify(passageTrail))
+  }
+
+  getPassages(topic?: any, treeItemIndex?: number) {
+    if(treeItemIndex !== undefined && treeItemIndex !== null){
+      this.setTreeItemIndex(topic, treeItemIndex)
+    }
+
     this.showFilter = false;
     this.loading_passages = true;
     this.selectedTopicName = topic.topicName;
@@ -606,7 +631,7 @@ export class ListPassagesComponent implements OnInit {
     if (topic) {
       this.selectedTopic = topic;
     }
-    console.log(this.subjectId);
+    // console.log(this.subjectId);
     //console.log('selectedTopic', this.selectedTopic);
 
     if (this.assessmentActive) {

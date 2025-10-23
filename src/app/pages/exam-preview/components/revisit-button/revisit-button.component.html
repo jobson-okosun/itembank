@@ -4,8 +4,10 @@
     triggers="mouseenter:mouseleave"
     class="p-lg-2 btn btn-sm mt-1"
     style="padding: 3px !important; cursor: pointer"
+    [ngClass]="{'bg-primary': revisitbtn.checked}"
   >
     <input
+     #revisitbtn
       type="checkbox"
       class="form-check-input"
       [checked]="isDisplayAnswerForCurrentQuestion()"

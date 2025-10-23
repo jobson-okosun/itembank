@@ -40,6 +40,6 @@ export interface IEditRegField {
   field_id: string;
   name: string;
   placement: number;
-  login: boolean;
+  // login: boolean;
   mandatory: boolean;
 }

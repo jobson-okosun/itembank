@@ -39,9 +39,9 @@ export class AssessmentsService {
   constructor(private http: HttpClient, private notifier: NotifierService) {}
 
   validateBlockSection(newBlock: NewSectionBlock, section: SectionDetails) {
-    console.log(this.currentBlock, "currentBlock");
-    console.log(newBlock, "newblock");
-    console.log(section, "section");
+    // console.log(this.currentBlock, "currentBlock");
+    // console.log(newBlock, "newblock");
+    // console.log(section, "section");
     let totalBlockQuestions = 0;
     let totalQuestionPerCandidate = 0;
 
@@ -527,5 +527,4 @@ export class AssessmentsService {
     );
   }
 
-  
 }

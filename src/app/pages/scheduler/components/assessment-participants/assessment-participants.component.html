@@ -698,7 +698,7 @@
                                     Edit
                                   </a>
                                 </li>
-
+<!-- 
                                 <li
                                   (click)="
                                     selectedParticipants = [];
@@ -715,7 +715,7 @@
                                     ></i>
                                     Move to new Batch
                                   </a>
-                                </li>
+                                </li> -->
 
                                 <li>
                                   <a
@@ -783,7 +783,8 @@
                   class="form-control"
                   [placeholder]="regField.name"
                   #inputValueRef
-                  (keyup)="captureFormValue(regField.id, inputValueRef.value)"
+                  (keyup)="captureFormValue(regField.id, inputValueRef, inputValueRef.value)"
+                  [ngClass]="{'border-danger': (!inputValueRef.value?.trim() || inputValueRef.value?.includes(' ')) && inputValueRef.dataset['touched'] == 'true'}"
                 />
               </ng-container>
 
@@ -793,10 +794,11 @@
                   class="form-select mb-3"
                   #selectedValueRef
                   (change)="
-                    captureFormValue(regField.id, selectedValueRef.value)
+                    captureFormValue(regField.id, selectedValueRef, selectedValueRef.value)
                   "
+                  [ngClass]="{'border-danger': (!selectedValueRef.value?.trim() || selectedValueRef.value?.includes(' ')) && selectedValueRef.dataset['touched'] == 'true'}"
                 >
-                  <option selected disabled>Select Option</option>
+                  <option selected disabled value="">Select Option</option>
                   <option *ngFor="let option of regField.values">
                     {{ option }}
                   </option>
@@ -835,8 +837,12 @@
                 [(ngModel)]="selectedCentedId"
                 class="form-select mb-3"
                 name="center"
+                #centerRef
+                (blur)="centerRef.setAttribute('data-touched', 'true')"
+                [ngClass]="{'border-danger': !centerRef.value?.trim() && centerRef.dataset['touched'] == 'true'}"
+
               >
-                <option selected disabled>Select center</option>
+                <option selected value="">Select center</option>
                 <option
                   *ngFor="let center of allCenters"
                   value="{{ center.id }}"
@@ -856,6 +862,10 @@
                 [(ngModel)]="selectedSectionGroupToAddParticipant"
                 class="form-select mb-3"
                 name="section"
+                #groupRef
+                (blur)="groupRef.setAttribute('data-touched', 'true')"
+                [ngClass]="{'border-danger': !groupRef.value?.trim() && groupRef.dataset['touched'] == 'true'}"
+
               >
                 <option selected disabled>Select Section Group</option>
 

@@ -3,10 +3,21 @@
     <div class="overlay-content"></div>
   </div>
 </div> -->
-<app-breadcrumbs
-  title="EDIT ASSESSMENT CENTER"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<div class="row mb-2">
+  <div class="col-lg-2">
+      <button class="btn mb-2 btn-outline-info" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>Back
+      </button>
+  </div>
+  <div class="col-lg-10">
+    <div class="pt-2">
+      <app-breadcrumbs
+        title="EDIT ASSESSMENT CENTER"
+        [breadcrumbItems]="breadCrumbItems"
+      ></app-breadcrumbs>
+    </div>
+  </div>
+</div>
 
 <div
   *ngIf="fetchingCenterDetails"
@@ -74,6 +85,7 @@
                         type="text"
                         value="{{ centerDetails.name }}"
                         name="centerName"
+                        [ngClass]="{'border-danger': !centerDetails.name }"
                       />
                     </div>
                   </div>
@@ -90,6 +102,7 @@
                         value="{{ centerDetails.center_id }}"
                         [(ngModel)]="centerDetails.center_id"
                         name="centerId"
+                        [ngClass]="{'border-danger': !centerDetails.center_id }"
                       />
                     </div>
                   </div>
@@ -106,6 +119,7 @@
                         type="text"
                         value="{{ centerDetails.address }}"
                         name="centerAddress"
+                        [ngClass]="{'border-danger': !centerDetails.address }"
                       ></textarea>
                     </div>
                   </div>
@@ -120,6 +134,7 @@
                       class="form-select form-select-md"
                       [(ngModel)]="centerDetails.state"
                       name="centerState"
+                      [ngClass]="{'border-danger': !centerDetails.state }"
                     >
                       <option disabled>Select state</option>
                       <option
@@ -146,6 +161,7 @@
                         type="text"
                         [(ngModel)]="centerDetails.contact_phone"
                         name="cantactPhone"
+                        [ngClass]="{'border-danger': !centerDetails.contact_phone }"
                       />
                     </div>
                   </div>
@@ -162,6 +178,7 @@
                         class="form-control"
                         type="email"
                         name="contactPersonEmail"
+                        [ngClass]="{'border-danger': !centerDetails.contact_email }"
                       />
                     </div>
                   </div>
@@ -169,10 +186,21 @@
               </div>
             </div>
           </div>
-          <div class="text-end">
+          <div class="d-flex justify-content-end p-2 gap-3">
+            <button class="btn btn-outline-danger" (click)="goBack()">
+              Cancel
+            </button>
             <button
               class="btn btn-primary"
-              [disabled]="processingCenterEdit"
+              [disabled]="
+              processingCenterEdit ||
+              !centerDetails.contact_email ||
+              !centerDetails.contact_phone ||
+              !centerDetails.state ||
+              !centerDetails.address ||
+              !centerDetails.center_id ||
+              !centerDetails.name
+              "
               (click)="editCenterDetails()"
             >
               <span *ngIf="!processingCenterEdit">Save</span>

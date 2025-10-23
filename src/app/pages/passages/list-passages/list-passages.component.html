@@ -117,7 +117,7 @@
               >
                 Topics ({{ passageTopics.length }})
               </li>
-              <li>
+              <li name="topic-tree">
                 <div
                   class="first-list"
                   *ngFor="let topic of passageTopics; let i = index"
@@ -130,7 +130,7 @@
                   >
                     <a
                       [ngStyle]="{ cursor: 'pointer' }"
-                      (click)="getPassages(topic); setItemTrail(topic)"
+                      (click)="getPassages(topic, i); setItemTrail(topic)"
                       class="fw-small fs-11 text-primary dropdown arrow-none"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"

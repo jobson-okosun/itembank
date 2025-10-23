@@ -171,6 +171,7 @@ export class questionItem {
   allowCut: boolean;
   plainText: boolean;
   reference: string;
+  pass_fail_status?: string;
 
   // Add new model properties
 }

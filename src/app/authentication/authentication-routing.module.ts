@@ -7,6 +7,7 @@ import { ResetPasswordComponent } from "./reset-password/reset-password.componen
 import { NewPasswordComponent } from "./new-password/new-password.component";
 import { ForgotPasswordComponent } from "./forgot-password/forgot-password.component";
 import { RegistrationSuccessComponent } from "./registration-success/registration-success.component";
+import { InvitationJoinComponent } from "./invitation-join/invitation-join.component";
 
 
 const routes: Routes = [
@@ -17,7 +18,10 @@ const routes: Routes = [
   { path: "reset-password", component: ResetPasswordComponent },
   { path: "new-password/:id", component: NewPasswordComponent },
   { path: "forgot-password/:id", component: ForgotPasswordComponent },
-  { path: "registration-success" , component: RegistrationSuccessComponent}
+  { path: "registration-success" , component: RegistrationSuccessComponent},
+
+  { path: 'invitation-join', component: InvitationJoinComponent}
+  // new route: invitation-join
 ];
 
 @NgModule({

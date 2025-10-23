@@ -32,6 +32,8 @@ export class AssessmentSectionGroupingComponent implements OnInit {
 
   Sections: ISection[] = [];
   dashboardData: ISectionGroupDashboard;
+  sectionNameTimer:any 
+
   constructor(
     private modalService: NgbModal,
     private activatedRoute: ActivatedRoute,
@@ -98,11 +100,24 @@ export class AssessmentSectionGroupingComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           this.proccessingAddSectionGroup = false;
-          this.notifierService.notify("error", err.error.message);
+          this.notifierService.notify("error", err.error.error ?? err.error.message);
         },
       });
     // console.log(newsectionGroupDTO);
     // // this.router.navigate(["/scheduler/assessment/details"]);
+  }
+
+  checkIfSectionNameExist(el: HTMLInputElement) {
+    const groups = this.assessmentSectionGroups.sectionGroups
+
+    const exists = groups.find(group => group.groupName.trim().toLowerCase() === el.value.trim().toLowerCase());
+    if (exists) {
+      el.classList.add('border-danger')
+      return true
+    }
+
+    el.classList.remove('border-danger')
+    return false
   }
 
   fetchAssessmentSectionGroups(

@@ -138,9 +138,12 @@ export class AssessmentParticipantsComponent implements OnInit {
   }
   captureFormValue(
     regFieldId: string,
+    input: HTMLElement,
     inputValue?: string,
-    inputType?: string
+    inputType?: string,
   ) {
+
+    input.setAttribute('data-touched', 'true')
     // console.log(regFieldId + "" + inputValue);
     // console.log(this.calendarValue);
     let fieldValue: IFieldValue = {

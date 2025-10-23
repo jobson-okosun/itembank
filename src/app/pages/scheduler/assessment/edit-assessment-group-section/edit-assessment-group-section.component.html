@@ -3,10 +3,22 @@
     <div class="overlay-content"></div>
   </div>
 </div> -->
-<app-breadcrumbs
-  title="EDIT SECTION GROUP"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<div class="row mb-2">
+  <div class="col-lg-2">
+      <button class="btn mb-2 btn-outline-info" (click)="goBack()">
+        <i class="ri-arrow-left-line"></i>Back
+      </button>
+  </div>
+  <div class="col-lg-10">
+    <div class="pt-2">
+      <app-breadcrumbs
+        title="EDIT SECTION GROUP"
+        [breadcrumbItems]="breadCrumbItems"
+      ></app-breadcrumbs>
+    </div>
+  </div>
+</div>
+
 
 <div
   *ngIf="fetchingGroupParticipants || fetchingGroupDetails"
@@ -53,11 +65,13 @@
                 <div class="mb-3">
                   <label class="form-label">Name:</label>
                   <input
+                    #groupName
                     class="form-control"
                     value="{{ sectionGroupDetails.groupName }}"
                     type="text"
                     [(ngModel)]="sectionGroupDetails.groupName"
                     name="groupName"
+                    [ngClass]="{'border-danger': !groupName.value}"
                   />
                 </div>
               </div>
@@ -105,18 +119,24 @@
         </div>
       </div>
 
-      <div class="d-flex justify-content-end">
+      <div class="d-flex justify-content-end p-2 gap-3">
         <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
+       <button class="btn btn-outline-danger" (click)="goBack()">
+          Cancel
+        </button>
+
         <button
-          class="btn btn-primary m-3"
+          class="btn btn-primary"
           *ngIf="!processingEdit"
           (click)="save()"
+          [disabled]="!sectionGroupDetails.groupName"
         >
           Save
         </button>
 
+
         <ng-template [ngIf]="processingEdit">
-          <button class="btn btn-primary btn-load m-3" [disabled]="processingEdit">
+          <button class="btn btn-primary btn-load" [disabled]="processingEdit">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>

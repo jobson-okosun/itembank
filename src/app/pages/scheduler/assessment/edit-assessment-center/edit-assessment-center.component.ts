@@ -170,6 +170,7 @@ export class EditAssessmentCenterComponent implements OnInit {
     this.modalService.dismissAll();
   }
   goBack(): void {
+    sessionStorage.setItem('schedule-trail-tab', 'centers')
     this.locationService.back();
   }
 
@@ -472,7 +473,7 @@ export class EditAssessmentCenterComponent implements OnInit {
       center_id: this.centerDetails.center_id,
       contact_email: this.centerDetails.contact_email,
       contact_phone: this.centerDetails.contact_phone,
-      map_location: "",
+      // map_location: "",
       name: this.centerDetails.name,
       org_id: this.userAccountService.getCurrentUser().org_id,
       state: this.centerDetails.state,
@@ -487,7 +488,8 @@ export class EditAssessmentCenterComponent implements OnInit {
         next: (value) => {
           this.processingCenterEdit = false;
           this.notifierService.notify("success", "Updated successfully");
-          this.fetchCenterDetails();
+          // this.fetchCenterDetails();
+          this.goBack()
           // this.router.navigate([
           //   `examalpha/exams/${this.itemBankAssessmentService.activeAssessmentId}`,
           // ]);

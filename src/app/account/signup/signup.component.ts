@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormArray, FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AccountService } from "../services/account.service";
 import { Country, Countries } from "src/app/authentication/countries/data";
+import { environment } from "src/environments/environment";
 
 @Component({
   selector: "app-signup",
@@ -20,6 +21,8 @@ export class SignupComponent implements OnInit {
   http: any;
   router: any;
   step: number = 1;
+  showAppAssets = environment.showAppAssets
+
   constructor(
     private formBuilder: FormBuilder,
     private accountService: AccountService

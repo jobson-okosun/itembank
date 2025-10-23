@@ -289,7 +289,9 @@
                       name="sectionName"
                       ngModel
                       required
+                      (input)="checkIfSectionNameExist(sectionNameRef)"
                     />
+                    <div *ngIf="checkIfSectionNameExist(sectionNameRef)" class="mt-1 text-danger small"> Section name already exist </div>
                   </div>
                 </div>
               </div>
@@ -320,7 +322,7 @@
             <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
             <button
               *ngIf="!proccessingAddSectionGroup"
-              [disabled]="!addGroupSectionForm.valid || sectionNameRef.value.trim() === ''"
+              [disabled]="!addGroupSectionForm.valid || sectionNameRef.value.trim() === '' || checkIfSectionNameExist(sectionNameRef)"
               class="btn btn-primary"
             >
               Save

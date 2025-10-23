@@ -70,13 +70,17 @@
                   Manage Schedule</a
                 >
               </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/examalpha/exams/{{ assessment.schId }}/marking-guide/sections" [queryParams]="{ assessmentName: assessment.name }"
+                  ><i class="ri-check-double-line align-bottom me-2 text-muted"></i>
+                  Marking Guide</a
+                >
+              </li>
            
               <li class="dropdown-divider"></li>
-           
-             
-             
-             
-
+        
             </ul>
           </div>
         </div>

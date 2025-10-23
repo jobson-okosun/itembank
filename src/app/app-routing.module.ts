@@ -4,14 +4,16 @@ import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 
 import { LayoutComponent } from "./layouts/layout.component";
-
+ 
 // Auth
-import { AuthGuard } from "./core/guards/auth.guard";
+// import { AuthGuard } from "./core/guards/auth.guard";
 import { ClozeDropdownComponent } from "./pages/items/cloze-dropdown/cloze-dropdown.component";
-import { SchedulerDashboardComponent } from "./pages/scheduler/scheduler-dashboard/scheduler-dashboard.component";
-// import { DrawingAndWritingPreviewComponent } from "./pages/items/drawing-and-writing-preview/drawing-and-writing-preview.component";
+import { TranscriptPreviewComponent } from "./pages/transcript-preview/transcript-preview/transcript-preview.component";
+// import { SchedulerDashboardComponent } from "./pages/scheduler/scheduler-dashboard/scheduler-dashboard.component";
 
-const routes: Routes = [
+// import { ItemsPreviewAndPrintingTestComponent } from "./items-preview-and-printing-test/items-preview-and-printing-test/items-preview-and-printing-test.component";
+
+const routes: Routes = [ 
   {
     path: "",
     loadChildren: () =>
@@ -58,6 +60,8 @@ const routes: Routes = [
     path: "cloze-dropdown",
     component: ClozeDropdownComponent,
   },
+  { path: 'transcript', component: TranscriptPreviewComponent }
+  // { path: 'print', component: ItemsPreviewAndPrintingTestComponent }
   // { path: 'testing', component: DrawingAndWritingPreviewComponent }
   //{ path: 'pages', loadChildren: () => import('./extraspages/extraspages.module').then(m => m.ExtraspagesModule), canActivate: [AuthGuard] },
 ];

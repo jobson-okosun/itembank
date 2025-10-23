@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { SchedulerService } from "../../services/scheduler.service";
 import { ActivatedRoute, Params, Router } from "@angular/router";
 import { Subscription } from "rxjs";
@@ -23,7 +23,7 @@ import { states } from "./center-states/data";
   templateUrl: "./assessment-center.component.html",
   styleUrls: ["./assessment-center.component.scss"],
 })
-export class AssessmentCenterComponent implements OnInit {
+export class AssessmentCenterComponent implements OnInit{
   routeSub!: Subscription;
   assessmentId: string = "";
   centers!: ICenters;
@@ -138,7 +138,7 @@ export class AssessmentCenterComponent implements OnInit {
       },
 
       error: (err: HttpErrorResponse) => {
-        this.notifierService.notify("error", err.message);
+        this.notifierService.notify("error", err.error.error ?? err.message);
         this.processingAddAssessmentCenter = false;
       },
     });

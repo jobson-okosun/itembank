@@ -28,6 +28,9 @@ import { ButtonModule } from "primeng/button";
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
 // import { DrawingAndWritingPreviewComponent } from "./drawing-and-writing-preview/drawing-and-writing-preview.component";
 import { FormsModule } from "@angular/forms";
+import { TranscriptPreviewModule } from "./pages/transcript-preview/transcript-preview.module";
+// import { ItemsPreviewAndPrintingTestModule } from "./items-preview-and-printing-test/items-preview-and-printing-test.module";
+
 
 export function createTranslateLoader(http: HttpClient): any {
   return new TranslateHttpLoader(http, "assets/i18n/", ".json");
@@ -99,9 +102,11 @@ const customNotifierOptions: NotifierOptions = {
     PagesModule,
     FormsModule,
     ButtonModule,
-    NotifierModule.withConfig(customNotifierOptions),
+    // ItemsPreviewAndPrintingTestModule,
+    TranscriptPreviewModule,
+    NotifierModule.withConfig(customNotifierOptions)
   ],
-  providers: [
+  providers: [ 
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
