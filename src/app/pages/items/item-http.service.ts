@@ -139,7 +139,7 @@ export class ItemHttpService {
       item.options.some(
         (option) =>
           option.label.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() ===
-            "" ||
+          "" ||
           item.stimulus.trim() === "" ||
           item.stimulus.trim() === "<p></p>"
       )
@@ -373,6 +373,15 @@ export class ItemHttpService {
     );
   }
 
+  uploadSubjects(
+    payload: any
+  ): Observable<ResourceCreated> {
+    return this.http.post<ResourceCreated>(`${environment.developmentIP}/itembank/admin/subjectsss`,
+      payload,
+      { withCredentials: true }
+    );
+  }
+
   createChoiceMatrixItem(item: ChoiceMatrix): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/choice-matrix`,
@@ -570,7 +579,7 @@ export class ItemHttpService {
 
   editDrawWritingItem(newDrawWritingItem: DrawAndWritingModel): Observable<ResourceCreated> {
     return this.http.put(
-      `${environment.developmentIP}/itembank/items/${ newDrawWritingItem.itemId  }/item/draw-write`,
+      `${environment.developmentIP}/itembank/items/${newDrawWritingItem.itemId}/item/draw-write`,
       newDrawWritingItem,
       { withCredentials: true }
     );

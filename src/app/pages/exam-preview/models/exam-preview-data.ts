@@ -172,7 +172,7 @@ export class questionItem {
   plainText: boolean;
   reference: string;
   pass_fail_status?: string;
-
+backgroundType?: string;
   // Add new model properties
 }
 

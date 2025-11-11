@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ItemType } from 'src/app/shared/enum/itemTypes';
 import { KonvaToolsEvent } from '../grading-item-types/drawing-and-writing/services/event.service';
 import { DataService } from 'src/app/services/data.service';
-import { forkJoin, of, timer } from 'rxjs';
+import { forkJoin, of, Subscription, timer } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -15,6 +15,7 @@ import { SchemeMarkCategory, SchemePageData, SchemeQuestionsTransformed } from '
 import { NotifierService } from 'angular-notifier';
 import { Grading, QuestionAnnotation, SummaryResult } from '../grading-item-types/drawing-and-writing/model/question-annotation.mode';
 import { DrawingAndWritingStore } from '../grading-item-types/drawing-and-writing/services/store.service';
+import { Store } from '../grading-item-types/drawing-and-writing/model/store.model';
 
 
 @Component({
@@ -32,7 +33,7 @@ export class GradeComponent implements OnInit {
   currentQuestionIndex: number = 0
   itemType = ItemType;
 
-  showQuestionPanel: boolean = true;
+  showQuestionPanel: boolean = false;
   gradingInputTouched: boolean = false;
   isSavingGrades: boolean = false
   modalRef: any;
@@ -44,6 +45,13 @@ export class GradeComponent implements OnInit {
   currentQuestionMarkingGuide: SchemeQuestionsTransformed
   gradingSummary: SummaryResult
   currentQuestionMarkingSectionChanges: any
+  pages: number[] = []
+  storeSubscription: Subscription
+  currentPage: number
+  backgroundSub$: Subscription
+  selectedMeasuringToolsSet = new Set()
+  selectedTools: string[] = []
+  backgroundType: string
  
   private params: { section_id: string, participant_id: string, assesement_id: string } = { section_id: '', participant_id: '', assesement_id: '' }
 
@@ -61,6 +69,18 @@ export class GradeComponent implements OnInit {
   ngOnInit(): void {
     this.getURLParams()
     this.fetchPageMarkingGuide()
+    this.storeSubscription = this.drawingStore.store$.subscribe(storeState => this.onDrawingStoreChanges(storeState));
+    this.backgroundSub$ = this.konvaEventTools.backgroundChange$.subscribe( type => this.backgroundType = type)
+  }
+
+  private onDrawingStoreChanges(storeState: Store) {
+    this.currentPage = storeState.currentPage;
+    this.pages = Array.from({ length: storeState.pages.length }, (_, i) => i)
+  }
+
+  selectPage(pageIndex: number) {
+    this.drawingStore.selectPage(pageIndex)
+    this.konvaEventTools._pageSelectEvent.next()
   }
 
   getURLParams() {
@@ -96,7 +116,7 @@ export class GradeComponent implements OnInit {
       })
       )
       .subscribe(async ({ sections, participant }) => {
-        this.sections = sections.map( item => {
+        this.sections = sections?.map( item => {
           const graded = item.item_score?.annotations?.length ? true : false
           item.item_score.annotations = item.item_score.annotations.map( ann => ({...ann, graded }))
 
@@ -122,7 +142,9 @@ export class GradeComponent implements OnInit {
           await this.fetchPageData()
         },
         error: (err: HttpErrorResponse) => {
-          this.notifier.notify('error', err.error.error ?? 'Sorry! Unable to fetch marking guide')
+          this.notifier.notify('error', err.error?.error ?? 'Sorry! Unable to fetch marking guide')
+          // this.loadingPageData = false
+          // this.fetchPageData()
         }
       })
   }
@@ -132,7 +154,7 @@ export class GradeComponent implements OnInit {
   }
 
   setDefaultQuestion() {
-    this.currentQuestion = this.sections[0]
+    this.currentQuestion = this.sections?.[0]
   }
 
   updateCurrentQuestionItem() {
@@ -141,12 +163,16 @@ export class GradeComponent implements OnInit {
   }
 
   updateCurrentQuestionGuide() {
-    this.currentQuestionMarkingGuide = this.pageSchemeData.questions.find(item => item.item_id == this.currentQuestion.item.id)
+    this.currentQuestionMarkingGuide = this.pageSchemeData?.questions?.find(item => item.item_id == this.currentQuestion.item.id)
+  }
+
+  getCurrentQuestion(): ParticipantSectionTranscript{
+    return this.currentQuestion
   }
 
   ToggleQuestionPane() {
     this.showQuestionPanel = !this.showQuestionPanel
-    this.konvaEventTools._openQuestionPane.next(!this.konvaEventTools._openQuestionPane.getValue())
+    this.konvaEventTools._resizeCanvas$.next()
   }
 
   showGrading(): void {
@@ -208,6 +234,10 @@ export class GradeComponent implements OnInit {
   }
 
   getParticipantOverviewData() {
+    if(!this.participantData) {
+      return null
+    }
+
     const section = this.participantData.section_attempts.sections.find(item => item.id == this.params.section_id)
     const participantName = `${this.participantData.reg_fields['FIRST NAME']} ${this.participantData.reg_fields['LAST NAME']}`
     const loginField = this.participantData.reg_fields[this.participantData.login_field]
@@ -416,6 +446,33 @@ export class GradeComponent implements OnInit {
     });
 
     this.gradingSummary = result
+  }
+
+  openModal_(content: any, size = 'xl') {
+    this.modalService.open(content, { size: 'xl' });
+  }
+
+  selectMeasurementTool(tool: string | null) {
+    this.konvaEventTools._selectMeasurementTool$.next(tool);
+    this.selectedMeasuringToolsSet.add(tool)
+  }
+
+  selectBackgroundType(type: string | null) {
+    this.konvaEventTools.backgroundChange$.next(type);
+  }
+
+  getSelectedTools(): any[] {
+    return Array.from(this.selectedMeasuringToolsSet.values())
+  }
+
+  removeTool(tool: string | null) {
+    if(tool == 'all') {
+      this.selectedMeasuringToolsSet.clear()
+    } else {
+      this.selectedMeasuringToolsSet.delete(tool)
+    }
+
+    this.konvaEventTools._removeMeasurementTool$.next(tool);
   }
 
   calcGradingCummulativeScore() {

@@ -28,3 +28,45 @@
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+    #container {
+        flex: 1;
+        display: flex;
+        width: 100%;
+    }
+
+    #stage-parent {
+        margin: auto;
+        width: 100%;
+        overflow-y: auto;
+        height: 1000px;
+        overflow-x: hidden;
+        border: 1px solid lightgray;
+    }
+
+    #stage {
+        width: 100%;
+        height: 1000px;
+        background: #fff;
+    }
+
+    .hint {
+        color: #9ca3af;
+        font-size: 13px;
+        margin-left: 8px
+    }
+
+    #stage-parent::-webkit-scrollbar {
+        width: 20px;
+    }
+
+    #stage-parent::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    #stage-parent::-webkit-scrollbar-thumb {
+        background-color: #888;
+        border-radius: 10px;
+        border: 2px solid #f1f1f1;
+    }

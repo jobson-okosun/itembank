@@ -2,7 +2,7 @@ import { FormGroup } from "@angular/forms";
 import { SchemeMarkCategory } from "src/app/pages/assessment/model/marking-guide-types";
 
 export interface Strokes {
-  points: number[][];
+  points: number[];
   mode: 'brush' | 'eraser';
   color?: string;
   size: number;

@@ -18,17 +18,17 @@
         <div class="d-flex gap-2 align-items-center">
           <div class="rounded-circle d-flex flex-colum align-items-center justify-content-center bg-soft-secondary"
             style="width: 50px;height: 50px;">
-            <span class="fs-12 fw-bold text-uppercase"> {{ getParticipantOverviewData().initials }} </span>
+            <span class="fs-12 fw-bold text-uppercase"> {{ getParticipantOverviewData()?.initials }} </span>
           </div>
           <div>
-            <div class="fs-14 fw-bold">{{ getParticipantOverviewData().participantName }}</div>
-            <span class="small">{{ getParticipantOverviewData().loginField }}</span>
+            <div class="fs-14 fw-bold">{{ getParticipantOverviewData()?.participantName }}</div>
+            <span class="small">{{ getParticipantOverviewData()?.loginField }}</span>
           </div>
         </div>
         <div class="d-flex justify-content-between gap-3">
           <div>
             <h6>Total questions</h6>
-            <div class="small fw-bold fs-12 text-center">{{ getParticipantOverviewData().totalQuestions }}</div>
+            <div class="small fw-bold fs-12 text-center">{{ getParticipantOverviewData()?.totalQuestions }}</div>
           </div>
           <div>
             <h6 class="text-success"> Total correct</h6>
@@ -45,13 +45,14 @@
           <div>
             <h6>Score</h6>
             <!-- <div class="small fw-bold fs-12 text-center">{{ cummulativeGradingScore }}</div> -->
-            <div class="small fw-bold fs-12 text-center">{{ (gradingSummary?.overall?.score ?? 0) - (gradingSummary?.overall?.penalty ?? 0) }}</div>
+            <div class="small fw-bold fs-12 text-center">{{ (gradingSummary?.overall?.score ?? 0) -
+              (gradingSummary?.overall?.penalty ?? 0) }}</div>
           </div>
         </div>
       </div>
       <div>
         <div class="d-flex align-items-center gap-1">
-          <div class="small">{{ getParticipantOverviewData().section.name }}</div>
+          <div class="small">{{ getParticipantOverviewData()?.section.name }}</div>
           <div *ngIf="currentQuestion?.item?.topicName" class="small">&middot; {{ currentQuestion?.item?.topicName }}
           </div>
           <div *ngIf="currentQuestion?.item?.subtopicName" class="small">&middot;{{ currentQuestion?.item?.subtopicName
@@ -61,81 +62,127 @@
     </div>
   </div>
 
-  <div [ngClass]="{'d-flex justify-content-between': showQuestionPanel}" class="mt-2 py-3 border-top">
-    <div class="d-flex gap-2 align-items-center" *ngIf="showQuestionPanel">
-      <button (click)="previousQuestionItem();hideSideBar()" [disabled]="isPreviousDisabled()"
-        class="btn p-2 bg-transparent border small d-flex align-items-center gap-2" style="background-color: #cccccc">
-        <i class="ri-arrow-left-s-line"></i>Prev
-      </button>
-      <span>{{ currentQuestionIndex + 1 }} of {{ sections.length }}</span>
-      <button (click)="nextQuestionItem();hideSideBar()" [disabled]="isNextDisabled()"
-        class="btn p-2 bg-transparent border small d-flex align-items-center gap-2" style="background-color: #cccccc">
-        Next<i class="ri-arrow-right-s-line"></i>
-      </button>
-      <div class="d-flex justify-content-between">
+  <div>
+    <div class="d-flex justify-content-between border-top py-3 mt-2">
+
+      <div class="d-flex gap-2 align-items-center">
+        <button (click)="previousQuestionItem();hideSideBar()" [disabled]="isPreviousDisabled()"
+          class="btn p-2 bg-transparent border small d-flex align-items-center gap-2" style="background-color: #cccccc">
+          <i class="ri-arrow-left-s-line"></i>Prev
+        </button>
+        <span>{{ currentQuestionIndex + 1 }} of {{ sections.length }}</span>
+        <button (click)="nextQuestionItem();hideSideBar()" [disabled]="isNextDisabled()"
+          class="btn p-2 bg-transparent border small d-flex align-items-center gap-2" style="background-color: #cccccc">
+          Next<i class="ri-arrow-right-s-line"></i>
+        </button>
+        <!-- <div class="d-flex justify-content-between"> -->
         <!-- <span
-          [ngClass]="{'text-danger': getQuestionGrading().score <= 0,  'text-success': getQuestionGrading().score > 0}"
-          class="small rounded border p-2" *ngIf="getQuestionGrading()?.graded">
-          Graded:
-          <span>{{ getQuestionGrading()?.score }} </span>
-          (Mrk)
-        </span>
-        <span class="small text-warning rounded border p-2" *ngIf="!getQuestionGrading()?.graded"> Not graded </span> -->
+            [ngClass]="{'text-danger': getQuestionGrading().score <= 0,  'text-success': getQuestionGrading().score > 0}"
+            class="small rounded border p-2" *ngIf="getQuestionGrading()?.graded">
+            Graded:
+            <span>{{ getQuestionGrading()?.score }} </span>
+            (Mrk)
+          </span>
+          <span class="small text-warning rounded border p-2" *ngIf="!getQuestionGrading()?.graded"> Not graded </span> -->
+        <!-- </div> -->
+      </div>
+
+      <div class="py-2 d-flex gap-1" style="width: fit-content;">
+        <div *ngFor="let item of pages; let i=index;" class="btn btn-md border" ngbTooltip="Page {{ item + 1 }}"
+          (click)="selectPage(i)" [ngClass]="{'bg-soft-secondary': currentPage === i}">
+          Page {{ item + 1 }}
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center gap-2">
+        <!-- <div class="btn-group">
+          <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-md border" ngbDropdownToggle>Tools</button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button class="dropdown-item" (click)="selectMeasurementTool('ruler')">Ruler</button>
+              <button class="dropdown-item" (click)="selectMeasurementTool('protractor')">Protractor</button>
+            </div>
+          </div>
+          <div *ngIf="getSelectedTools().length" class="btn-group" ngbDropdown role="group"
+            aria-label="Button group with nested dropdown">
+            <button class="btn btn-md border" ngbDropdownToggle><i class="pi pi-trash text-danger"></i></button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button (click)="removeTool(item)" ngbDropdownItem *ngFor="let item of getSelectedTools()"> {{ item }}
+              </button>
+              <button (click)="removeTool('all')" ngbDropdownItem> Clear all </button>
+            </div>
+          </div>
+        </div>
+
+        <div ngbDropdown>
+          <span class="btn btn-md border" ngbDropdownToggle> {{ backgroundType ?? 'LINE' }} </span>
+          <div ngbDropdownMenu>
+            <button class="dropdown-item" (click)="selectBackgroundType('LINE')">LINE</button>
+            <button class="dropdown-item" (click)="selectBackgroundType('GRID')">GRID</button>
+          </div>
+        </div> -->
+
+        <button [ngbTooltip]="showQuestionPanel ? 'Hide question' : 'Show Question'" (click)="ToggleQuestionPane()"
+          class="btn btn-md border">
+          <svg class="w-6 h-6 text-secondary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.99994 10 7 11.9999l1.99994 2M12 5v14M5 4h14c.5523 0 1 .44772 1 1v14c0 .5523-.4477 1-1 1H5c-.55228 0-1-.4477-1-1V5c0-.55228.44772-1 1-1Z" />
+          </svg>
+        </button>
+        <!-- <button [ngbTooltip]="'Grade question'" triggers="mouseenter:mouseleave" (click)="showGrading()"
+          aria-controls="gradingSideBar" class="btn btn-md border text-primary align-items-center d-none d-md-block"
+          data-bs-target="#gradingSideBar" data-bs-toggle="offcanvas" type="button">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+            viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </button> -->
+        <button [ngbTooltip]="'Show Marking Guide'" triggers="mouseenter:mouseleave" (click)="showMarkingGuideSideBar()"
+          aria-controls="markingGuideSideBar" class="btn btn-md border text-black align-items-center d-none d-md-block"
+          data-bs-target="#markingGuideSideBar" data-bs-toggle="offcanvas" type="button">
+          <svg class="text-secondary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+            fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 6.03v13m0-13c-2.819-.831-4.715-1.076-8.029-1.023A.99.99 0 0 0 3 6v11c0 .563.466 1.014 1.03 1.007 3.122-.043 5.018.212 7.97 1.023m0-13c2.819-.831 4.715-1.076 8.029-1.023A.99.99 0 0 1 21 6v11c0 .563-.466 1.014-1.03 1.007-3.122-.043-5.018.212-7.97 1.023" />
+          </svg>
+        </button>
+        <button (click)="openModal_(viewFullQuestion)" class="btn btn-md border btn-primary"
+          style="background-color: #25a0e2;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" color="#fff" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2"></circle>
+            <path
+              d="M17 12L7 12M17 12C17 11.4398 15.604 10.3932 15.25 10M17 12C17 12.5602 15.604 13.6068 15.25 14M7 12C7 11.4398 8.39601 10.3932 8.75 10M7 12C7 12.5602 8.39601 13.6068 8.75 14"
+              stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          Show Question {{ currentQuestionIndex + 1 }}
+        </button>
+        <button [disabled]="allQuestionsFullyGraded()" (click)="openSaveGradesConfirmation(saveGradesConfirmationModal)"
+          type="submit" class="btn btn-success">
+          Save all grading
+        </button>
       </div>
     </div>
 
-    <div  [ngClass]="{'': showQuestionPanel}"
-      class="d-flex gap-2 justify-content-end">
-      <button [ngbTooltip]="showQuestionPanel ? 'Hide question' : 'Show Question'" (click)="ToggleQuestionPane()" class="btn btn-md border">
-          <svg class="w-6 h-6 text-secondary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.99994 10 7 11.9999l1.99994 2M12 5v14M5 4h14c.5523 0 1 .44772 1 1v14c0 .5523-.4477 1-1 1H5c-.55228 0-1-.4477-1-1V5c0-.55228.44772-1 1-1Z"/>
-        </svg>
-      </button>
-      <!-- <button [ngbTooltip]="'Grade question'" triggers="mouseenter:mouseleave" (click)="showGrading()"
-        aria-controls="gradingSideBar" class="btn btn-md border text-primary align-items-center d-none d-md-block"
-        data-bs-target="#gradingSideBar" data-bs-toggle="offcanvas" type="button">
-        <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
-          viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M8.5 11.5 11 14l4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-        </svg>
-      </button> -->
-      <button [ngbTooltip]="'Show Marking Guide'" triggers="mouseenter:mouseleave" (click)="showMarkingGuideSideBar()"
-        aria-controls="markingGuideSideBar" class="btn btn-md border text-black align-items-center d-none d-md-block"
-        data-bs-target="#markingGuideSideBar" data-bs-toggle="offcanvas" type="button">
-        <svg class="text-secondary" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-          fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M12 6.03v13m0-13c-2.819-.831-4.715-1.076-8.029-1.023A.99.99 0 0 0 3 6v11c0 .563.466 1.014 1.03 1.007 3.122-.043 5.018.212 7.97 1.023m0-13c2.819-.831 4.715-1.076 8.029-1.023A.99.99 0 0 1 21 6v11c0 .563-.466 1.014-1.03 1.007-3.122-.043-5.018.212-7.97 1.023" />
-        </svg>
-      </button>
-      <button [disabled]="allQuestionsFullyGraded()" (click)="openSaveGradesConfirmation(saveGradesConfirmationModal)"
-        type="submit" class="btn btn-success">
-        Save all grading
-      </button>
-    </div>
-  </div>
-
-  <div> 
     <div>
-      <app-drawing-and-writing
-        *ngIf="(currentQuestion && currentQuestion.item.itemType) === itemType.DRAWING_AND_WRITING"
-        [currentQuestion]="currentQuestion" 
-        [currentQuestionIndex]="currentQuestionIndex"
-        [showQuestionPanel]="showQuestionPanel"
-        (questionAnnotationChanges)="questionAnnotationChanges($event)"
-        [currentQuestionMarkingGuide]="currentQuestionMarkingGuide"
-        [gradingSummary]="gradingSummary"
-        [pageSchemeData]="pageSchemeData"
-        [currentQuestionMarkingSectionChanges]="currentQuestionMarkingSectionChanges"
-      ></app-drawing-and-writing>
+      <div>
+        <app-drawing-and-writing
+          *ngIf="(currentQuestion && currentQuestion.item.itemType) === itemType.DRAWING_AND_WRITING"
+          [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex"
+          [showQuestionPanel]="showQuestionPanel" (questionAnnotationChanges)="questionAnnotationChanges($event)"
+          [currentQuestionMarkingGuide]="currentQuestionMarkingGuide" [gradingSummary]="gradingSummary"
+          [pageSchemeData]="pageSchemeData"
+          [currentQuestionMarkingSectionChanges]="currentQuestionMarkingSectionChanges"></app-drawing-and-writing>
 
+      </div>
     </div>
   </div>
 </ng-container>
 
 
-<div class="offcanvas offcanvas-start border-right" style="width: 600px !important;" id="markingGuideSideBar" tabindex="-1">
+<div class="offcanvas offcanvas-start border-right" style="width: 600px !important;" id="markingGuideSideBar"
+  tabindex="-1">
   <div class="p-3">
     <div class="row">
       <div class="col">
@@ -153,21 +200,24 @@
   </div>
   <div class="p-4 d-flex flex-column h-100">
     <p-accordion>
-        <p-accordionTab header="General Marking Instruction">
-          <div style="max-height: 70vh;overflow: auto;" *ngIf="pageSchemeData?.general_marking_guide" [innerHTML]="pageSchemeData.general_marking_guide"></div>
-        </p-accordionTab>
-        <p-accordionTab header="Question Marking instruction">
-            <div style="max-height: 70vh;overflow: auto;" *ngIf="currentQuestionMarkingGuide?.marking_guide" [innerHTML]="currentQuestionMarkingGuide?.marking_guide"></div>
-        </p-accordionTab>
-        <p-accordionTab header="Question Marking scheme">
-            <div style="max-height: 70vh;overflow: auto;" *ngIf="currentQuestionMarkingGuide?.sections.length">
-                <p-accordion>
-                  <p-accordionTab header="{{ section.name }}" *ngFor="let section of currentQuestionMarkingGuide.sections">
-                    <div style="max-height: 70vh;overflow: auto;" *ngIf="section?.marking_guide" [innerHTML]="section.marking_guide"></div>
-                  </p-accordionTab>
-              </p-accordion>
-            </div>
-        </p-accordionTab>
+      <p-accordionTab header="General Marking Instruction">
+        <div style="max-height: 70vh;overflow: auto;" *ngIf="pageSchemeData?.general_marking_guide"
+          [innerHTML]="pageSchemeData.general_marking_guide"></div>
+      </p-accordionTab>
+      <p-accordionTab header="Question Marking instruction">
+        <div style="max-height: 70vh;overflow: auto;" *ngIf="currentQuestionMarkingGuide?.marking_guide"
+          [innerHTML]="currentQuestionMarkingGuide?.marking_guide"></div>
+      </p-accordionTab>
+      <p-accordionTab header="Question Marking scheme">
+        <div style="max-height: 70vh;overflow: auto;" *ngIf="currentQuestionMarkingGuide?.sections.length">
+          <p-accordion>
+            <p-accordionTab header="{{ section.name }}" *ngFor="let section of currentQuestionMarkingGuide.sections">
+              <div style="max-height: 70vh;overflow: auto;" *ngIf="section?.marking_guide"
+                [innerHTML]="section.marking_guide"></div>
+            </p-accordionTab>
+          </p-accordion>
+        </div>
+      </p-accordionTab>
     </p-accordion>
   </div>
 </div>
@@ -275,6 +325,32 @@
       <button #btn type="button" (click)="saveGrade(btn)" class="btn btn-primary">
         Yes, Save grades
       </button>
+    </div>
+  </div>
+</ng-template>
+
+
+<ng-template #viewFullQuestion let-modal>
+  <div class="modal-body text-center p-3">
+    <div class="position-relative">
+
+      <div class="pt-5 pb-2" style="overflow: scroll;">
+        <div *ngIf="getCurrentQuestion()?.item.passageStimulus" [innerHTML]="getCurrentQuestion().item.passageStimulus">
+        </div>
+        <div [innerHTML]="getCurrentQuestion().item.stimulus"></div>
+      </div>
+
+      <div class="position-absolute top-0 w-100 d-flex justify-content-end">
+        <button (click)="modal.close('Close click')" class="btn btn-md btn-danger" data-bs-dismiss="modal"
+          type="button">
+          <svg class="w-6 h-6 text-gray-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+            height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M6 18 17.94 6M18 18 6.06 6" />
+          </svg>
+          close
+        </button>
+      </div>
     </div>
   </div>
 </ng-template>

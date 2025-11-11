@@ -67,6 +67,7 @@ export class AllSubjectsComponent implements OnInit {
   </div>`;
   loading: boolean = true;
   showNotifications: boolean = false;
+  proccessingSubjectUpload: boolean = false
 
   constructor(
     private modal: NgbModal,
@@ -77,7 +78,7 @@ export class AllSubjectsComponent implements OnInit {
     private userService: UserService,
     private notifier: NotifierService,
     private itemUtil: ItemUtilitiesService,
-  ) {}
+  ) { }
 
   onSettingsButtonClicked() {
     document.body.classList.toggle("right-bar-enabled");
@@ -151,7 +152,7 @@ export class AllSubjectsComponent implements OnInit {
     // console.log(filteredSubjects);
   }
 
-  onSubjectPageChange(event: any) {}
+  onSubjectPageChange(event: any) { }
 
   next() {
     this.first = this.first + this.rows;
@@ -202,7 +203,7 @@ export class AllSubjectsComponent implements OnInit {
       subjectName: subject.name
     }
     this.itemUtil.saveCurrentItemTrail(trail)
-    
+
     this.router.navigate([
       "/examalpha/subjects/" + subject.subjectId + "/analysis",
     ]);
@@ -287,8 +288,8 @@ export class AllSubjectsComponent implements OnInit {
     }
 
     this.submitted = true;
-    this.newSubject.name  = this.newSubject.name.trim() 
-    this.newSubject.subjectCode  = this.newSubject.subjectCode.trim() 
+    this.newSubject.name = this.newSubject.name.trim()
+    this.newSubject.subjectCode = this.newSubject.subjectCode.trim()
     //this.loader();
     this.itemService.createNewSubject(this.newSubject).subscribe(
       (value) => {
@@ -336,6 +337,29 @@ export class AllSubjectsComponent implements OnInit {
     this.editSubject.subjectCode = subject.subjectCode;
     //console.log('subject to edit', this.editSubject);
     this.modal.open(editSubjectModal, { centered: true });
+  }
+
+  uploadSubjects(input: HTMLInputElement) {
+    this.proccessingSubjectUpload = true;
+
+    const formData = new FormData();
+    formData.append("file", input.files[0]);
+
+    this.itemService
+      .uploadSubjects(formData)
+      .subscribe({
+        next: (value) => {
+          this.notifier.notify("success", "uploaded  successfully");
+          this.proccessingSubjectUpload = false;
+          this.modal.dismissAll()
+          this.ngOnInit()
+        },
+        error: (err: HttpErrorResponse) => {
+          this.proccessingSubjectUpload = false;
+          this.notifier.notify("error", err.error.error);
+          // console.log(err);
+        },
+      });
   }
 
   renameSubject(form: any) {

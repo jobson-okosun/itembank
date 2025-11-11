@@ -923,8 +923,9 @@
             section is being displayed at a time). -->
           </label>
           <div class="">
+            <!-- [disabled]="!assessmentSettings.displayAllSectionsAtOnce" -->
             <input type="number" placeholder="60" class="form-control" name="durationInMinutes"
-              [disabled]="!assessmentSettings.displayAllSectionsAtOnce"
+              
               [(ngModel)]="editSection.sectionSettings.durationInMinutes" />
           </div>
         </div>
