@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { AssessmentsService } from "../../assessment/service/assessments.service";
+import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
 
 @Component({
   selector: "app-schedule-page",
@@ -10,6 +11,7 @@ export class SchedulePageComponent implements OnInit, AfterViewInit {
   breadCrumbItems!: Array<{}>;
   currentAssessment: string;
   deliveryMethod: string;
+  deliveryMethods = AssessmentDeliveryEnum
   constructor(private assessmentService: AssessmentsService) {}
 
   ngOnInit(): void {

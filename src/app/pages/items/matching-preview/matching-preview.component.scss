@@ -1,7 +1,36 @@
-.drop-container{
-  width: 90%;
-  height: fit-content;
-}
-.move-cursor{
+// .drop-container{
+//   width: 90%;
+//   height: fit-content;
+// }
+// .move-cursor{
+//   cursor: move;
+// }
+
+// .cdk-drag-preview {
+//   border: 2px dotted #bbd6f0 !important;
+//   box-shadow: none !important;
+//   background: #fff !important;
+// }
+
+// .cdk-drag-placeholder {
+//   border: 2px dotted #000 !important;
+//   background: transparent !important;
+//   opacity: 1 !important;
+// }
+
+.cdk-drag-preview {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
   cursor: move;
 }
+
+.cdk-drag-placeholder {
+  opacity: 0;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms ease;
+}
+

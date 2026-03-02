@@ -1,5 +1,5 @@
 node_modules
 .idea
 .angular
-dist
-.dist
+#dist
+#.dist

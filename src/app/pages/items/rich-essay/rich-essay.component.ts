@@ -237,6 +237,29 @@ export class RichEssayComponent implements OnInit, OnDestroy {
           openDialog(latex);
         }
       });
+
+      // Validate on typing/input events and only store when within limit
+      editor.on("keyup change input", () => {
+        try {
+          const content = editor.getContent();
+
+          if (this.validateWordLimitHtml(content)) {
+            // valid -> update last valid and component model
+            this.lastValidStimulus = content;
+            this.defaultItemProperties.stimulus = content;
+          } else {
+            // invalid -> revert editor to last valid content
+            editor.setContent(this.lastValidStimulus || "");
+            // ensure cursor moves to end
+            try {
+              editor.selection.collapse(false);
+            } catch (e) {}
+          }
+        } catch (e) {
+          // ignore handler errors
+          console.error("word limit handler error", e);
+        }
+      });
     });
 
     editor.ui.registry.addButton("equation-editor", {
@@ -331,6 +354,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.validateWordLimit(item)) {
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
@@ -357,6 +384,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.validateWordLimit(item)) {
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
@@ -371,6 +402,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     let validated = this.itemService.validateItem(item);
 
     if (!validated) {
+      return;
+    }
+
+    if (!this.validateWordLimit(item)) {
       return;
     }
 
@@ -391,6 +426,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     let validated = this.itemService.validateItem(item);
 
     if (!validated) {
+      return;
+    }
+
+    if (!this.validateWordLimit(item)) {
       return;
     }
 
@@ -475,6 +514,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.validateWordLimit(item)) {
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
@@ -550,7 +593,25 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     this.preview = true;
     this.itemUtil.previewItem = true;
 
-    this.previewData = this.buildItem();
+    const item = this.buildItem();
+    const max = item.maxWords || this.defaultItemProperties.maxWords || 0;
+    if (max && max > 0) {
+      const res = this.clipHtmlByWords(item.stimulus || "", max);
+      item.stimulus = res.clippedHtml;
+      (item as any)._previewMaxWords = max;
+      (item as any)._previewWordCount = res.wordCount;
+      (item as any)._previewOriginalWordCount = res.originalWordCount;
+    } else {
+      const div = document.createElement("div");
+      div.innerHTML = item.stimulus || "";
+      const text = (div.textContent || div.innerText || "").replace(/(&nbsp;|\u00A0)/g, " ").trim();
+      const words = text === "" ? 0 : text.split(/\s+/).filter(Boolean).length;
+      (item as any)._previewMaxWords = 0;
+      (item as any)._previewWordCount = words;
+      (item as any)._previewOriginalWordCount = words;
+    }
+
+    this.previewData = item;
   }
 
   showPassageModal(passageModal: any) {
@@ -606,6 +667,90 @@ export class RichEssayComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+
+  // store last known valid HTML from editor to prevent storing over-limit content
+  lastValidStimulus: string = "";
+
+  validateWordLimit(item?: any): boolean {
+    const max = (item && item.maxWords) || this.defaultItemProperties.maxWords || 0;
+
+    if (!max || max <= 0) {
+      return true;
+    }
+
+    const html = (item && item.stimulus) || this.defaultItemProperties.stimulus || "";
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    const text = (div.textContent || div.innerText || "").replace(/(&nbsp;|\u00A0)/g, " ").trim();
+    const words = text === "" ? 0 : text.split(/\s+/).filter(Boolean).length;
+
+    if (words > max) {
+      this.notifier.notify(
+        "error",
+        `Word limit exceeded: ${words}/${max} words. Please reduce to ${max} words or less.`
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  validateWordLimitHtml(html: string): boolean {
+    const max = this.defaultItemProperties.maxWords || 0;
+    if (!max || max <= 0) return true;
+    const div = document.createElement("div");
+    div.innerHTML = html || "";
+    const text = (div.textContent || div.innerText || "").replace(/(&nbsp;|\u00A0)/g, " ").trim();
+    const words = text === "" ? 0 : text.split(/\s+/).filter(Boolean).length;
+    return words <= max;
+  }
+
+  // Clip HTML preserving tags until the given word limit is reached.
+  clipHtmlByWords(html: string, maxWords: number): { clippedHtml: string; wordCount: number; originalWordCount: number } {
+    const root = document.createElement("div");
+    root.innerHTML = html || "";
+    let wordsLeft = maxWords;
+
+    function processNode(node: Node): Node | null {
+      if (wordsLeft <= 0) return null;
+      if (node.nodeType === Node.TEXT_NODE) {
+        const txt = (node.textContent || "").replace(/\u00A0/g, " ");
+        const parts = txt.trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return null;
+        if (parts.length <= wordsLeft) {
+          wordsLeft -= parts.length;
+          return document.createTextNode(parts.join(" ") + " ");
+        } else {
+          const take = parts.slice(0, wordsLeft).join(" ");
+          wordsLeft = 0;
+          return document.createTextNode(take + " ");
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        const el = (node as Element).cloneNode(false) as Element;
+        for (const child of Array.from(node.childNodes)) {
+          if (wordsLeft <= 0) break;
+          const processed = processNode(child);
+          if (processed) el.appendChild(processed);
+        }
+        if (!el.hasChildNodes()) return null;
+        return el;
+      }
+      return null;
+    }
+
+    const out = document.createElement("div");
+    for (const child of Array.from(root.childNodes)) {
+      if (wordsLeft <= 0) break;
+      const p = processNode(child);
+      if (p) out.appendChild(p);
+    }
+
+    const originalText = (root.textContent || "").replace(/\u00A0/g, " ").trim();
+    const originalCount = originalText === "" ? 0 : originalText.split(/\s+/).filter(Boolean).length;
+    const clippedCount = maxWords - wordsLeft;
+
+    return { clippedHtml: out.innerHTML, wordCount: clippedCount, originalWordCount: originalCount };
   }
 
   approveQuestion(itemForm: any) {

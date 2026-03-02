@@ -1,155 +1,252 @@
 <ng-container *ngIf="previewData">
   <div class="card">
     <div class="card-body">
-      <div class="d-flex justify-content-between">
-        <div class="form-check mt-1">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            name="showAnswer"
-            (change)="check()"
-          />
-          <label class="form-check-label">
-            Show Answer
-            <span
-              *ngIf="previewData.scoringOption.answers.length < 1"
-              class="text-danger"
-              >No answer selected</span
-            ></label
-          >
-        </div>
-
-        <div class="d-flex gap-2 float-end flex-wrap">
-          <button
-            *ngIf="
-              !currentUser.authorities.includes('MODERATOR') &&
-              !assessmentActive &&
-              !recycleComponentActive &&
-              !previewData.passageId &&
-              previewData.id &&
-              component !== 'question_status' &&
-              !isEditPreview
-            "
-            class="btn btn-sm btn-danger"
-            type="button"
-            (click)="
-              openDeleteItemModal(
-                deleteQuestionConfirmationModal,
-                previewData.id
-              )
-            "
-          >
-            <i class="ri-delete-bin-2-fill align-middle fs-14"></i>Delete
-          </button>
-          <button
-            *ngIf="
-              !currentUser.authorities.includes('MODERATOR') &&
-              !assessmentActive &&
-              !recycleComponentActive &&
-              previewData.id &&
-              previewData.passageId &&
-              component !== 'question_status' &&
-              !isEditPreview
-            "
-            class="btn btn-sm btn-danger"
-            type="button"
-            (click)="
-              openDeletePassageItemModal(
-                deleteQuestionConfirmationModal,
-                previewData.itemId
-              )
-            "
-          >
-            <i class="ri-delete-bin-5-fill align-middle fs-14"></i>Delete
-          </button>
-          <button
-            *ngIf="
-              !currentUser.authorities.includes('MODERATOR') &&
-              !assessmentActive &&
-              !recycleComponentActive &&
-              component !== 'question_status'
-            "
-            type="button"
-            class="btn btn-primary btn-sm"
-            (click)="edit()"
-          >
-            <i class="ri-edit-fill align-middle fs-14"></i>Edit
-          </button>
-          <button
-          *ngIf="
-            currentUser.authorities.includes('MODERATOR') && 
-            !assessmentActive &&
-            previewData.itemStatus !== 'REJECTED' &&
-            previewData.itemStatus !== 'PUBLISHED'
-          "
-            type="button"
-            class="btn btn-outline-danger btn-sm"
-            (click)="review()"
-          >
-            <!-- <i class="ri-edit-fill align-middle fs-14"></i> -->Review
-          </button>
-          <!-- <button
-            *ngIf="currentUser.authorities.includes('ADMIN')"
-            ngbTooltip="USAGE HISTORY"
-            type="button"
-            class="btn px-2 btn-icon btn-outline-info"
-            (click)="openUsageHistoryModal(itemUsageModal, previewData.id)"
-          >
-            <i class="ri-history-line"></i>
-          </button> -->
-        </div>
+    <div class="row">
+      <div class="mb-4 border border-top-0 border-start-0 border-end-0 border-dashed">
+        <div [innerHTML]="previewData.stimulus | htmlSanitizer"></div>
       </div>
-      <hr />
 
-      <div class="row">
-        <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
-          <div [innerHTML]="previewData.stimulus | htmlSanitizer"></div>
-        </div>
+       <div class="row mb-5">
+          <div class="col-4">
+            <div class="border">
+              <div class="py-2 px-3 border border-top-0 border-start-0 border-end-0 border-dotted d-flex justify-content-between align-items-center gap-2">
+                <h4 id="labels">Labels</h4>
+              </div>
+            </div>
 
-        <div class="preview-container">
-          <img
-            #previewImage
-            [style.width.px]="previewData.imageData?.width"
-            [style.height.px]="previewData.imageData?.height"
-            [src]="previewData.images[0].url"
-            (load)="onPreviewImageLoad()"
-            class="preview-image"
-            alt="Preview Image"
-          />
+            <div class="border" style="height: 500px;overflow-y: auto;">
+                <!-- <div class="bg-soft-secondary p-3">
+                  this labels should be draggable to any input boxes on the right
+                    <div class="p-1 bg-white rounded mb-2" *ngFor="let item of getCombinedLabels()" [innerHTML]="item.label"></div>
+                </div> -->
+               <div class="bg-soft-secondary p-3"
+                cdkDropList
+                #labelsList="cdkDropList"
+                id="labelsList"
+                [cdkDropListData]="labels"
+                [cdkDropListConnectedTo]="connectedDropLists"
+                (cdkDropListDropped)="drop($event)">
+                <div class="p-2 bg-white rounded mb-2 border" *ngFor="let item of labels" cdkDrag [innerHTML]="item.label" style="cursor: grab"></div>
+              </div>
 
-          <div
-            *ngFor="
-              let position of previewData.responsePositions;
-              let i = index
-            "
-            class="preview-label"
-            [style.left.%]="position.x"
-            [style.top.%]="position.y"
-          >
-            <div class="pointer"></div>
-            <span
-              *ngIf="showAnswer"
-              [innerHTML]="previewData.options[i].label"
-              type="text"
-              class="form-control form-control-sm"
-            ></span>
 
-            <span
-              *ngIf="!showAnswer"
-              type="text"
-              class="form-control form-control-sm"
-              [innerHTML]="hiddenAnswers[i]"
-              disabled
-            ></span>
-            <!-- {{ position.x }} -->
+            </div>
+          </div>
+          <div class="col-8" >
+            <div class="d-flex align-items-center" style="height: 100%;">
+              <div class="preview-container" #previewContainer [style.height.px]="previewData.imageData?.height">
+                <div [style.width.px]="previewData.imageData?.width > 600 ? 600 : previewData.imageData?.width" style="position: relative;">
+                  <img #previewImage [style.width.px]="previewData.imageData?.width" [style.height.px]="previewData.imageData?.height" [src]="previewData.images[0].url" (load)="onPreviewImageLoad()" class="preview-image" alt="Preview Image"/>
+
+                  <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary" >
+                      <div style="position: relative;width: 100%; height: 100%; ">
+                        <div *ngFor="let position of previewData.responsePositions; let i = index" class="preview-label" [style.left.%]="position.x" [style.top.%]="position.y">
+                          <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
+                            <div class="pointer"></div>
+
+                            <!-- DROP TARGET -->
+                            <ng-container *ngIf="!showAnswer">
+                              <div class="form-control form-control-sm" style="max-width: 200px; min-width: 100px; border-style: dashed;" 
+                              cdkDropList
+                              #zone="cdkDropList"
+                              [id]="'zone-' + i"
+                              [cdkDropListData]="dropZones[i]"
+                              [cdkDropListConnectedTo]="connectedDropLists"
+                              (cdkDropListDropped)="drop($event)"
+
+                              >
+                                  <div *ngFor="let item of dropZones[i]" cdkDrag [innerHTML]="item.label"></div>
+                                </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="showAnswer">
+                              <div class="form-control form-control-sm" style="max-width: 200px; min-width: 100px; border-style: dashed;">
+                                  <div [innerHTML]="this.previewData.options[i].label"></div>
+                                </div>
+                            </ng-container>
+
+                          </div>
+                        </div>
+
+                        <!-- <div *ngFor="let position of previewData.responsePositions; let i = index" class="preview-label" [style.left.%]="position.x" [style.top.%]="position.y">
+                          <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
+                            <div class="pointer"></div>
+                            labels should be dragged into here to auto fill the value
+                            <span
+                              *ngIf="showAnswer"
+                              [innerHTML]="previewData.options[i].label"
+                              type="text"
+                              class="form-control form-control-sm"
+                              style="max-width: 200px;min-width: 100px;overflow:hidden;border-style: dashed !important;"
+                            ></span>
+
+                            <span
+                              *ngIf="!showAnswer"
+                              type="text"
+                              class="form-control form-control-sm"
+                              [innerHTML]="hiddenAnswers[i]"
+                              style="max-width: 200px;min-width: 100px;overflow:hidden;border-style: dashed !important;"
+                              disabled
+                            ></span>
+                          </div>
+                        </div> -->
+                      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      <!-- <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <div [innerHTML]="previewData.stimulus | htmlSanitizer"></div>
       </div>
+
+      <div class="preview-container">
+        <img
+          #previewImage
+          [style.width.px]="previewData.imageData?.width"
+          [style.height.px]="previewData.imageData?.height"
+          [src]="previewData.images[0].url"
+          (load)="onPreviewImageLoad()"
+          class="preview-image"
+          alt="Preview Image"
+        />
+
+        <div
+          *ngFor="
+            let position of previewData.responsePositions;
+            let i = index
+          "
+          class="preview-label"
+          [style.left.%]="position.x"
+          [style.top.%]="position.y"
+        >
+          <div class="pointer"></div>
+          <span
+            *ngIf="showAnswer"
+            [innerHTML]="previewData.options[i].label"
+            type="text"
+            class="form-control form-control-sm"
+            style="max-width: 200px;min-width: 100px;overflow:hidden;border-style: dashed !important;"
+          ></span>
+
+          <span
+            *ngIf="!showAnswer"
+            type="text"
+            class="form-control form-control-sm"
+            [innerHTML]="hiddenAnswers[i]"
+            style="max-width: 200px;min-width: 100px;overflow:hidden;border-style: dashed !important;"
+            disabled
+          ></span>
+        </div>
+      </div> -->
+    </div>
+
+    <hr />
+
+    <div class="d-flex justify-content-between">
+      <div class="form-check mt-1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="showAnswer"
+          (change)="check()"
+        />
+        <label class="form-check-label">
+          Show Answer
+          <span
+            *ngIf="previewData.scoringOption.answers.length < 1"
+            class="text-danger"
+            >No answer selected</span
+          ></label
+        >
+      </div>
+
+      <div class="d-flex gap-2 float-end flex-wrap">
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            !previewData.passageId &&
+            previewData.id &&
+            component !== 'question_status' &&
+            !isEditPreview
+          "
+          class="btn btn-sm btn-danger"
+          type="button"
+          (click)="
+            openDeleteItemModal(
+              deleteQuestionConfirmationModal,
+              previewData.id
+            )
+          "
+        >
+          <i class="ri-delete-bin-2-fill align-middle fs-14"></i>Delete
+        </button>
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            previewData.id &&
+            previewData.passageId &&
+            component !== 'question_status' &&
+            !isEditPreview
+          "
+          class="btn btn-sm btn-danger"
+          type="button"
+          (click)="
+            openDeletePassageItemModal(
+              deleteQuestionConfirmationModal,
+              previewData.itemId
+            )
+          "
+        >
+          <i class="ri-delete-bin-5-fill align-middle fs-14"></i>Delete
+        </button>
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            component !== 'question_status'
+          "
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="edit()"
+        >
+          <i class="ri-edit-fill align-middle fs-14"></i>Edit
+        </button>
+        <button
+        *ngIf="
+          currentUser.authorities.includes('MODERATOR') && 
+          !assessmentActive &&
+          previewData.itemStatus !== 'REJECTED' &&
+          previewData.itemStatus !== 'PUBLISHED'
+        "
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          (click)="review()"
+        >
+          <!-- <i class="ri-edit-fill align-middle fs-14"></i> -->Review
+        </button>
+        <!-- <button
+          *ngIf="currentUser.authorities.includes('ADMIN')"
+          ngbTooltip="USAGE HISTORY"
+          type="button"
+          class="btn px-2 btn-icon btn-outline-info"
+          (click)="openUsageHistoryModal(itemUsageModal, previewData.id)"
+        >
+          <i class="ri-history-line"></i>
+        </button> -->
+      </div>
+    </div>
     </div>
   </div>
 
   <div class="row mt-5 mb-5">
-    <div class="col-6">
+    <!-- <div class="col-6">
       <ng-container>
         <label class="form-label">Options and Answers</label>
         <div>
@@ -179,7 +276,6 @@
         </div>
       </ng-container>
     </div>
-    <!-- distractors -->
     <div class="col-6">
       <div>
         <ng-container>
@@ -187,8 +283,7 @@
           <div>
             <div
               class=""
-              *ngFor="let distractor of previewData.distractors; let i = index"
-            >
+              *ngFor="let distractor of previewData.distractors; let i = index">
               <div class="d-flex gap-1 mb-2">
                 <div class="btn-icon radio-background">
                   <input
@@ -210,7 +305,7 @@
           </div>
         </ng-container>
       </div>
-    </div>
+    </div> -->
   </div>
 </ng-container>
 

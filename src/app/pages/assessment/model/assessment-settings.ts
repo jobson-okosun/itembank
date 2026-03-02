@@ -26,4 +26,8 @@ export class AssessmentSettings {
   passMark : number = 0
   allowRetake: boolean = false
   retakeCount: number = 0
+  examGracePeriod: number = 0
+  candidateGracePeriod: number = 0
+  earliestExamEndPeriod: number = 0
+  useBiometrics: boolean = false
 }

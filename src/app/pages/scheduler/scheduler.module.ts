@@ -50,6 +50,7 @@ import { LayoutsModule } from "src/app/layouts/layouts.module";
 import { SchedulePageComponent } from './schedule-page/schedule-page.component';
 import { EditAssessmentParticipantsComponent } from './components/edit-assessment-participants/edit-assessment-participants.component';
 import { AssessmentBatchComponent } from './components/assessment-batch/assessment-batch.component';
+import { ProctoringComponent } from './components/proctoring/proctoring.component';
 //import { AssessmentModule } from "../assessment/assessment.module";
 
 @NgModule({
@@ -82,6 +83,7 @@ import { AssessmentBatchComponent } from './components/assessment-batch/assessme
     SchedulePageComponent,
     EditAssessmentParticipantsComponent,
     AssessmentBatchComponent,
+    ProctoringComponent,
   ],
   imports: [
     CommonModule,

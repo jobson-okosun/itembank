@@ -6,7 +6,7 @@
     <div class="mb-3">
       <label for="choices-multiple-default" class="form-label text-muted">Select Question Type</label>
       <ng-select [items]="itemTypes" bindLabel="name" [(ngModel)]="selectedItemType"
-        (change)="setItemType(selectedItemType)">
+        (ngModelChange)="onItemTypeChange($event)">
       </ng-select>
     </div>
 

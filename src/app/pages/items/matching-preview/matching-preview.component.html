@@ -16,90 +16,129 @@
       </div>
     </div>
 
-    <ng-container *ngFor="let stem of previewData.stems; let i = index">
-      <div *ngIf="!showAnswer" class="row" style="height: fit-content">
-        <div class="col-xl-5 col-md-5">
-          <div class="w-full card card-animate">
-            <div [innerHTML]="stem" class=""></div>
-          </div>
-        </div>
 
-        <div class="col-xl-2 col-md-2 my-auto px-2">
-          <div
-            class="d-flex align-items-center justify-content-between mb-2"
-            style="height: 46px"
-          >
-            <div
-              style="
-                width: 200px;
-                height: 5px;
-                background-color: #000;
-                border-radius: 10px;
-              "
-            ></div>
-          </div>
-        </div>
+  <div #wrapper class="position-relative bg-light p-3">
 
-        <div class="col-xl-5 col-md-5">
-          <div
-            #listTwo="cdkDropList"
-            class=""
-            cdkDropList
-            (cdkDropListDropped)="onDrop($event)"
-          >
-            <div
-              class="w-full card card-animate p-3"
-              style="height: inherit"
-              [innerHTML]="opts[i].label"
-              [cdkDragData]="opts[i]"
-              cdkDrag
-            ></div>
-          </div>
+    <!-- SVG lines -->
+    <svg class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none">
+      <line
+        *ngFor="let line of lines"
+        [attr.x1]="line.x1"
+        [attr.y1]="line.y1"
+        [attr.x2]="line.x2"
+        [attr.y2]="line.y2"
+        stroke="black"
+        stroke-width="3"
+        stroke-linecap="round">
+      </line>
+    </svg>
+
+    <div class="row">
+
+      <!-- LEFT: stems -->
+      <div class="col-md-6">
+        <div
+          #leftBox
+          *ngFor="let stem of previewData.stems; let i = index"
+          class="p-3 mb-3 bg-white rounded border"
+          style="position: relative;"
+        >
+          <div [innerHTML]="stem"></div>
+
+          <!-- connector circle -->
+          <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; right: 0;height: 100%;width: max-content;">
+            <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(10px)"></span>
+          </span>
         </div>
       </div>
 
-      <div *ngIf="showAnswer" class="row" style="height: fit-content">
-        <div class="col-xl-5 col-md-5">
-          <div class="w-full card card-animate">
-            <div [innerHTML]="stem" class=""></div>
-          </div>
-        </div>
+      <!-- RIGHT: drop boxes -->
+      <div class="col-md-6">
 
-        <div class="col-xl-2 col-md-2 my-auto px-2">
+        <ng-container *ngIf="!showAnswer">
           <div
-            class="d-flex align-items-center justify-content-between mb-2"
-            style="height: 46px"
-          >
-            <div
-              style="
-                width: 200px;
-                height: 5px;
-                background-color: #000;
-                border-radius: 10px;
-              "
-            ></div>
-          </div>
-        </div>
-
-        <div class="col-xl-5 col-md-5">
-          <div
-            #listTwo="cdkDropList"
-            class=""
+            #rightBox
+            *ngFor="let item of matched; let i = index"
             cdkDropList
-            (cdkDropListDropped)="onDrop($event)"
-          >
-            <div
-              class="w-full card card-animate p-3"
-              style="height: inherit"
-              [innerHTML]="ans[i]"
-              [cdkDragData]="ans[i]"
-              cdkDrag
-            ></div>
-          </div>
-        </div>
-      </div>
-    </ng-container>
+            [id]="'right-box-' + i"
+            [cdkDropListData]="matched" 
+            [cdkDropListConnectedTo]="['option-list']" 
+            (cdkDropListDropped)="drop($event)"
+            class="p-3 mb-3 bg-white rounded"
+            style="position: relative;min-height: 70px;"
+            >
 
+              <ng-container *ngIf="item; else emptyBox">
+
+                <div cdkDrag [cdkDragData]="item" class="cursor-move">
+                  <span [innerHTML]="item.label"></span>
+                </div> 
+
+              </ng-container>
+
+              <ng-template #emptyBox>
+                <span class="text-muted p-5">Drop here</span>
+              </ng-template>
+
+              <!-- connector circle -->
+              <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; left: 0;height: 100%;width: max-content;">
+                <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(-10px)"></span>
+              </span>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="showAnswer">
+          <div
+            #rightBox
+            *ngFor="let item of matched; let i = index"
+            class="p-3 mb-3 bg-white rounded"
+            style="position: relative;min-height: 70px;">
+                <div class="cursor-move">
+                  <span [innerHTML]="previewData.options[i].label"></span>
+                </div> 
+
+                <!-- connector circle -->
+                <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; left: 0;height: 100%;width: max-content;">
+                  <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(-10px)"></span>
+                </span>
+            </div>
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- OPTIONS POOL -->
+  <div class="mt-4 bg-light p-3">
+
+    <h6>Options</h6>
+
+    <div
+      cdkDropList
+      id="option-list"
+      [cdkDropListData]="options"
+      [cdkDropListConnectedTo]="connectedLists"
+      (cdkDropListDropped)="drop($event)"
+      class="d-flex flex-wrap gap-2"
+    >
+
+      <div
+        *ngFor="let opt of options"
+        cdkDrag
+        [cdkDragData]="opt"
+        class="px-3 py-2 bg-white rounded border cursor-move"
+      >
+        <span [innerHTML]="opt.label"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+  
     <hr />
 
     <div class="d-flex justify-content-between">

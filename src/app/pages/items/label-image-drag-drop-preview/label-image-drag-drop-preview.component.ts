@@ -22,6 +22,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import Swal from "sweetalert2";
 import { NotifierService } from "angular-notifier";
 import { UsageHistory } from "../models/usage-history";
+import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: "app-label-image-drag-drop-preview",
@@ -58,6 +59,10 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   loading_usage_history: boolean = false;
   subjectName: string;
   hiddenAnswers: Array<string> = [];
+  labels: any[] = [];
+  dropZones: any[] = []; 
+  connectedDropLists: string[] = [];
+
 
   constructor(
     private userService: UserService,
@@ -75,34 +80,55 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
 
   ngAfterViewInit() {
     const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
-    console.log("Preview Image Dimensions:", imageRect.width, imageRect.height);
+    // console.log("Preview Image Dimensions:", imageRect.width, imageRect.height);
 
     // Validate response positions
     this.previewData.responsePositions.forEach((position, index) => {
-      console.log(`Label ${index}:`, position.x, position.y);
+      // console.log(`Label ${index}:`, position.x, position.y);
     });
   }
-  ngOnInit(): void {
-    this.currentUser = this.userService.getCurrentUser();
-    // console.log('preview:', this.previewData);
-    this.previewData.options.forEach((option, index) => {
-      let data: Option[] = [];
-      let container = {
-        id: `container ${index + 1}`,
-        answer: data,
-      };
-      this.containers.push(container);
-    });
-    this.containerList = this.getContainers();
-    this.recycleComponentActive = this.recycleService.recycleActive;
+  // ngOnInit(): void {
+  //   this.currentUser = this.userService.getCurrentUser();
+  //   this.previewData.options.forEach((option, index) => {
+  //     let data: Option[] = [];
+  //     let container = {
+  //       id: `container ${index + 1}`,
+  //       answer: data,
+  //     };
+  //     this.containers.push(container);
+  //   });
+  //   this.containerList = this.getContainers();
+  //   this.recycleComponentActive = this.recycleService.recycleActive;
 
-    this.isEditPreview = this.router.url.includes("edit-item");
-    this.subjectName = this.itemService.subjectName;
+  //   this.isEditPreview = this.router.url.includes("edit-item");
+  //   this.subjectName = this.itemService.subjectName;
 
-    this.hiddenAnswers = new Array(this.previewData.scoringOption.answers.length).fill('');
+  //   this.hiddenAnswers = new Array(this.previewData.scoringOption.answers.length).fill('');
 
-    console.log(this.previewData);
-  }
+  // }
+
+ngOnInit(): void {
+  this.currentUser = this.userService.getCurrentUser();
+  this.labels = this.getCombinedLabels();
+
+  this.dropZones = this.previewData.responsePositions.map(() => []);
+
+  // 🔥 Build list of ALL drop list IDs
+  this.connectedDropLists = [
+    'labelsList',
+    ...this.previewData.responsePositions.map((_, i) => `zone-${i}`)
+  ];
+
+  this.recycleComponentActive = this.recycleService.recycleActive;
+  this.isEditPreview = this.router.url.includes("edit-item");
+  this.subjectName = this.itemService.subjectName;
+
+  this.hiddenAnswers = new Array(
+    this.previewData.scoringOption.answers.length
+  ).fill('');
+}
+
+
   review(){
     
   }
@@ -125,28 +151,54 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     return container_answers;
   }
 
-  drop(event: CdkDragDrop<Option[]>) {
-    // console.log(event);
-    if (event.container.data.length > 0) {
-      this.options.push(event.container.data[0]);
-      event.container.data.splice(0, 1);
+  drop(event: CdkDragDrop<any[]>) {
+    // console.log(event)
+
+    // Move between lists
+    if (event.previousContainer !== event.container) {
+      // Allow ONLY one label per drop zone
+      if (event.container.data.length > 0) return;
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
         event.previousIndex,
-        event.currentIndex
+        0
       );
+
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
+
+      // Reorder within same container
+      moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
-      //console.log(this.containers);
-      //console.log('original answers', this.answers);
     }
   }
+
+
+  // drop(event: CdkDragDrop<Option[]>) {
+  //   // console.log(event);
+  //   if (event.container.data.length > 0) {
+  //     this.options.push(event.container.data[0]);
+  //     event.container.data.splice(0, 1);
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+  //   } else {
+  //     transferArrayItem(
+  //       event.previousContainer.data,
+  //       event.container.data,
+  //       event.previousIndex,
+  //       event.currentIndex
+  //     );
+  //     //console.log(this.containers);
+  //     //console.log('original answers', this.answers);
+  //   }
+  // }
 
   // onPreviewImageLoad() {
   //   const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
@@ -336,5 +388,9 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
 
   onDragEnd() {
     // this.draggedItem = null; // Reset dragged item
+  }
+
+  getCombinedLabels() {
+    return [...this.previewData.distractors, ...this.previewData.options].sort()
   }
 }

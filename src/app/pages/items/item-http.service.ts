@@ -173,10 +173,10 @@ export class ItemHttpService {
       item.itemType !== ItemTypes.SHORT_TEXT &&
       item.itemType !== ItemTypes.CLOZE_DROPDOWN &&
       item.itemType !== ItemTypes.CLOZE_DROPDOWN_IMAGE &&
-      item.itemType !== ItemTypes.DRAW_WRITING
+      item.itemType !== ItemTypes.DRAW_WRITING &&
+      item.itemType !== ItemTypes.CLOZE_RADIO
     ) {
-      // console.log(item.itemType);
-      for (let i = 0; i < item.options.length; i++) {
+      for (let i = 0; i < item.options.length; i++) { 
         if (item.options[i].label == "") {
           this.notifier.notify(
             "error",
@@ -203,7 +203,18 @@ export class ItemHttpService {
         return false;
       }
     }
-    console.log(item + "negative score");
+
+    if (item.itemType === ItemTypes.CLOZE_RADIO) {
+      const hasEmptyAnswer = item.scoringOption.answers.some(a => !a);
+
+      if (hasEmptyAnswer) {
+        this.notifier.notify(
+          "error",
+          `Radio options must have a valid correct answer`
+        );
+        return false;
+      }
+    }
 
     if (item.itemType === ItemTypes.CLOZE_TEXT) {
       if (item.options.some((option) => option.label.trim() === "")) {
@@ -261,8 +272,8 @@ export class ItemHttpService {
         return false;
       }
     }
-    console.log(item.scoringOption.penalty);
-    console.log(item, "here");
+    // console.log(item.scoringOption.penalty);
+    // console.log(item, "here");
     if (item.scoringOption.penalty < 0) {
       this.notifier.notify(
         "error",
@@ -418,6 +429,14 @@ export class ItemHttpService {
   }
 
   createClozeDropdownItem(item: ClozeDropdown): Observable<ResourceCreated> {
+    return this.http.post<ResourceCreated>(
+      `${environment.developmentIP}/itembank/items/cloze-dropdown`,
+      item,
+      { withCredentials: true }
+    );
+  }
+
+  createClozeRadioItem(item: ClozeDropdown): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-dropdown`,
       item,
@@ -986,6 +1005,14 @@ export class ItemHttpService {
   }
 
   edit_cloze_dropdown(itemId: string, item: any): Observable<ResourceCreated> {
+    return this.http.put<ResourceCreated>(
+      `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_DROPDOWN`,
+      item,
+      { withCredentials: true }
+    );
+  }
+
+  edit_cloze_radio(itemId: string, item: any): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_DROPDOWN`,
       item,

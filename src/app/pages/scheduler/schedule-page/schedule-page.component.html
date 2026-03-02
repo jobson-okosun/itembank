@@ -1,16 +1,9 @@
-<app-breadcrumbs
-  title="EXAM SCHEDULE | {{ currentAssessment }} | {{
+<app-breadcrumbs title="EXAM SCHEDULE | {{ currentAssessment }} | {{
     deliveryMethod
-  }} "
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+  }} " [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<ul
-  ngbNav
-  #Pills="ngbNav"
-  [activeId]="1"
-  class="nav nav-pills nav-primary mb-3 navtabs"
->
+<ul ngbNav #Pills="ngbNav" [activeId]="1"
+  class="nav nav-pills nav-primary mb-3 navtabs">
   <li [ngbNavItem]="1">
     <a ngbNavLink>
       <span class="d-sm-block">Section Group</span>
@@ -35,10 +28,7 @@
       <app-assessment-participants></app-assessment-participants>
     </ng-template>
   </li>
-  <li
-    [ngbNavItem]="4"
-    *ngIf="!deliveryMethod?.includes('ONLINE')"
-  >
+  <li [ngbNavItem]="4" *ngIf="!deliveryMethod?.includes('ONLINE')">
     <a ngbNavLink>
       <span class="d-sm-block">Center Admin</span>
     </a>
@@ -55,6 +45,14 @@
 
       <app-assessment-batch></app-assessment-batch>
       <!-- <app-assessment-participants></app-assessment-participants> -->
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="6" *ngIf="deliveryMethod == deliveryMethods.AUTO_PROCTORING || deliveryMethod == deliveryMethods.LIVE_PROCTORING">
+    <a ngbNavLink>
+      <span class="d-sm-block">Proctor</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-proctoring></app-proctoring>
     </ng-template>
   </li>
 </ul>

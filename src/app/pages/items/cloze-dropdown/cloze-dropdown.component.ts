@@ -1095,6 +1095,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     item.scoringOption.answers = this.editData.scoringOption.answers;
 
     this.previewData = item;
+
     this.preview = true;
 
     //    item.stimulus = content;

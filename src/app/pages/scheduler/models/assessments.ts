@@ -242,6 +242,10 @@ export interface ISuspendOrResumeAdmin {
   adminId: string;
   suspended: boolean;
 }
+export interface ISuspendOrResumeProctor {
+  adminId: string,
+  suspended: boolean,
+}
 
 export interface ISuspendOrResumeParticipant {
   participant_id: string;
@@ -383,4 +387,160 @@ export interface IAssessmentBatchDTO {
 export interface IParticipantBatchMovementDTO {
   newBatchId: string;
   participantIds: Array<string>;
+}
+
+export interface UnassignedProctorsResponse {
+  data: Proctor[];
+  meta: PaginationDTO;
+}
+
+export interface PaginationDTO {
+  page: number;
+  limit: number;
+  total: number;
+}
+
+export interface Proctor {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  status: string;
+  assignedCenters: any[];
+}
+
+export interface proctorQueryParams {
+  page?: number,
+  limit?: number,
+  q?: string
+}
+
+export interface ProctorList {
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  enabled: boolean;
+  assessmentId: string;
+  state?: string;
+  address?: string;
+  suspended: boolean;
+}
+
+export interface ListProctorPage {
+  proctors: ProctorList[];
+  admins?: ProctorList[];
+  total: number;
+  page: number;
+  size: number;
+}
+
+// export interface InfractionsResponse {
+//   data: Infraction[];
+//   meta: Meta;
+// }
+
+interface Meta {
+  page: number;
+  limit: number;
+  total: number;
+}
+
+export interface Infraction {
+  name: InfractionType
+  description: string
+  category: InfractionCategory
+  severity: InfractionSeverity
+  enabled: boolean
+  cooldown_seconds: number
+  max_duration_seconds: number
+  max_strikes: number
+  action: InfractionAction
+}
+
+export enum InfractionType {
+  LOOKING_AWAY = "LOOKING_AWAY",
+  FACE_NOT_CENTERED = "FACE_NOT_CENTERED",
+  MULTIPLE_FACES = "MULTIPLE_FACES",
+  FACE_MISMATCH = "FACE_MISMATCH",
+  FACE_NOT_DETECTED = "FACE_NOT_DETECTED",
+  MOBILE_PHONE_DETECTED = "MOBILE_PHONE_DETECTED",
+  BOOK_DETECTED = "BOOK_DETECTED",
+  HEAD_PHONE_DETECTED = "HEAD_PHONE_DETECTED",
+  EXTERNAL_KEYBOARD_DETECTED = "EXTERNAL_KEYBOARD_DETECTED",
+  EXTERNAL_MOUSE_DETECTED = "EXTERNAL_MOUSE_DETECTED",
+  CALCULATOR_DETECTED = "CALCULATOR_DETECTED",
+  TALKING_DETECTED = "TALKING_DETECTED",
+  BACKGROUND_VOICES_DETECTED = "BACKGROUND_VOICES_DETECTED",
+  APP_MINIMIZATION_DETECTED = "APP_MINIMIZATION_DETECTED",
+  SCREENSHOT_DETECTED = "SCREENSHOT_DETECTED",
+  SCREEN_SHARING_DETECTED = "SCREEN_SHARING_DETECTED",
+  EXTERNAL_SCREEN_DETECTED = "EXTERNAL_SCREEN_DETECTED",
+  SCREEN_RECORDING_DETECTED = "SCREEN_RECORDING_DETECTED",
+  COPY_PASTE_ATTEMPT = "COPY_PASTE_ATTEMPT",
+  VPN_DETECTED = "VPN_DETECTED",
+  PROXY_DETECTED = "PROXY_DETECTED",
+  NETWORK_INSTABILITY = "NETWORK_INSTABILITY",
+  CAMERA_DISABLED = "CAMERA_DISABLED",
+  MICROPHONE_DISABLED = "MICROPHONE_DISABLED"
+}
+
+export enum InfractionCategory {
+  HEAD_POSITION = "HEAD_POSITION",
+  PRESENCE_AND_IDENTITY = "PRESENCE_AND_IDENTITY",
+  DEVICE_AND_OBJECTS = "DEVICE_AND_OBJECTS",
+  AUDIO = "AUDIO",
+  SCREEN_AND_SYSTEM = "SCREEN_AND_SYSTEM",
+  NETWORK_AND_ENVIRONMENT = "NETWORK_AND_ENVIRONMENT"
+}
+
+export enum InfractionSeverity {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH"
+}
+
+export enum ProctorActions {
+  LOG = "LOG",
+  WARN = "WARN",
+  PAUSE_EXAM = "PAUSE_EXAM",
+  FLAG_FOR_REVIEW = "FLAG_FOR_REVIEW",
+  END_EXAM = "END_EXAM",
+  CHAT = "CHAT",
+  SPEAK = "SPEAK"
+}
+
+export enum InfractionAction {
+  WARN = "WARN",
+  PAUSE_EXAM = "PAUSE_EXAM",
+  FLAG_FOR_REVIEW = "FLAG_FOR_REVIEW",
+  END_EXAM = "END_EXAM"
+}
+
+export interface InfractionTemplate {
+  id: string,
+  name: string,
+  type: string,
+  description: string,
+}
+
+export interface UpdateInfractionsDTO {
+  infraction_types: Infraction[],
+}
+
+export interface UseInfractionTemplateDTO {
+  template_id: string,
+}
+
+export interface NewInfractionTemplateDTO {
+  name: string,
+  description: string,
+  infraction_types: Infraction[],
+}
+
+export interface ProctorSettings {
+  proctor_guide: string,
+  proctor_allowed_actions: Array<{ action: string, enabled: boolean }>,
+  proctor_candidates: number
 }

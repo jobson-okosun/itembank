@@ -401,6 +401,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // ensure MCQ has at least 3 options
+    if (!this.validateMinOptions(item)) {
+      return;
+    }
+
     this.publishingItem = true;
 
     if (
@@ -490,6 +495,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (!this.validateMinOptions(item)) {
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
@@ -513,6 +522,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
 
     // console.log(itemForm);
 
+    if (!this.validateMinOptions(item)) {
+      this.publishingItem = false;
+      return;
+    }
+
     this.saveFunction(item, "passage-item");
   }
 
@@ -521,6 +535,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     let result = this.itemService.validateItem(item);
     //console.log(result);
     if (!result) {
+      return;
+    }
+
+    if (!this.validateMinOptions(item)) {
       return;
     }
 
@@ -562,6 +580,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
   doPreview(itemForm: any) {
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
+    if (!this.validateMinOptions(item)) {
+      return;
+    }
+
     this.previewData = item;
     this.preview = true;
   }
@@ -578,6 +600,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     let validated = this.itemService.validateItem(item);
 
     if (!validated) {
+      return;
+    }
+
+    if (!this.validateMinOptions(item)) {
       return;
     }
 
@@ -725,4 +751,13 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     this.itemUtil.previewItem = false
      
    }
+
+  validateMinOptions(item: any): boolean {
+    const opts = item && item.options ? item.options : this.options;
+    if (!opts || opts.length < 3) {
+      this.notifier.notify("error", "Multiple choice questions require at least 3 options.");
+      return false;
+    }
+    return true;
+  }
 }

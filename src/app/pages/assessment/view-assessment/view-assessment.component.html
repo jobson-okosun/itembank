@@ -820,6 +820,47 @@
             <input type="number" class="form-control" placeholder="240" name="passMark"
               [(ngModel)]="assessmentSettings.passMark" />
           </div>
+
+          <div class="form-check  mt-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
+              <label class="form-check-label" for="examGracePeriod">Examiner cannot start exam after</label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input type="number" min="0" class="form-control" placeholder="0" name="examGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.examGracePeriod" />
+              </div>
+              Minutes.
+            </div>
+          </div>
+
+          <div class="form-check  mt-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
+              <label class="form-check-label" for="candidateGracePeriod">Candidate cannot login after</label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input type="number" min="0" class="form-control" placeholder="0" name="candidateGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.candidateGracePeriod" />
+              </div>
+              Minutes.
+            </div>
+          </div>
+          
+          <div class="form-check  mt-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
+              <label class="form-check-label" for="earliest_exam_end_period">Examiners earliest end exam time</label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input type="number" min="0" class="form-control" placeholder="0" name="earliest_exam_end_period" [value]="0"  [(ngModel)]="assessmentSettings.earliestExamEndPeriod" />
+              </div>
+              Minutes.
+            </div>
+          </div>
+
+          <div class="form-check  mt-2">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" id="formCheck1" name="use_biometrics" [value]="false" [(ngModel)]="assessmentSettings.useBiometrics" />
+              <label class="form-check-label" for="use_biometrics">Use biometrics? </label>
+            </div>
+          </div>
+
         </div>
       </form>
     </div>

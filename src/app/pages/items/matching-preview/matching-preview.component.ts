@@ -1,7 +1,10 @@
 import { StimulusList } from "./../matching/model/matching";
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter, ElementRef, QueryList, ViewChild, ViewChildren, AfterViewInit } from "@angular/core";
 import {
   CdkDragDrop,
+  CdkDragEnter,
+  CdkDragMove,
+  CdkDragStart,
   moveItemInArray,
   transferArrayItem,
 } from "@angular/cdk/drag-drop";
@@ -24,7 +27,7 @@ import { NotifierService } from "angular-notifier";
   templateUrl: "./matching-preview.component.html",
   styleUrls: ["./matching-preview.component.scss"],
 })
-export class MatchingPreviewComponent implements OnInit {
+export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   @Input() component!: string;
   @Input() formType!: string;
   @Input() previewData!: any;
@@ -42,7 +45,7 @@ export class MatchingPreviewComponent implements OnInit {
   opts: any[] = [];
   ans: string[] = [];
   showAnswer: boolean = false;
-  matched: any[] = [];
+  // matched: any[] = [];
   itemTrailInformation: ItemDetails;
   currentUser: Account;
   assessmentActive: boolean;
@@ -50,6 +53,17 @@ export class MatchingPreviewComponent implements OnInit {
   itemUsageHistory: UsageHistory[] = [];
   loading_usage_history: boolean = false;
   isEditPreview: boolean = false;
+
+  matched: (any | null)[] = [];
+  options: any[] = [];
+  connectedLists: string[] = [];
+  lines: any[] = [];
+
+  @ViewChildren('leftBox', { read: ElementRef }) leftBoxes!: QueryList<ElementRef>;
+  @ViewChildren('rightBox', { read: ElementRef }) rightBoxes!: QueryList<ElementRef>;
+  @ViewChild('wrapper') wrapper!: ElementRef;
+
+
 
   constructor(
     private router: Router,
@@ -60,39 +74,155 @@ export class MatchingPreviewComponent implements OnInit {
     private recycleService: RecycleService,
     private notifier: NotifierService,
     private itemUtil: ItemUtilitiesService
-  ) {}
+  ) { }
+
+  // ngOnInit(): void {
+  //   //console.log(this.previewData.options);
+  //   this.currentUser = this.userService.getCurrentUser();
+  //   this.subjectName = this.itemService.subjectName;
+
+  //   this.isEditPreview = this.router.url.includes('edit-item')
+  //   this.assessmentActive = this.itemService.assessmentActive;
+  //   this.previewData.options.forEach((option) => {
+  //     this.opts.push(option);
+  //   });
+  //   this.opts = this.shuffleOptions(this.opts);
+  //   // this.ans = this.previewData.scoringOption.answers;
+
+  //   console.log(this.previewData);
+  //   // console.log(this.ans);
+
+  //   const orderedAnswers = this.previewData.scoringOption.answers.map(
+  //     (answerValue) => {
+  //       const option = this.previewData.options.find(
+  //         (opt) => opt.value === answerValue
+  //       );
+  //       return option ? option.label : null;
+  //     }
+  //   );
+  //   this.ans = orderedAnswers;
+
+
+  //   console.log(this.ans);
+  // }
 
   ngOnInit(): void {
-    //console.log(this.previewData.options);
+
     this.currentUser = this.userService.getCurrentUser();
-    this.subjectName = this.itemService.subjectName;
 
-    this.isEditPreview = this.router.url.includes('edit-item')
-    this.assessmentActive = this.itemService.assessmentActive;
-    this.previewData.options.forEach((option) => {
-      this.opts.push(option);
-    });
-    this.opts = this.shuffleOptions(this.opts);
-    // this.ans = this.previewData.scoringOption.answers;
-
-    console.log(this.previewData);
-    // console.log(this.ans);
-
-    const orderedAnswers = this.previewData.scoringOption.answers.map(
-      (answerValue) => {
-        const option = this.previewData.options.find(
-          (opt) => opt.value === answerValue
-        );
-        return option ? option.label : null;
-      }
-    );
-    this.ans = orderedAnswers;
+    this.options = this.shuffleOptions([...this.previewData.options]);
 
 
-    console.log(this.ans);
+    // one box per stem
+    this.matched = this.previewData.stems.map(() => null);
+
+    this.connectedLists = [
+      'option-list',
+      ...this.previewData.stems.map((_, i) => `right-box-${i}`)
+    ];
   }
 
-  onDrop(event: CdkDragDrop<string[]>) {
+  ngAfterViewInit() {
+    setTimeout(() => this.updateLines());
+  }
+
+
+  updateLines() {
+
+    const wrapperRect = this.wrapper.nativeElement.getBoundingClientRect();
+
+    this.lines = this.leftBoxes.map((leftRef, i) => {
+
+      const rightRef = this.rightBoxes.toArray()[i];
+
+      const lRect = leftRef.nativeElement.getBoundingClientRect();
+      const rRect = rightRef.nativeElement.getBoundingClientRect();
+
+      return {
+        x1: lRect.right - wrapperRect.left,
+        y1: lRect.top - wrapperRect.top + lRect.height / 2,
+        x2: rRect.left - wrapperRect.left,
+        y2: rRect.top - wrapperRect.top + rRect.height / 2,
+      };
+    });
+  }
+
+
+  addStyle(event: CdkDragMove) {
+    const target = event.source.element.nativeElement;
+    console.log('t...', target.innerHTML);
+
+    target.style.outline = "2px solid #007bff"; // Add a blue outline
+    target.style.zIndex = "1000"; // Ensure the dragged item is on top
+  }
+
+  // onDrop(event: CdkDragDrop<any[]>) {
+  //   if (event.previousContainer === event.container) {
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  //   }
+  // }
+
+  drop(event: CdkDragDrop<any>) {
+
+    const prevId = event.previousContainer.id;
+    const currId = event.container.id;
+
+    if (prevId === currId) return;
+
+    // OPTION → BOX
+    if (prevId === 'option-list' && currId.startsWith('right-box-')) {
+
+      const index = +currId.split('-')[2];
+
+      if (this.matched[index]) return; // already filled
+
+      const option = event.item.data;
+
+      this.matched[index] = option;
+
+      this.options = this.options.filter(o => o !== option);
+
+      setTimeout(() => this.updateLines());
+      return;
+    }
+
+    // BOX → OPTIONS
+    if (currId === 'option-list' && prevId.startsWith('right-box-')) {
+
+      const index = +prevId.split('-')[2];
+
+      const item = this.matched[index];
+
+      if (item) {
+        this.options.push(item);
+        this.matched[index] = null;
+      }
+
+      setTimeout(() => this.updateLines());
+      return;
+    }
+
+    // BOX ↔ BOX SWAP
+    if (prevId.startsWith('right-box-') && currId.startsWith('right-box-')) {
+
+      const p = +prevId.split('-')[2];
+      const c = +currId.split('-')[2];
+
+      const temp = this.matched[p];
+      this.matched[p] = this.matched[c];
+      this.matched[c] = temp;
+
+      setTimeout(() => this.updateLines());
+    }
+  }
+
+  log() {
+    console.log(true)
+  }
+
+
+
+  onDrop_(event: CdkDragDrop<string[]>) {
     /* if (event.previousContainer === event.container) {
       moveItemInArray(
         event.container.data,

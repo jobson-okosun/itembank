@@ -10,7 +10,7 @@ export const environment = {
   //new
   //developmentIP: "https://b28be17333dc.ngrok.app/examalpha/api/v1",
   // developmentIP: 'https://0df90ac58b47.ngrok.app/examalpha/api/v1',
-  developmentIP: 'https://352e2b25d233.ngrok.app/examalpha/api/v1',
+  developmentIP: 'https://9df535f7589a.ngrok.app/examalpha/api/v1',
   // developmentIP: 'https://beta.examalpha.com:6080/examalpha/api/v1',
   // developmentIP: 'http://192.168.0.104:5002/examalpha/api/v1',
   // developmentIP: "http://" + location.hostname + ":8081/examalpha/api/v1",
@@ -23,7 +23,7 @@ export const environment = {
   //schedulerIP: "https://500beb525a2a.ngrok.app",
   // schedulerIP: 'https://5775f45a3fec.ngrok.app',
   // schedulerIP: 'https://beta.examalpha.com:6080', 
-    schedulerIP: 'https://352e2b25d233.ngrok.app',
+    schedulerIP: 'https://9df535f7589a.ngrok.app',
 
   // schedulerIP: 'http://' + location.hostname + ':3201',
   org_id: '',

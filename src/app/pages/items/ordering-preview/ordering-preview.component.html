@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <p-orderList
+    <!-- <p-orderList
       [value]="showAnswer ? ans : opts"
       [listStyle]="{ 'max-height': '30rem' }"
       [dragdrop]="true"
@@ -24,7 +24,14 @@
       <ng-template let-product pTemplate="item">
         <div [innerHTML]="product"></div>
       </ng-template>
-    </p-orderList>
+    </p-orderList> -->
+
+    <div cdkDropList [cdkDropListData]="showAnswer ? ans : opts" (cdkDropListDropped)="onDrop($event)" class="options-list p-3 bg-light">
+      <div class="option-item" *ngFor="let option of showAnswer ? ans : opts" cdkDrag>
+        <div class="option-content" [innerHTML]="option"></div>
+      </div>
+  </div>
+
 
     <hr />
 

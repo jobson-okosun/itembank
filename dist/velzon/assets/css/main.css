@@ -1,0 +1,163 @@
+div .editor{
+  border: 1px solid #ccc;
+  width: 90%;
+}
+
+.mce-edit-focus:focus{
+  outline: none !important;
+}
+
+.mce-content-body{
+  min-height: 25px;
+  padding: 0px 10px;
+  padding-top: 3px !important;
+}
+
+.radio-background{
+  background-color: #eee;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 12px;
+}
+
+.option-margin{
+  margin-left: 10px;
+}
+
+.none{
+  display: none !important;
+}
+
+.image-placeholder{
+  width: 65px;
+  height: 65px;
+  /* border: 1px solid #000; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected-option-style{
+  background-color: lightgreen;
+  border-left: 3px solid green;
+}
+
+.option-style{
+  background-color: #ccc;
+}
+
+.search{
+  border: none;
+  outline: none;
+  padding: 10px;
+  width: 90%;
+  background-color: #eee;
+}
+
+.item-search{
+  width: 250px;
+  display: flex;
+  padding: 0px 10px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px;
+  background-color: #eee;
+}
+
+.item-size{
+  max-height: 80px;
+  overflow: hidden;
+  /* transition: height .1s ease-in-out; */
+}
+
+.item-size-expand{
+  height: fit-content !important;
+  /* overflow-y: scroll; */
+  transition: height .5s ease-in-out;
+}
+
+.item-tags-size{
+  min-height: 120px;
+  overflow-y: hidden;
+}
+
+.he{
+  height: 76vh;
+  overflow-y: scroll;
+}
+
+.grabbable {
+  cursor: move; /* fallback if grab cursor is unsupported */
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+/* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active {
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+@media only screen and (max-width:300px) {
+  .item-size{
+    height:1200px;
+  }
+}
+
+.fs-20{
+  font-size: 20px !important;
+  margin-right: 3px;
+}
+
+.fs-16{
+  font-size: 16px !important;
+}
+
+.fs-14{
+  font-size: 14px !important;
+}
+
+.scrollable{
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.search-tags{
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7px;
+  background-color: #eee;
+}
+
+.ng-select.custom{
+  text-transform: uppercase;
+}
+
+.input-pointer::after{
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 1.07143em solid transparent;
+  border-bottom: 1.07142857em solid transparent;
+  border-left: 1.07143em solid #fff;
+  top: 50%;
+
+}
+
+.tag-popover-class{
+  z-index: 1000;
+  background-color: #111014;
+  width: fit-content;
+}
+
+@media screen and (max-width:375px) {
+  div .editor{
+    border: 1px solid #ccc;
+    width: 70%;
+  }
+}

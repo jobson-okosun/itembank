@@ -26,7 +26,12 @@ export class ItemUtilitiesService {
 
   previewItem: boolean = false;
 
-  currentItemTrail: ItemDetails;
+  currentItemTrail: ItemDetails = {
+    subjectId: "01975e81-f133-72b3-86a4-9d3e4f29ea24",
+    subjectName: "account",
+    topicId: "01975f9e-516f-744d-8d43-6beb39dc2d42",
+    topicName: "accounts of not-for-profit-making organizations"
+}
   private tagSource = new BehaviorSubject<any[]>([]);
   selectedTags$ = this.tagSource.asObservable();
 

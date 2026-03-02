@@ -40,7 +40,7 @@ import Swal from "sweetalert2";
 import { ItemHttpService } from "../item-http.service";
 import { HttpErrorResponse } from "@angular/common/http";
 import { ItemTypes } from "../models/item-types";
-import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
+import { DropzoneComponent, DropzoneConfigInterface } from "ngx-dropzone-wrapper";
 import { ItemTagComponent } from "../item-tag/item-tag.component";
 
 export class ResponseContainer {
@@ -61,6 +61,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   @Input() formType!: string;
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
+  @ViewChild('dzRef') dzRef!: DropzoneComponent;
 
   dropZoneConfig: DropzoneConfigInterface = {
     maxFilesize: 200,
@@ -127,23 +128,23 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     item: null;
   }> = [
     {
-      x: 50,
-      y: 50,
+      x: 0,
+      y: 0,
       inputValue: "",
       selectedOptionIndex: null,
 
       id: "1",
       item: null,
     },
-    {
-      x: 80,
-      y: 80,
-      inputValue: "",
-      selectedOptionIndex: null,
+    // {
+    //   x: 80,
+    //   y: 80,
+    //   inputValue: "",
+    //   selectedOptionIndex: null,
 
-      id: "2",
-      item: null,
-    },
+    //   id: "2",
+    //   item: null,
+    // },
   ];
   selectedOptionIndex: number | null = null;
   draggedItem: any = null;
@@ -166,6 +167,8 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     toolbar:
       "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
   };
+
+  activeTab = 0
   constructor(
     @Inject(DOCUMENT) private document: any,
     public itemUtil: ItemUtilitiesService,
@@ -279,6 +282,14 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
           }); */
     }
     // this.createOption();
+  }
+
+  openFileExplorer() {
+    (document.querySelector(".dz-text") as HTMLElement).click();
+  }
+
+  log() {
+    console.log('unploading')
   }
 
   setup(editor: any) {
@@ -493,7 +504,13 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   }
 
   onUploadError(event: any) {
-    console.log(event);
+    const [file, message] = event;
+
+    if (file.size > 100 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 100KB')
+    } else {
+      this.notifierService.notify('error', 'An error occurred during file upload. Please try again.')
+    }
   }
 
   onUploadSuccess(event: any) {
@@ -509,6 +526,14 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     this.modalService.dismissAll();
 
     // this.initializeDraggable();
+    setTimeout(() => {
+      const element = document.getElementById("labels");
+      element?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest"
+      });
+    }, 1000)
   }
 
   dragEnd(event: any) {
@@ -707,16 +732,16 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
           this.dropdownLabels = [
             {
-              x: 50,
-              y: 50,
+              x: 0,
+              y: 0,
               inputValue: "",
               selectedOptionIndex: null,
               id: "1",
               item: null,
             },
             {
-              x: 80,
-              y: 80,
+              x: 0,
+              y: 0,
               inputValue: "",
               selectedOptionIndex: null,
               id: "2",
@@ -788,12 +813,12 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
-    // item.scoringOption.answers = item.options.map((option) => option.label);
-    this.image = new Images();
-
     if (!validated) {
       return;
     }
+
+    // item.scoringOption.answers = item.options.map((option) => option.label);
+    this.image = new Images();
 
     this.publishingItem = true;
     this.publishLoader();
@@ -900,7 +925,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       // const rect = this.imageElement.nativeElement.getBoundingClientRect();
       this.rect = this.imageElement.nativeElement.getBoundingClientRect();
 
-      console.log("Image Dimensions:", this.rect.width, this.rect.height);
+      // console.log("Image Dimensions:", this.rect.width, this.rect.height);
       const xPercent =
         ((event.clientX - this.rect.left) / this.rect.width) * 100;
       const yPercent =
@@ -915,13 +940,13 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         Math.min(100, yPercent)
       );
 
-      console.log("Authoring Position:", this.dropdownLabels);
+      // console.log("Authoring Position:", this.dropdownLabels);
     }
   }
 
   // When mouse button is released
   onMouseUp() {
-    console.log("release");
+    // console.log("release");
     this.isDragging = false;
     document.removeEventListener("mousemove", this.onMouseMove.bind(this));
     document.removeEventListener("mouseup", this.onMouseUp.bind(this));
@@ -939,13 +964,18 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   addDropdownLabel() {
     const newLabel = {
       id: `label${this.dropdownLabels.length + 1}`,
-      x: Math.random() * 80, // Random position within bounds
-      y: Math.random() * 80,
+      // x: Math.random() * 80, // Random position within bounds
+      // y: Math.random() * 80,
+      x: 0,
+      y: 0,
       item: null, // Initially no item is associated
       inputValue: "",
       selectedOptionIndex: 1,
     };
+
+
     this.dropdownLabels.push(newLabel);
+    this.notifierService.notify("success", "Label Added");
   }
 
   // Update the image size on window resize
@@ -958,7 +988,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       // Update the positions of the labels
       this.dropdownLabels = [...this.dropdownLabels];
 
-      console.log(this.dropdownLabels);
+      // console.log(this.dropdownLabels);
     }
   }
 
@@ -967,7 +997,10 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     this.onWindowResize();
   }
 
-  distractors = [{ value: "Zero" }, { value: "One" }];
+  distractors = [
+    { value: "Zero" },
+    // { value: "One" }
+  ];
 
   get labelDropListIds(): string[] {
     return this.dropdownLabels.map((_, i) => `label-${i}`);
@@ -1007,7 +1040,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       console.error("Invalid drop target.");
     }
 
-    console.log(this.dropdownLabels);
+    // console.log(this.dropdownLabels);
   }
 
   onDragEnd() {

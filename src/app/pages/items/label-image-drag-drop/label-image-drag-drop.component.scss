@@ -36,8 +36,11 @@
   width: 100%;
   max-width: 600px; /* Same as the image width */
   height: 400px; /* Same as the image height */
-  margin: auto;
-  border: 1px solid #ccc;
+  margin: 0 auto;
+  aspect-ratio: 16 / 9; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
@@ -48,15 +51,15 @@
 
 .draggable-label {
   position: absolute;
-  display: flex; /* Align items horizontally */
-  align-items: center; /* Vertically center the elements */
-  gap: 10px; /* Space between pointer and controls */
-  padding: 5px 10px;
-  font-size: 16px;
-  font-weight: bold;
-  transform: translate(-50%, -50%);
+  // display: flex; /* Align items horizontally */
+  // align-items: center; /* Vertically center the elements */
+  // gap: 10px; /* Space between pointer and controls */
+  // padding: 5px 10px;
+  // font-size: 16px;
+  // font-weight: bold;
+  // transform: translate(-50%, -50%);
   cursor: grab;
-  border-radius: 8px;
+  // border-radius: 8px;
 }
 
 @media (max-width: 768px) {
@@ -164,9 +167,17 @@
 }
 
 .pointer {
-  flex-shrink: 0; /* Prevent shrinking of pointer */
-  width: 31px;
-  height: 54px;
+  // flex-shrink: 0; /* Prevent shrinking of pointer */
+  // // width: 31px;
+  // // height: 54px;
+  //   width: 24px;
+  // height: 42px;
+  // background-image: url(/assets/images/svg/left-arrow.svg);
+  // background-size: contain;
+  // background-repeat: no-repeat;
+
+    width: 31px;
+  height: 20px;
   background-image: url(/assets/images/svg/left-arrow.svg);
   background-size: contain;
   background-repeat: no-repeat;
@@ -181,10 +192,58 @@
   margin-bottom: 77px;
 }
 
-select,
-input {
-  font-size: 12px;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+// select,
+// input {
+//   font-size: 12px;
+//   padding: 4px 6px;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+// }
+
+.custom-dropzone {
+  min-height: 200px;
+  border: 2px dashed #bbd0f0;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  padding: 1rem;
+
+  // &:hover {
+  //   background-color: #e9f0ff;
+  //   border-color: #0b5ed7;
+  //   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+  // }
+
+  // &:focus-within {
+  //   border-color: #0b5ed7;
+  //   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+  // }
+}
+
+/* dynamic-tabs.component.css */
+.tab-menu {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.tab-menu button {
+  padding: 7px 10px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  font-size: small;
+  font-weight: 500;
+  border-radius: 5%;
+  border-bottom-left-radius: 0%;
+  border-bottom-right-radius: 0%;
+}
+
+.tab-menu button.active {
+  background-color: #5f9bdb;
+  color: white;
 }

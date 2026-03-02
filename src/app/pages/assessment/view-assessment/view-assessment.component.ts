@@ -866,7 +866,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   saveAssessmentSettings(assessmentSettingsForm?: any) {
-    console.log(this.assessmentSettings);
+    // console.log(this.assessmentSettings);
     // console.log(assessmentSettingsForm, "form");
 
     // Ensure startDate and endDate are strings and end with "Z"
@@ -911,9 +911,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log(this.instructionReadTimeChecked, "instructionReadTimeChecked");
+    // console.log(this.instructionReadTimeChecked, "instructionReadTimeChecked");
     if (this.instructionReadTimeChecked) {
-      console.log(this.assessmentSettings.instructionReadTimeSec, "inredtime");
+      // console.log(this.assessmentSettings.instructionReadTimeSec, "inredtime");
       if (
         this.assessmentSettings.instructionReadTimeSec !== 0 &&
         this.assessmentSettings.instructionReadTimeSec < 40
@@ -944,7 +944,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     if (!this.assessmentSettings.instantResult) {
       delete this.assessmentSettings.passMark;
     }
-    console.log(this.assessmentSettings, "assessment seetings");
+    // console.log(this.assessmentSettings, "assessment seetings");
 
     this.submitted = true;
     this.assessmentService

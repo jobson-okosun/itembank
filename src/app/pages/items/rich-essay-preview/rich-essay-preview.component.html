@@ -12,6 +12,12 @@
 
     <div *ngIf="previewData" class="row">
       <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <div *ngIf="previewData._previewMaxWords && previewData._previewMaxWords > 0" class="mb-2">
+          <small class="text-muted">Max words: {{ previewData._previewMaxWords }} &nbsp;•&nbsp; Words: {{ previewData._previewWordCount }} <span *ngIf="previewData._previewOriginalWordCount && previewData._previewOriginalWordCount !== previewData._previewWordCount">(original: {{ previewData._previewOriginalWordCount }})</span></small>
+        </div>
+        <div *ngIf="!previewData._previewMaxWords || previewData._previewMaxWords === 0" class="mb-2">
+          <small class="text-muted">Words: {{ previewData._previewWordCount || 0 }}</small>
+        </div>
         <div [innerHTML]="previewData.stimulus | htmlSanitizer"></div>
       </div>
     </div>

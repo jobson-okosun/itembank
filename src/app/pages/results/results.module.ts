@@ -32,6 +32,13 @@ import {AccordionModule} from 'primeng/accordion';
 import { CustomContextMenuComponent } from './grading-item-types/drawing-and-writing/custom-context-menu/custom-context-menu.component';
 import { DraggableDirective } from "./grading-item-types/drawing-and-writing/directives/draggable.directive";
 import { CloseDropdownComponent } from './transcript/question-types/close-dropdown/close-dropdown.component';
+import { ClozeTextComponent } from './transcript/question-types/cloze-text/cloze-text.component';
+import { ClozeRadioComponent } from './transcript/question-types/cloze-radio/cloze-radio.component';
+import { YesOrNoComponent } from './transcript/question-types/yes-or-no/yes-or-no.component';
+import { TrueOrFalseComponent } from './transcript/question-types/true-or-false/true-or-false.component';
+import { OrderingComponent } from './transcript/question-types/ordering/ordering.component';
+import { MatchingComponent } from './transcript/question-types/matching/matching.component';
+import { MrqComponent } from './transcript/question-types/mrq/mrq.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +52,14 @@ import { CloseDropdownComponent } from './transcript/question-types/close-dropdo
     DrawingAndWritingComponent,
     CustomContextMenuComponent,
     DraggableDirective,
-    CloseDropdownComponent   
+    CloseDropdownComponent,
+    ClozeTextComponent,
+    ClozeRadioComponent,
+    YesOrNoComponent,
+    TrueOrFalseComponent,
+    OrderingComponent,
+    MatchingComponent,
+    MrqComponent   
   ],
   imports: [
     CommonModule,

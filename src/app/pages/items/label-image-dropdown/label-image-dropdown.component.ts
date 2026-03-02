@@ -47,8 +47,7 @@ export class Responses {
   styleUrls: ["./label-image-dropdown.component.scss"],
 })
 export class LabelImageDropdownComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+  implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedItemType!: string;
   @Input() formType!: string;
   @Input() editData!: any;
@@ -57,6 +56,7 @@ export class LabelImageDropdownComponent
 
   dropZoneConfig: DropzoneConfigInterface = {
     maxFilesize: 200,
+    // maxFilesize: 0.1,
   };
   startX = 0;
   startY = 0;
@@ -83,24 +83,18 @@ export class LabelImageDropdownComponent
     inputValue: string;
     selectedOptionIndex: number | null;
     correctAnswerIndex: number | null;
+    showEnterOptionInput: boolean
   }> = [
-    {
-      options: [],
-      x: 50,
-      y: 50,
-      inputValue: "",
-      selectedOptionIndex: null,
-      correctAnswerIndex: null,
-    },
-    {
-      options: [],
-      x: 80,
-      y: 80,
-      inputValue: "",
-      selectedOptionIndex: null,
-      correctAnswerIndex: null,
-    },
-  ];
+      {
+        options: [],
+        x: 0,
+        y: 0,
+        inputValue: "",
+        selectedOptionIndex: null,
+        correctAnswerIndex: null,
+        showEnterOptionInput: false
+      },
+    ];
 
   private imageWidth: number;
   private imageHeight: number;
@@ -162,7 +156,7 @@ export class LabelImageDropdownComponent
     private itemService: ItemHttpService,
     private location: Location,
     private notifierService: NotifierService
-  ) {}
+  ) { }
 
   onSelect(event: any): void {
     console.log(event);
@@ -431,7 +425,7 @@ export class LabelImageDropdownComponent
     this.possibleResponses.push(possibleResponse);
   }
 
-  onChange() {}
+  onChange() { }
 
   showPosition(index: number, event: CdkDragEnd, element: any) {
     // console.log('drag-ended');
@@ -480,9 +474,17 @@ export class LabelImageDropdownComponent
     // this.cdRef.detectChanges();
     this.createOption();
     this.modalService.dismissAll();
+    setTimeout(() => {
+      const element = document.getElementById("labels");
+      element?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest"
+      });
+    }, 1000)
   }
 
-  editPassage() {}
+  editPassage() { }
 
   doPreview(itemForm: any) {
     this.itemUtil.previewItem = true;
@@ -492,7 +494,13 @@ export class LabelImageDropdownComponent
   }
 
   onUploadError(event: any) {
-    // console.log(event);
+    const [file, message] = event;
+
+    if (file.size > 100 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 100KB')
+    } else {
+      this.notifierService.notify('error', 'An error occurred during file upload. Please try again.')
+    }
   }
 
   uploadImage() {
@@ -510,6 +518,9 @@ export class LabelImageDropdownComponent
   handleImageUpload(event: any) {
     this.file = event.target.files[0];
     //console.log(event.target.files);
+  }
+  openFileExplorer() {
+    (document.querySelector(".dz-text") as HTMLElement).click();
   }
 
   reset() {
@@ -562,7 +573,7 @@ export class LabelImageDropdownComponent
       const responsePosition = { x: label.x, y: label.y };
       const correctAnswerIndex =
         label.correctAnswerIndex !== null &&
-        label.correctAnswerIndex !== undefined
+          label.correctAnswerIndex !== undefined
           ? label.correctAnswerIndex.toString()
           : "";
 
@@ -672,6 +683,7 @@ export class LabelImageDropdownComponent
 
               correctAnswerIndex: null,
               options: null,
+              showEnterOptionInput: false
             },
             {
               x: 80,
@@ -681,6 +693,7 @@ export class LabelImageDropdownComponent
 
               correctAnswerIndex: null,
               options: null,
+              showEnterOptionInput: false
             },
           ];
 
@@ -727,18 +740,18 @@ export class LabelImageDropdownComponent
     }
   }
 
-  saveAndNew(itemForm?: any) {}
+  saveAndNew(itemForm?: any) { }
 
   saveToDraft(itemForm?: any) {
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
-    // item.scoringOption.answers = item.options.map((option) => option.label);
-    this.image = new Images();
-
     if (!validated) {
       return;
     }
+
+    // item.scoringOption.answers = item.options.map((option) => option.label);
+    this.image = new Images();
 
     this.publishingItem = true;
     this.publishLoader();
@@ -748,7 +761,7 @@ export class LabelImageDropdownComponent
     this.saveFunction(item, "draft");
   }
 
-  saveItemToPassage(itemForm?: any) {}
+  saveItemToPassage(itemForm?: any) { }
 
   recieveTag(event: any) {
     this.tags = event;
@@ -781,7 +794,7 @@ export class LabelImageDropdownComponent
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, "edit data");
+    // console.log(this.editData, "edit data");
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
@@ -789,7 +802,7 @@ export class LabelImageDropdownComponent
     // }
     this.publishingItem = true;
     this.publishLoader();
-    console.log("builtItem", item);
+    // console.log("builtItem", item);
 
     switch (status) {
       case "save":
@@ -851,7 +864,6 @@ export class LabelImageDropdownComponent
 
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
-    console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
@@ -881,7 +893,7 @@ export class LabelImageDropdownComponent
         Math.min(100, yPercent)
       );
 
-      console.log(this.dropdownLabels);
+      // console.log(this.dropdownLabels);
     }
   }
 
@@ -904,12 +916,17 @@ export class LabelImageDropdownComponent
   addDropdownLabel() {
     this.dropdownLabels.push({
       options: [],
-      x: 50,
-      y: 50,
+      // x: 50,
+      // y: 50,
+      x: 0,
+      y: 0,
       inputValue: "",
       selectedOptionIndex: null,
       correctAnswerIndex: null,
+      showEnterOptionInput: false
     });
+
+    this.notifierService.notify('success', 'New label added')
   }
 
   // Update the image size on window resize
@@ -953,8 +970,7 @@ export class LabelImageDropdownComponent
   onSelectOption(labelIndex: number, event: Event) {
     const selectedOptionIndex = (event.target as HTMLSelectElement).value;
     this.dropdownLabels[labelIndex].selectedOptionIndex = +selectedOptionIndex;
-    this.dropdownLabels[labelIndex].inputValue =
-      this.dropdownLabels[labelIndex].options[selectedOptionIndex];
+    this.dropdownLabels[labelIndex].inputValue = this.dropdownLabels[labelIndex].options[selectedOptionIndex];
   }
 
   setCorrectAnswer(labelIndex: number) {
@@ -964,11 +980,15 @@ export class LabelImageDropdownComponent
     this.dropdownLabels[labelIndex].correctAnswerIndex = selectedOptionIndex;
     this.notifierService.notify(
       "success",
-      `Correct answer set to "${
-        this.dropdownLabels[labelIndex].options[selectedOptionIndex]
+      `Correct answer set to "${this.dropdownLabels[labelIndex].options[selectedOptionIndex]
       }" for label ${labelIndex + 1}`
     );
     // }
+  }
+
+  selectAnwser(labelIndex: number, event: Event) {
+      this.onSelectOption(labelIndex, event)
+      this.setCorrectAnswer(labelIndex)
   }
 
   deleteDropOption(labelIndex: number) {
@@ -989,8 +1009,6 @@ export class LabelImageDropdownComponent
   deleteLabel(index: number) {
     this.dropdownLabels.splice(index, 1);
     this.notifierService.notify("success", `Label deleted`);
-
-    console.log(this.dropdownLabels);
   }
 
   openConfirmationModal(content: any) {
@@ -999,6 +1017,38 @@ export class LabelImageDropdownComponent
       centered: true,
       windowClass: "modal-holder",
     });
+  }
+
+  openModal(content: any, size?: string) {
+    this.modalService.open(content, {
+      size: size ? size : "lg",
+      centered: true,
+    });
+  }
+
+  tempOptions: string[] = [];
+
+  openOptionsModal(labelIndex: number, content: any) {
+    this.tempOptions = [...this.dropdownLabels[labelIndex].options];
+    this.openModal(content, 'md')
+  }
+
+  saveOptions(labelIndex: number, modal: any) {
+    this.dropdownLabels[labelIndex].options = [...this.tempOptions];
+    modal.close();
+  }
+
+  removeTempOption(index: number) {
+    this.tempOptions.splice(index, 1);
+  }
+
+  removeOption(labelIndex: number, optionIndex: number) {
+    this.dropdownLabels[labelIndex].options.splice(optionIndex, 1);
+  }
+
+  removeLabel(labelIndex: number) {
+    this.dropdownLabels.splice(labelIndex, 1);
+    this.notifierService.notify("success", `Label deleted`);
   }
 
   ngOnDestroy(): void {

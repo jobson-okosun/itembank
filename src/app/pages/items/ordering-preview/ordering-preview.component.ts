@@ -53,7 +53,7 @@ export class OrderingPreviewComponent implements OnInit {
     private passageService: AllPassagesService,
     private notifier: NotifierService,
     private itemUtil: ItemUtilitiesService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.assessmentActive = this.itemService.assessmentActive;
@@ -64,12 +64,8 @@ export class OrderingPreviewComponent implements OnInit {
       this.opts.push(option.label);
 
       this.ans[index] = option.label;
-
-      console.log(this.ans, "answer")
-      console.log(this.opts, "options")
     });
 
-    console.log(this.previewData)
     // this.ans = this.previewData.scoringOption.answers;
     this.opts = this.shuffleOptions(this.opts);
   }
@@ -115,11 +111,12 @@ export class OrderingPreviewComponent implements OnInit {
 
   onDrop(event: CdkDragDrop<string[]>) {
     moveItemInArray(
-      this.previewData.options,
+      event.container.data,   // <-- THIS is ans or opts
       event.previousIndex,
       event.currentIndex
     );
   }
+
 
   shuffleOptions(options: Option[]) {
     for (let i = options.length - 1; i > 0; i--) {
@@ -167,7 +164,7 @@ export class OrderingPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-     
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

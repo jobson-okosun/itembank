@@ -57,15 +57,15 @@
   position: absolute;
   cursor: grab;
   // background-color: rgba(255, 255, 255, 0.5);
-  padding: 5px 10px;
-  font-size: 16px;
-  font-weight: bold;
-  transform: translate(-50%, -50%);
+  // padding: 5px 10px;
+  // font-size: 16px;
+  // font-weight: bold;
+  // transform: translate(-50%, -50%);
   transition: background-color 0.3s ease;
   width: 15vw; /* Adjust width as needed */
-  display: flex;
-  align-items: center;
-  gap: 10px; /* Space between pointer and controls */
+  // display: flex;
+  // align-items: center;
+  // gap: 10px; /* Space between pointer and controls */
 }
 
 
@@ -85,27 +85,29 @@
 
 
 
-@media (max-width: 768px) {
-  .draggable-label {
-    font-size: 14px;
-  }
-}
+// @media (max-width: 768px) {
+//   .draggable-label {
+//     font-size: 14px;
+//   }
+// }
 
-@media (max-width: 480px) {
-  .draggable-label {
-    font-size: 12px;
-  }
-}
+// @media (max-width: 480px) {
+//   .draggable-label {
+//     font-size: 12px;
+//   }
+// }
+
+
 .container {
   position: relative;
   width: 100%;
   max-width: 600px; /* Same as the image width */
   height: 400px; /* Same as the image height */
-  margin: auto;
-  border: 1px solid #ccc;
-  background-color: #f9f9f9;
+  margin: 0 auto;
   aspect-ratio: 16 / 9; 
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .image {
@@ -119,18 +121,18 @@
 
 
 .draggable-label {
-  position: absolute;
-  display: flex; /* Align items horizontally */
-  align-items: center; /* Vertically center the elements */
-  gap: 10px; /* Space between pointer and controls */
+  // position: absolute;
+  // display: flex; /* Align items horizontally */
+  // align-items: center; /* Vertically center the elements */
+  // gap: 10px; /* Space between pointer and controls */
   // background-color: rgba(255, 255, 255, 0.8);
   // border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 5px;
-  font-size: 14px;
-  font-weight: 500;
-  transform: translate(-50%, -50%);
-  cursor: grab;
+  // border-radius: 8px;
+  // padding: 5px;
+  // font-size: 14px;
+  // font-weight: 500;
+  // transform: translate(-50%, -50%);
+  // cursor: grab;
   // box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -141,13 +143,13 @@
   // border: 2px solid white;
   // border-radius: 50%;
   // box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-
-  width: 31px;
-  height: 54px;
   // border-left: 1px solid #3b82f6;
   // border-right: 0px solid #3b82f6;
   // border-top: 0px solid #3b82f6;
   // border-bottom: 1px solid #3b82f6;
+
+  width: 31px;
+  height: 20px;
   background-image: url(/assets/images/svg/left-arrow.svg);
   background-size: contain;
   background-repeat: no-repeat;
@@ -162,17 +164,40 @@
   margin-bottom: 77px;
 }
 
-select,
-input {
-  font-size: 12px;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+// select,
+// input {
+//   font-size: 12px;
+//   padding: 4px 6px;
+//   border: 1px solid #ccc;
+//   border-radius: 4px;
+// }
 
-button {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 4px;
-}
+// button {
+//   font-size: 12px;
+//   padding: 4px 8px;
+//   border-radius: 4px;
+// }
 
+.custom-dropzone {
+  min-height: 200px;
+  border: 2px dashed #bbd0f0;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  padding: 1rem;
+
+  // &:hover {
+  //   background-color: #e9f0ff;
+  //   border-color: #0b5ed7;
+  //   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.1);
+  // }
+
+  // &:focus-within {
+  //   border-color: #0b5ed7;
+  //   box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+  // }
+}

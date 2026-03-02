@@ -730,10 +730,42 @@
               <mcq  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></mcq>
             </ng-container>
 
-            <!-- close passage -->
+            <!-- close select -->
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN">
               <app-close-dropdown  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-close-dropdown>
             </ng-container>
+
+            <!-- close text -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT">
+              <app-cloze-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text>
+            </ng-container>
+
+            <!-- close radio -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-cloze-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text>
+            </ng-container>
+
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-cloze-radio  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-radio>
+            </ng-container>
+
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-yes-or-no  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-yes-or-no>
+            </ng-container>
+
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-true-or-false  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-true-or-false>
+            </ng-container>
+
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-ordering  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-ordering>
+            </ng-container>
+
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+              <app-matching  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-matching>
+            </ng-container>
+
+
           </ng-container>
 
           <ng-template #allMode>
@@ -743,6 +775,21 @@
 
               <!-- close passage -->
               <app-close-dropdown  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-close-dropdown>
+
+              <!-- close passage -->
+              <app-cloze-text  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-text>
+
+              <!-- close radio -->
+              <app-cloze-radio  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-radio>
+              
+              <app-yes-or-no  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-yes-or-no>
+              
+              <app-true-or-false  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-true-or-false>
+              
+              <app-ordering  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-ordering>
+              
+              <app-matching *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-matching>
+            
             </ng-container>
           </ng-template>
         </div>

@@ -89,7 +89,10 @@ export class NewItemComponent implements OnInit {
   }
 
   setItemType(value: string) {
-    //console.log('current item type::::::', value);
+    // if (this.hasUnsavedContent()) {
+    //   const leave = window.confirm('You have content in the Compose Question editor. Discard changes and switch item type?');
+    //   if (!leave) return;
+    // }
 
     this.selectedItemType = value;
   
@@ -108,6 +111,7 @@ export class NewItemComponent implements OnInit {
       this.setFormType("DRAWING_AND_WRITING");
     }
   }
+
 
   setFormType(formType: string) {
     this.itemUtil.setSelectedTags([]);

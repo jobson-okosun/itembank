@@ -40,7 +40,7 @@ export class SchedulerDashboardComponent implements OnInit {
 
   pageNo: number = 0;
 
-  pageSize: number = 20;
+  pageSize: number = 10;
 
   selectedAssessment: SingleAssessment;
 
@@ -53,9 +53,9 @@ export class SchedulerDashboardComponent implements OnInit {
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
     private notifier: NotifierService
-  ) {}
+  ) { }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void { }
 
   onSettingsButtonClicked() {
     document.body.classList.toggle("right-bar-enabled");
@@ -72,7 +72,7 @@ export class SchedulerDashboardComponent implements OnInit {
       this.deliveryMethods.push(method);
     });
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
-this.loading = true
+    this.loading = true
     this.assessmentService
       .fetchAllAssessment(this.pageNo, this.pageSize)
       .subscribe(
@@ -82,6 +82,26 @@ this.loading = true
         },
         (error: HttpErrorResponse) => {
           this.loading = false
+          // console.log(error);
+        }
+      );
+  }
+
+  onScheduleExamListPageChange(event: any) {
+    this.pageSize = event.rows; 
+    this.pageNo = event.page * event.rows
+    console.log(this.pageNo, this.pageSize)
+    // this.loading = true
+
+    this.assessmentService
+      .fetchAllAssessment(this.pageNo, this.pageSize)
+      .subscribe(
+        (value) => {
+          this.assessments = value;
+          this.loading = false;
+        },
+        (error: HttpErrorResponse) => {
+          this.loading = false;
           // console.log(error);
         }
       );
@@ -152,8 +172,7 @@ this.loading = true
     this.assessmentService.activeAssessment = assessment.name;
     this.assessmentService.schedulerAssessmentId = assessment.schId;
     this.assessmentService.activeAssessmentId = assessment.id;
-    this.assessmentService.activeAssessmentDeliveryMethod =
-      assessment.deliveryMethod;
+    this.assessmentService.activeAssessmentDeliveryMethod = assessment.deliveryMethod;
   }
 
   confirm() {

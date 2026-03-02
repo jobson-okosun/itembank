@@ -1,0 +1,104 @@
+{
+  "HEADER": {
+    "MORE": {
+      "TEXT": "More"
+    }
+  },
+  "MENUITEMS": {
+    "MENU": {
+      "TEXT": "MENU"
+    },
+    "DASHBOARD": {
+      "TEXT": "Dashboard"
+    },
+    "USERS":{
+      "TEXT":"Users"
+    },
+    "TAGS":{
+      "TEXT":"Tags"
+    },
+    "QUESTIONS":{
+      "TEXT":"Question Bank",
+      "LIST": {
+        "SUBJECTS": "Subjects",
+        "MODERATION": "Moderation",
+        "RECYCLE": "Recycle",
+        "QUESTIONS":"Questions",
+        "PASSAGES":"Passages"
+      }
+    },
+    "PASSAGE":{
+      "TEXT":"Passages"
+    },
+    "ASSESSMENT_TEMPLATES":{
+      "TEXT":"Templates",
+      "LIST": {
+        "ASSESSMENT DETAILS": "Assessment details",
+        "SECTION TEMPLATES": "Assessment section",
+        "ASSESSMENT SETTINGS": "Assessment settings"
+      }
+    },
+    "EXAMS":{
+      "TEXT":"Exams"
+    },
+    "SCHEDULE":{
+      "TEXT":"Schedule"
+    },
+    "MONITOR":{
+      "TEXT":"Monitor Exam"
+    },
+    "RESULTS":{
+      "TEXT":"Reports"
+    },
+    "SETTINGS":{
+      "TEXT":"Settings"
+    }
+  },
+    
+    "MODERATION":{
+      "TEXT":"Moderation"
+    },
+    "RECYCLE":{
+      "TEXT":"Recycle"
+    },
+    "SCHEDULER":{
+      "TEXT": "Scheduler",
+      "LIST": {
+        "BANK": "Bank",
+        "PARTICIPANTS": "Participants",
+        "CENTERS": "Centers"
+      }
+    },
+    "LOGS":{
+      "TEXT":"Logs"
+    },
+    "LAYOUTS": {
+      "TEXT": "Layouts",
+      "LIST": {
+        "HORIZONTAL": "Horizontal",
+        "DETACHED": "Detached",
+        "TWOCOLUMN": "Two Column",
+        "HOVERED": "Hovered"
+      }
+    },  
+    "SCHEDULER_MENU": {
+    "MENU": {
+      "TEXT": "MENU"
+    },
+    "DASHBOARD": {
+      "TEXT": "Dashboard"
+    },
+    "USERS":{
+      "TEXT":"Users"
+    },
+    "BANK":{
+      "TEXT":"Bank"
+    },
+    "PARTICIPANTS":{
+      "TEXT":"Participants"
+    },
+    "CENTERS":{
+      "TEXT":"Centers"
+    }
+    }
+}

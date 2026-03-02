@@ -88,7 +88,9 @@ import { ItemOfflineComponent } from "./item-offline/item-offline.component";
 import { HtmlSanitizerPipe } from "src/app/shared/pipes/html-sanitizer.pipe";
 import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
 import { DrawingAndWritingComponent } from './drawing-and-writing/drawing-and-writing.component';
-import { DrawingAndWritingPreviewComponent } from './drawing-and-writing-preview/drawing-and-writing-preview.component'; 
+import { DrawingAndWritingPreviewComponent } from './drawing-and-writing-preview/drawing-and-writing-preview.component';
+import { ClozeRadioSelectComponent } from './cloze-radio-select/cloze-radio-select.component';
+import { ClozeRadioSelectPreviewComponent } from './cloze-radio-select-preview/cloze-radio-select-preview.component'; 
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   url: "https://httpbin.org/post",
@@ -147,6 +149,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     ItemOfflineComponent,
     DrawingAndWritingComponent,
     DrawingAndWritingPreviewComponent,
+    ClozeRadioSelectComponent,
+    ClozeRadioSelectPreviewComponent,
   ],
   imports: [
     CommonModule,

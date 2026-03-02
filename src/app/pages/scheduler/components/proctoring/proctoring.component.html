@@ -1,0 +1,648 @@
+<div *ngIf="fetchingAssignedProctors" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+    <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading proctor...</span>
+    </div>
+</div>
+
+<!--  -->
+<ng-container *ngIf="!fetchingAssignedProctors">
+    <div class="row">
+        <div class="p-0 col-md-6 col-sm-12">
+            <div class="card p-3 m-1">
+                <h4 class="mb-3">Proctors</h4>
+                <h3>{{ assignedProctors?.proctors?.length ?? 0 }}</h3>
+            </div>
+        </div>
+        <div class="p-0 col-md-6 col-sm-12">
+            <div class="card p-3 m-1">
+                <h4 class="mb-3">Suspended</h4>
+                <h3> {{ totalAssignedSuspendedProctors }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center gap-3 mb-2 mt-5">
+        <div class="d-flex gap-3">
+            <div class="input-group">
+                <select class="form-select form-select-sm" name="searchField">
+                    <option disabled value="">Filter by</option>
+                    <option *ngFor="let searchableField of searchableFields" value="{{ searchableField }}">{{ searchableField | uppercase }}</option>
+                </select>
+
+                <ng-container>
+                    <input [(ngModel)]="assignedProctorsQueryParams.q" type="text" class="form-control" placeholder="Search value.." name="searchValue"/>
+                    <button class="btn btn-sm btn-success" (click)="filterProctorsByField()" [disabled]="!assignedProctorsQueryParams.q">Search</button>
+                </ng-container>
+            </div>
+
+            <button *ngIf="assignedProctorsQueryParams.q" class="btn btn-danger" type="button" (click)="fetchAssignedProctors();assignedProctorsQueryParams.q = ''">
+                <!-- <i class="ri-close-fill me-2 align-middle"></i> -->
+                Clear
+            </button>
+        </div>
+
+        <div class="d-flex justify-content-end">
+            <div class="d-flex gap-2">
+                <button (click)="openAssignProctorsModal(addProctorModal, 'xl')" class="btn btn-soft-primary waves-effect waves-light btn-label">
+                    <i class="ri-user-add-line align-bottom text-center label-icon"></i>
+                    Add Proctors
+                </button>
+
+                <button
+                    (click)="file = undefined; openModal(importProctorModal)"
+                    class="btn btn-soft-success waves-effect waves-light btn-label">
+                    <i class="ri-file-download-line label-icon align-bottom"></i> 
+                    Import Proctors
+                </button>
+                <div ngbDropdown>
+                    <button type="button"
+                        class="btn btn-soft-info btn-label waves-effect right waves-light dropdown-toggle arrow-none"
+                        data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                        <i class="ri-arrow-down-s-fill label-icon align-middle me-2" style="cursor: pointer"></i>
+                        Settings
+                    </button>
+                    <ul class="dropdown-menu" ngbDropdownMenu>
+                        <li style="cursor: pointer">
+                            <a (click)="openProctorSettingsModal(proctorSettingsModal, 'lg', 'proctor')" class="dropdown-item d-flex gap-2 align-items-center">
+                                <i style="cursor: pointer" class="ri ri-settings-2-line"></i>
+                                Proctor Settings
+                            </a>
+                        </li>
+                        <li style="cursor: pointer">
+                            <a (click)="openProctorSettingsModal(infractionsSettingsModal, 'xl', 'infraction')" class="dropdown-item d-flex gap-2 align-items-center">
+                                <i style="cursor: pointer" class="ri ri-settings-2-line"></i>
+                                Infractions Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-1">
+        <h5>List of All Proctors</h5>
+
+        <div>
+            <div class="row">
+                <div class="table-responsive">
+                    <ngx-simplebar style="height: 45vh">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="mt-1 card p-0">
+                                    <p-table [value]="assignedProctors.proctors" styleClass="p-datatable-customers" [rowHover]="true" responsiveLayout="scroll" #dt1 dataKey="id">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th pSortableColumn="first_name">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        FIRST NAME
+                                                        <p-sortIcon field="first_name"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th pSortableColumn="last_name">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        LAST NAME
+                                                        <p-sortIcon field="last_name"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th pSortableColumn="email">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        EMAIL
+                                                        <p-sortIcon field="email"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th pSortableColumn="phone">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        PHONE
+                                                        <p-sortIcon field="phone"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th pSortableColumn="status">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        SUSPENDED
+                                                        <p-sortIcon field="status"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th>
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        ACTIONS
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-proctor let-rowIndex="rowIndex">
+                                            <tr>
+                                                <td>{{ proctor.first_name }}</td>
+                                                <td>{{ proctor.last_name }}</td>
+                                                <td>{{ proctor.email }}</td>
+                                                <td>{{ proctor.phone }}</td>
+                                                <td>
+                                                    <span class="badge badge-border"
+                                                        [ngClass]="{
+                                                            'badge-soft-danger': proctor.suspended,
+                                                            'badge-soft-success': !proctor.suspended
+                                                        }">
+                                                        
+                                                        {{ !proctor.suspended ? "NO" : "YES" }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                <div class="dropdown" ngbDropdown>
+                                                    <button class="btn btn-soft-secondary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle (click)="stopPropagation($event)">
+                                                        <i class="ri-more-fill align-middle"></i>
+                                                    </button>
+
+                                                    <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu (click)="stopPropagation($event)">
+                                                        <li *ngIf="proctor.suspended === false">
+                                                            <a (click)="openModal(confirmationModal)" class="dropdown-item" href="javascript:void(0);">
+                                                                <i class="ri-pause-circle-line me-2 align-middle"></i>
+                                                                Suspend
+                                                            </a>
+                                                        </li>
+                                                        <li class="dropdown-divider"></li>
+                                                        <li *ngIf="proctor.suspended === true">
+                                                            <a (click)="openModal(confirmationModal)" class="dropdown-item" href="javascript:void(0);">
+                                                                <i class="ri-pause-circle-line me-2 align-middle"></i>
+                                                                Resume
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                </td>
+
+                                                <ng-template #confirmationModal let-modal>
+                                                    <div class="modal-body text-center p-5">
+                                                        <div class="mt-4">
+                                                            <h4 class="mb-3">Are you sure you want to {{ proctor.suspended ? "Resume" : "Suspend" }} proctor?</h4>
+
+                                                            <div class="hstack gap-2 justify-content-center">
+                                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal" (click)="modal.close('Close click')">Close</button>
+                                                                <button [disabled]="processingSuspendResume" class="btn btn-danger" (click)="suspendOrResumeProctor(proctor.id, !proctor.suspended)">
+                                                                    <span *ngIf="!processingSuspendResume">Yes, {{ proctor.suspended ? "Resume" : "Suspend"}}</span>
+                                                                    <span *ngIf="processingSuspendResume">Processing...</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </ngx-simplebar>
+                </div>
+            </div>
+
+            <ng-container *ngIf="assignedProctors">
+                <div class="py-2 border-top ">
+                    <p-paginator
+                        [rows]="10"
+                        [totalRecords]="assignedProctors && assignedProctors.total"
+                        (onPageChange)="onAssignedTableFilterChange($event)"
+                        [first]="1"
+                        [rowsPerPageOptions]="[10, 20, 50]"
+                        [pageLinkSize]="5"
+                        [showCurrentPageReport]="true">
+                    </p-paginator>
+                </div>
+            </ng-container>
+        </div>
+  </div>
+</ng-container>
+
+<ng-template #addProctorModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Unassigned Proctor(s)</h5>
+    <div class="card-body">
+
+        <div *ngIf="!fetchingUnassignedProctors && unassignedProctors">
+            <div class="">
+                <div class="live-preview">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <ngx-simplebar style="height: 45vh">
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="mt-1">
+                                            <p-table [value]="unassignedProctors.admins" [tableStyle]="{ 'min-width': '100%' }" styleClass="p-datatable-customers" [rowHover]="true" #dt1 dataKey="id">
+                                                <ng-template pTemplate="header">
+                                                <tr>
+                                                    <th pSortableColumn="first_name">
+                                                        <div class="flex justify-content-between align-items-center">
+                                                            FIRST NAME
+                                                            <p-sortIcon field="first_name"></p-sortIcon>
+                                                        </div>
+                                                    </th>
+                                                    <th pSortableColumn="last_name">
+                                                        <div class="flex justify-content-between align-items-center">
+                                                            LAST NAME
+                                                            <p-sortIcon field="last_name"></p-sortIcon>
+                                                        </div>
+                                                    </th>
+                                                    <th pSortableColumn="email">
+                                                        <div class="flex justify-content-between align-items-center">
+                                                            EMAIL
+                                                            <p-sortIcon field="email"></p-sortIcon>
+                                                        </div>
+                                                    </th>
+                                                    <th pSortableColumn="phone">
+                                                        <div class="flex justify-content-between align-items-center">
+                                                            PHONE
+                                                            <p-sortIcon field="phone"></p-sortIcon>
+                                                        </div>
+                                                    </th>
+                                                    <th>
+                                                        <div class="flex justify-content-between align-items-center">
+                                                            ACTIONS
+                                                        </div>
+                                                    </th>
+                                                </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="body" let-proctor let-rowIndex="rowIndex">
+                                                    <tr>
+                                                        <td>{{ proctor.first_name }}</td>
+                                                        <td>{{ proctor.last_name }}</td>
+                                                        <td>{{ proctor.email }}</td>
+                                                        <td>{{ proctor.phone }}</td>
+                                                        <td>
+                                                            <button #btn (click)="assignProctor(proctor.id, btn)" [disabled]="processingProctorAssignment" class="btn btn-sm btn-success">
+                                                                Assign
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ngx-simplebar>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="fetchingUnassignedProctors && !unassignedProctors" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+            <div class="d-flex align-items-center gap-2">
+                <div class="spinner-border text-info fs-18" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading unassigned proctors...</span>
+            </div>
+        </div>
+
+    </div>
+  </div>
+  
+  <div class="d-flex justify-content-end card-body">
+    <button class="btn btn-danger" (click)="cancel()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #importProctorModal role="document" let-modal>
+    <div class="card">
+        <div class="d-flex justify-content-between card-header">
+            <h5>Import Proctors</h5>
+            <button class="btn btn-sm btn-outline-primary" (click)="downloadTemplateForProctorUpload()" [disabled]="processingTemplateDownload == true">
+                <span>
+                    <div *ngIf="processingTemplateDownload == true" class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Downloading...</span>
+                    </div>
+                </span>
+                <span *ngIf="processingTemplateDownload == false">
+                    Download Template
+                    <i class="ri-download-cloud-2-line align-bottom"></i>
+                </span>
+            </button>
+        </div>
+
+        <div class="card-body">
+            <form action="javascript:void(0);">
+                <div class="row">
+                    <div class="mb-4">
+                        <h5 class="fs-14 mb-1">File upload</h5>
+                        <input class="form-control" id="group-image-input" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" (change)="onFileSelected($event)"/>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button type="button" class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+                            <button type="submit" class="btn btn-primary" (click)="uploadProctors()" [disabled]="proccessingProctorUpload == true || !file">Import</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #proctorSettingsModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title">PROCTOR SETTINGS</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div *ngIf="!fetchingProctorSettings && proctorSetttings" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+        <div class="px-3">
+            <form>
+                <div>
+                    <div>
+                        <div class="mb-3">
+                            <div class="pb-3">Proctor guidelines</div>
+                            <editor name="instruction"
+                                initialValue="Give instructions to the candidate at the start of the start of the examination..."
+                                [init]="{
+                                height: '500',
+                                branding: false,
+                                menubar: true,
+                                base_url: '/tinymce',
+                                suffix: '.min',
+                                plugins: 'table quickbars lists autoresize',
+                                quickbars_insert_toolbars: false,
+                                toolbar:
+                                    'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+                                }" [(ngModel)]="proctorSetttings.proctor_guide"></editor>
+                        </div>
+                        <div class="mb-3" *ngIf="proctorSetttings.proctor_allowed_actions.length">
+                            <div class="mb-3 py-3 border-bottom border-top-0 border-start-0 border-end-0">Possible actions</div>
+                            <div style="display: flex;flex-wrap: wrap;gap: 16px;">
+                                <div class="d-flex flex-wrap gap-2 align-items-center" *ngFor="let a of proctorSetttings.proctor_allowed_actions">
+                                    <input class="form-check-input" type="checkbox" [name]="a.action" [(ngModel)]="a.enabled">
+                                    <label class="form-check-label" style="text-transform: capitalize;">{{ formatText(a.action).toLowerCase() }}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 py-3 border-bottom border-top-0 border-start-0 border-end-0">Other settings</div>
+                        <div class="mb-3">
+                            <div class="d-flex gap-2 align-items-center">
+                                <label class="form-check-label">Candidates per proctor</label>
+                                <input type="number" min="0" class="form-control" style="max-width: max-content;" name="proctor_candidates" [(ngModel)]="proctorSetttings.proctor_candidates" />
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">Record candidate exam</label>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2 align-items-center">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">Play candidate exam recording</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div *ngIf="fetchingProctorSettings" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+        <div class="d-flex align-items-center gap-2">
+            <div class="spinner-border text-info fs-18" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading infractions...</span>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-end gap-2">
+            <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+            </button>
+
+            <button *ngIf="!savingProctorSettings" (click)="updateProctorSettings()" class="btn btn-primary">
+                <i class="ri-save-line align-middle fs-16 me-2"></i>
+                Save
+            </button>
+
+            <button *ngIf="savingProctorSettings" [disabled]="true" class="btn btn-outline-primary btn-load">
+                <span class="d-flex align-items-center">
+                    <span class="spinner-border flex-shrink-0" role="status">
+                        <span class="visually-hidden">Saving...</span>
+                    </span>
+                    <span class="flex-grow-1 ms-2"> Saving... </span>
+                </span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #infractionsSettingsModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title">INFRACTION SETTINGS ({{ assessmentInfractions?.length ?? 0 }})</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div *ngIf="assessmentInfractions" class="mt-3 px-3 d-flex justify-content-between">
+        <div>Select and configure your possible infractions for this exam</div>
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="cancel();fetchAssementInfractionsTemplates();openModal(listTemplates, 'md')" class="btn btn-primary">
+                <i class="ri-save-line align-middle fs-16 me-2"></i>
+                Use Template
+            </button>
+        </div>
+    </div>
+
+    <div *ngIf="!fetchAssessmentInfractions && assessmentInfractions"  class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+        <div class="px-3">
+            <ng-container *ngFor="let key of groupedInfractionsKeys">
+                <div class="mb-3 py-2 border-bottom border-top-0 border-start-0 border-end-0">{{ formatText(key) }}</div>
+                <form>
+                    <div>
+                        <div class="mb-3 d-flex" *ngFor="let item of getCategory(key); let i = index">
+                            <input type="checkbox" class="form-check-input"  [name]="'enabled_' + i" [(ngModel)]="item.enabled">
+
+                            <div class="flex-fill ms-4" [style.opacity]="item.enabled ? 1 : 0.5" >
+                                <div class="row border">
+                                    <div class="p-0 col-md-4 col-sm-12">
+                                        <div class="p-3 m-1">
+                                            <h5>{{ formatText(item.name) }}</h5>
+                                            <div style="font-size: 12px; text-transform: capitalize">{{ formatText(item.description)?.toLowerCase() }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="p-0 col-md-8 col-sm-12">
+                                        <div class="card p-2 m-1" style="background-color: #fafbfc;">
+                                            <div class="row mb-2">
+                                                <div class="col-4">
+                                                    <div class="mb-1">Maximum warnings / strikes</div>
+                                                    <input type="number" min="1" class="form-control" [name]="'strikes_' + i" placeholder="3" [(ngModel)]="item.max_strikes" />
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="mb-1">Duration for a strike (seconds)</div>
+                                                    <input type="number" min="0" class="form-control" [name]="'strikes_duration_' + i" placeholder="5" [(ngModel)]="item.max_duration_seconds" />
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="mb-1">Waiting after strike (seconds)</div>
+                                                    <input type="number" min="0" class="form-control" [name]="'strikes_cooling_' + i" placeholder="60"[(ngModel)]="item.cooldown_seconds" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <div class="mb-1">Severity</div>
+                                                    <select type="select" class="form-select" [name]="'severity_' + i" [(ngModel)]="item.severity">
+                                                        <option [value]="s" *ngFor="let s of infractionsServerity">{{ s }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="mb-1">Outcome on strikes limit</div>
+                                                    <select type="select" class="form-select" [name]="'strike_limit_'" + i [(ngModel)]="item.action">
+                                                        <option [value]="a" *ngFor="let a of infractionsAction">{{ formatText(a) }}</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="mb-1">Use this infraction?</div>
+                                                    <select  type="select" class="form-select" [name]="'enabled_' + i" [(ngModel)]="item.enabled">
+                                                        <option [ngValue]="true">YES</option>
+                                                        <option [ngValue]="false">NO</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-container>
+        </div>
+    </div>
+
+    <div *ngIf="fetchAssessmentInfractions" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+        <div class="d-flex align-items-center gap-2">
+            <div class="spinner-border text-info fs-18" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading infractions...</span>
+        </div>
+    </div>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-end gap-2">
+            <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+            </button>
+
+            <button *ngIf="!savingInfractionTemplate" (click)="cancel();openModal(saveTemplateModal, 'md')" class="btn btn-dark">
+                <i class="ri-save-line align-middle fs-16 me-2"></i>
+                Save Template
+            </button>
+
+            <button *ngIf="savingInfractionTemplate" [disabled]="true" class="btn btn-outline-dark btn-load">
+                <span class="d-flex align-items-center">
+                    <span class="spinner-border flex-shrink-0" role="status">
+                        <span class="visually-hidden">Saving...</span>
+                    </span>
+                    <span class="flex-grow-1 ms-2"> Saving... </span>
+                </span>
+            </button>
+
+            <button (click)="updateInfractions()" *ngIf="!savingInfractions" class="btn btn-primary">
+                <i class="ri-save-line align-middle fs-16 me-2"></i>
+                Update
+            </button>
+
+            <button *ngIf="savingInfractions" [disabled]="true" class="btn btn-outline-primary btn-load">
+                <span class="d-flex align-items-center">
+                    <span class="spinner-border flex-shrink-0" role="status">
+                        <span class="visually-hidden">Saving...</span>
+                    </span>
+                    <span class="flex-grow-1 ms-2"> Saving... </span>
+                </span>
+            </button>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #listTemplates>
+    <div>
+        <div class="d-flex justify-content-between card-header">
+            <h5>Select infractions template</h5>
+        </div>
+
+        <div class="card-body">
+            <form action="javascript:void(0);">
+                <div class="row">
+                    <div class="mb-4">
+                        <div class="mb-3">
+                            <label for="" class="form-label">Templates</label>
+                            <select #templateRef class="form-select form-select-md">
+                                <option selected disabled value="">Select template</option>
+                                <option value="{{ t.id }}" *ngFor="let t of infractionsTemplates">{{ t.name }}</option>
+                            </select>
+                            
+                            <div class="p-2 my-1 bg-soft-secondary" *ngIf="getTemplateDescription(templateRef.value)">{{ getTemplateDescription(templateRef.value) }}</div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                            <button [disabled]="usingInfractionTemplate || !templateRef.value" type="submit" class="btn btn-primary" (click)="useInfractionTemplate(templateRef.value)">
+                                <span *ngIf="!usingInfractionTemplate"> Use template </span>
+                                <span *ngIf="usingInfractionTemplate"> Processing...</span>
+                            </button>
+                            <button type="button" class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #saveTemplateModal>
+  <div>
+    <div class="d-flex justify-content-between card-header">
+      <h5>Save infractions template</h5>
+    </div>
+
+    <div class="card-body">
+      <form #saveTemplate="ngForm">
+        <div class="row">
+          <div class="mb-4">
+            <div class="mb-3">
+              <label class="form-label">Name</label>
+              <input type="text"
+                     class="form-control"
+                     name="name"
+                     [(ngModel)]="infractionTemplateForm.name"
+                     required
+                     placeholder="Template name" />
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control"
+                        rows="3"
+                        name="description"
+                        [(ngModel)]="infractionTemplateForm.description"
+                        required></textarea>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button (click)="saveInfractionTemplate()" [disabled]="saveTemplate.invalid || savingInfractionTemplate"
+                      type="submit"
+                      class="btn btn-primary">
+                <span *ngIf="!savingInfractionTemplate">Save</span>
+                <span *ngIf="savingInfractionTemplate">Processing...</span>
+              </button>
+              <button type="button" class="btn btn-soft-danger" (click)="infractionTemplateForm = { name: '', description: '' };cancel()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>

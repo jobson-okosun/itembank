@@ -109,25 +109,25 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     id: string;
     item: null;
   }> = [
-    {
-      x: 50,
-      y: 50,
-      inputValue: "",
-      selectedOptionIndex: null,
+      {
+        x: 0,
+        y: 0,
+        inputValue: "",
+        selectedOptionIndex: null,
 
-      id: "1",
-      item: null,
-    },
-    {
-      x: 80,
-      y: 80,
-      inputValue: "",
-      selectedOptionIndex: null,
+        id: "1",
+        item: null,
+      },
+      // {
+      //   x: 80,
+      //   y: 80,
+      //   inputValue: "",
+      //   selectedOptionIndex: null,
 
-      id: "2",
-      item: null,
-    },
-  ];
+      //   id: "2",
+      //   item: null,
+      // },
+    ];
 
   option: Object = {
     height: 200,
@@ -151,7 +151,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     private itemService: ItemHttpService,
     private location: Location,
     private notifierService: NotifierService
-  ) {}
+  ) { }
 
   // ngAfterViewInit() {
   //   // console.log();
@@ -379,14 +379,20 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     }
   }
 
-  onChange() {}
+  onChange() { }
 
   onUploadError(event: any) {
-    // console.log(event);
+    const [file, message] = event;
+
+    if (file.size > 100 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 100KB')
+    } else {
+      this.notifierService.notify('error', 'An error occurred during file upload. Please try again.')
+    }
   }
 
   onUploadSuccess(event: any) {
-    console.log(event);
+
     this.image.width = event[0].width;
     this.image.height = event[0].height;
     this.image.url = event[0].dataURL;
@@ -394,6 +400,15 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     // console.log(this.defaultItemProperties.images[0]);
     this.createOption();
     this.modalService.dismissAll();
+    this.modalService.dismissAll();
+    setTimeout(() => {
+      const element = document.getElementById("labels");
+      element?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+          inline: "nearest"
+      });
+    }, 1000)
   }
 
   showPosition(index: number, event: CdkDragEnd, element: any) {
@@ -408,8 +423,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     console.log(event.distance);
     console.log(event.dropPoint); */
     const transform = element.style.transform;
-    let regex =
-      /translate3d\(\s?(?<x>[-]?\d*)px,\s?(?<y>[-]?\d*)px,\s?(?<z>[-]?\d*)px\)/;
+    let regex = /translate3d\(\s?(?<x>[-]?\d*)px,\s?(?<y>[-]?\d*)px,\s?(?<z>[-]?\d*)px\)/;
     var values = regex.exec(transform);
     // console.log(transform);
     //console.log('position:', element.position());
@@ -508,7 +522,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       item.passageId = this.itemUtil.passageId;
     }
 
-    console.log(item.imageData);
+    // console.log(item.imageData);
 
     this.dropdownLabels.forEach((option) => {
       let reponsePosition: {
@@ -548,14 +562,27 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
     item.itemTagsDTOS = this.tags
       ? this.tags.map((tag) => {
-          return { tagId: tag.tagId };
-        })
+        return { tagId: tag.tagId };
+      })
       : [];
 
     return item;
   }
 
   doPreview(itemForm?: any) {
+    // Validate that all label positions have non-empty labels
+    const hasEmptyLabel = this.dropdownLabels.some(
+      (label) => !label.inputValue || label.inputValue.trim() === ""
+    );
+
+    if (hasEmptyLabel) {
+      this.notifierService.notify(
+        "error",
+        "Please ensure all label positions have a label before preview"
+      );
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     this.previewData = this.buildItem();
     console.log(this.previewData);
@@ -566,7 +593,29 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.preview = false;
   }
 
+  validateAnswers(): boolean {
+    // Check if at least one answer is provided and not empty
+    const hasValidAnswer = this.dropdownLabels.some(
+      (label) => label.inputValue && label.inputValue.trim() !== ""
+    );
+
+    if (!hasValidAnswer) {
+      this.notifierService.notify(
+        "error",
+        "Please provide at least one correct answer for the label image with text item"
+      );
+      return false;
+    }
+
+    return true;
+  }
+
   save(form: any) {
+    // Validate that at least one correct answer is provided
+    if (!this.validateAnswers()) {
+      return;
+    }
+
     let item = this.buildItem(form);
     let result = this.itemService.validateItem(item);
 
@@ -600,15 +649,20 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   saveToDraft(itemForm: any) {
+    // Validate that at least one correct answer is provided
+    if (!this.validateAnswers()) {
+      return;
+    }
+
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
-
-    item.scoringOption.answers = item.options.map((option) => option.label);
-    this.image = new Images();
 
     if (!validated) {
       return;
     }
+
+    item.scoringOption.answers = item.options.map((option) => option.label);
+    this.image = new Images();
 
     this.publishingItem = true;
     this.publishLoader();
@@ -741,8 +795,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
           this.dropdownLabels = [
             {
-              x: 50,
-              y: 50,
+              x: 0,
+              y: 0,
               inputValue: "",
               selectedOptionIndex: null,
 
@@ -750,8 +804,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
               item: null,
             },
             {
-              x: 80,
-              y: 80,
+              x: 0,
+              y: 0,
               inputValue: "",
               selectedOptionIndex: null,
 
@@ -807,8 +861,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, "edit data");
-    console.log(item, "built item");
+    // console.log(this.editData, "edit data");
+    // console.log(item, "built item");
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
@@ -817,7 +871,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    console.log("builtItem", item);
+    // console.log("builtItem", item);
 
     switch (status) {
       case "save":
@@ -932,17 +986,25 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       this.dropdownLabels = [...this.dropdownLabels]; // Trigger change detection
     }
   }
+  
+  openFileExplorer() {
+    (document.querySelector(".dz-text") as HTMLElement).click();
+  }
 
   addDropdownLabel() {
     const newLabel = {
       id: `label${this.dropdownLabels.length + 1}`,
-      x: Math.random() * 80, // Random position within bounds
-      y: Math.random() * 80,
+      // x: Math.random() * 80, // Random position within bounds
+      // y: Math.random() * 80,
+      x: 0,
+      y: 0,
       item: null, // Initially no item is associated
       inputValue: "",
       selectedOptionIndex: 1,
     };
+
     this.dropdownLabels.push(newLabel);
+    this.notifierService.notify("success", "Label Added");
   }
 
   deleteLabel(index: number) {
@@ -966,6 +1028,6 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.itemUtil.previewItem = false
-     
-   }
+
+  }
 }

@@ -4,52 +4,27 @@
       <div class="mb-5">
         <div class="d-flex flex-wrap gap-2 float-end">
           <div>
-            <div
-              class="badge badge-soft-info btn-sm"
-              *ngIf="passageWorkFlow === true"
-            >
+            <div class="badge badge-soft-info btn-sm" *ngIf="passageWorkFlow === true">
               passage question
             </div>
           </div>
-          <button
-            type="button"
-            class="btn btn-outline-success waves-effect waves-light"
-            (click)="doPreview(itemForm)"
-          >
+          <button type="button" class="btn btn-outline-success waves-effect waves-light" (click)="doPreview(itemForm)">
             Preview
           </button>
 
           <!-- author -->
-          <div
-            *ngIf="editData && currentUser.authorities.includes('AUTHOR')"
-            class="btn-group"
-            role="group"
-            ngbDropdown
-          >
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+          <div *ngIf="editData && currentUser.authorities.includes('AUTHOR')" class="btn-group" role="group"
+            ngbDropdown>
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')"
-                  >Save</a
-                >
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <!-- <li style="cursor: pointer">
           <a class="dropdown-item" (click)="saveAndNew()">Save and new</a>
@@ -90,70 +65,36 @@
           </button>
         </div> -->
 
-        <!-- admin and moderator -->
-          <div
-            ngbDropdown
-            class="d-flex gap-2"
-            *ngIf="
+          <!-- admin and moderator -->
+          <div ngbDropdown class="d-flex gap-2" *ngIf="
               editData &&
               (currentUser.authorities.includes('MODERATOR') ||
                 currentUser.authorities.includes('ADMIN'))
-            "
-          >
-            <button
-              id="btnGroupDrop3"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            ">
+            <button id="btnGroupDrop3" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop3"
-              ngbDropdownMenu
-            >
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-               
-                  (click)="openConfirmationModal(acceptConfirmationModal)"
-              >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
+                (click)="openConfirmationModal(acceptConfirmationModal)">
                 <a class="dropdown-item">Approve</a>
               </li>
 
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'PUBLISHED'"
-                (click)="approveQuestion(itemForm)"
-              >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'PUBLISHED'"
+                (click)="approveQuestion(itemForm)">
                 <a class="dropdown-item">Save</a>
               </li>
-              <li
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                style="cursor: pointer"
-                (click)="openConfirmationModal(rejectConfirmationModal)"
-              >
+              <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
+                (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
 
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'DRAFT'"
-              >
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')"
-                  >Save as Draft</a
-                >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')">Save as Draft</a>
               </li>
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'DRAFT'"
-              >
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')"
-                  >Save</a
-                >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
             </ul>
 
             <!--  -->
@@ -203,33 +144,19 @@
           </div> -->
 
           <div *ngIf="!editData" class="btn-group" role="group" ngbDropdown>
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
                 <a class="dropdown-item" (click)="saveItem(itemForm)">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveAndNewItem(itemForm)"
-                  >Save and new</a
-                >
+                <a class="dropdown-item" (click)="saveAndNewItem(itemForm)">Save and new</a>
               </li>
               <!-- <li style="cursor: pointer">
                 <a
@@ -245,23 +172,15 @@
       </div>
       <div class="mb-3">
         <label class="form-label" for="autoSizingInputGroup">Title</label>
-        <input
-          type="text"
-          class="form-control"
-          name="reference"
-          [(ngModel)]="defaultItemProperties.reference"
-          placeholder="Title"
-        />
+        <input type="text" class="form-control" name="reference" [(ngModel)]="defaultItemProperties.reference"
+          placeholder="Title" />
       </div>
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
         <div [innerHTML]="editData.itemPassage"></div>
       </div>
       <div class="mb-3">
         <label>Compose Question</label>
-        <editor
-          name="stimulus"
-          [(ngModel)]="defaultItemProperties.stimulus"
-          [init]="{
+        <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" [init]="{
             branding: false,
             base_url: '/tinymce',
             height: 200,
@@ -274,59 +193,171 @@
             quickbars_insert_toolbars: false,
             toolbar:
               'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"
-          [(ngModel)]="defaultItemProperties.stimulus"
-        ></editor>
+          }" [(ngModel)]="defaultItemProperties.stimulus"></editor>
       </div>
 
       <!-- Tags-->
       <div class="row gy-4">
-        <app-item-tag
-        #tagRef
-        [recievedTag]="tags"
-        (sendTags)="recieveTag($event)"
-      ></app-item-tag>
+        <app-item-tag #tagRef [recievedTag]="tags" (sendTags)="recieveTag($event)"></app-item-tag>
       </div>
 
       <!-- Image settings and upload section-->
       <div class="row">
-        <div class="col-xxl-6 col-lg-6 col-md-12 col-sm-12">
+
+        <div class="col-sm-12">
           <div class="d-flex flex-column gap-2 card" style="max-height: 400px">
             <div>
-              <button
-                class="mx-2 my-2 btn btn-md btn-primary shadow-sm"
-                (click)="openImageUploadModal(imageUploadModal)"
-              >
-                <i
-                  class="me-2 align-middle"
-                  [ngClass]="{
+              <button class="mx-2 my-2 btn btn-md btn-primary shadow-sm"
+                (click)="openImageUploadModal(imageUploadModal)">
+                <i class="me-2 align-middle" [ngClass]="{
                     'ri-add-line': !image.url,
                     'ri-edit-line': image.url
-                  }"
-                ></i
-                >{{ image.url ? "EDIT IMAGE" : "ADD IMAGE" }}
+                  }"></i>{{ image.url ? "EDIT IMAGE" : "ADD IMAGE" }}
               </button>
             </div>
-            <div role="img" aria-label="labelImageText.image.label">
-              <div
-                *ngIf="!image.url"
-                style="width: 100%; max-height: 300px; height: 220px"
-              ></div>
-              <img
-                *ngIf="image.url"
-                [src]="image.url"
-                style="max-width: 100%; height: auto"
-                alt=""
-              />
+            <!-- <div role="img" aria-label="labelImageText.image.label">
+              <div *ngIf="!image.url" style="width: 100%; max-height: 300px; height: 220px"></div>
+              <img *ngIf="image.url" [src]="image.url" style="max-width: 100%; height: auto" alt="" />
+            </div> -->
+          </div>
+        </div>
+
+        <div class="row mb-5" *ngIf="image.url" >
+          <div class="col-4">
+            <div class="border">
+
+              <div class="py-2 px-3 border border-top-0 border-start-0 border-end-0 border-dotted mb-3 d-flex justify-content-between align-items-center gap-2">
+                <h4 id="labels">Labels</h4>
+                <div>
+                  <button class="btn btn-sm btn-primary" (click)="addDropdownLabel()">
+                    <i class="ri-add-line me-2 align-middle"></i>
+                    ADD POSITION
+                  </button>
+                </div>
+              </div>
+
+              <div style="height: 500px;overflow-y: auto;" class="px-3">
+                <!-- label -->
+                <div *ngFor="let label of dropdownLabels; let i = index;" class="card mb-3 ">
+                    <div class="d-flex gap-2 p-3">
+                      <div class="flex-fill">
+
+                        <div class="mb-1 d-flex justify-content-between align-items-center gap-2">
+                          <span class="rounded-circle bg-soft-primary d-flex align-items-center justify-content-center fw-bold" style="height: 25px;width: 25px;">
+                            <span  style="font-size: 12px;">{{ i + 1 }}</span>
+                          </span>
+
+                          <div class="text-end" style="font-size: 12px;">
+                              <div *ngIf="!selectEl.value">No Answer selected!</div>
+                              <div *ngIf="selectEl.value" class="text-success">Correct Answer selected</div>
+                          </div>
+                        </div>
+                        
+                        <select #selectEl class="form-select mb-2" (change)="selectAnwser(i, $event)">
+                          <option value="" selected>Select correct answer</option>
+                          <option *ngFor="let option of label.options; let j = index" [value]="j">{{ option }}</option>
+                        </select>
+
+            
+                        <input *ngIf="label.showEnterOptionInput" class="form-control mb-1" type="text" [(ngModel)]="label.inputValue" name="optionInput{{ i }}" placeholder="Enter option" />
+                        
+                        <div class="d-flex align-items-center gap-2">
+                            <button *ngIf="!label.showEnterOptionInput" ngbTooltip="Add Option" class="btn btn-primary" (click)="label.showEnterOptionInput = true">
+                              <i class="ri ri-add-fill"></i>
+                              <!-- Option -->
+                            </button>
+
+                            <button *ngIf="label.showEnterOptionInput" ngbTooltip="Add Option" class="btn btn-primary" (click)="addDropOption(i, label.inputValue); label.inputValue = ''; label.showEnterOptionInput = false">
+                              <i class="ri ri-add-fill"></i>
+                              Save
+                            </button>
+
+                            <button [disabled]="label.options.length < 1" (click)="openOptionsModal(i, optionsModal)" ngbTooltip="Edit Option" class="btn btn-warning">
+                              <i class="ri ri-edit-2-fill"></i>
+                              <!-- Edit -->
+                            </button>
+
+                            <button *ngIf="dropdownLabels.length > 1" (click)="removeLabel(i)" ngbTooltip="Delete Option" class="btn btn-danger">
+                              <i class="ri ri-delete-bin-2-fill"></i>
+                              <!-- Delete -->
+                            </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  <ng-template #optionsModal let-modal>
+                      <div>
+                        <div class="d-flex justify-content-between card-header">
+                          <h5>Label {{ i + 1 }} Options</h5>
+                        </div>
+
+                        <div class="card-body">
+                          <div class="p-3">
+                            <div class="d-flex gap-2 mb-2" *ngFor="let option of tempOptions; let j = index">
+                              <input #inp class="form-control flex-fill"
+                                    type="text"
+                                    [value]="tempOptions[j]"
+                                    (blur)="tempOptions[j] = inp.value"
+                                    name="optionInput_{{ j }}"
+                                    placeholder="Enter option" />
+
+                              <button type="button" class="btn btn-danger" (click)="removeTempOption(j)">
+                                <i class="ri ri-delete-bin-2-fill"></i>
+                                <!-- Delete -->
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="card-footer">
+                          <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                              <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+                            </button>
+
+                            <button type="button" class="btn btn-dark" (click)="saveOptions(i, modal)">
+                              <i class="ri-save-line align-middle fs-16 me-2"></i>
+                              Save Changes
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                  </ng-template>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-8" >
+            <div class="border d-flex align-items-center" style="height: 100%;">
+              <div class="container" >
+                <div [style.width.px]="image.width > 600 ? 600 : image.width" *ngIf="image.url" style="position: relative;">
+                  <img *ngIf="image.url" [src]="image.url" alt="" alt="Image" class="image" />
+                  
+                  <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary">
+                    <div style="position: relative;width: 100%; height: 100%;" #imageRef>
+                      <div *ngFor="let label of dropdownLabels; let i = index" class="draggable-label" [style.left.%]="label.x" [style.top.%]="label.y" (mousedown)="onMouseDown($event, i)" [attr.data-index]="i">
+                        <button class="d-flex align-items-center gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
+                          <div class="pointer"></div>
+                          <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="height: 25px;width: 25px;">
+                            <span  style="font-size: 12px;">{{ i + 1 }}</span>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div class="col-xxl-6 col-lg-6 col-md-12 col-sm-12">
+
+
+        <div class="col-sm-12">
           <div class="row mb-3">
             <label class="form-label" for="">Image alternative</label>
-            <editor
-              name="imageAlternativeText"
-              [init]="{
+            <editor name="imageAlternativeText" [init]="{
                 branding: false,
                 height: 220,
                 menubar: true,
@@ -335,10 +366,7 @@
                
                 toolbar:
                   'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap'
-              }"
-              [(ngModel)]="image.altText"
-              ngModel
-            ></editor>
+              }" [(ngModel)]="image.altText" ngModel></editor>
           </div>
         </div>
       </div>
@@ -346,42 +374,23 @@
         <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12 mb-3">
           <div>
             <label class="form-label" for="">Text on hover</label>
-            <input
-              type="input"
-              name="hoverText"
-              class="form-control"
-              placeholder=""
-              [(ngModel)]="image.hoverText"
-            />
+            <input type="input" name="hoverText" class="form-control" placeholder="" [(ngModel)]="image.hoverText" />
           </div>
         </div>
 
         <div class="col-xxl-6 col-lg-6 col-md-12 col-sm-12 mb-3">
           <div>
             <label class="form-label" for="">Width (px)</label>
-            <input
-              type="number"
-              name="imageWidth"
-              class="form-control"
-              min="0"
-              placeholder="1000"
-              [(ngModel)]="image.width"
-              (ngModelChange)="onChange()"
-            />
+            <input type="number" name="imageWidth" class="form-control" min="0" placeholder="1000"
+              [(ngModel)]="image.width" (ngModelChange)="onChange()" />
           </div>
         </div>
 
         <div class="col-xl-6 col-lg-3 col-md-12 col-sm-12 mb-3">
           <div>
             <label class="form-label" for="">Height</label>
-            <input
-              type="number"
-              name="height"
-              min="0"
-              class="form-control"
-              placeholder="1000"
-              [(ngModel)]="image.height"
-            />
+            <input type="number" name="height" min="0" class="form-control" placeholder="1000"
+              [(ngModel)]="image.height" />
           </div>
         </div>
       </div>
@@ -400,11 +409,7 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
         <button type="button" (click)="approveQuestion(itemForm)">
@@ -436,17 +441,10 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button
-          type="button"
-          (click)="openRejectionReasonModal(rejectionModal)"
-        >
+        <button type="button" (click)="openRejectionReasonModal(rejectionModal)">
           Yes, reject It
         </button>
         <!-- <ng-template [ngIf]="processing_delete">
@@ -539,8 +537,8 @@
       </div>
     </ng-container>
   </div> -->
-
-  <div *ngIf="image.url" class="d-flex flex-column">
+  
+  <!-- <div *ngIf="image.url" class="d-flex flex-column">
     <h4 class="mb-3">Response positions</h4>
 
     <div>
@@ -548,34 +546,18 @@
         <i class="ri-add-line me-2 align-middle"></i>ADD POSITION
       </button>
     </div>
-  </div>
+  </div> -->
 
-  <div class="container">
+  <!-- <div class="container">
     <ng-container *ngIf="image.url">
-      <img
-       
-        *ngIf="image.url"
-        [src]="image.url"
-        alt=""
-        alt="Image"
-        class="image"
-        #imageRef
-      />
+      <img *ngIf="image.url" [src]="image.url" alt="" alt="Image" class="image" #imageRef />
 
-      <!-- Loop through labels and display each one -->
-      <div
-        *ngFor="let label of dropdownLabels; let i = index"
-        class="draggable-label"
-        [style.left.%]="label.x"
-        [style.top.%]="label.y"
-        (mousedown)="onMouseDown($event, i)"
-        [attr.data-index]="i"
-      >
+      <div *ngFor="let label of dropdownLabels; let i = index" class="draggable-label" [style.left.%]="label.x"
+        [style.top.%]="label.y" (mousedown)="onMouseDown($event, i)" [attr.data-index]="i">
         <div class="pointer"></div>
 
         <div class="controls">
-          <span
-            style="
+          <span style="
               width: 20px;
               height: 20px;
               border-radius: 50%;
@@ -584,95 +566,50 @@
               position: absolute;
               left: 180px;
               bottom: 186px;
-            "
-            ngbTooltip="REMOVE"
-            class="d-flex align-items- justify-content-end"
-            (click)="deleteLabel(i)"
-            ><i style="color: #fff" class="ri-close-line align-middle me-2"></i
-          ></span>
-          <select
-            class="form-select form-select-sm"
-            (change)="onSelectOption(i, $event)"
-          >
-            <option
-              *ngFor="let option of label.options; let j = index"
-              [value]="j"
-            >
+            " ngbTooltip="REMOVE" class="d-flex align-items- justify-content-end" (click)="deleteLabel(i)"><i
+              style="color: #fff" class="ri-close-line align-middle me-2"></i></span>
+          <select class="form-select form-select-sm" (change)="onSelectOption(i, $event)">
+            <option *ngFor="let option of label.options; let j = index" [value]="j">
               {{ option }}
             </option>
           </select>
 
-          <input
-            class="form-control"
-            type="text"
-            [(ngModel)]="label.inputValue"
-            name="optionInput{{ i }}"
-            placeholder="Enter option"
-          />
+          <input class="form-control" type="text" [(ngModel)]="label.inputValue" name="optionInput{{ i }}"
+            placeholder="Enter option" />
 
-          <button
-            ngbTooltip="Add Option"
-            class="btn btn-primary btn-sm"
-            (click)="addDropOption(i, label.inputValue); label.inputValue = ''"
-          >
+          <button ngbTooltip="Add Option" class="btn btn-primary btn-sm"
+            (click)="addDropOption(i, label.inputValue); label.inputValue = ''">
             <i class="ri ri-add-fill"></i>
-            <!-- Add -->
           </button>
 
-          <button
-            ngbTooltip="Edit Option"
-            class="btn btn-warning btn-sm"
-            (click)="
+          <button ngbTooltip="Edit Option" class="btn btn-warning btn-sm" (click)="
               editDropOption(i, label.selectedOptionIndex, label.inputValue)
-            "
-            [disabled]="label.selectedOptionIndex === null"
-          >
-            <!-- Edit -->
+            " [disabled]="label.selectedOptionIndex === null">
             <i class="ri ri-edit-2-fill"></i>
           </button>
 
-          <button
-            ngbTooltip="Set as correct option"
-            class="btn btn-success btn-sm"
-            (click)="setCorrectAnswer(i)"
-            [disabled]="label.selectedOptionIndex === null"
-          >
-            <!-- Correct -->
+          <button ngbTooltip="Set as correct option" class="btn btn-success btn-sm" (click)="setCorrectAnswer(i)"
+            [disabled]="label.selectedOptionIndex === null">
             <i class="ri ri-check-fill"></i>
           </button>
 
-          <button
-            ngbTooltip="Delete Option"
-            class="btn btn-danger btn-sm"
-            (click)="deleteDropOption(i)"
-            [disabled]="label.selectedOptionIndex === null"
-          >
-            <!-- Delete -->
+          <button ngbTooltip="Delete Option" class="btn btn-danger btn-sm" (click)="deleteDropOption(i)"
+            [disabled]="label.selectedOptionIndex === null">
             <i class="ri ri-delete-bin-2-fill"></i>
           </button>
         </div>
       </div>
     </ng-container>
-  </div>
+  </div> -->
 
   <div class="live-preview">
-    <ngb-accordion
-      #acc="ngbAccordion"
-      activeIds="static-1"
-      [closeOthers]="true"
-      class="custom-accordionwithicon accordion-border-box"
-    >
+    <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true"
+      class="custom-accordionwithicon accordion-border-box">
       <ngb-panel id="static-1">
         <ng-template ngbPanelTitle class="accordion-header">
           <h2 class="accordion-header" id="gen-ques-headingOne">
-            <button
-              class="accordion-button"
-              type="button"
-              data-bs-toggle="collapse"
-              data-bs-target="#gen-ques-collapseOne"
-              aria-expanded="false"
-              aria-controls="gen-ques-collapseOne"
-            >
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+              data-bs-target="#gen-ques-collapseOne" aria-expanded="false" aria-controls="gen-ques-collapseOne">
               More options
             </button>
           </h2>
@@ -684,120 +621,62 @@
                 <div class="row gy-2 gx-3 mb-3 align-items-center">
                   <div class="col-sm-auto col-lg-6">
                     <label class="form-label">Score</label>
-                    <input
-                      type="number"
-                      min="0"
-                      class="form-control"
-                      placeholder="Score"
-                      name="score"
-                      [(ngModel)]="defaultItemProperties.scoringOption.score"
-                    />
+                    <input type="number" min="0" class="form-control" placeholder="Score" name="score"
+                      [(ngModel)]="defaultItemProperties.scoringOption.score" />
                   </div>
                   <!--end col-->
                   <div class="col-sm-auto col-lg-6">
-                    <label for="choices-privacy-status-input" class="form-label"
-                      >Scoring Type</label
-                    >
-                    <select
-                      class="form-select"
-                      data-choices
-                      data-choices-search-false
-                      id="choices-privacy-status-input"
-                      name="scoringType"
-                      [(ngModel)]="
+                    <label for="choices-privacy-status-input" class="form-label">Scoring Type</label>
+                    <select class="form-select" data-choices data-choices-search-false id="choices-privacy-status-input"
+                      name="scoringType" [(ngModel)]="
                       defaultItemProperties.scoringOption.scoringType
-                    "
-                  
-                    >
-                      <option
-                        *ngFor="let scoreType of scoringType"
-                        value="{{ scoreType }}"
-                        selected=" defaultItemProperties.scoringOption.scoringType === scoreType"
-
-                      
-                      >
+                    ">
+                      <option *ngFor="let scoreType of scoringType" value="{{ scoreType }}"
+                        selected=" defaultItemProperties.scoringOption.scoringType === scoreType">
                         {{ scoreType }}
                       </option>
                     </select>
                   </div>
                   <!--end col-->
                   <div class="col-sm-auto col-lg-6">
-                    <label for="choices-privacy-status-input" class="form-label"
-                      >Matching Rule</label
-                    >
-                    <select
-                      class="form-select"
-                      data-choices
-                      data-choices-search-false
-                      name="matchingRule"
-                      disabled
+                    <label for="choices-privacy-status-input" class="form-label">Matching Rule</label>
+                    <select class="form-select" data-choices data-choices-search-false name="matchingRule" disabled
                       [(ngModel)]="
                         defaultItemProperties.scoringOption.matchingRule
-                      "
-                    >
-                      <option
-                        *ngFor="let matchRule of matchingRules"
-                        value="{{ matchRule }}"
-                        [selected]="matchRule === 'EXACT_MATCH'"
-                        disabled
-                      >
+                      ">
+                      <option *ngFor="let matchRule of matchingRules" value="{{ matchRule }}"
+                        [selected]="matchRule === 'EXACT_MATCH'" disabled>
                         {{ matchRule }}
                       </option>
                     </select>
                   </div>
                   <!--end col-->
                   <div class="col-sm-auto col-lg-6">
-                    <label class="form-label" for="autoSizingInputGroup"
-                      >Penalty</label
-                    >
+                    <label class="form-label" for="autoSizingInputGroup">Penalty</label>
                     <div class="input-group">
-                      <input
-                        type="number"
-                        min="0"
-                        class="form-control"
-                        placeholder="Penalty value"
-                        name="penalty"
+                      <input type="number" min="0" class="form-control" placeholder="Penalty value" name="penalty"
                         [(ngModel)]="
                           defaultItemProperties.scoringOption.penalty
-                        "
-                      />
+                        " />
                     </div>
                   </div>
                   <!--end col-->
-                  <div class="col-sm-auto col-lg-6">
+                  <!-- <div class="col-sm-auto col-lg-6">
                     <label class="form-label">
                       Minimum points on attempt
                     </label>
-                    <input
-                      type="number"
-                      min="0"
-                      class="form-control"
-                      id="autoSizingInputGroup"
-                      placeholder="no of attempts"
-                      name="minimumScoreIfAttempted"
-                      [(ngModel)]="
+                    <input type="number" min="0" class="form-control" id="autoSizingInputGroup"
+                      placeholder="no of attempts" name="minimumScoreIfAttempted" [(ngModel)]="
                         defaultItemProperties.scoringOption
                           .minimumScoreIfAttempted
-                      "
-                    />
-                  </div>
+                      " />
+                  </div> -->
                   <!--end col-->
-                  <div class="col-sm-auto col-lg-6">
-                    <label for="choices-privacy-status-input" class="form-label"
-                      >Difficulty level</label
-                    >
-                    <select
-                      class="form-select"
-                      data-choices
-                      data-choices-search-false
-                      id="choices-privacy-status-input"
-                      name="difficultyLevel"
-                      [(ngModel)]="defaultItemProperties.difficultyLevel"
-                    >
-                      <option
-                        *ngFor="let difficulty of difficultyLevel"
-                        value="{{ difficulty }}"
-                      >
+                  <div class="col-sm-auto col-lg-12">
+                    <label for="choices-privacy-status-input" class="form-label">Difficulty level</label>
+                    <select class="form-select" data-choices data-choices-search-false id="choices-privacy-status-input"
+                      name="difficultyLevel" [(ngModel)]="defaultItemProperties.difficultyLevel">
+                      <option *ngFor="let difficulty of difficultyLevel" value="{{ difficulty }}">
                         {{ difficulty }}
                       </option>
                     </select>
@@ -805,14 +684,9 @@
                   <!--end col-->
                   <div class="col-sm-auto col-lg-6">
                     <div class="form-check mb-3">
-                      <input
-                        class="form-check-input mb-2"
-                        type="checkbox"
-                        name="autoScore"
-                        [(ngModel)]="
+                      <input class="form-check-input mb-2" type="checkbox" name="autoScore" [(ngModel)]="
                           defaultItemProperties.scoringOption.autoScore
-                        "
-                      />
+                        " />
                       <label class="form-check-label"> Auto Score </label>
                     </div>
                   </div>
@@ -861,34 +735,21 @@
   <!-- end card -->
 </form>
 
-<ng-template #imageUploadModal let-modal>
+<ng-template #imageUploadModal__ let-modal>
   <div class="modal-header">
     <h3 class="modal-title">UPLOAD IMAGE</h3>
-    <button
-      type="button"
-      class="close"
-      data-dismiss="modal"
-      aria-label="Close"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div
-    class="modal-body px-5"
-    style="
+  <div class="modal-body px-5" style="
       height: 350px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
-    "
-  >
-    <dropzone
-      [message]="'Click or drag images here to upload'"
-      (error)="onUploadError($event)"
-      [config]="dropZoneConfig"
-      (success)="onUploadSuccess($event)"
-    ></dropzone>
+    ">
+    <dropzone [message]="'Click or drag images here to upload'" (error)="onUploadError($event)"
+      [config]="dropZoneConfig" (success)="onUploadSuccess($event)"></dropzone>
     <!-- <div
       class="d-flex flex-column align-items-center justify-content-center bg-soft-secondary"
       style="width: auto; height: 250px; cursor: pointer"
@@ -911,10 +772,7 @@
       </button>
     </div> -->
     <div class="d-flex gap-2">
-      <button
-        class="btn btn-outline-danger"
-        (click)="modal.close('close modal')"
-      >
+      <button class="btn btn-outline-danger" (click)="modal.close('close modal')">
         Cancel
       </button>
       <!-- <button class="btn btn-outline-primary" (click)="uploadImage()">
@@ -924,23 +782,64 @@
   </div>
 </ng-template>
 
+<ng-template #imageUploadModal let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h3 class="modal-title fw-bold">Upload Image</h3>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.close()"
+    ></button>
+  </div>
+
+  <div
+    class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+    style="min-height: 350px; max-height: 480px; overflow-y: auto;"
+  >
+    <div #loadingTemplate style="display: none; width: 100%;" class="p-3"> 
+      <p class="text-center text-primary">
+        Please wait, file is uploading...
+      </p>
+    </div>
+    <!-- Drag & Drop Area -->
+    <dropzone
+      #dzRef
+      [message]="'Drag & drop images here or click to upload'"
+      [config]="dropZoneConfig"
+      (success)="onUploadSuccess($event);loadingTemplate.style.display = 'none'"
+      (error)="onUploadError($event)"
+      class="custom-dropzone w-100"
+      (uploadProgress)="loadingTemplate.style.display = 'block'"
+    ></dropzone>
+
+    <!-- Info Text -->
+    <p class="mt-3 text-center text-secondary fs-6">
+      Supported formats: JPG, PNG | Max size: 100KB
+    </p>
+  </div>
+
+  <div class="modal-footer border-0 pt-3 d-flex justify-content-end gap-2">
+    <button class="btn btn-outline-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button (click)="openFileExplorer()" class="btn btn-primary">
+      Upload
+    </button>
+  </div>
+</ng-template>
+
+
 <ng-template #rejectionModal let-modal>
   <div class="modal-body p-5">
-    <form
-      #questionRejectionForm="ngForm"
-      (ngSubmit)="submitRejection(questionRejectionForm)"
-    >
+    <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
       <h4 class="text-center mb-4">Reason for Rejection</h4>
       <p class="text-muted text-center">
         provide a reason why you have rejected the question.
       </p>
       <div class="row mb-2">
         <label>Reason</label>
-        <editor
-          name="reason"
-          [(ngModel)]="newRejectionReason.reason"
-          initialValue="reason(s)...."
-          [init]="{
+        <editor name="reason" [(ngModel)]="newRejectionReason.reason" initialValue="reason(s)...." [init]="{
             base_url: '/tinymce',
             height: 200,
             suffix: '.min',
@@ -950,32 +849,20 @@
             branding:false,
             toolbar:
               'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-          }"
-        ></editor>
+          }"></editor>
       </div>
 
       <div class="d-flex gap-2 float-end mt-4">
-        <button
-          type="button"
-          class="btn btn-outline-primary d-flex gap-1 align-items-center"
-          data-bs-dismiss="modal"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="btn btn-outline-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
           <i class="ri-close-line"></i>Close
         </button>
-        <button
-        *ngIf="!processingRejection"
-          type="submit"
-          class="btn btn-danger d-flex gap-1 align-items-center"
-        >
+        <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
           <i class=" las la-file-excel"></i>Reject
         </button>
 
         <ng-template [ngIf]="processingRejection">
-          <button
-            class="btn btn-outline-success btn-load"
-            [disabled]="processingRejection"
-          >
+          <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>
@@ -989,9 +876,6 @@
   </div>
 </ng-template>
 
-<app-label-image-dropdown-preview
-  *ngIf="preview"
-  [previewData]="previewData"
-  (returnPreviewData)="closePreview($event)"
->
+<app-label-image-dropdown-preview *ngIf="preview" [previewData]="previewData"
+  (returnPreviewData)="closePreview($event)">
 </app-label-image-dropdown-preview>

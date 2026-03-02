@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 interface ItemTypeModel {
   type: string;
@@ -18,6 +19,7 @@ export class ItemTypeComponent implements OnInit {
   @Output() sendFormType = new EventEmitter<string>();
 
   selectedItemType!: string;
+  lastCommittedItemType!: string; // Track the last successfully committed type
   paramsObject: any;
   formType: string;
   itemTypes: string[] = [
@@ -69,6 +71,11 @@ export class ItemTypeComponent implements OnInit {
       code: 'CLT'
     },
     {
+      type: 'Cloze with Radio Select',
+      imgPath: 'assets/images/Itembank/cloze-radio.png',
+      code: 'CLR'
+    },
+    {
       type: 'Label Image with Text',
       imgPath: 'assets/images/Itembank/label_image_text.png',
       code: 'LBT'
@@ -114,6 +121,7 @@ export class ItemTypeComponent implements OnInit {
     });
 
     this.selectedItemType = 'Multiple choice';
+    this.lastCommittedItemType = 'Multiple choice';
     this.formType = 'Single Response';
 
     /* if (this.paramsObject) {
@@ -147,6 +155,34 @@ export class ItemTypeComponent implements OnInit {
     this.setItemType(this.selectedItemType);
   }
 
+  onItemTypeChange(newType: string) {
+    // Called when ngModelChange event fires (before model update)
+    if(this.hasUnsavedContent()) {
+      Swal.fire({
+        title: 'You have unsaved data',
+        text: 'Discard changes and switch item type?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Leave',
+        cancelButtonText: 'Stay',
+        reverseButtons: true
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.selectedItemType = newType;
+          this.setItemType(newType);
+        } else {
+          // User cancelled - revert to last committed type
+          this.selectedItemType = this.lastCommittedItemType;
+        }
+      });
+      return;
+    }
+
+    // No unsaved content, proceed with change
+    this.selectedItemType = newType;
+    this.setItemType(newType);
+  }
+
   setItemType(itemType: string) {
     this.formType = ''
     this.sendItemType.emit(itemType);
@@ -155,5 +191,34 @@ export class ItemTypeComponent implements OnInit {
   setFormType(formType: string) {
     this.formType = formType
     this.sendFormType.emit(formType);
+  }
+
+  private hasUnsavedContent(): any {
+    let hasTitle = false;
+ 
+    const labels = document.querySelectorAll('label');
+    for (const element of Array.from(labels)) {
+      if (element.textContent.toLowerCase().trim() === 'title') {
+          hasTitle = !!(element.nextElementSibling as HTMLInputElement).value;
+          break;
+      }
+    }
+
+    if(hasTitle) {
+      return true;
+    };
+
+    
+    const editors = (window as any)?.tinymce?.editors ?? [];
+    const found = editors.some(editor => {
+      const content = editor.getContent({ format: "text" }).trim();
+      if(content.length && (content.includes('option') || content.includes('stimulus'))) {
+        return false; // Skip editors with 'option' in content
+      }
+
+      return content.length > 0;
+    });
+    
+    return found;
   }
 }

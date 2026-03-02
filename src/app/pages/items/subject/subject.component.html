@@ -810,6 +810,9 @@
 
                       <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-drawing-and-writing-preview>
+
+                        <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-cloze-radio-select-preview >
                     </div>
                   </div>
                 </a>
@@ -1066,9 +1069,10 @@
                         [itemTrailInfo]="itemProps"></app-cloze-text-preview>
                       <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps"></app-choice-matrix-preview>
-
                       <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
+                        <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-cloze-radio-select-preview >
                     </div>
                   </div>
                 </a>

@@ -182,6 +182,13 @@
       *ngIf="formType === 'DRAWING_AND_WRITING'"
       (savedItem)="saved($event)"
     ></app-drawing-and-writing>
+
+    <app-cloze-radio-select
+      [formType]="formType"
+      [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Cloze with Radio Select'"
+      (savedItem)="saved($event)"
+    ></app-cloze-radio-select>
     
   </div>
 </div>

@@ -1,0 +1,78 @@
+<div class="card border border-light rounded-3 p-3">
+  <div class="fs-6 fw-bold">Question: {{ currentQuestionIndex }}</div>
+
+  <div *ngIf="currentQuestion.item.passageStimulus"
+    class="mt-2 text-black border-bottom pb-2"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.passageStimulus"
+  ></div>
+
+  <div
+    class="mt-2 text-black"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.stimulus"
+  ></div>
+
+  <div class="d-flex flex-column my-4 gap-1">
+    <div
+      *ngFor="let item of currentQuestion.item.options; let i = index"
+      [ngClass]="{
+        'border-danger':
+          item.value == currentQuestion.item_score.graded_response[0] &&
+          currentQuestion.item_score.graded_response[0] !==
+            currentQuestion.item.scoringOption.answers[0],
+        'border-success':
+          currentQuestion.item.scoringOption.answers[0] == item.value,
+        'border-gray':
+          currentQuestion.item.scoringOption.answers[0] !== item.value
+      }"
+      class="card border m-0"
+      style="padding: 10px"
+    >
+      <!-- tags -->
+      <div
+        class="mb-1 d-flex flex-col gap-1"
+        *ngIf="
+          item.value == currentQuestion.item_score.graded_response[0] ||
+          item.value == currentQuestion.item.scoringOption.answers[0]
+        "
+      >
+        <span
+          *ngIf="item.value == currentQuestion.item_score.graded_response[0]"
+          class="badge rounded-pill bg-secondary"
+          style="font-size: 0.7em"
+          >Selected</span
+        >
+        <span
+          *ngIf="item.value == currentQuestion.item.scoringOption.answers[0]"
+          class="badge rounded-pill bg-success"
+          style="font-size: 0.7em"
+          >Correct Answer</span
+        >
+      </div>
+
+      <!-- label -->
+      <div
+        class="p-0 item-label" style="font-size: 1.0rem;"
+        [innerHTML]="item.label"
+      ></div>
+    </div>
+  </div>
+
+  <!-- score -->
+  <div class="fs-6 fw-bold">Scoring: </div>
+  <div class="d-flex flex-row align-items-center flex-wrap gap-2 my-2" style="font-size: 0.895em">
+    <div>
+      Question Score: <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
+    </div>
+    <div>
+      Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
+    </div>
+    <div>
+      Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
+    </div>
+    <div>
+      Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
+    </div>
+  </div>
+</div>

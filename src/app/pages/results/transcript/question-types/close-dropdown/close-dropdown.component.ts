@@ -37,7 +37,6 @@ export class CloseDropdownComponent{
   }
 
   createSelectElement(index: number): string {
-      const options = this.currentQuestion.item.possibleResponses[index].responses;
       const correctAnswer = this.currentQuestion.item.scoringOption.answers[index];
       const selectedAnswer = this.currentQuestion.item_score.graded_response[index]
       const isCorrect = correctAnswer?.trim() == selectedAnswer?.trim()
