@@ -1,0 +1,388 @@
+<div>
+    <div class="d-flex align-items-center mb-4">
+        <button (click)="goBack()" class="btn btn-outline-primary me-3">
+          <i class="bi bi-arrow-left"></i> 
+          Back
+        </button>
+        
+        <h4 class="mb-0 fw-bold">Abuja | 10001 -  First semester exam 2024</h4>
+    </div>
+
+    <div>
+        <div class="row">
+            <!-- exam overview -->
+            <div class="col-sm-6 col-lg-4 col-md-6">
+                <div>
+                    <div class="border rounded">
+                        <div class="border-bottom py-3 d-flex justify-content-between">
+                            <div></div>
+                            <h5>Exam overview</h5>
+                            <div></div>
+                        </div>
+                        <div style="height: 590px;overflow-y: auto;" class="p-3 no-scrollbar">
+                            <div class="rounded border p-3 pt-0">
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span class="mb-0">Time remaining</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>60 min</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Status</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="badge bg-danger">Ended</span>
+                                        <span class="badge bg-success">Biometric enabled</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Total candidates</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>250</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Exam Start time</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Mar 3, 2026 - 4:40pm</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Exam Started time</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Mar 3, 2026 - 4:40pm</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Exam End-time</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Mar 3, 2026 - 4:40pm</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Login Field</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Email</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Exam Delivery method</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Secure browser</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Close browser password</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Secure browser</span>
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center p-3">
+                                    <span>Early end exam password</span>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>Secure browser</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4 col-md-6">
+                <div>
+                    <div class="border rounded" style="position: relative;">
+                        <div class="border-bottom py-3 d-flex justify-content-between">
+                            <div></div>
+                            <h5>Candidate status summary</h5>
+                            <div></div>
+                        </div> 
+                        
+                        <div class="py-2 w-100" style="position: absolute;top: 0;left:0;margin-top: 70px;z-index: 1;">
+                            <div echarts [options]="DoughnutChart" class="demo-chart"></div>
+                        </div>
+
+                        <div style="margin-top:170px;background-color: #fafafa;" class="p-3 rounded ms-3 me-3 mb-3">
+                            <div class="status-scroll no-scrollbar">
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#6464ed;"></span>
+                                            <span class="status-text">Not started</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#57bb50;"></span>
+                                            <span class="status-text">Started</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#bb5e50;"></span>
+                                            <span class="status-text">Network disconnected</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#5dc1b5;"></span>
+                                            <span class="status-text">Compensatory time</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#56a4b3;"></span>
+                                            <span class="status-text">Relogin</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#4b4f4b;"></span>
+                                            <span class="status-text">Computer swap</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#de8f52;"></span>
+                                            <span class="status-text">Suspended</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#db8259;"></span>
+                                            <span class="status-text">Timed out</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#b5d050;"></span>
+                                            <span class="status-text">Ended</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#d5487c;"></span>
+                                            <span class="status-text">Malpractice</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#4051b1;"></span>
+                                            <span class="status-text">Rescheduled</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="status-card">
+                                        <div class="status-left">
+                                            <span class="status-dot" style="background:#6ebb50;"></span>
+                                            <span class="status-text">BVM verified</span>
+                                        </div>
+                                        <div class="status-number">25</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-4 col-md-6">
+                <div>
+                    <div class="border rounded">
+                        <div class="border-bottom py-3 d-flex justify-content-between">
+                            <div></div>
+                            <h5>Technical issues</h5>
+                            <div>
+                                <div class="dropdown" ngbDropdown>
+                                    <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                        <i class="pi pi pi-ellipsis-v align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
+                                        <li>
+                                            <a routerLink="center/1" class="dropdown-item"> Technical report </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="height: 590px;overflow-y: auto;" class="p-3 no-scrollbar">
+                            <div class="accordion-wrapper">
+                                <div *ngFor="let item of technicalIssues" class="accordion-section mb-2">
+                                    <div class="accordion-header border rounded" (click)="item.open = !item.open">
+                                        {{ item.title }} - {{ 'June 3, 2025 - 4:30pm' }}
+                                        <span class="arrow">{{ item.open ? '▲' : '▼' }}</span>
+                                    </div>
+
+                                    <div class="border rounded p-3 border-top-0 rounded-top-0" *ngIf="item.open">
+                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio quaerat totam neque voluptatum consectetur, deserunt dicta consequuntur cum enim nesciunt blanditiis impedit odio architecto eveniet. Dignissimos ipsa consequatur voluptates vitae repudiandae, ullam officiis culpa dolor placeat quasi nobis esse recusandae pariatur et voluptatem distinctio soluta. Ab sed numquam iure ea quis rem quos quibusdam tempora corporis optio repellat ut impedit labore commodi fuga ipsa quasi mollitia ipsum, veritatis facere aliquid. Dolores omnis id deserunt. Dignissimos sunt eum rerum, in quasi cumque ea, nam necessitatibus nihil consequuntur laboriosam sed fugiat! Repellendus magnam, nulla ab delectus culpa sunt quia enim quos recusandae!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="p-3 border mb-3 mt-5">
+        <h5 class="fw-bold">Candidate list</h5>
+        <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+            <h6 class="fw-bold mb-0">
+                <span class="rounded p-1 border">
+                <i class="pi pi-th-large"></i>
+                </span> 
+                &nbsp;22 Candidates
+            </h6>
+            <div class="d-flex gap-2">
+               <div class="dropdown" ngbDropdown>
+                    <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"ngbDropdownToggle>
+                        <i class="pi pi pi-ellipsis-v align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
+                        <li>
+                            <!-- <a routerLink="center/1" class="dropdown-item"> View </a> -->
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive no-scrollbar">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>S/N</th>
+                    <th>NAME</th>
+                    <th>STATUS</th>
+                    <th>DURATION</th>
+                    <th>LOGINS</th>
+                    <th>ATTEMPTED</th>
+                    <th>COM.SWAPS</th>
+                    <th>NETWORK</th>
+                    <th>SUSPENDED</th>
+                    <th>COMP.TIME</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let item of [1,2,3]">
+                    <tr>
+                        <td>1</td>
+                        <td>
+                            <div style="width: 150px;">
+                                <div>Rufai Ahmed deedat</div>
+                                <div>20253893444FH</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-2" style="width: 120px;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="status-dot bg-success"></span>
+                                    <span>Started</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="status-dot bg-success"></span>
+                                    <span>BVN verified</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column gap-2" style="width: 180px;">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="p-1 rounded border">
+                                        <i class="pi pi-history text-primary" style="font-size: 14px;"></i>
+                                    </span>
+                                    <span>4 Mins</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                   <span class="p-1 rounded border">
+                                        <i class="pi pi-play text-success" style="font-size: 14px;"></i>
+                                    </span>
+                                    <span>June 3, 2026 - 4:30pm</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="p-1 rounded border">
+                                        <i class="pi pi-stop text-danger" style="font-size: 14px;"></i>
+                                    </span>
+                                    <span>June 3, 2026 - 5:30pm</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>1</td>
+                        <td>231</td>
+                        <td>0</td>
+                        <td>
+                            <div class="d-flex flex-column gap-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="status-dot bg-danger"></span>
+                                    <span>OFFLINE</span>
+                                </div>
+                                <div>127.0.0.1</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="text-success">No</span>
+                        </td>
+                        <td>
+                            <span class="text-danger">No</span>
+                        </td>
+                        <td>
+                            <div class="dropdown" ngbDropdown>
+                                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                    <i class="pi pi pi-ellipsis-h align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
+                                    <li>
+                                        <!-- <a routerLink="center/1" class="dropdown-item"> View </a> -->
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <p-paginator [ngClass]="{ 'd-none': false }"
+        [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
+        [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+    </div>
+</div>

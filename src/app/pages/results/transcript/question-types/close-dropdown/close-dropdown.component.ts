@@ -54,7 +54,7 @@ export class CloseDropdownComponent{
           <span style="width:auto; display:inline-block"> 
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-${ isCorrect ? 'success': 'danger' } ng-star-inserted" style="font-size: 0.7em;">Selected</span>
-              <span readonly class="border border-${ isCorrect ? 'success': 'danger' } " style="width:max-content; display:inline-block; padding: 6px">
+              <span readonly class="border border-${ isCorrect ? 'success': 'danger' } " style="width:max-content; display:inline-block; padding: 6px;min-width: 100px">
                 ${ selectedAnswer }
               </span>
             </span>

@@ -1,0 +1,64 @@
+.status-scroll{
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
+.status-card{
+  background:#ffffff;
+  border-radius:10px;
+  border:1px solid #e9ecef;
+  padding:10px 14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  transition:all .2s ease;
+}
+
+.status-card:hover{
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+.status-left{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.status-dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+}
+
+.status-text{
+  font-size:13px;
+  color:#444;
+}
+
+.status-number{
+  font-weight:700;
+  font-size:18px;
+  color:#222;
+}
+
+
+.accordion-header {
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+}
+
+.accordion-header:hover {
+  background: #fafafa;
+}
+
+td, th {
+  padding: 20px;
+}
+
+th {
+  font-weight: bolder;
+}

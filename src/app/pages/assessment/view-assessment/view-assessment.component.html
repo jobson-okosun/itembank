@@ -504,6 +504,14 @@
           <p class="text-muted">EXAM DETAILS</p>
           <div>
             <div class="mt-2">
+              <label for="subjectName" class="label">Exam Type</label>
+              <select name="examType" class="form-select mb-3" required
+                [(ngModel)]="assessmentSettings.examType">
+                <option *ngFor="let item of examTypes" [value]="item" [innerText]="item"></option>
+              </select>
+            </div>
+
+            <div class="mt-2">
               <label for="subjectName" class="label">Exam Name</label>
               <input type="text" name="name" class="form-control mb-3" placeholder="Name of Exam" required
                 [(ngModel)]="assessmentSettings.name" />

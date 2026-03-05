@@ -30,4 +30,12 @@ export class AssessmentSettings {
   candidateGracePeriod: number = 0
   earliestExamEndPeriod: number = 0
   useBiometrics: boolean = false
+  examType = ExamType.EXAMALPHA
+}
+
+export enum ExamType {
+    EXAMALPHA = 'EXAMALPHA', //default
+    UTME = 'UTME',
+    MOCK = 'MOCK',
+    DUMMY = 'DUMMY'
 }

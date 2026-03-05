@@ -1,0 +1,44 @@
+body {
+  background-color: #f8f9fa;
+  font-family: sans-serif;
+}
+
+.card {
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.bg-exam-blue {
+  background-color: #3498db !important;
+}
+
+.bg-exam-green {
+  background-color: #27ae60 !important;
+}
+
+.text-xsmall {
+  font-size: 0.75rem;
+}
+
+td, th {
+  padding: 20px;
+}
+
+th {
+  font-weight: bolder;
+}
+
+.center-tech-issue:hover {
+  border-color: rgb(178, 178, 233) !important;
+  cursor: pointer;
+}
+
+.status-card-item {
+  border: 1px solid transparent;
+}
+
+.status-card-item:hover {
+  border-color: rgb(225, 224, 230) !important;
+  cursor: pointer;
+}

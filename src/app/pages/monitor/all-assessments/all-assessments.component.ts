@@ -20,6 +20,7 @@ export class AllAssessmentsComponent implements OnInit {
   breadCrumbItems!: any;
   deliveryMethods: any[] = [];
   assessments: AssessmentList;
+  fetchingAssessment: boolean =  false;
   pageNo: number = 0;
 
   pageSize: number = 20;
@@ -37,15 +38,17 @@ export class AllAssessmentsComponent implements OnInit {
       this.deliveryMethods.push(method);
     });
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
-
+    this.fetchingAssessment = true
     this.assessmentService
       .fetchAllAssessment(this.pageNo, this.pageSize)
       .subscribe(
         (value) => {
           this.assessments = value;
+          this.fetchingAssessment = false
         },
         (error: HttpErrorResponse) => {
-          // console.log(error);
+          this.assessments = null;
+          this.fetchingAssessment = false
         }
       );
   }

@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
-import { AssessmentSettings } from "../model/assessment-settings";
+import { AssessmentSettings, ExamType } from "../model/assessment-settings";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AssessmentInstruction } from "../model/assessment-instruction";
 import { SectionSettings } from "../model/new-assessment-section-template.model";
@@ -147,6 +147,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   compensatoryChecked: boolean = false;
   warnEndOfReadingTimeChecked: boolean = false;
   instructionReadTimeChecked: boolean = false;
+  examTypes = Object.values(ExamType)
 
   // @ViewChild('Pills') nav; */
 

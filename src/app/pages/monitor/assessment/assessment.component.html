@@ -1,0 +1,740 @@
+<div>
+    <div class="d-flex align-items-center mb-4">
+        <button (click)="goBack()" class="btn btn-outline-primary me-3">
+          <i class="bi bi-arrow-left"></i> 
+          Back
+        </button>
+        <h4 class="mb-0 fw-bold">First semester exam 2024</h4>
+    </div>
+
+    <div class="mb-4 border">
+        <div class="p-4">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+              <h5 class="fw-bold mb-0">First semester exam 2024</h5>
+              <div class="d-flex gap-5 fs-12 text-secondary justify-content-end" style="cursor: pointer">
+                <div class="d-flex align-items-center gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded bg-success d-flex align-items-center justify-content-center" style="width: 20px; height: 20px">
+                      <i class="pi pi-play text-white" style="font-size: 9px;"></i>
+                    </span>
+                    <div class="fw-bold text-black small">Start date: </div>
+                  </div>
+                  <span class="text-secondary"> 25th Jan, 2024, 10:15 AM</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded bg-danger d-flex align-items-center justify-content-center" style="width: 20px; height: 20px">
+                      <i class="pi pi-history text-white" style="font-size: 9px;"></i>
+                    </span>
+                    <div class="fw-bold text-black small">End date</div>
+                  </div>
+                  <span class="text-secondary">25th Jan, 2024, 12:15 PM</span>
+                </div>
+              </div>
+
+            </div>
+            <div class="row text-center g-0 mt-3 border-top pt-4">
+                <div class="col">
+                  <div class="d-flex gap-2 align-items-center">
+                    <span style="width: 40px;height: 40px;" class="bg-warning rounded  text-white d-flex align-items-center justify-content-center">
+                      <i class="pi pi-users"></i>
+                    </span>
+                    <span class="text-start">
+                        <h6 class="fw-bold mb-0">Candidates</h6>
+                        <strong class="text-muted text-xsmall">72,000</strong>
+                    </span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="d-flex gap-2 align-items-center">
+                    <span style="width: 40px;height: 40px;" class="bg-primary rounded  text-white d-flex align-items-center justify-content-center">
+                      <i class="pi pi-calendar"></i>
+                    </span>
+                    <span class="text-start">
+                        <h6 class="fw-bold mb-0">Duration</h6>
+                        <strong class="text-muted text-xsmall">60 minutes</strong>
+                    </span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="d-flex gap-2 align-items-center">
+                    <span style="width: 40px;height: 40px;" class="bg-danger rounded  text-white d-flex align-items-center justify-content-center">
+                      <i class="pi pi-box"></i>
+                    </span>
+                    <span class="text-start">
+                        <h6 class="fw-bold mb-0">Total centers</h6>
+                        <strong class="text-muted text-xsmall">200</strong>
+                    </span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="d-flex gap-2 align-items-center">
+                    <span style="width: 40px;height: 40px;" class="bg-info rounded  text-white d-flex align-items-center justify-content-center">
+                      <i class="pi pi-compass"></i>
+                    </span>
+                    <span class="text-start">
+                        <h6 class="fw-bold mb-0">Batches</h6>
+                        <strong class="text-muted text-xsmall">300</strong>
+                    </span>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="d-flex gap-2 align-items-center">
+                    <span style="width: 40px;height: 40px;" class="bg-secondary rounded  text-white d-flex align-items-center justify-content-center">
+                      <i class="pi pi-compass"></i>
+                    </span>
+                    <span class="text-start">
+                        <h6 class="fw-bold mb-0">Delivery method</h6>
+                        <strong class="text-muted text-xsmall">On premise with secure browser</strong>
+                    </span>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="card bg-exam-blue text-white p-5 h-100">
+                <div class="d-flex justify-content-between">
+                  <span>
+                      <h4 class="text-white mb-2">Exam status</h4>
+                      <p>Showing in current exam</p>
+                  </span>
+                </div>
+                <div style="height: 1px; background-color: rgb(246, 246, 248);opacity: 0.4;" class="my-3"></div>
+                <div class="row g-3 mt-3">
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-cloud-download text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14">Downloaded<br>
+                              <span class="fs-14">
+                                <strong>68,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-cloud-upload text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14">Uploaded<br>
+                              <span class="fs-14">
+                                <strong>68,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-play text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14">Launched<br>
+                              <span class="fs-14">
+                                <strong>37,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="px-2 py-1 avatar-title bg-exam-blue rounded-2 fs-4">
+                              <i class="ri-timer-fill text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14">Started<br>
+                              <span class="fs-14">
+                                <strong>37,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                           <span class="px-2 py-1 avatar-title bg-exam-blue rounded-2 fs-4">
+                              <i class="ri-stop-circle-fill text-danger text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14">Not started<br>
+                              <span class="fs-14">
+                                <strong>37,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                           <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-cloud-download text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14 d-inline-block text-truncate">Passort downloaded<br>
+                              <span class="fs-14">
+                                <strong>37,554</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-replay text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14 d-inline-block text-truncate">Forced rescheduled<br>
+                              <span class="fs-14">
+                                <strong>13,000</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-info-circle text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14 d-inline-block text-truncate">Technical Issue<br>
+                              <span class="fs-14">
+                                <strong>13,000</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="col-4">
+                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                          <div class="me-3 shrink-0">
+                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                              <i class="pi pi-info-circle text-white"></i>
+                            </span>
+                          </div>
+                          <div class="grow overflow-hidden">
+                              <span class="fs-14 d-inline-block text-truncate">Technical Report<br>
+                              <span class="fs-14">
+                                <strong>13,000</strong>
+                                <small> of 12000</small>
+                              </span>
+                            </span>
+                          </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-exam-green text-white p-5 h-100">
+                <div class="d-flex justify-content-between">
+                  <span>
+                      <h4 class="text-white mb-2">Network</h4>
+                      <p>Showing the network status of all centers</p>
+                  </span>
+                </div>
+                <div style="height: 1px; background-color: rgb(246, 246, 248);opacity: 0.4;" class="my-3"></div>
+                <div class="row g-3 mt-3">
+                    <div class="col-6">
+                      <div class="bg-white bg-opacity-25 rounded p-4">
+                        <div class="d-flex p-2 align-items-center">
+                            <div class="me-3 shrink-0">
+                              <span class="avatar-title bg-exam-green rounded-2 fs-4" style="padding: 14px">
+                                <i class="pi pi-cloud text-white"></i>
+                              </span>
+                            </div>
+                            <div class="grow overflow-hidden">
+                                <h4 class="text-white mb-0">Connected</h4>
+                                <div class="mt-1">
+                                  <span class="d-flex align-items-end gap-2">
+                                    <h4 class="mb-0 text-white ">13,000 </h4>
+                                    <small class="fs-14 text-white "> of 12000</small>
+                                  </span>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="bg-white bg-opacity-25 rounded p-4">
+                        <div class="d-flex p-2 align-items-center">
+                            <div class="me-3 shrink-0">
+                              <span class="avatar-title bg-exam-green rounded-2 fs-4" style="padding: 14px">
+                                <i class="pi pi-info-circle text-white"></i>
+                              </span>
+                            </div>
+                            <div class="grow overflow-hidden">
+                                <h4 class="text-white mb-0">Disconnected</h4>
+                                <div class="mt-1">
+                                  <span class="d-flex align-items-end gap-2">
+                                    <h4 class="mb-0 text-white ">13,000 </h4>
+                                    <small class="fs-14 text-white "> of 12000</small>
+                                  </span>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Candidate summary</h5>
+                          <p class="small">Summary for all candidates</p>
+                        </span>
+                        <select class="form-select form-select w-auto">
+                          <option>Attendance</option>
+                          <option>Status</option>
+                          <option>Duration</option>
+                          <option>Question attempts</option>
+                          <option>Biometrics</option>
+                          <option>Rescheduled</option>
+                          <option>Malpractice</option>
+                        </select>
+                    </div>
+                    <div class="p-4 mt-5" style="position: relative;">
+
+                      <div class="d-flex justify-content-center" style="position: absolute; width: 100%;top: 0;left: 0;" >
+                        <div class="w-100 h-100">
+                          <div echarts [options]="DoughnutChart" class="demo-chart"></div>
+                        </div>
+                      </div>
+
+                      <div style="height: 300px;overflow-y: auto;margin-top: 150px" class="w-100">
+                        <div class="w-100 h-100">
+
+                          <div class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Attendance</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3">
+                                <div class="col-4">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center">
+                                      <div class="me-3 shrink-0">
+                                        <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Present<br>
+                                          <span class="fs-14">
+                                            <strong>45%</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center">
+                                      <div class="me-3 shrink-0">
+                                        <span class="avatar-title bg-info rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-stop-circle text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Absent<br>
+                                          <span class="fs-14">
+                                            <strong>45%</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Synchronizations (30)</h5>
+                          <p class="small">Candidates synchronizations</p>
+                        </span>
+                        <select class="form-select form-select w-auto">
+                          <option>Passport</option>
+                          <option>Candidate</option>
+                        </select>
+                    </div>
+                    <div class="p-4 border-bottom mb-4">
+                      <div class="list-group list-group-flush" style="height: 400px;overflow-y: auto;">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                              <div class="fw-bold small">{{ 'Wilson Annah Obidah'.toUpperCase() }} - 202550658791IA</div>
+                              <small class="text-muted">Downloaded passport</small>
+                            </div>
+                            <div class="text-end">
+                              <small class="text-muted d-block">15 Dec 2021</small>
+                              <strong>CENTER-102</strong>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                        <p-paginator [ngClass]="{ 'd-none': false }"
+                        [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
+                        [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Technical issues</h5>
+                          <p class="small">Technical issues for all centers</p>
+                        </span>
+                        <input class="form-control w-auto" placeholder="Center name" />
+                    </div>
+                    <div class="p-4">
+                      <div class="row g-2">
+                        <div (click)="openModal(centerTechnicalIssuesModal, 'lg')" class="col-sm-4" *ngFor="let item of technicalIssuesCategories">
+                          <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                              <div class="me-3 shrink-0">
+                                <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
+                                  <i class="pi pi pi-info-circle text-white"></i>
+                                </span>
+                              </div>
+                              <div class="grow overflow-hidden">
+                                  <span class="fs-14 text-truncate">{{ item }}<br>
+                                  <span class="fs-14">
+                                    <strong>300</strong>
+                                  </span>
+                                </span>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Technical Report</h5>
+                          <p class="small">Technical report for all centers</p>
+                        </span>
+                        <select class="form-select form-select w-auto">
+                          <option>Submitted</option>
+                          <option>Not Submitted</option>
+                        </select>
+                    </div>
+                    <div class="p-4" style="max-height: 300px;overflow-y: auto;">
+                      <div class="row g-2">
+                        <div (click)="openModal(centerTechnicalReportModal, 'lg')" class="col-sm-4" *ngFor="let item of [1,2,3,4,5,6,7]">
+                          <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                              <div class="me-3 shrink-0">
+                                <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
+                                  <i class="pi pi pi-info-circle text-white"></i>
+                                </span>
+                              </div>
+                              <div class="grow overflow-hidden">
+                                  <span class="fs-14 text-truncate">Abuja<br>
+                                  <span class="fs-14">
+                                    10001 <i class="pi pi-check-circle text-success" style="font-size: 10px;"></i>
+                                  </span>
+                                </span>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                
+                <div class="border-top pt-3">
+                    <p-paginator [ngClass]="{ 'd-none': false }"
+                    [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
+                    [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="p-3 border mb-3">
+            <h5 class="fw-bold">Center list</h5>
+            <div class="d-flex justify-content-between align-items-center mt-4 border-top pt-3">
+                <h6 class="fw-bold mb-0">
+                  <span class="rounded p-1 border">
+                    <i class="pi pi-th-large"></i>
+                  </span> 
+                  &nbsp;22 Centers
+                </h6>
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm">
+                      <option>Center ID</option>
+                    </select>
+                    <input type="text" class="form-control" placeholder="Search">
+                    <button class="btn btn-primary btn">Search</button>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Center name <i class="bi bi-arrow-down-up"></i></th>
+                        <th>Center ID</th>
+                        <th>Participants</th>
+                        <th>Started</th>
+                        <th>Ended</th>
+                        <th>Start date</th>
+                        <th>End date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of [1,2,3]">
+                      <tr>
+                          <td>1</td>
+                          <td>Byte wave tech solutions</td>
+                          <td>265</td>
+                          <td>5,7654</td>
+                          <td>673</td>
+                          <td>231</td>
+                          <td>15 Dec 2021 11:00 am</td>
+                          <td>15 Dec 2021 13:00 am</td>
+                          <td>
+                            <div class="dropdown" ngbDropdown>
+                                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                  <i class="pi pi pi-ellipsis-h align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
+                                  <li>
+                                    <a routerLink="center/1" class="dropdown-item"> View </a>
+                                  </li>
+                                </ul>
+                              </div>
+                          </td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': false }"
+            [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
+            [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+        </div>
+    </div>
+</div>
+
+<ng-template #centerTechnicalIssuesModal role="document" let-modal>
+  <div class="modal-header">
+      <h3 class="modal-title">Abuja [1001] Technical issues</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+        <div class="border rounded" *ngFor="let item of [1,2,3,4]">
+          <div class="p-3 border-bottom"><strong>BVM </strong>- 12/06/2025 - 4:30pm</div>
+          <div class="p-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia quas molestias deserunt sunt distinctio placeat? Quasi culpa eos mollitia laborum aspernatur accusamus nisi, beatae expedita officia voluptatibus at dignissimos, aperiam assumenda ipsam debitis adipisci? Similique, repudiandae eius. Sunt, numquam quam magnam ipsam nostrum, accusamus hic laudantium obcaecati debitis voluptatem maiores.</div>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+      <div class="d-flex justify-content-end gap-2">
+          <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+              <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+          </button>
+      </div>
+  </div>
+</ng-template>
+
+<ng-template #centerTechnicalReportModal role="document" let-modal>
+  <div class="modal-header">
+      <h3 class="modal-title">Abuja [1001] Technical issues</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+        <div class="border rounded">
+          <div class="p-3 border-bottom"><strong>Report</strong>- 12/06/2025 - 4:30pm</div>
+          <div class="p-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia quas molestias deserunt sunt distinctio placeat? Quasi culpa eos mollitia laborum aspernatur accusamus nisi, beatae expedita officia voluptatibus at dignissimos, aperiam assumenda ipsam debitis adipisci? Similique, repudiandae eius. Sunt, numquam quam magnam ipsam nostrum, accusamus hic laudantium obcaecati debitis voluptatem maiores.</div>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+      <div class="d-flex justify-content-end gap-2">
+          <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+              <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+          </button>
+      </div>
+  </div>
+</ng-template>
+
+<ng-template #downloadsModal role="document" let-modal>
+  <div class="modal-header">
+      <h3 class="modal-title">Downloads</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of [1,2,3,4,5,6,7,8,9,0]">
+                      <tr>
+                          <td>1</td>
+                          <td>Byte wave tech solutions</td>
+                          <td>265</td>
+                          <td>12/05/2016 4:30pm</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+      <div class="d-flex justify-content-end gap-2">
+          <button  type="button" class="btn btn-primary">
+              <i class="pi pi-cloud-download fs-16 me-2"></i>
+              Download report
+          </button>
+          <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+              <i class="ri-close-line align-middle fs-16 me-2"></i>
+              Close
+          </button>
+      </div>
+  </div>
+</ng-template>
