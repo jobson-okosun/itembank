@@ -9,4 +9,5 @@ export class NewSectionBlock {
   selectionType: string;
   index: number;
   numberOfItemsInPassage: number;
+  shuffleItems: boolean
 }

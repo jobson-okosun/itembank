@@ -1263,6 +1263,14 @@
           </option>
         </select>
       </div>
+
+      <div class="my-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="shuffleItems" checked  [(ngModel)]="newBlock.shuffleItems">
+          <label class="form-check-label">Shuffle items?</label>
+        </div>
+      </div>
+
     </form>
   </div>
   <div class="card-footer">
@@ -1369,6 +1377,14 @@
         <label class="form-label" for="selectionType">Question Selection Type</label>
         <input type="text" class="form-control" name="selectionType" [(ngModel)]="editBlock.selectionType" disabled />
       </div>
+
+      <div class="my-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="shuffleItems"  [(ngModel)]="editBlock.shuffleItems">
+          <label class="form-check-label">Shuffle items?</label>
+        </div>
+      </div>
+
     </form>
   </div>
   <div class="card-footer">
