@@ -30,7 +30,7 @@ export class AssessmentSettings {
   candidateGracePeriod: number = 0
   earliestExamEndPeriod: number = 0
   useBiometrics: boolean = false
-  examType = ExamType.EXAMALPHA
+  examType = ExamType.DUMMY
 }
 
 export enum ExamType {

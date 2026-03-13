@@ -13,7 +13,7 @@ export class BlockDetails {
   selectionType: string;
   totalFound?: number;
   totalQuestionsInPassage: number;
-  shuffleItems: boolean
+  shuffleItems: boolean = true
 }
 
 export class SectionDetails {
