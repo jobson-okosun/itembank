@@ -64,59 +64,73 @@
                   >
                     <ng-template pTemplate="header">
                       <tr>
-                        <th pSortableColumn="first_name">
+                        <th pSortableColumn="name">
                           <div
                             class="flex justify-content-between align-items-center"
                           >
                             NAME
-                            <p-sortIcon field="first_name"></p-sortIcon>
+                            <p-sortIcon field="name"></p-sortIcon>
                             <p-columnFilter
                               type="text"
-                              field="first_name"
+                              field="name"
                               display="menu"
                               class="ml-auto"
                             ></p-columnFilter>
                           </div>
                         </th>
 
-                        <th pSortableColumn="last_name">
+                        <th pSortableColumn="participants_count">
                           <div
                             class="flex justify-content-between align-items-center"
                           >
                             CANDIDATES
-                            <p-sortIcon field="last_name"></p-sortIcon>
+                            <p-sortIcon field="participants_count"></p-sortIcon>
                             <p-columnFilter
                               type="text"
-                              field="last_name"
+                              field="participants_count"
                               display="menu"
                               class="ml-auto"
                             ></p-columnFilter>
                           </div>
                         </th>
-                        <th pSortableColumn="last_name">
+                        <th pSortableColumn="proctors_count">
+                          <div
+                            class="flex justify-content-between align-items-center"
+                          >
+                            PROCTORS
+                            <p-sortIcon field="proctors_count"></p-sortIcon>
+                            <p-columnFilter
+                              type="text"
+                              field="proctors_count"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter>
+                          </div>
+                        </th>
+                        <th pSortableColumn="start_date_time">
                           <div
                             class="flex justify-content-between align-items-center"
                           >
                             START DATE
-                            <p-sortIcon field="last_name"></p-sortIcon>
+                            <p-sortIcon field="start_date_time"></p-sortIcon>
                             <p-columnFilter
                               type="text"
-                              field="last_name"
+                              field="start_date_time"
                               display="menu"
                               class="ml-auto"
                             ></p-columnFilter>
                           </div>
                         </th>
 
-                        <th pSortableColumn="email">
+                        <th pSortableColumn="end_date_time">
                           <div
                             class="flex justify-content-between align-items-center"
                           >
                             END DATE
-                            <p-sortIcon field="email"></p-sortIcon>
+                            <p-sortIcon field="end_date_time"></p-sortIcon>
                             <p-columnFilter
                               type="text"
-                              field="email"
+                              field="end_date_time"
                               display="menu"
                               class="ml-auto"
                             ></p-columnFilter>
@@ -153,6 +167,15 @@
                           >
                             <div class="flex-grow-3 ms-2">
                               {{ batch.participants_count }}
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <div
+                            class="d-flex justify-content-start align-items-center"
+                          >
+                            <div class="flex-grow-3 ms-2">
+                              {{ batch.proctors_count }}
                             </div>
                           </div>
                         </td>

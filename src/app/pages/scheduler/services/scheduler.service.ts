@@ -9,6 +9,9 @@ import {
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "src/environments/environment";
 import {
+  AssignProctorDTO,
+  BatchFilter,
+  FilterProctorDTO,
   IAssessmentBatchDTO,
   IAssessmentDetail,
   IAssessmentList,
@@ -53,6 +56,8 @@ import {
   IUnassignedCenterAdmin,
   ListProctorPage,
   NewInfractionTemplateDTO,
+  ProctorDashboardMetrics,
+  ProctorDistributionResult,
   proctorQueryParams,
   ProctorSettings,
   UpdateInfractionsDTO,
@@ -60,6 +65,7 @@ import {
 } from "../models/assessments";
 import { IResourceCreated } from "../models/resource-created";
 import { ResourceCreated } from "src/app/shared/model/resource-created";
+import { ResourceModified } from "../../assessment/model/marking-guide-types";
 //import { ThirdPartyDraggable } from "@fullcalendar/interaction";
 
 @Injectable({
@@ -479,7 +485,7 @@ export class SchedulerService {
     );
   }
 
-  assignProctor(assessmentId: string, payload: string[]): Observable<ResourceCreated> {
+  assignProctor(assessmentId: string, payload: AssignProctorDTO): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/assign_proctor`,
       payload,
@@ -776,16 +782,44 @@ export class SchedulerService {
     );
   }
 
-  fetchAssignedProctors(assessmentId: string, params: proctorQueryParams): Observable<ListProctorPage> {
+  fetchAssignedProctors(assessmentId: string, payoad: FilterProctorDTO,params: proctorQueryParams): Observable<ListProctorPage> {
     let q = this.buildQueryString(params)
     const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors` + q
 
-    return this.http.get<ListProctorPage>(url, { withCredentials: true });
+    return this.http.post<ListProctorPage>(url, payoad, { withCredentials: true });
+  }
+
+  fetchProctorDashboard(assessmentId: string): Observable<ProctorDashboardMetrics> {
+    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/dashboard`
+    return this.http.get<ProctorDashboardMetrics>(url, { withCredentials: true });
   }
 
   buildQueryString(params: proctorQueryParams): string {
     const query = Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
       .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
       .join('&'); return query ? `?${query}` : '';
+  }
+
+  fetchProctorCandidates(assessmentId: string, proctorId: string, params: any, payload: BatchFilter): Observable<IParticipantList> {
+    let q = this.buildQueryString(params)
+
+    return this.http.post<IParticipantList>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${ proctorId }/list_participants` + q,
+      payload, { withCredentials: true }
+    );
+  }
+
+  distributeParticipants(assessmentId: string): Observable<ProctorDistributionResult> {
+    return this.http.get<ProctorDistributionResult>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/distribute_participants`,
+      { withCredentials: true }
+    );
+  }
+
+  unAssignProctorBatch(assessmentId: string, proctorId: string, payload: string[]): Observable<ResourceModified> {
+    return this.http.post<ResourceModified>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${ proctorId }/unassign_batches`,
+      payload, { withCredentials: true }
+    );
   }
 }

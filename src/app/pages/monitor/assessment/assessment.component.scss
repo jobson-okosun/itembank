@@ -42,3 +42,15 @@ th {
   border-color: rgb(225, 224, 230) !important;
   cursor: pointer;
 }
+
+.truncate {
+  max-width: 120px;       /* adjust as needed */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// .demo-chart {
+//   height: 250px !important;
+//   width: 100%;
+// }

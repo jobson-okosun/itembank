@@ -32,7 +32,7 @@ export class AssessmentSectionGroupingComponent implements OnInit {
 
   Sections: ISection[] = [];
   dashboardData: ISectionGroupDashboard;
-  sectionNameTimer:any 
+  sectionNameTimer: any
 
   constructor(
     private modalService: NgbModal,
@@ -41,13 +41,22 @@ export class AssessmentSectionGroupingComponent implements OnInit {
     private schedulerService: SchedulerService,
     private itembankAssessmentService: AssessmentsService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     /* this.routeSub = this.activatedRoute.params.subscribe((params: Params) => {
       this.assessmentId = params["assessmentId"];
     }); */
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
+    if (this.assessmentId) {
+      localStorage.setItem('assessmentId', this.assessmentId)
+    } else {
+      const id = localStorage.getItem('assessmentId')
+      if (id) {
+        this.assessmentId = id
+      }
+    }
+
     this.fetchAssessmentSectionGroups(this.assessmentId, 0, 10);
     this.fetchSectionGroupDashboard(this.assessmentId);
   }

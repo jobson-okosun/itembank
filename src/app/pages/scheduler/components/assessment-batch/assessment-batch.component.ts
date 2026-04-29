@@ -37,6 +37,15 @@ export class AssessmentBatchComponent implements OnInit {
 
   ngOnInit(): void {
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
+    if (this.assessmentId) {
+      localStorage.setItem('assessmentId', this.assessmentId)
+    } else {
+      const id = localStorage.getItem('assessmentId')
+      if (id) {
+        this.assessmentId = id
+      }
+    }
+    
     this.fetchBatches(this.assessmentId);
   }
 

@@ -6,7 +6,7 @@ import { ResourceCreated } from "src/app/shared/model/resource-created";
 import { environment } from "src/environments/environment";
 import { NewAssessmentDetailTemplate } from "../model/new-assessment-detail-template.model";
 import { NewAssessmentSettingsTemplate } from "../model/new-assessment-settings-template.model";
-import { AssessmentList } from "../model/assessment-list";
+import { AssessmentList, AssessmentListPage, ExaminerAppDownloadPage, ExaminerClearAppPage } from "../model/assessment-list";
 import { SingleAssessment } from "../model/single-assessment";
 import { NewAssessment } from "../model/new-assessment.model";
 import { AssessmentSettings } from "../model/assessment-settings";
@@ -322,6 +322,16 @@ export class AssessmentsService {
     );
   }
 
+  fetchAllAssessmentV2(
+    page?: number,
+    pageSize?: number
+  ): Observable<AssessmentListPage> {
+    return this.http.get<AssessmentListPage>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/list_assessments_v2?page=${page}&size=${pageSize}`,
+      { withCredentials: true }
+    );
+  }
+
   fetchSingleAssessmentSettings(
     assessmentId: string
   ): Observable<AssessmentSettings> {
@@ -525,6 +535,26 @@ export class AssessmentsService {
       payload,
       { withCredentials: true }
     );
+  }
+
+  baseURL = environment.developmentIP + '/sch_mon_grd/reports/monitor'
+
+  fetchAppDownloads(page?: number,pageSize?: number): Observable<ExaminerAppDownloadPage> {
+      const url = this.baseURL + `/list_examiners_app_download_registration?page=${ page }&size=${ pageSize }`
+
+      return this.http.get<ExaminerAppDownloadPage>(url, { withCredentials: true})
+  }
+
+  fetchAppInstallations(page?: number,pageSize?: number): Observable<ExaminerClearAppPage> {
+      const url = this.baseURL + `/list_examiners_clear_app?page=${ page }&size=${ pageSize }`
+
+      return this.http.get<ExaminerClearAppPage>(url, { withCredentials: true})
+  }
+
+  fetchAppClears(page?: number,pageSize?: number): Observable<ExaminerClearAppPage> {
+      const url = this.baseURL + `/list_examiners_clear_app?page=${ page }&size=${ pageSize }`
+
+      return this.http.get<ExaminerClearAppPage>(url, { withCredentials: true})
   }
 
 }

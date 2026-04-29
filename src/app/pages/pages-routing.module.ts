@@ -22,8 +22,11 @@ const routes: Routes = [
     loadChildren: () =>
       import("./assessment/assessment.module").then((m) => m.AssessmentModule),
   },
-
- 
+  {
+    path: "result",
+    loadChildren: () =>
+      import("./result/result.module").then((m) => m.ResultModule),
+  },
   {
     path: "passages",
     loadChildren: () =>

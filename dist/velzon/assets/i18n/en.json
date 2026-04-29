@@ -50,6 +50,9 @@
     "RESULTS":{
       "TEXT":"Reports"
     },
+    "RESULT":{
+      "TEXT":"Result"
+    },
     "SETTINGS":{
       "TEXT":"Settings"
     }

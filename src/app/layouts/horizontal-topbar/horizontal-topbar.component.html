@@ -29,7 +29,8 @@
     </div>
 
     <div id="scrollbar">
-        <div class="container">
+        <!-- class="container" -->
+        <div >
 
             <div id="two-column-menu">
             </div>
@@ -52,6 +53,7 @@
                         <span class="badge {{item.badge.variant}} float-end" *ngIf="item.badge">{{item.badge.text |
                           translate}}</span>
                       </a>
+                      
                       <div class="collapse menu-dropdown" id="sidebarDashboards" *ngIf="hasItems(item)">
                         <ul *ngIf="hasItems(item)" class="nav nav-sm flex-column" aria-expanded="false">
                             <li *ngFor="let subitem of item.subItems" class="nav-item">

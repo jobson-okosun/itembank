@@ -452,7 +452,9 @@ export class UserComponent implements OnInit {
       this.role.role !== "EXAMINER" &&
       this.role.role !== "CENTER_ADMIN"&&
       this.role.role !== "PROCTOR_ADMIN" &&
-      this.role.role !== "PROCTOR"
+      this.role.role !== "PROCTOR" &&
+      this.role.role !== "MONITOR" &&
+      this.role.role !== "ANALYTIC"
     ) {
       this.submitted = false;
       return this.notifier.notify(

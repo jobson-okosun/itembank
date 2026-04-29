@@ -108,55 +108,37 @@ export class SignInComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    // if (
-    //   this.loginForm.controls["username"].value ===
-    //   this.loginForm.controls["password"].value
-    // ) {
-    //   this.error_msg = `username and password cannot have the same values!`;
-    //   this.error = true;
-    //   this.submitted = false;
-    //   return;
-    // }
-    // stop here if form is invalid
     if (this.loginForm.invalid) {
       this.submitted = false;
     } else {
       this.http.login(this.loginForm.value).subscribe(
         (value) => {
-          //todo: navigate
-          // console.log(value);
-          let data = {
-            org_id: environment.org_id,
-            role: value.authorities[0],
-            id: value.id,
-            key: environment.key,
-            username: value.username,
-          };
-          if (value) {
-            //  this.http.authorizeItembank(data).subscribe((value) => {
-            // console.log('scheduler rights granted', value);
-            //  });
-          }
-          this.router
-            .navigate(['examalpha'])
-            .catch((reason) => console.log(reason));
+          this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
         },
         (err: HttpErrorResponse) => {
-          //todo: show error
           this.error = true;
-          if (err.status === 401) {
+          
+          if(err.error?.message?.includes('Authentication ')) {
+            this.error_msg = 'Not authorized: Authentication failed'
+          }
+
+          else if(err.error?.message?.includes('OTP ')) {
+            this.error_msg = err.error.message
+          }
+
+          else if (err.status === 401) {
             this.error_msg = 'Invalid Login Credentials!';
-            // this.submitted = false;
-          } else if (err?.error?.message) {
+          }
+
+          else if (err?.error?.message) {
             this.error_msg = err.error.message;
-            // this.submitted = false;
-          } else {
+          }
+
+          else {
             this.error_msg = 'Sorry! Unable to perform login';
           }
 
           this.submitted = false;
-
-          /* console.log(err); */
         }
       );
     }

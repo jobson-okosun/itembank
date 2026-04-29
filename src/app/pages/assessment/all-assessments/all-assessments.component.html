@@ -296,8 +296,8 @@
     [totalRecords]="assessments.totalElements"
     (onPageChange)="onPageChange($event)"
     [first]="0"
-    [rowsPerPageOptions]="[5, 10, 20]"
-    [rows]="5"
+    [rowsPerPageOptions]="[100, 150, 200, 300]"
+    [rows]="100"
     [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   >

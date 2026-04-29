@@ -16,6 +16,7 @@ import { MENU, SCHEDULER_MENU } from './menu';
 import { MenuItem } from './menu.model';
 import { Account } from 'src/app/authentication/model/account.model';
 import { UserService } from 'src/app/shared/user.service';
+import { Role } from 'src/app/shared/enum/role';
 
 @Component({
   selector: 'app-horizontal-topbar',
@@ -76,6 +77,7 @@ export class HorizontalTopbarComponent implements OnInit {
           this.menuItems.push(element);
         }
       }
+
     });
   }
 

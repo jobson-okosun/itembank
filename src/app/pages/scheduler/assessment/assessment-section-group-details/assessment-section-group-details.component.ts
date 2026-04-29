@@ -94,8 +94,7 @@ export class AssessmentSectionGroupDetailsComponent implements OnInit {
     private userService: UserService
   ) {
     this.currentAssessment = this.assessmentsService.activeAssessment;
-    this.currentAssessmentDeliveryMethod =
-      this.assessmentsService.activeAssessmentDeliveryMethod;
+    this.currentAssessmentDeliveryMethod = this.assessmentsService.activeAssessmentDeliveryMethod;   
     this.form = this.fb.group({});
   }
 
@@ -111,6 +110,7 @@ export class AssessmentSectionGroupDetailsComponent implements OnInit {
       this.sectionGroupId = params["sectionGroupId"];
       this.assessmentId = this.assessmentsService.schedulerAssessmentId;
     });
+
     this.breadCrumbItems = [
       { label: "Group Section" },
       { label: "Details", active: true },

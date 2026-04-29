@@ -18,294 +18,372 @@
   </div>
 </div>
 
-<div *ngIf="!fetchingAssessment && assessments" class="card card-body">
-  <div class="d-flex justify-content-between mb-2">
-    <h5 class="card-title mb-2 flex-grow-1">
-      List of all Exams({{ assessments.content.length }})
-    </h5>
-  </div>
-
-  <div *ngIf="assessments" class="row">
-    <ng-container *ngFor="let assessment of assessments.content">
-      <div class="col-sm-12 col-lg-6">
-        <div class="card card-body">
-          <div class="d-flex mb-0 align-items-center justify-content-between">
-            <div class="d-flex align-items-center">
-              <div class="avatar-xs flex-shrink-0 me-3">
-                <div class="avatar-title bg-primary text-light rounded-3">
-                  {{ assessment.name.charAt(0) | uppercase }}
-                </div>
-              </div>
-              <div class="flex-grow-1">
-                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
-                  <a
-                    href="javascript:void(0);"
-                    class="text-body d-block"
-                    (click)="setCurrentAssessment(assessment)"
-                    routerLink="/examalpha/exams/{{
-                      assessment.id
-                    }}/exam-schedule"
-                    >{{ assessment.name }}</a
-                  >
-                </h5>
-                <p
-                  class="text-secondary p-0 m-0"
-                  style="font-size: 12px; font-weight: lighter"
-                >
-                  {{ assessment.createdDate | date : "medium" }}
-                </p>
-              </div>
-            </div>
-
-            <div class="d-flex gap-4 justify-content-end">
-              <!-- assessment status -->
-              <div>
-                <span
-                  class="text-capitalize rounded-2 fs-12"
-                  [ngClass]="{
-                    ' p-1 py-0 px-1  ': assessment.status === 'PUBLISHED',
-                    ' p-1 py-0 ': assessment.status === 'DRAFT'
-                  }"
-                  ><i
-                    *ngIf="assessment.status === 'DRAFT'"
-                    class="ri-draft-line align-bottom"
-                  ></i>
-                  <i
-                    *ngIf="assessment.status === 'PUBLISHED'"
-                    class="ri-checkbox-circle-line align-bottom text-white"
-                  ></i>
-                </span>
-                <span class="fs-12">Status:</span>
-                <span
-                  class="text-capitalize fs-12"
-                  [ngClass]="{
-                    'text-success': assessment.status === 'PUBLISHED',
-                    'text-warning': assessment.status === 'DRAFT'
-                  }"
-                >
-                  {{ assessment.status }}</span
-                >
-              </div>
-
+<div *ngIf="!fetchingAssessment && assessments">
+    <div class="d-flex align-items-center justify-content-end gap-2 mb-3">
+      <button class="btn btn-primary" (click)="openAppDownloadsReportModal(appDownloadsReportModal)">App downloads</button>
+      <!-- <button class="btn btn-primary" (click)="openAppInstallationsReportModal(appInstallationsReportModal)">App installations</button> -->
+      <button class="btn btn-primary" (click)="openAppClearsReportModal(appClearsReportModal)">App clear</button>
+    </div>
+    <div class="row">
+      <ng-container *ngFor="let assessment of assessments.content">
+        <div class="col-sm-12 col-lg-6">
+          <div class="card">
+            <div class="card-header d-flex mb-0 align-items-center">
+              <h5 class="fs-13 mb-0 flex-grow-1">
+                <a
+                  href="javascript:void(0);"
+                  (click)="setCurrentAssessment(assessment)"
+                  routerLink="/examalpha/exams/{{ assessment.id }}/exam-schedule">{{
+                  assessment.name }}</a>
+              </h5>
               <div class="dropdown" ngbDropdown>
                 <a
                   class="text-muted arrow-none"
                   id="dropdownMenuLink1"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
-                  ngbDropdownToggle
-                  ><i
+                  ngbDropdownToggle><i
                     class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
-                    style="cursor: pointer"
-                  ></i
-                ></a>
+                    style="cursor: pointer"></i></a>
                 <ul
                   class="dropdown-menu dropdown-menu-end"
                   aria-labelledby="dropdownMenuLink1"
-                  ngbDropdownMenu
-                >
+                  ngbDropdownMenu>
                   <li>
                     <a
                       class="dropdown-item"
                       (click)="setCurrentAssessment(assessment)"
                       [routerLink]="assessment.id"
-                      ><i class="pi pi-compass me-2 text-muted"></i>
-                      Monitor</a
+                      data-bs-toggle="modal"
                     >
-                  </li>
-                  <li>
-                    <a
-                      class="dropdown-item"
-                      (click)="setCurrentAssessment(assessment)"
-                      routerLink="/examalpha/schedule/{{
-                        assessment.id
-                      }}/exam-schedule"
-                      ><i class="bx bxs-edit align-bottom me-2 text-muted"></i>
-                      Manage Schedule</a
-                    >
+                      <i class="ri-survey-line align-bottom me-2 text-muted"></i>
+                      Monitor
+                    </a>
                   </li>
                 </ul>
               </div>
             </div>
-          </div>
-
-          <div class="border-top mb-3 mt-3"></div>
-          <div class="row">
-            <div class="col-lg-12 col-sm-12 mb-2">
-              <div class="d-flex align-items-center">
-                <div class="avatar-xs flex-shrink-0 me-2">
-                  <div
-                    class="avatar-title border text-light bg-white rounded-3"
-                  >
-                    <i class="align-center ri-book-3-line text-secondary"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
-                    Total subjects
-                  </h5>
-                  <p
-                    class="text-secondary p-0 m-0"
-                    style="font-size: 12px; font-weight: normal"
-                  >
-                    {{ assessment.totalSections }}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="col-lg-12 col-sm-12 mb-2">
-              <div class="d-flex align-items-center">
-                <div class="avatar-xs flex-shrink-0 me-2">
-                  <div
-                    class="avatar-title border text-light bg-white rounded-3"
-                  >
-                    <i
-                      class="align-center las la-hourglass align-center text-secondary"
-                    ></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">Duration</h5>
-                  <p
-                    class="text-secondary p-0 m-0"
-                    style="font-size: 12px; font-weight: normal"
-                  >
-                    {{ assessment.duration }}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-lg-3 col-sm-12 mb-2">
-              <div class="d-flex align-items-center">
-                <div class="avatar-xs flex-shrink-0 me-2">
-                  <div
-                    class="avatar-title border text-light bg-white rounded-3"
-                  >
-                    <i
-                      class="align-center ri-send-plane-2-line text-secondary"
-                    ></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
-                    Delivery method
-                  </h5>
-                  <p
-                    class="text-secondary p-0 m-0"
-                    style="font-size: 12px; font-weight: normal"
-                  >
-                    {{ assessment.deliveryMethod }}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="row gap-2 my-2">
-            <div
-              class="col-lg-3 col-sm-4 p-0"
-              *ngIf="assessment.totalCenterAdmins"
-              style="width: 20%"
-            >
-              <div class="fs-12 px-1">
-                <span class="border rounded-2 px-1">
-                  <i
-                    class="ri-check-double-line text-success p-2 align-middle"
-                  ></i>
-                  <span>Admins: {{ assessment.totalCenterAdmins }}</span>
-                </span>
-              </div>
-            </div>
-            <div
-              class="col-lg-3 col-sm-4 p-0"
-              *ngIf="assessment.totalSectionsGroup"
-              style="width: 20%"
-            >
-              <div class="fs-12">
-                <span class="border rounded-2 px-1">
-                  <i
-                    class="ri-check-double-line text-success p-2 align-middle"
-                  ></i>
-                  <span>Sections: {{ assessment.totalSectionsGroup }}</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div class="border-top mb-3"></div>
-
-          <div class="row">
-            <div class="d-flex justify-content-between">
-              <div class="">
-                <div class="d-flex align-items-center">
-                  <div class="avatar-xs flex-shrink-0 me-2">
-                    <div
-                      class="avatar-title border text-light bg-white rounded-3"
-                    >
+            <div class="card-body">
+              <div class="flex-shrink-0">
+                <ul class="ps-4 vstack gap-2" style="list-style-type: none">
+                  <li>
+                    Status:
+                    <span
+                      class="text-capitalize"
+                      [ngClass]="{
+                        'text-success': assessment.status === 'PUBLISHED',
+                        'text-warning': assessment.status === 'DRAFT'
+                      }"><i
+                        *ngIf="assessment.status === 'DRAFT'"
+                        class="ri-draft-line align-bottom"></i>
                       <i
-                        class="align-center ri-play-circle-line text-success"
-                      ></i>
-                    </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
-                      Start Date
-                    </h5>
-                    <p
-                      class="text-secondary p-0 m-0"
-                      style="font-size: 12px; font-weight: normal"
-                    >
-                      {{ assessment.startDateTime | date : "medium" }}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="">
-                <div class="d-flex align-items-center">
-                  <div class="avatar-xs flex-shrink-0 me-2">
-                    <div
-                      class="avatar-title border text-light bg-white rounded-3"
-                    >
+                        *ngIf="assessment.status === 'PUBLISHED'"
+                        class="ri-checkbox-circle-fill align-bottom"></i>
+                      {{ assessment.status }}</span>
+                  </li>
+                  <li>
+                    Delivery Method:
+                    <span class="text-capitalize text-info"><i
+                        *ngIf="assessment.delivery_method.includes('OFFLINE')"
+                        class="ri-cloud-off-line align-bottom"></i>
                       <i
-                        class="align-center ri-stop-circle-line text-danger"
-                      ></i>
+                        *ngIf="assessment.delivery_method == 'ONLINE'"
+                        class="ri-rss-line align-bottom"></i>
+                      <i
+                        *ngIf="
+                          assessment.delivery_method == 'ONLINE_WITH_HUMAN_PROCTOR'
+                        "
+                        class="ri-user-shared-line align-bottom"></i>
+                      {{ assessment.delivery_method }}</span>
+                  </li>
+                  <li>
+                    Duration:
+                    <span class="text-primary"><i
+                        class="ri-timer-line align-bottom"></i>
+                      {{ assessment.duration }} Minute(s).</span>
+                  </li>
+                  <li>
+                    Total Sections:
+                    <span class="text-primary"><i
+                        class="ri-layout-grid-line align-bottom"></i>
+                      <!-- {{ assessment.total_section_groups }} -->
+                        --
+                    </span>
+                  </li>
+                  <li>
+                    Created At:
+                    <span class="text-primary"><i
+                        class="ri-calendar-event-line align-bottom"></i>
+                      {{ assessment.created_at | date : "medium" }}</span>
+                  </li>
+                  <li>
+                    <div class="d-flex gap-2">
+                      <span
+                        class="badge badge-soft-success rounded-pill fs-12"
+                        *ngIf="assessment.total_centers">Centers
+                        <i
+                          class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_centers }})</span>
+                      <span
+                        class="badge badge-soft-success rounded-pill fs-12"
+                        *ngIf="assessment.total_center_admins">Admins
+                        <i
+                          class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_center_admins }})</span>
+                      <span
+                        class="badge badge-soft-success rounded-pill fs-12"
+                        *ngIf="assessment.total_section_groups">Section Groups
+                        <i
+                          class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_section_groups }})</span>
+                      <span
+                        class="badge badge-soft-success rounded-pill fs-12"
+                        *ngIf="assessment.total_participants">Participants
+                        <i
+                          class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_participants }})</span>
                     </div>
-                  </div>
-                  <div class="flex-grow-1">
-                    <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
-                      End Date
-                    </h5>
-                    <p
-                      class="text-secondary p-0 m-0"
-                      style="font-size: 12px; font-weight: normal"
-                    >
-                      {{ assessment.endDateTime | date : "medium" }}
-                    </p>
-                  </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="card-footer border-top-dashed">
+              <div class="d-flex justify-content-between">
+                <div class="fs-12 flex-grow-1">
+                  Start Date:
+                  <span class="fs-12 text-secondary"><i
+                      class="ri-time-line align-bottom"></i>
+                    {{ assessment.start_date | date : "medium" }}</span>
+                </div>
+                <div class="fs-12 flex-grow-1">
+                  End Date:
+                  <span class="fs-12 text-secondary"><i
+                      class="ri-time-line align-bottom"></i>
+                    {{ assessment.end_date | date : "medium" }}</span>
                 </div>
               </div>
             </div>
           </div>
+          <!--end card-body-->
         </div>
-      </div>
-    </ng-container>
-  </div>
+      </ng-container>
+    </div>
 </div>
 
-<div *ngIf="assessments">
+<div [ngClass]="{ 'd-none': !assessments?.content?.length }">
   <p-paginator
-    [totalRecords]="assessments.totalElements"
+    [totalRecords]="assessments?.total"
     (onPageChange)="onPageChange($event)"
-    [first]="1"
-    [rowsPerPageOptions]="[20, 30, 50]"
+    [first]="0"
+    [rowsPerPageOptions]="[10, 20, 50, 100]"
     [rows]="5"
     [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
   >
   </p-paginator>
 </div>
 
-<!-- <app-rightsidebar
-  [currentView]="'Assessments'"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar> -->
+<ng-template #appDownloadsReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">APP DOWNLOADS</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAppDownloadsReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAppDownloadsReport && appDownloadsReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>First name</th>
+                        <th>last name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Downloads</th>
+                        <th>Access download date</th>
+                        <th>Download date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of appDownloadsReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.first_name }}</td>
+                          <td>{{ item.last_name }}</td>
+                          <td>{{ item.username }}</td>
+                          <td>{{ item.email }}</td>
+                          <td>{{ item.download_count }}</td>
+                          <td>{{ item.access_download_date | date: 'medium'}}</td>
+                          <td>{{ item.downloaded_date | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !appDownloadsReport }"
+            [first]="0" [totalRecords]="appDownloadsReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onDownloadsReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords} entries" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #appInstallationsReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">APP INSTALLATIONS</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAppInstallationsReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAppInstallationsReport && appInstallationsReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>First name</th>
+                        <th>last name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>access download date</th>
+                        <th>download date</th>
+                        <th>Number of downloads</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of appInstallationsReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.first_name }}</td>
+                          <td>{{ item.last_name }}</td>
+                          <td>{{ item.username }}</td>
+                          <td>{{ item.email }}</td>
+                          <td>{{ item.access_download_date | date: 'medium'}}</td>
+                          <td>{{ item.downloaded_date | date: 'medium'}}</td>
+                          <td>{{ item.download_count | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !appInstallationsReport }"
+            [first]="0" [totalRecords]="appInstallationsReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onAppInstallationsReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords} entries" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #appClearsReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">APP CLEARS</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAppClearsReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAppClearsReport && appClearsReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>First name</th>
+                        <th>last name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of appClearsReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.first_name }}</td>
+                          <td>{{ item.last_name }}</td>
+                          <td>{{ item.username }}</td>
+                          <td>{{ item.email }}</td>
+                          <td>{{ item.cleared_at | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !appClearsReport }"
+            [first]="0" [totalRecords]="appClearsReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onAppClearsReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords} entries" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>

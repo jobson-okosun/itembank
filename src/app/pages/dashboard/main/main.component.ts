@@ -11,6 +11,8 @@ import { ItemHttpService } from '../../items/item-http.service';
 import { DashboardComponent } from '../../manuals/dashboard/dashboard.component';
 import { NotificationsService } from 'src/app/shared/notifications.service';
 import Swal from 'sweetalert2';
+import { Role } from 'src/app/shared/enum/role';
+import { Router } from '@angular/router';
 
 export interface CardDetails {
   title: string;
@@ -236,7 +238,8 @@ export class MainComponent implements OnInit {
     private notifierService: NotifierService,
     private itemService: ItemHttpService,
     private notificationService: NotificationsService,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    private router: Router,
   ) {}
 
   /** Handler function for quick guide glide in/pop out */
@@ -262,6 +265,13 @@ export class MainComponent implements OnInit {
     ) {
       this.authorChartLabels.push('Total Approved Questions');
       this.authorChartLabels.push('Total Rejected Questions');
+    }
+
+    if(this.currentUser.authorities[0] == Role.MONITOR) {
+      this.router.navigateByUrl('/examalpha/monitor')
+    } else if(this.currentUser.authorities[0] == Role.ANALYTIC) {
+      // this.router.navigateByUrl('/examalpha/exams')
+      this.router.navigateByUrl('/examalpha/result')
     }
 
     this.dashboardService.fetchDashboardData().subscribe(
@@ -304,69 +314,68 @@ export class MainComponent implements OnInit {
           {
             title: 'Total Subjects',
             icon: 'folder-line',
-            count: this.dashboardData.questionsModerationCard.totalSubjects,
+            count: this.dashboardData.questionsModerationCard?.totalSubjects,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR'],
           },
           {
             title: 'Total Questions',
             icon: 'stack-line',
-            count: this.dashboardData.questionsModerationCard.totalQuestions,
+            count: this.dashboardData.questionsModerationCard?.totalQuestions,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR'],
           },
           {
             title: 'Total Passages',
             icon: 'article-line',
-            count: this.dashboardData.questionsModerationCard.totalPassages,
+            count: this.dashboardData.questionsModerationCard?.totalPassages,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR'],
           },
           {
             title: 'Total Questions In-recycle',
             icon: 'recycle-line',
-            count: this.dashboardData.questionsModerationCard.totalInRecycle,
+            count: this.dashboardData.questionsModerationCard?.totalInRecycle,
             roles: ['ADMIN', 'EXAMINER'],
           },
           {
             title: 'Total Published Questions',
             icon: 'upload-cloud-2-line',
-            count: this.dashboardData.questionsModerationCard.totalPublished,
+            count: this.dashboardData.questionsModerationCard?.totalPublished,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR', 'EXAMINER'],
           },
           {
             title: 'Awaiting Moderation',
             icon: 'arrow-left-right-line',
             count:
-              this.dashboardData.questionsModerationCard
-                .totalAwaitingModeration,
+              this.dashboardData.questionsModerationCard?.totalAwaitingModeration,
             roles: ['ADMIN', 'MODERATOR', 'EXAMINER'],
           },
           {
             title: 'Total Approved Questions',
             icon: 'check-double-line',
-            count: this.dashboardData.questionsModerationCard.totalApproved,
+            count: this.dashboardData.questionsModerationCard?.totalApproved,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR', 'EXAMINER'],
           },
           {
             title: 'Total Draft Questions',
             icon: 'draft-line',
-            count: this.dashboardData.questionsModerationCard.totalDrafts,
+            count: this.dashboardData.questionsModerationCard?.totalDrafts,
             roles: ['ADMIN', 'AUTHOR', 'EXAMINER'],
           },
           {
             title: 'Total Rejected Questions',
             icon: 'feedback-line',
-            count: this.dashboardData.questionsModerationCard.totalRejected,
+            count: this.dashboardData.questionsModerationCard?.totalRejected,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR', 'EXAMINER'],
           },
           {
             title: 'Total Used Questions',
             icon: 'eye-2-line',
-            count: this.dashboardData.questionsModerationCard.totalUsed,
+            count: this.dashboardData.questionsModerationCard?.totalUsed,
             roles: ['ADMIN', 'AUTHOR', 'MODERATOR', 'EXAMINER'],
           },
         ];
       },
       (error: HttpErrorResponse) => {
-        this.notifierService.notify('error', `${error.error.message}`);
+        this.notifierService.notify('error', `${error.error?.message}`);
       }
     );
   }

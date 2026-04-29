@@ -1,16 +1,27 @@
-<div>
+<div *ngIf="fetchingAssessmentOverivew" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Exams...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!fetchingAssessmentOverivew && assessmentOverview">
     <div class="d-flex align-items-center mb-4">
         <button (click)="goBack()" class="btn btn-outline-primary me-3">
           <i class="bi bi-arrow-left"></i> 
           Back
         </button>
-        <h4 class="mb-0 fw-bold">First semester exam 2024</h4>
+        <h4 class="mb-0 fw-bold">{{ assessmentOverview.name }}</h4>
     </div>
 
     <div class="mb-4 border">
         <div class="p-4">
             <div class="d-flex justify-content-between align-items-center mb-5">
-              <h5 class="fw-bold mb-0">First semester exam 2024</h5>
+              <h5 class="fw-bold mb-0">{{ assessmentOverview.name }}</h5>
               <div class="d-flex gap-5 fs-12 text-secondary justify-content-end" style="cursor: pointer">
                 <div class="d-flex align-items-center gap-2">
                   <div class="d-flex align-items-center gap-2">
@@ -19,7 +30,7 @@
                     </span>
                     <div class="fw-bold text-black small">Start date: </div>
                   </div>
-                  <span class="text-secondary"> 25th Jan, 2024, 10:15 AM</span>
+                  <span class="text-secondary"> {{ assessmentOverview.start_date | date: 'medium' }} </span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
                   <div class="d-flex align-items-center gap-2">
@@ -28,7 +39,7 @@
                     </span>
                     <div class="fw-bold text-black small">End date</div>
                   </div>
-                  <span class="text-secondary">25th Jan, 2024, 12:15 PM</span>
+                  <span class="text-secondary">{{ assessmentOverview.end_date | date: 'medium' }} </span>
                 </div>
               </div>
 
@@ -41,7 +52,7 @@
                     </span>
                     <span class="text-start">
                         <h6 class="fw-bold mb-0">Candidates</h6>
-                        <strong class="text-muted text-xsmall">72,000</strong>
+                        <strong class="text-muted text-xsmall"> {{ assessmentOverview.participants_count }} </strong>
                     </span>
                   </div>
                 </div>
@@ -52,7 +63,7 @@
                     </span>
                     <span class="text-start">
                         <h6 class="fw-bold mb-0">Duration</h6>
-                        <strong class="text-muted text-xsmall">60 minutes</strong>
+                        <strong class="text-muted text-xsmall"> {{ assessmentOverview.duration }} Mins </strong>
                     </span>
                   </div>
                 </div>
@@ -63,7 +74,7 @@
                     </span>
                     <span class="text-start">
                         <h6 class="fw-bold mb-0">Total centers</h6>
-                        <strong class="text-muted text-xsmall">200</strong>
+                        <strong class="text-muted text-xsmall">{{ assessmentOverview.centers_count }}</strong>
                     </span>
                   </div>
                 </div>
@@ -74,7 +85,7 @@
                     </span>
                     <span class="text-start">
                         <h6 class="fw-bold mb-0">Batches</h6>
-                        <strong class="text-muted text-xsmall">300</strong>
+                        <strong class="text-muted text-xsmall">{{ assessmentOverview.batches_count }}</strong>
                     </span>
                   </div>
                 </div>
@@ -85,7 +96,7 @@
                     </span>
                     <span class="text-start">
                         <h6 class="fw-bold mb-0">Delivery method</h6>
-                        <strong class="text-muted text-xsmall">On premise with secure browser</strong>
+                        <strong class="text-muted text-xsmall"> {{ assessmentOverview.delivery_method }} </strong>
                     </span>
                   </div>
                 </div>
@@ -105,7 +116,7 @@
                 <div style="height: 1px; background-color: rgb(246, 246, 248);opacity: 0.4;" class="my-3"></div>
                 <div class="row g-3 mt-3">
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportType.DOWNLOADED, centerReportModal);" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-cloud-download text-white"></i>
@@ -114,8 +125,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14">Downloaded<br>
                               <span class="fs-14">
-                                <strong>68,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.downloaded }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -123,7 +134,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportStatusType.UPLOADED, centerReportModal);" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-cloud-upload text-white"></i>
@@ -132,8 +143,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14">Uploaded<br>
                               <span class="fs-14">
-                                <strong>68,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.uploaded }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -141,7 +152,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportStatusType.LAUNCHED, centerReportModal);" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-play text-white"></i>
@@ -150,8 +161,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14">Launched<br>
                               <span class="fs-14">
-                                <strong>37,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.launched }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -159,7 +170,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportStatusType.STARTED, centerReportModal);" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="px-2 py-1 avatar-title bg-exam-blue rounded-2 fs-4">
                               <i class="ri-timer-fill text-white"></i>
@@ -168,8 +179,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14">Started<br>
                               <span class="fs-14">
-                                <strong>37,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.started }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -177,7 +188,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                            <span class="px-2 py-1 avatar-title bg-exam-blue rounded-2 fs-4">
                               <i class="ri-stop-circle-fill text-danger text-white"></i>
@@ -186,8 +197,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14">Not started<br>
                               <span class="fs-14">
-                                <strong>37,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ assessmentOverview.centers_count - examStatus?.started }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -195,7 +206,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportType.PASSPORT_DOWNLOADED, centerReportModal);" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                            <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-cloud-download text-white"></i>
@@ -204,8 +215,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14 d-inline-block text-truncate">Passort downloaded<br>
                               <span class="fs-14">
-                                <strong>37,554</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.passport_downloaded }}</strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -213,7 +224,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportType.FORCE_RESHEDULE, centerReportModal);"  class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-replay text-white"></i>
@@ -222,8 +233,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14 d-inline-block text-truncate">Forced rescheduled<br>
                               <span class="fs-14">
-                                <strong>13,000</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.forced_reschedule }} </strong>
+                                <small> of {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -231,7 +242,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="fetchCentersWithTechnicalIssues();openModal(centersWithTechIssuesModal, 'xl')"  class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-info-circle text-white"></i>
@@ -240,8 +251,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14 d-inline-block text-truncate">Technical Issue<br>
                               <span class="fs-14">
-                                <strong>13,000</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.technical_issues_uploaded }}</strong>
+                                <small> in {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -249,7 +260,7 @@
                     </div>
 
                     <div class="col-4">
-                      <div (click)="openModal(downloadsModal)" class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
+                      <div (click)="openExamStatusCenterModal(centerReportType.TECHNICAL_REPORT, centerReportModal);"  class="bg-white rounded bg-opacity-25 d-flex p-2 align-items-center status-card-item">
                           <div class="me-3 shrink-0">
                             <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
                               <i class="pi pi-info-circle text-white"></i>
@@ -258,8 +269,8 @@
                           <div class="grow overflow-hidden">
                               <span class="fs-14 d-inline-block text-truncate">Technical Report<br>
                               <span class="fs-14">
-                                <strong>13,000</strong>
-                                <small> of 12000</small>
+                                <strong>{{ examStatus?.technical_report_uploaded }}</strong>
+                                <small> in {{ assessmentOverview.centers_count }}</small>
                               </span>
                             </span>
                           </div>
@@ -290,8 +301,8 @@
                                 <h4 class="text-white mb-0">Connected</h4>
                                 <div class="mt-1">
                                   <span class="d-flex align-items-end gap-2">
-                                    <h4 class="mb-0 text-white ">13,000 </h4>
-                                    <small class="fs-14 text-white "> of 12000</small>
+                                    <h4 class="mb-0 text-white ">{{ examStatus?.online_centers }} </h4>
+                                    <small class="fs-14 text-white " style="transform: translateY(-2px)"> of {{ assessmentOverview.centers_count }}</small>
                                   </span>
                                 </div>
                             </div>
@@ -310,8 +321,8 @@
                                 <h4 class="text-white mb-0">Disconnected</h4>
                                 <div class="mt-1">
                                   <span class="d-flex align-items-end gap-2">
-                                    <h4 class="mb-0 text-white ">13,000 </h4>
-                                    <small class="fs-14 text-white "> of 12000</small>
+                                    <h4 class="mb-0 text-white ">{{ assessmentOverview.centers_count - examStatus?.online_centers }}</h4>
+                                    <small class="fs-14 text-white " style="transform: translateY(-2px)"> of {{ assessmentOverview.centers_count }}</small>
                                   </span>
                                 </div>
                             </div>
@@ -327,33 +338,90 @@
         <div class="col-md-6">
             <div class="border rounded h-100">
                 <div>
-                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3 pb-0">
                         <span>
-                          <h5 class="fw-bold mb-1">Candidate summary</h5>
-                          <p class="small">Summary for all candidates</p>
+                          <h5 class="fw-bold mb-1">
+                            Candidate summary
+                            <span *ngIf="participantSummaryParams.center_id">Center [{{ participantSummaryParams.center_id  }}]</span>
+                          </h5>
+                          <p class="small">Summary for candidates</p>
                         </span>
-                        <select class="form-select form-select w-auto">
-                          <option>Attendance</option>
-                          <option>Status</option>
-                          <option>Duration</option>
-                          <option>Question attempts</option>
-                          <option>Biometrics</option>
-                          <option>Rescheduled</option>
-                          <option>Malpractice</option>
-                        </select>
+                        <div class="dropdown" ngbDropdown #summaryDrop="ngbDropdown">
+                          <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                            <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                          </a>
+                          <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                            <div class="px-3 py-2 small text-black">Filter summary</div>
+                            <div class="dropdown-divider"></div>
+                            <form class="px-3 py-1">
+                              <div class="mb-2">
+                                <label for="center" class="small">Type</label>
+                                <select #select class="form-select form-select w-100" name="type">
+                                  <option value="ATTENDANCE">ATTENDANCE</option>
+                                  <!-- <option value="STATUS">STATUS</option> -->
+                                  <option value="DURATION">DURATION</option>
+                                  <option value="QUESTION_ATTEMPTS">QUESTION_ATTEMPTS</option>
+                                  <option value="BIOMETRICS">BIOMETRICS</option>
+                                  <option value="RESCHEDULE">RESCHEDULE</option>
+                                  <option value="MALPRACTICE">MALPRACTICE</option>
+                                  <option value="EVENTS">EVENTS</option>
+                                  <option value="ALL">ALL</option>
+                                </select>
+                              </div>
+                              <div class="mb-2">
+                                <label for="center" class="small">Center code</label>
+                                <input class="form-control w-100" name="code" [(ngModel)]="participantSummaryParams.center_id">
+                              </div>
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <div class="px-3 pb-2 d-flex gap-1">
+                              <button type="button" (click)="
+                                  select.value = 'ATTENDANCE'; 
+                                  participantSummaryParams.center_id = '';
+                                  applyParticipantsSummaryFilter('ATTENDANCE');
+                                  summaryDrop.close()" 
+                                  
+                                  class="btn btn-secondary w-100">
+                                  Clear
+                                </button>
+
+                              <button type="button" (click)="applyParticipantsSummaryFilter(select.value, allParticipantModal); summaryDrop.close()" class="btn btn-primary w-100">Apply</button>
+                            </div>
+                          </div>
+                        </div>
                     </div>
-                    <div class="p-4 mt-5" style="position: relative;">
+                    <div class="p-4 mt-5" style="position: relative;cursor: pointer;">
 
                       <div class="d-flex justify-content-center" style="position: absolute; width: 100%;top: 0;left: 0;" >
-                        <div class="w-100 h-100">
-                          <div echarts [options]="DoughnutChart" class="demo-chart"></div>
+                        <div class="w-100">
+                          <div 
+                            *ngIf=" 
+                              fetchingParticipantSummary ||
+                              fetchingDurationReport || 
+                              fetchingAtemptsReport || 
+                              fetchingRescheduledReport || 
+                              fetchingMalpracticedReport || 
+                              fetchingEventsReport || 
+                              fetchingBiometricReport
+                              ;else charts
+                            " 
+                            class="d-flex align-items-center justify-content-center">
+                            <div class="d-flex align-items-center gap-2">
+                              <div class="spinner-border text-info fs-18" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                              </div>
+                            </div>
+                          </div>
+                          <ng-template  #charts >
+                            <div echarts [options]="DoughnutChart" class="demo-chart"></div>
+                          </ng-template>
                         </div>
                       </div>
 
-                      <div style="height: 300px;overflow-y: auto;margin-top: 150px" class="w-100">
+                      <div style="margin-top: 150px" class="w-100">
                         <div class="w-100 h-100">
 
-                          <div class="p-5 h-100 w-100">
+                          <div *ngIf="participantSummaryReportType == 'ATTENDANCE'" class="p-5 h-100 w-100">
                             <div class="d-flex justify-content-between">
                               <span>
                                   <h4 class="mb-2">Attendance</h4>
@@ -361,34 +429,34 @@
                               </span>
                             </div>
                             <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
-                            <div class="row g-3 mt-3">
-                                <div class="col-4">
-                                  <div class="bg-white rounded border d-flex p-2 align-items-center">
+                            <div class="row g-3 mt-3" style="cursor: pointer;">
+                                <div class="col-4"  (click)="openAttendaceStatusModal(attendaceStatuses.PRESENT, attendanceStatusReport)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
                                       <div class="me-3 shrink-0">
-                                        <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
+                                        <span [ngStyle]="{ backgroundColor: getColor('ATTENDANCE', 'PRESENT') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
                                           <i class="pi pi-window-minimize text-white"></i>
                                         </span>
                                       </div>
                                       <div class="grow overflow-hidden">
                                           <span class="fs-14">Present<br>
                                           <span class="fs-14">
-                                            <strong>45%</strong>
+                                            <strong>{{ attendanceSummary?.present }}</strong>
                                           </span>
                                         </span>
                                       </div>
                                   </div>
                                 </div>
-                                <div class="col-4">
-                                  <div class="bg-white rounded border d-flex p-2 align-items-center">
+                                <div class="col-4"  (click)="openAttendaceStatusModal(attendaceStatuses.ABSENT, attendanceStatusReport)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
                                       <div class="me-3 shrink-0">
-                                        <span class="avatar-title bg-info rounded-2 fs-4" style="padding: 11px">
+                                        <span [ngStyle]="{ backgroundColor: getColor('ATTENDANCE', 'ABSENT') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
                                           <i class="pi pi-stop-circle text-white"></i>
                                         </span>
                                       </div>
                                       <div class="grow overflow-hidden">
                                           <span class="fs-14">Absent<br>
                                           <span class="fs-14">
-                                            <strong>45%</strong>
+                                            <strong>{{ attendanceSummary?.absent }}</strong>
                                           </span>
                                         </span>
                                       </div>
@@ -396,6 +464,368 @@
                                 </div>
                             </div>
                           </div>
+ 
+                          <div *ngIf="participantSummaryReportType == 'DURATION'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Duration</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3">
+                                <div (click)="openDurationReport(item.label, durationReportModal)" class="col-4" *ngFor="let item of durationSummary?.buckets; let i = index">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('DURATION', item.label, i) }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">{{ item.label }}<br>
+                                          <span class="fs-14">
+                                            <strong>{{ item.count }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
+                          <div *ngIf="participantSummaryReportType == 'QUESTION_ATTEMPTS'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Question Attempts</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3">
+                                <div (click)="openAttemptsReport(item.label, attemptsReportModal)"  class="col-4" *ngFor="let item of attemptsSummary?.buckets; let i= index">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('QUESTION_ATTEMPTS', item.label, i) }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">{{ item.label }}<br>
+                                          <span class="fs-14">
+                                            <strong>{{ item.count }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
+                          <div *ngIf="participantSummaryReportType == 'BIOMETRICS'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Biometrics</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3" *ngIf="biometricsSummary">
+                                <div class="col-4" (click)="openBVMStatusReport(bvmStatuses.P, bvmStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('BIOMETRICS', 'PRESENT') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Present<br>
+                                          <span class="fs-14">
+                                            <strong>{{ biometricsSummary?.present }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openBVMStatusReport(bvmStatuses.A, bvmStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('BIOMETRICS', 'ABSENT') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Absent<br>
+                                          <span class="fs-14">
+                                            <strong>{{ biometricsSummary?.absent }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openBVMStatusReport(bvmStatuses.U, bvmStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('BIOMETRICS', 'UNVERIFIED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Unverified<br>
+                                          <span class="fs-14">
+                                            <strong>{{ biometricsSummary?.unverified }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openBVMStatusReport(bvmStatuses.C, bvmStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('BIOMETRICS', 'UNCONSIDERED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Unconsidered<br>
+                                          <span class="fs-14">
+                                            <strong>{{ biometricsSummary?.unconsidered }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openBVMStatusReport(bvmStatuses.NO_STATUS, bvmStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('BIOMETRICS', 'NO_STATUS') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">No status<br>
+                                          <span class="fs-14">
+                                            <strong>{{ biometricsSummary?.no_status }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
+                          <div *ngIf="participantSummaryReportType == 'RESCHEDULE'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Reschedule</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3" *ngIf="rescheduledSummary">
+                                <div class="col-4" (click)="openRescheduledReport(rescheduleStatus.FORCED, rescheduleStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('RESCHEDULE', 'FORCED') }" class="avatar-title  rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Forced Rescheduled<br>
+                                          <span class="fs-14">
+                                            <strong>{{ rescheduledSummary.forced_reschedule }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openRescheduledReport(rescheduleStatus.MANUAL, rescheduleStatusReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('RESCHEDULE', 'MANUAL') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Manual Rescheduled<br>
+                                          <span class="fs-14">
+                                            <strong>{{ rescheduledSummary.manual_reschedule }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <!-- (click)="openRescheduledReport(rescheduleStatus.NONE, rescheduleStatusReportModal)" -->
+                                <div class="col-4">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('RESCHEDULE', 'NONE') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">No Rescheduled<br>
+                                          <span class="fs-14">
+                                            <strong>{{ rescheduledSummary.no_reschedule }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
+                          <div *ngIf="participantSummaryReportType == 'MALPRACTICE'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Malpractice logs</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3">
+                                <div (click)="openMalpracticeReport(item.code, malPracticeReportModal)" class="col-4" *ngFor="let item of malpracticedSummary?.codes; let i = index">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('MALPRACTICE', item.code, i) }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">{{ item.code }}<br>
+                                          <span class="fs-14">
+                                            <strong>{{ item.count }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
+                          <div *ngIf="participantSummaryReportType == 'EVENTS'" class="p-5 h-100 w-100">
+                            <div class="d-flex justify-content-between">
+                              <span>
+                                  <h4 class="mb-2">Events</h4>
+                                  <p>Report for the current exam</p>
+                              </span>
+                            </div>
+                            <div style="height: 1px; background-color: rgb(209, 209, 211);opacity: 0.4;" class="my-3"></div>
+                            <div class="row g-3 mt-3" *ngIf="eventsSummary">
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.COMPUTER_SWAP, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'COMPUTER_SWAP') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Computer swap<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.computer_swapped }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.RE_LOGIN, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'RE_LOGIN') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Re login<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.re_login }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.COMPENSATORY_TIME_ADDED, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'COMPENSATORY_TIME_ADDED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Comp. time added<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.compensatory_time_added }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.STARTED, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'STARTED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Started<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.started }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.NOT_STARTED, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'NOT_STARTED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Not started<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.not_started }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.ENDED, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'ENDED') }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Ended<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.ended }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                                <div class="col-4" (click)="openEventsReport(eventsTypes.TIMED_OUT, eventsReportModal)">
+                                  <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                      <div class="me-3 shrink-0">
+                                        <span [ngStyle]="{ backgroundColor: getColor('EVENTS', 'TIMED_OUT') }" class="avatar-title  rounded-2 fs-4" style="padding: 11px">
+                                          <i class="pi pi-window-minimize text-white"></i>
+                                        </span>
+                                      </div>
+                                      <div class="grow overflow-hidden">
+                                          <span class="fs-14">Timed out<br>
+                                          <span class="fs-14">
+                                            <strong>{{ eventsSummary?.timed_out }}</strong>
+                                          </span>
+                                        </span>
+                                      </div>
+                                  </div>
+                                </div>
+                            </div>
+                          </div>
+
                         </div>
                       </div>
                     </div>
@@ -403,9 +833,59 @@
             </div>
         </div>
         <div class="col-md-6">
-            <div class="border rounded h-100">
+            <div class="border rounded h-100 d-flex flex-column justify-content-between">
                 <div>
                     <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Technical Report</h5>
+                          <p class="small">Technical report for all centers</p>
+                        </span>
+                        <select (change)="fetchTechnicalReportCenters()" [(ngModel)]="technicalReportFilter.has_report" class="form-select form-select w-auto">
+                          <option [value]="true">Submitted</option>
+                          <option [value]="false">Not Submitted</option>
+                        </select>
+                    </div>
+                    <div class="p-4" style="max-height: 400px;overflow-y: auto;">
+                      <div *ngIf="fetchingTechnicalReportCenters" class="d-flex align-items-center justify-content-center">
+                        <div class="d-flex align-items-center gap-2">
+                          <div class="spinner-border text-info fs-18" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div *ngIf="!fetchingTechnicalReportCenters" class="row g-2">
+                        <div class="col-sm-4" *ngFor="let item of technicalReportCenters?.content" (click)="openCenterTechnicalReportModal(item, centerTechnicalReportModal, 'lg')" >
+                          <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                              <div class="me-3 shrink-0">
+                                <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
+                                  <i class="pi pi pi-info-circle text-white"></i>
+                                </span>
+                              </div>
+                              <div class="grow overflow-hidden">
+                                  <span class="fs-14 text-truncate">{{ item.center_name }}<br>
+                                  <span class="fs-14">
+                                    {{ item.center_id }} - {{ item.state }}
+                                  </span>
+                                </span>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+
+              <div class="border-top pt-3">
+                  <p-paginator [ngClass]="{ 'd-none': !technicalReportCenters }"
+                  [first]="0" [totalRecords]="technicalReportCenters?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+                  [rows]="50" [pageLinkSize]="10" [showCurrentPageReport]="true" (onPageChange)="onCentersTechnicalReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+              </div>
+            </div>
+        </div>
+        <!-- <div class="col-md-6">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3 pb-0">
                         <span>
                           <h5 class="fw-bold mb-1">Synchronizations (30)</h5>
                           <p class="small">Candidates synchronizations</p>
@@ -482,15 +962,15 @@
                     <div>
                         <p-paginator [ngClass]="{ 'd-none': false }"
                         [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
-                        [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+                        [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords}"></p-paginator>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div class="row mb-5">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="border rounded h-100">
                 <div>
                     <div class="d-flex justify-content-between align-items-center border-bottom p-3">
@@ -498,11 +978,14 @@
                           <h5 class="fw-bold mb-1">Technical issues</h5>
                           <p class="small">Technical issues for all centers</p>
                         </span>
-                        <input class="form-control w-auto" placeholder="Center name" />
+                        <div class="d-flex gap-2">
+                           <input name="techissue" [(ngModel)]="technicalIssuesFilter.center_id" class="form-control w-auto" placeholder="Center ID" />
+                          <button (click)="fetchTechnicalIssuesCategories()" class="btn btn-primary btn">Search</button>
+                      </div>
                     </div>
                     <div class="p-4">
                       <div class="row g-2">
-                        <div (click)="openModal(centerTechnicalIssuesModal, 'lg')" class="col-sm-4" *ngFor="let item of technicalIssuesCategories">
+                        <div class="col-sm-3" (click)="openCentersTechnicalIssueReportModal(item.category, centerTechnicalIssuesModal, 'xl')" *ngFor="let item of technicalIssuesCategoriesList?.categories">
                           <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
                               <div class="me-3 shrink-0">
                                 <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
@@ -510,9 +993,9 @@
                                 </span>
                               </div>
                               <div class="grow overflow-hidden">
-                                  <span class="fs-14 text-truncate">{{ item }}<br>
+                                  <span class="fs-14 text-truncate">{{ item.category }}<br>
                                   <span class="fs-14">
-                                    <strong>300</strong>
+                                    <strong>Centers: {{ item.center_count }} - Total issues: {{ item.issue_count }}</strong>
                                   </span>
                                 </span>
                               </div>
@@ -523,7 +1006,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <!-- <div class="col-md-6">
             <div class="border rounded h-100">
                 <div>
                     <div class="d-flex justify-content-between align-items-center border-bottom p-3">
@@ -531,14 +1014,14 @@
                           <h5 class="fw-bold mb-1">Technical Report</h5>
                           <p class="small">Technical report for all centers</p>
                         </span>
-                        <select class="form-select form-select w-auto">
-                          <option>Submitted</option>
-                          <option>Not Submitted</option>
+                        <select (change)="fetchTechnicalReportCenters()" [(ngModel)]="technicalReportFilter.has_report" class="form-select form-select w-auto">
+                          <option [value]="true">Submitted</option>
+                          <option [value]="false">Not Submitted</option>
                         </select>
                     </div>
                     <div class="p-4" style="max-height: 300px;overflow-y: auto;">
                       <div class="row g-2">
-                        <div (click)="openModal(centerTechnicalReportModal, 'lg')" class="col-sm-4" *ngFor="let item of [1,2,3,4,5,6,7]">
+                        <div class="col-sm-4" *ngFor="let item of technicalReportCenters?.content" (click)="openCenterTechnicalReportModal(item, centerTechnicalReportModal, 'lg')" >
                           <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
                               <div class="me-3 shrink-0">
                                 <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
@@ -546,9 +1029,9 @@
                                 </span>
                               </div>
                               <div class="grow overflow-hidden">
-                                  <span class="fs-14 text-truncate">Abuja<br>
+                                  <span class="fs-14 text-truncate">{{ item.center_name }}<br>
                                   <span class="fs-14">
-                                    10001 <i class="pi pi-check-circle text-success" style="font-size: 10px;"></i>
+                                    {{ item.center_id }} - {{ item.state }}
                                   </span>
                                 </span>
                               </div>
@@ -561,10 +1044,10 @@
                 <div class="border-top pt-3">
                     <p-paginator [ngClass]="{ 'd-none': false }"
                     [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
-                    [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
+                    [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords}"></p-paginator>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div>
@@ -575,44 +1058,52 @@
                   <span class="rounded p-1 border">
                     <i class="pi pi-th-large"></i>
                   </span> 
-                  &nbsp;22 Centers
+                  &nbsp;{{ centers?.total }} Centers
                 </h6>
                 <div class="d-flex gap-2">
-                    <select class="form-select form-select-sm">
-                      <option>Center ID</option>
-                    </select>
-                    <input type="text" class="form-control" placeholder="Search">
-                    <button class="btn btn-primary btn">Search</button>
+                    <input type="text" placeholder="Center ID" class="form-control" [(ngModel)]="centersFilterParams.center_id">
+                    <button (click)="fetchCenters()" class="btn btn-primary btn">Search</button>
                 </div>
             </div>
         </div>
-        <div class="table-responsive">
+        
+        <div *ngIf="fetchingCenters" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+          <div class="d-flex align-items-center gap-2">
+            <div class="spinner-border text-info fs-18" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="!fetchingCenters && centers" class="table-responsive">
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
                         <th>S/N</th>
                         <th>Center name <i class="bi bi-arrow-down-up"></i></th>
                         <th>Center ID</th>
-                        <th>Participants</th>
+                        <th>Participants</th> 
                         <th>Started</th>
                         <th>Ended</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th>Actions</th>
+                        <th>Not started</th>
+                        <th>Downloaded</th>
+                        <th>Uploaded</th>
+                        <!-- <th>Actions</th> -->
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let item of [1,2,3]">
+                    <ng-container *ngFor="let item of centers.content; let i = index">
                       <tr>
-                          <td>1</td>
-                          <td>Byte wave tech solutions</td>
-                          <td>265</td>
-                          <td>5,7654</td>
-                          <td>673</td>
-                          <td>231</td>
-                          <td>15 Dec 2021 11:00 am</td>
-                          <td>15 Dec 2021 13:00 am</td>
-                          <td>
+                          <td>{{ i + 1 }}</td>
+                          <td class="max-width: 200px">{{ item.name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.total_participants }}</td>
+                          <td>{{ item.total_started }}</td>
+                          <td>{{ item.total_ended }}</td>
+                          <td>{{ item.total_not_started }}</td>
+                          <td>{{ item.downloaded_time | date: 'medium' }}</td>
+                          <td>{{ item.upload_date_time | date: 'medium' }}</td>
+                          <!-- <td>
                             <div class="dropdown" ngbDropdown>
                                 <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                                   <i class="pi pi pi-ellipsis-h align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
@@ -623,7 +1114,7 @@
                                   </li>
                                 </ul>
                               </div>
-                          </td>
+                          </td> -->
                       </tr>
                     </ng-container>
                 </tbody>
@@ -631,74 +1122,116 @@
         </div>
 
         <div>
-            <p-paginator [ngClass]="{ 'd-none': false }"
-            [first]="0" [totalRecords]="10" [rowsPerPageOptions]="[10, 100, 200, 500]"
-            [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="{first} to {last} of {totalRecords} entries"></p-paginator>
-        </div>
-    </div>
+          <p-paginator [ngClass]="{ 'd-none': !centers }"
+          [first]="0" [totalRecords]="centers?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+          [rows]="50" [pageLinkSize]="10" [showCurrentPageReport]="true" (onPageChange)="onCenterPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+      </div>
+    </div> 
 </div>
 
-<ng-template #centerTechnicalIssuesModal role="document" let-modal>
+<ng-template #centerTechnicalIssuesModal role="document" let-modal let-data="data">
   <div class="modal-header">
-      <h3 class="modal-title">Abuja [1001] Technical issues</h3>
+      <h3 class="modal-title">[{{ reportTypeSelected }}] Technical issues</h3>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
       </button>
   </div>
 
-  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+  <div *ngIf="fetchingCentersTechnicalIssue" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div  *ngIf="!fetchingCentersTechnicalIssue && centersTechnicalIssuesReport"  class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
      <div class="d-flex flex-column gap-3">
-        <div class="border rounded" *ngFor="let item of [1,2,3,4]">
-          <div class="p-3 border-bottom"><strong>BVM </strong>- 12/06/2025 - 4:30pm</div>
-          <div class="p-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia quas molestias deserunt sunt distinctio placeat? Quasi culpa eos mollitia laborum aspernatur accusamus nisi, beatae expedita officia voluptatibus at dignissimos, aperiam assumenda ipsam debitis adipisci? Similique, repudiandae eius. Sunt, numquam quam magnam ipsam nostrum, accusamus hic laudantium obcaecati debitis voluptatem maiores.</div>
+        <div class="border rounded" *ngFor="let item of centersTechnicalIssuesReport.content">
+          <div class="p-3 border-bottom d-flex justify-content-between align-items-center">
+            <div><strong> {{ item.center_name }} [{{ item.center_id }}] </strong></div>
+            <div>{{ item.occurred_at | date: 'medium' }}</div>
+          </div>
+          <div class="p-3" [innerHTML]="item.issue"></div>
         </div>
      </div>
   </div>
   
   <div class="card-footer">
-      <div class="d-flex justify-content-end gap-2">
-          <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
-              <i class="ri-close-line align-middle fs-16 me-2"></i>Close
-          </button>
-      </div>
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !centersTechnicalIssuesReport }"
+            [first]="0" [totalRecords]="centersTechnicalIssuesReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onCentersTechnicalIssuesReportPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+        
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadTechnicalIssuesReport($event, reportTypeSelected)"  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16 "></i>
+            </button>
+        </div>
+    </div>
   </div>
 </ng-template>
 
-<ng-template #centerTechnicalReportModal role="document" let-modal>
+<ng-template #centerTechnicalReportModal role="document" let-modal let-data="data">
   <div class="modal-header">
-      <h3 class="modal-title">Abuja [1001] Technical issues</h3>
+      <h3 class="modal-title">Center {{ centerTechnicalReportSelected.center_id }} [{{ centerTechnicalReportSelected.state }}] Technical report</h3>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
       </button>
   </div>
 
-  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+  <div *ngIf="fetchingCenterTechnicalReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingEventReport && centerTechnicalReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
      <div class="d-flex flex-column gap-3">
         <div class="border rounded">
-          <div class="p-3 border-bottom"><strong>Report</strong>- 12/06/2025 - 4:30pm</div>
-          <div class="p-3">Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia quas molestias deserunt sunt distinctio placeat? Quasi culpa eos mollitia laborum aspernatur accusamus nisi, beatae expedita officia voluptatibus at dignissimos, aperiam assumenda ipsam debitis adipisci? Similique, repudiandae eius. Sunt, numquam quam magnam ipsam nostrum, accusamus hic laudantium obcaecati debitis voluptatem maiores.</div>
+          <div class="p-3 border-bottom"><strong>Report</strong> - {{ centerTechnicalReport.technical_report_time | date: 'medium' }}</div>
+          <div class="p-3" [innerHTML]="centerTechnicalReport.technical_report"></div>
         </div>
      </div>
   </div>
   
   <div class="card-footer">
-      <div class="d-flex justify-content-end gap-2">
-          <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
-              <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+        <div class="d-flex justify-content-end gap-2">
+          <button (click)="downloadTechnicalReportCenters($event)"  type="button" class="btn btn-primary">
+              <i class="pi pi-cloud-download fs-16"></i>
+          </button>
+          <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+              <i class="ri-close-line align-middle fs-16 "></i>
+              Close
           </button>
       </div>
   </div>
 </ng-template>
 
-<ng-template #downloadsModal role="document" let-modal>
+<ng-template #centerReportModal role="document" let-modal>
   <div class="modal-header">
-      <h3 class="modal-title">Downloads</h3>
+      <h3 class="modal-title">{{ centerReportSelected?.replaceAll('_', ' ') }}</h3>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
           <span aria-hidden="true">&times;</span>
       </button>
   </div>
 
-  <div class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+  <div *ngIf="fetchingCenterReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingCenterReport && centerReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
      <div class="d-flex flex-column gap-3">
          <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -707,16 +1240,19 @@
                         <th>S/N</th>
                         <th>Center name</th>
                         <th>Center ID</th>
+                        <th>State</th>
                         <th>Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let item of [1,2,3,4,5,6,7,8,9,0]">
+                    <ng-container *ngFor="let item of centerReport?.content; let i = index;">
                       <tr>
-                          <td>1</td>
-                          <td>Byte wave tech solutions</td>
-                          <td>265</td>
-                          <td>12/05/2016 4:30pm</td>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.downloaded_time ?? item.date_time ?? item.ended_time | date: 'medium'}}</td>
+                          <!-- <td>{{ item.ended_time | date: 'mediumDate'}}</td> -->
                       </tr>
                     </ng-container>
                 </tbody>
@@ -726,15 +1262,756 @@
   </div>
   
   <div class="card-footer">
-      <div class="d-flex justify-content-end gap-2">
-          <button  type="button" class="btn btn-primary">
-              <i class="pi pi-cloud-download fs-16 me-2"></i>
-              Download report
-          </button>
-          <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
-              <i class="ri-close-line align-middle fs-16 me-2"></i>
-              Close
-          </button>
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !centerReport }"
+            [first]="0" [totalRecords]="centerReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onCenterReportPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button 
+              [class.d-none]="centerReportSelected == centerReportStatusType.LAUNCHED" 
+              (click)="examStatusDownloadReport($event, centerReportSelected)"  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16 "></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #centersWithTechIssuesModal role="document" let-modal>
+  <div class="modal-header">
+      <h3 class="modal-title">TECHNICAL ISSUES CENTERS</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingCenterReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingCenterReport && centersWithTechIssuesReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Center name</th>
+                        <th>State</th>
+                        <th>Last issue Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of centersWithTechIssuesReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.last_issue_at | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div *ngIf="!fetchingCenterReport && centersWithTechIssuesReport" class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !centersWithTechIssuesReport }"
+            [first]="0" [totalRecords]="centersWithTechIssuesReport.total" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onCenterTechIssuesReportPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <!-- <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button> -->
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #attendanceStatusReport role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">ATTENDANCE {{ reportTypeSelected }} REPORT </h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAttendanceReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAttendanceReport && attendaceStatusReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Login field</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>Login date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of attendaceStatusReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.first_name }}</td>
+                          <td>{{ item.last_name }}</td>
+                          <td>{{ item.login_field_value }}</td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.login_time | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !attendaceStatusReport }"
+            [first]="0" [totalRecords]="attendaceStatusReport?.total" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onAttendanceStatusReport($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <!-- <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button> -->
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #bvmStatusReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">
+        BIOMETRICS 
+        <span *ngIf="reportTypeSelected == bvmStatuses.P">PRESENT</span>
+        <span *ngIf="reportTypeSelected == bvmStatuses.A">ABSENT</span>
+        <span *ngIf="reportTypeSelected == bvmStatuses.U">UNVERIFIED</span>
+        <span *ngIf="reportTypeSelected == bvmStatuses.C">UNCONSIDERED</span>
+        <span *ngIf="reportTypeSelected == bvmStatuses.NO_STATUS">NO STATUS</span>
+        REPORT 
+      </h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingBvmReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingBvmReport && bvmStatusReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th style="max-width: 200px">Name & Login</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>state</th>
+                        <th>BVM verified</th>
+                        <th>Verified date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of bvmStatusReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.bvm_verified ? 'YES' : 'NO' }}</td>
+                          <td>{{ item.bvm_verified_at | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !bvmStatusReport }"
+            [first]="0" [totalRecords]="bvmStatusReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onBVMStatusReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadBVMReport(reportTypeSelected, $event)" type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #rescheduleStatusReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">
+        {{ reportTypeSelected }}
+        RESCHEDULE REPORT 
+      </h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingRescheduleReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingRescheduleReport && rescheduleReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th style="max-width: 200px">Name & Login</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>State</th>
+                        <th style="max-width: 200px">Reason</th>
+                        <th>Center resuable</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of rescheduleReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.reschedule_reason }}</td>
+                          <td>{{ item.reschedule_center_reusable ? 'Yes' : 'NO' }}</td>
+                          <td>{{ item.reschedule_occurred_at | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !rescheduleReport }"
+            [first]="0" [totalRecords]="rescheduleReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onScheduleReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadRescheduleReport($event)" type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #malPracticeReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <div>
+        <h3 class="modal-title">MALPRACTICE REPORT</h3>
+        <p>{{ reportTypeSelected?.replaceAll('_', ' ') }}</p>
+      </div>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingMalpracticeReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingMalpracticeReport && malpracticeReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th style="max-width: 200px">Name & Login</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>state</th>
+                        <th style="max-width: 200px">Details</th>
+                        <th>Occurrence date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of malpracticeReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.malpractice_details }}</td>
+                          <td>{{ item.malpractice_occurred_at | date: 'medium'}}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !malpracticeReport }"
+            [first]="0" [totalRecords]="malpracticeReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onMalpracticeReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadMalpracticeReport($event)" type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #durationReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">[{{ reportTypeSelected }}] DURATION REPORT</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchDurationBucketReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchDurationBucketReport && durationBucketReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Login field</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>state</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of durationBucketReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>{{ item.first_name }}</td>
+                          <td>{{ item.last_name }}</td>
+                          <td>{{ item.login_field_value }}</td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>{{ item.duration }}</td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div *ngIf="!fetchDurationBucketReport && durationBucketReport" class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !durationBucketReport }"
+            [first]="0" [totalRecords]="durationBucketReport.total" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onDurationReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <!-- <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button> -->
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #attemptsReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">[{{ reportTypeSelected }}] ATTEMPTS REPORT</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAttemptsBucketReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAttemptsBucketReport && attemptsBucketReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th style="max-width: 200px;">Name & Login</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>State</th>
+                        <th style="min-width: 250px;">Question Attempts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of attemptsBucketReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td>
+                            <div style="max-width: 250px;">
+                              <div class="mb-2 d-flex justify-content-between gap-1">
+                                <div>Total: </div> 
+                                <strong>{{ item.section_attempts.total_attempted }}({{ item.section_attempts.total_attempted_percent }}%)</strong>
+                              </div>
+
+                              <div *ngFor="let s of item.section_attempts.sections" class="d-flex justify-content-between gap-1">
+                                <div class="truncate">{{ s.name }}: </div>
+                                <strong>{{ s.total_attempted }}</strong>
+                              </div>
+                            </div>
+                          </td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !attemptsBucketReport }"
+            [first]="0" [totalRecords]="attemptsBucketReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onAttemptsReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <!-- <button  type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button> -->
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #eventsReportModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">[{{ reportTypeSelected?.replaceAll('_', ' ') }}] REPORT  </h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingEventReport" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingEventReport && eventsReport" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Name & Login</th>
+                        <th>Center name</th>
+                        <th>Center ID</th>
+                        <th>State</th>
+                        <th *ngIf="reportTypeSelected !== eventsTypes.NOT_STARTED">Current IP</th>
+                        <th *ngIf="reportTypeSelected == eventsTypes.RE_LOGIN">Relogin</th>
+                        <th *ngIf="reportTypeSelected == eventsTypes.TIMED_OUT">Timed out</th>
+                        <th *ngIf="reportTypeSelected == eventsTypes.ENDED">Ended</th>
+                        <th *ngIf="reportTypeSelected == eventsTypes.STARTED">Started</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let item of eventsReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>{{ item.center_name }}</td>
+                          <td>{{ item.center_id }}</td>
+                          <td>{{ item.state }}</td>
+                          <td *ngIf="reportTypeSelected !== eventsTypes.NOT_STARTED">
+                              <div triggers="mouseenter:mouseleave" [ngbPopover]="loginIPPopOver" popoverTitle="Login IP Addresses">{{ item.current_ip }}</div>
+                              <ng-template #loginIPPopOver >
+                                  <div class="p-1 smaller" *ngIf="item?.login_times?.length > 1">
+                                    <div *ngFor="let ipItem of item?.login_times">
+                                      <div class="border-b py-1">
+                                          <div>{{ ipItem }}</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                              </ng-template>
+                          </td>
+                          <th *ngIf="reportTypeSelected == eventsTypes.RE_LOGIN">
+                                <div>{{ item.login_times.length }}</div>
+                          </th>
+                          <th *ngIf="reportTypeSelected == eventsTypes.TIMED_OUT">{{ item.timed_out ? 'Yes' : 'No' }}</th>
+                          <th *ngIf="reportTypeSelected == eventsTypes.ENDED">{{ item.end_time | date: 'medium' }}</th>
+                          <th *ngIf="reportTypeSelected == eventsTypes.STARTED">{{ item.login_time | date: 'medium' }}</th>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !eventsReport }"
+            [first]="0" [totalRecords]="eventsReport?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onEventsReportChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadEventsReport(reportTypeSelected, $event)" type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #allParticipantModal role="document" let-modal let-data="data">
+  <div class="modal-header">
+      <h3 class="modal-title">CANDIDATES SUMMARY</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+          <span aria-hidden="true">&times;</span>
+      </button>
+  </div>
+
+  <div *ngIf="fetchingAllParticipants" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingAllParticipants && allParticipants" class="modal-body" style=" height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th style="max-width: 200px">Name & Login</th>
+                        <th>Center</th>
+                        <th style="width: 200px">Sections</th>
+                        <th style="min-width: 100px">Status</th>
+                        <th>Duration</th>
+                        <th>Others</th>
+                    </tr>
+                </thead>
+                <tbody class="small">
+                    <ng-container *ngFor="let item of allParticipants?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.first_name }} {{ item.last_name }}</div>
+                                  <div>{{ item.login_field_value }}</div>
+                              </div>
+                          </td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ item.center_name }}</div>
+                                  <div>{{ item.center_id }}</div>
+                                  <div>{{ item.state }}</div>
+                              </div>
+                          </td>
+                          <td>
+                            <div style="max-width: 250px;">
+                              <div class="mb-2 d-flex justify-content-between gap-1">
+                                <div>Total: </div> 
+                                <strong>{{ item.section_attempts?.total_attempted }}({{ item.section_attempts?.total_attempted_percent }}%)</strong>
+                              </div>
+
+                              <div *ngFor="let s of item.section_attempts?.sections" class="d-flex justify-content-between gap-1">
+                                <div class="truncate">{{ s.name }}: </div>
+                                <strong>{{ s.total_attempted }}</strong>
+                              </div>
+                            </div>
+                          </td>
+                          <td>
+                            <div>BVM: {{ item.timed_out ? 'YES': 'NO' }}</div>
+                            <div>Reschedule: {{ item.reschedule_status ? 'YES' : 'NO' }}</div>
+                            <div>Malpractice: {{ item.malpractice_code ? 'YES' : 'NO' }}</div>
+                            <div>Timed out: {{ item.timed_out ? 'YES' : 'NO' }}</div>
+                          </td>
+                          <td>
+                            <div>Start: {{ item.login_time | date: 'medium' }}</div>
+                            <div>End: {{ item.end_time | date: 'medium' }}</div>
+                            <div>Duration: {{ item.duration }} Mins</div>
+                          </td>
+                          <td>
+                              <div triggers="mouseenter:mouseleave" [ngbPopover]="loginIPPopOver" popoverTitle="Login IP Addresses">{{ item.current_ip }}</div>
+                              <ng-template #loginIPPopOver >
+                                  <div class="p-1 smaller">
+                                    <div *ngFor="let ipItem of item?.ip_addresses">
+                                      <div class="border-b py-1">
+                                          <div>{{ ipItem }}</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                              </ng-template>
+
+                              <div>Relogin: {{ item.login_times?.length }}</div>
+                              <div>Comp swap: {{ item.computer_swap ? 'Yes' : 'NO' }}</div>
+                          </td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !allParticipants }"
+            [first]="0" [totalRecords]="allParticipants?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
+            [rows]="50" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onAllParticipantsReportPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+            <button (click)="downloadAllParticipantReport($event)" type="button" class="btn btn-primary">
+                <i class="pi pi-cloud-download fs-16"></i>
+            </button>
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i>
+            </button>
+        </div>
+    </div>
   </div>
 </ng-template>

@@ -117,7 +117,6 @@ export class GradingComponent implements OnInit {
   
   goToGrading(participant: any) {
     const filteredSection = this.participantsListFilterForm.get('section_id')
-    console.log('filteredSection', filteredSection.value)
 
     const section = this.assessmentSummary?.sections.find( item => item.id == filteredSection.value)
     const markingGuideSection = this.markingGuideSections.find( item => item.name == section.name)

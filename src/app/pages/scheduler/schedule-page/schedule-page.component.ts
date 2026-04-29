@@ -12,35 +12,45 @@ export class SchedulePageComponent implements OnInit, AfterViewInit {
   currentAssessment: string;
   deliveryMethod: string;
   deliveryMethods = AssessmentDeliveryEnum
-  constructor(private assessmentService: AssessmentsService) {}
+  constructor(private assessmentService: AssessmentsService) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
       { label: "Exam " },
       { label: "Schedule", active: true },
     ];
+
     this.getAssessmemtDetails()
   }
 
   ngAfterViewInit(): void {
     const trailTab = sessionStorage.getItem('schedule-trail-tab')
-    if(!trailTab) {
+    if (!trailTab) {
       return
     }
 
     const tabs = document.querySelector('.navtabs')
 
-    if(trailTab == 'centers'){
+    if (trailTab == 'centers') {
       (tabs.children[1].firstElementChild as HTMLElement)?.click()
     }
 
     sessionStorage.removeItem('schedule-trail-tab')
   }
 
-   getAssessmemtDetails() {
+  getAssessmemtDetails() {
     // console.log( this.assessmentService.activeAssessmentDeliveryMethod)
     this.currentAssessment = this.assessmentService.activeAssessment
     this.deliveryMethod = this.assessmentService.activeAssessmentDeliveryMethod
-   
+
+    if (this.deliveryMethod) {
+      localStorage.setItem('deliveryMethod', this.deliveryMethod)
+    } else {
+      const medthod = localStorage.getItem('deliveryMethod')
+      if (medthod) {
+        this.deliveryMethod = medthod
+      }
+    }
+
   }
 }

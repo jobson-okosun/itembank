@@ -10,40 +10,45 @@
 <!--  -->
 <ng-container *ngIf="!fetchingAssignedProctors">
     <div class="row">
-        <div class="p-0 col-md-6 col-sm-12">
+        <div class="p-0 col-md-3 col-sm-12">
             <div class="card p-3 m-1">
-                <h4 class="mb-3">Proctors</h4>
-                <h3>{{ assignedProctors?.proctors?.length ?? 0 }}</h3>
+                <h5 class="mb-3">Total Proctors</h5>
+                <h3>{{ proctorDashooard?.total_proctors ?? 0 }}</h3>
             </div>
         </div>
-        <div class="p-0 col-md-6 col-sm-12">
+        <div class="p-0 col-md-3 col-sm-12">
             <div class="card p-3 m-1">
-                <h4 class="mb-3">Suspended</h4>
-                <h3> {{ totalAssignedSuspendedProctors }}</h3>
+                <h5 class="mb-3">Assigned Proctors</h5>
+                <h3>{{ proctorDashooard?.total_assigned_proctors ?? 0 }}</h3>
+            </div>
+        </div>
+        <div class="p-0 col-md-3 col-sm-12">
+            <div class="card p-3 m-1">
+                <h5 class="mb-3">Unassigned Proctors</h5>
+                <h3>{{ proctorDashooard?.total_unassigned_proctors ?? 0 }}</h3>
+            </div>
+        </div>
+        <div class="p-0 col-md-3 col-sm-12">
+            <div class="card p-3 m-1">
+                <h5 class="mb-3">Total Participants</h5>
+                <h3>{{ proctorDashooard?.total_participants ?? 0 }}</h3>
+            </div>
+        </div>
+        <div class="p-0 col-md-3 col-sm-12">
+            <div class="card p-3 m-1">
+                <h5 class="mb-3">Assigned Participants</h5>
+                <h3>{{ proctorDashooard?.total_assigned_participants ?? 0 }}</h3>
+            </div>
+        </div>
+        <div class="p-0 col-md-3 col-sm-12">
+            <div class="card p-3 m-1">
+                <h5 class="mb-3">Unassigned Participants</h5>
+                <h3>{{ proctorDashooard?.total_unassigned_participants ?? 0 }}</h3>
             </div>
         </div>
     </div>
 
-    <div class="d-flex justify-content-between align-items-center gap-3 mb-2 mt-5">
-        <div class="d-flex gap-3">
-            <div class="input-group">
-                <select class="form-select form-select-sm" name="searchField">
-                    <option disabled value="">Filter by</option>
-                    <option *ngFor="let searchableField of searchableFields" value="{{ searchableField }}">{{ searchableField | uppercase }}</option>
-                </select>
-
-                <ng-container>
-                    <input [(ngModel)]="assignedProctorsQueryParams.q" type="text" class="form-control" placeholder="Search value.." name="searchValue"/>
-                    <button class="btn btn-sm btn-success" (click)="filterProctorsByField()" [disabled]="!assignedProctorsQueryParams.q">Search</button>
-                </ng-container>
-            </div>
-
-            <button *ngIf="assignedProctorsQueryParams.q" class="btn btn-danger" type="button" (click)="fetchAssignedProctors();assignedProctorsQueryParams.q = ''">
-                <!-- <i class="ri-close-fill me-2 align-middle"></i> -->
-                Clear
-            </button>
-        </div>
-
+    <div class="d-flex justify-content-end align-items-center gap-3 mb-2 mt-5">
         <div class="d-flex justify-content-end">
             <div class="d-flex gap-2">
                 <button (click)="openAssignProctorsModal(addProctorModal, 'xl')" class="btn btn-soft-primary waves-effect waves-light btn-label">
@@ -79,12 +84,79 @@
                         </li>
                     </ul>
                 </div>
+                 <button (click)="openModal(distributionConfirmationModal, 'md')" [disabled]="isDristributingParticipants" class="btn btn-soft-secondary waves-effect waves-light btn-label">
+                    <i class="pi pi-external-link align-bottom text-center label-icon"></i>
+                    Distribute participants
+                </button>
             </div>
         </div>
     </div>
 
     <div class="mt-1">
-        <h5>List of All Proctors</h5>
+        <div class="d-flex justify-content-between align-items-center mt-5">
+            <h5>List of All Proctors</h5>
+
+            <div class="dropdown" ngbDropdown #proctorDropdown="ngbDropdown" placement="left" >
+                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                    <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"style="cursor: pointer"></i>
+                </a>
+                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                  <div class="px-3 py-2 small text-black">
+                    Filter Proctors
+                  </div>
+                  <div class="dropdown-divider"></div>
+
+                  <form [formGroup]="assignedProctorsForm" class="px-3 py-1">
+                    <div class="mb-1">
+                      <label for="center" class="small">Name</label>
+                      <input formControlName="name" type="text" class="form-control control-input" />
+                    </div>
+                    <div class="mb-1">
+                      <label for="center" class="small">Email</label>
+                      <input formControlName="email" type="text" class="form-control control-input" />
+                    </div>
+                    <div class="mb-1">
+                      <label for="center" class="small">Enabled</label>
+                        <select formControlName="enabled" class="form-control" name="searchValue">
+                            <option value=""> -- Select --</option>
+                            <option [ngValue]="true">YES</option>
+                            <option [ngValue]="false">NO</option>
+                        </select>
+                    </div>
+                    <div class="mb-1">
+                      <label for="center" class="small">Batch</label>
+                      <input formControlName="batch_id" type="text" class="form-control control-input" />
+                    </div>
+                    <div class="mb-1">
+                      <label for="center" class="small">Assigned candidates</label>
+                        <select formControlName="assigned_candidates" class="form-control" name="searchValue">
+                            <option value=""> -- Select --</option>
+                            <option [ngValue]="true">YES</option>
+                            <option [ngValue]="false">NO</option>
+                        </select>
+                    </div>
+                    <div class="mb-1">
+                      <label for="center" class="small">Unassigned candidates</label>
+                        <select formControlName="not_assigned_candidates" class="form-control" name="searchValue">
+                            <option value=""> -- Select --</option>
+                            <option [ngValue]="true">YES</option>
+                            <option [ngValue]="false">NO</option>
+                        </select>
+                    </div>
+                  </form>
+
+                  <div class="dropdown-divider"></div>
+                  <div class="px-3 d-flex gap-1">
+                    <button type="button" (click)="fetchAssignedProctors(); proctorDropdown.close()" class="btn btn-primary w-100">
+                      Apply
+                    </button>
+                    <button type="button" (click)="assignedProctorsForm.reset();proctorDropdown.close();fetchAssignedProctors()" class="btn btn-secondary w-100">
+                    Clear
+                  </button>
+                  </div>
+                </div>
+            </div>
+        </div>
 
         <div>
             <div class="row">
@@ -93,7 +165,7 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="mt-1 card p-0">
-                                    <p-table [value]="assignedProctors.proctors" styleClass="p-datatable-customers" [rowHover]="true" responsiveLayout="scroll" #dt1 dataKey="id">
+                                    <p-table [value]="assignedProctors?.proctors ?? []" styleClass="p-datatable-customers" [rowHover]="true" responsiveLayout="scroll" #dt1 dataKey="id">
                                         <ng-template pTemplate="header">
                                             <tr>
                                                 <th pSortableColumn="first_name">
@@ -120,6 +192,18 @@
                                                         <p-sortIcon field="phone"></p-sortIcon>
                                                     </div>
                                                 </th>
+                                                <th pSortableColumn="phone" style="width: 200px">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        BATCHES
+                                                        <p-sortIcon field="batch"></p-sortIcon>
+                                                    </div>
+                                                </th>
+                                                <th pSortableColumn="phone">
+                                                    <div class="flex justify-content-between align-items-center">
+                                                        CANDIDATES
+                                                        <p-sortIcon field="batch"></p-sortIcon>
+                                                    </div>
+                                                </th>
                                                 <th pSortableColumn="status">
                                                     <div class="flex justify-content-between align-items-center">
                                                         SUSPENDED
@@ -139,6 +223,23 @@
                                                 <td>{{ proctor.last_name }}</td>
                                                 <td>{{ proctor.email }}</td>
                                                 <td>{{ proctor.phone }}</td>
+                                                <td>
+                                                    <div class="small d-flex flex-wrap gap-1" style="width: 200px" >
+                                                        <span *ngFor="let item of proctor.filteredBatches">
+                                                            <span triggers="mouseenter:mouseleave" style="cursor: pointer" [ngbPopover]="batchPopover" popoverTitle="Batches" class="badge rounded-pill badge-soft-primary">{{ item.name }}</span>
+                                                            <ng-template #batchPopover>
+                                                                <div>
+                                                                    <h4>{{ item.name }}</h4>
+                                                                    <div>
+                                                                        {{ item.start_date_time | date : 'medium' }} - {{ item.end_date_time | date : 'medium' }} 
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+                                                        </span>
+                                                    </div>
+
+                                                </td>
+                                                <td>{{ proctor.candidate_count }}</td>
                                                 <td>
                                                     <span class="badge badge-border"
                                                         [ngClass]="{
@@ -162,12 +263,238 @@
                                                                 Suspend
                                                             </a>
                                                         </li>
-                                                        <li class="dropdown-divider"></li>
                                                         <li *ngIf="proctor.suspended === true">
                                                             <a (click)="openModal(confirmationModal)" class="dropdown-item" href="javascript:void(0);">
                                                                 <i class="ri-pause-circle-line me-2 align-middle"></i>
                                                                 Resume
                                                             </a>
+                                                        </li>
+                                                        <li>
+                                                            <a (click)="openModal(proctorBatchMove)" class="dropdown-item" href="javascript:void(0);">
+                                                                <i style="font-size:12px" class="pi pi-external-link me-2 align-middle"></i>
+                                                                Unassign batch
+                                                            </a>
+
+                                                            <ng-template #proctorBatchMove role="document" let-modal>
+                                                                <div>
+                                                                    <div ngbAutofocus class="d-flex justify-content-between card-header">
+                                                                        <h5>Unassign batch</h5>
+                                                                    </div>
+
+                                                                    <div class="card-body">
+                                                                        <form action="javascript:void(0);">
+                                                                            <div class="row">
+                                                                                <div class="mb-4">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="" class="form-label">Batches</label>
+                                                                                        <ng-select
+                                                                                        [items]="proctor.filteredBatches"
+                                                                                        [multiple]="true"
+                                                                                        bindLabel="name"
+                                                                                        name="batches"
+                                                                                        dropdownPosition="bottom"
+                                                                                        [(ngModel)]="proctorBatchesToMove"
+                                                                                        >
+                                                                                            <ng-template ng-optgroup-tmp let-item="item">
+                                                                                            {{ item.name | uppercase }}
+                                                                                            </ng-template>
+                                                                                        </ng-select>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="col-lg-12">
+                                                                                    <div class="hstack gap-2 justify-content-end">
+                                                                                        <button (click)="unAssignProctorBatch(proctor.id);modal.close('Close click');"  [disabled]="processingProctorAssignment || !proctorBatchesToMove.length" type="submit" class="btn btn-primary">
+                                                                                            <span *ngIf="!processingProctorAssignment">Unassign now</span>
+                                                                                            <span *ngIf="processingProctorAssignment"> Unassigning...</span>
+                                                                                        </button>
+
+                                                                                        <button type="button" class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+                                                        </li>
+                                                        <li>
+                                                            <a (click)="fetchProctorCandidates(proctor.id);openModal(viewProctorParticipants, 'xl')" class="dropdown-item" href="javascript:void(0);">
+                                                                <i style="font-size:12px" class="pi pi-external-link me-2 align-middle"></i>
+                                                                View participants
+                                                            </a>
+
+                                                            <ng-template #viewProctorParticipants role="document" let-modal>
+                                                                <div class="card">
+                                                                    <div class="card-header">
+                                                                        <div class="d-flex justify-content-between align-items-center">
+                                                                            <h4 ngbAutofocus class="modal-title">Participant List [{{ proctorParticipants?.total}}]</h4>
+                                                                            
+                                                                            <div class="dropdown" ngbDropdown #proctorDropdown="ngbDropdown" placement="bottom" >
+                                                                                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                                                                                    Filter
+                                                                                    <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"style="cursor: pointer"></i>
+                                                                                </a>
+                                                                                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                                                                                <div class="px-3 py-2 small text-black">
+                                                                                    Filter participants
+                                                                                </div>
+                                                                                <div class="dropdown-divider"></div>
+
+                                                                                <div class="px-3 py-1">
+                                                                                    <div class="mb-1">
+                                                                                        <label for="center" class="small">Batches</label>
+                                                                                        <ng-select
+                                                                                        [items]="proctor.filteredBatches"
+                                                                                        [multiple]="true"
+                                                                                        bindLabel="name"
+                                                                                        name="batches"
+                                                                                        dropdownPosition="bottom"
+                                                                                        [(ngModel)]="proctorBatchesToView"
+                                                                                        >
+                                                                                            <ng-template ng-optgroup-tmp let-item="item">
+                                                                                            {{ item.name | uppercase }}
+                                                                                            </ng-template>
+                                                                                        </ng-select>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="dropdown-divider"></div>
+                                                                                <div class="px-3 d-flex gap-1">
+                                                                                    <button type="button" (click)="fetchProctorCandidates(proctor.id); proctorDropdown.close()" class="btn btn-primary w-100">
+                                                                                    Apply
+                                                                                    </button>
+                                                                                    <button type="button" (click)="proctorBatchesToView = [];proctorDropdown.close()" class="btn btn-secondary w-100">
+                                                                                    Clear
+                                                                                </button>
+                                                                                </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="card-body">
+
+                                                                        <div *ngIf="!fetchingProctorParticipants && proctorParticipants">
+                                                                            <div class="">
+                                                                                <div class="live-preview">
+                                                                                    <div class="row">
+                                                                                        <div class="table-responsive">
+                                                                                            <ngx-simplebar style="height: 45vh">
+                                                                                                <div class="card-body">
+                                                                                                    <div class="row">
+                                                                                                        <div class="mt-1">
+                                                                                                            <p-table [value]="proctorParticipants.content" [tableStyle]="{ 'min-width': '100%' }" styleClass="p-datatable-customers" [rowHover]="true" #dt1 dataKey="id">
+                                                                                                                <ng-template pTemplate="header">
+                                                                                                                <tr>
+                                                                                                                    <th>
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            NAME
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                    <th>
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            GROUP
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                    <th pSortableColumn="email">
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            CENTERID
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                    <th pSortableColumn="phone">
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            BATCH
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                    <th pSortableColumn="phone">
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            REG.DATE
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                    <th pSortableColumn="phone">
+                                                                                                                        <div class="flex justify-content-between align-items-center">
+                                                                                                                            SUSPENDED
+                                                                                                                        </div>
+                                                                                                                    </th>
+                                                                                                                </tr>
+                                                                                                                </ng-template>
+                                                                                                                <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+                                                                                                                    <tr>
+                                                                                                                        <td>
+                                                                                                                            <div>
+                                                                                                                                <div>{{ item.fields["FIRST NAME"] }} {{ item.fields["LAST NAME"] }}</div>
+                                                                                                                                <div>{{ item.fields["EMAIL"] }}</div>
+                                                                                                                                <div></div>
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                        <td>{{ item.groupName | uppercase }} </td>
+                                                                                                                        <td>{{ item.centerId | uppercase }} </td>
+                                                                                                                        <td>
+                                                                                                                            <div style="width: 7rem">
+                                                                                                                                <div
+                                                                                                                                    class="badge badge-border wrap-text"
+                                                                                                                                    [ngClass]="{
+                                                                                                                                    'badge-soft-primary': item.batch,
+                                                                                                                                    'badge-soft-warning': !item.batch
+                                                                                                                                    }"
+                                                                                                                                >
+                                                                                                                                    {{ item.batch  ? (item.batch.name | uppercase) : ("none" | uppercase) }}
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </td>
+                                                                                                                        <td>{{ item.registeredOn | date }} </td>
+                                                                                                                        <td><span
+                                                                                                                            [ngClass]="
+                                                                                                                                item.suspended === true
+                                                                                                                                ? 'badge rounded-pill badge-soft-danger'
+                                                                                                                                : 'badge rounded-pill badge-soft-primary'
+                                                                                                                            "
+                                                                                                                            >
+                                                                                                                            {{ item.suspended }}
+                                                                                                                            </span> 
+                                                                                                                        </td>
+                                                                                                                    </tr>
+                                                                                                                </ng-template>
+                                                                                                            </p-table>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </ngx-simplebar>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div *ngIf="fetchingProctorParticipants && !proctorParticipants" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+                                                                            <div class="d-flex align-items-center gap-2">
+                                                                                <div class="spinner-border text-info fs-18" role="status">
+                                                                                    <span class="visually-hidden">Loading...</span>
+                                                                                </div>
+                                                                                <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading candidates...</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="card-footer">
+                                                                        <div class="d-flex justify-content-between align-items-center gap-3">
+                                                                            <div>
+                                                                                <p-paginator [ngClass]="{ 'd-none': !proctorParticipants }"
+                                                                                [first]="0" [totalRecords]="proctorParticipants?.total ?? 0" [rowsPerPageOptions]="[50, 100, 150, 200]"
+                                                                                [rows]="50" [pageLinkSize]="5" [showCurrentPageReport]="true" (onPageChange)="onProctorParticipantChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+                                                                            </div>
+                                                                            
+                                                                            <div class="d-flex justify-content-end gap-2">
+                                                                                <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                                                                                    <i class="ri-close-line align-middle fs-16 "></i>
+                                                                                    Close
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
+
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -270,9 +597,52 @@
                                                         <td>{{ proctor.email }}</td>
                                                         <td>{{ proctor.phone }}</td>
                                                         <td>
-                                                            <button #btn (click)="assignProctor(proctor.id, btn)" [disabled]="processingProctorAssignment" class="btn btn-sm btn-success">
+                                                            <button #btn (click)="openModal(proctorBatchAssign, 'md')" [disabled]="processingProctorAssignment" class="btn btn-sm btn-success">
                                                                 Assign
                                                             </button>
+
+                                                            <ng-template #proctorBatchAssign>
+                                                                <div>
+                                                                    <div class="d-flex justify-content-between card-header">
+                                                                        <h5>Batch settings</h5>
+                                                                    </div>
+
+                                                                    <div class="card-body">
+                                                                        <form action="javascript:void(0);">
+                                                                            <div class="row">
+                                                                                <div class="mb-4">
+                                                                                    <div class="mb-3">
+                                                                                        <label for="" class="form-label">Batch </label>
+                                                                                        <ng-select
+                                                                                        [items]="batches"
+                                                                                        [multiple]="true"
+                                                                                        bindLabel="name"
+                                                                                        name="batches"
+                                                                                        dropdownPosition="bottom"
+                                                                                        [(ngModel)]="proctorBatchesToAssign"
+                                                                                        >
+                                                                                            <ng-template ng-optgroup-tmp let-item="item">
+                                                                                            {{ item.name | uppercase }}
+                                                                                            </ng-template>
+                                                                                        </ng-select>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div class="col-lg-12">
+                                                                                    <div class="hstack gap-2 justify-content-end">
+                                                                                        <button (click)="assignProctor(proctor.id);modal.close('Close click');"  [disabled]="processingProctorAssignment || !proctorBatchesToAssign.length" type="submit" class="btn btn-primary">
+                                                                                            <span *ngIf="!processingProctorAssignment"> Assign Now </span>
+                                                                                            <span *ngIf="processingProctorAssignment"> Processing...</span>
+                                                                                        </button>
+
+                                                                                        <button type="button" class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </ng-template>
                                                         </td>
                                                     </tr>
                                                 </ng-template>
@@ -382,16 +752,16 @@
                         <div class="mb-3">
                             <div class="d-flex gap-2 align-items-center">
                                 <label class="form-check-label">Candidates per proctor</label>
-                                <input type="number" min="0" class="form-control" style="max-width: max-content;" name="proctor_candidates" [(ngModel)]="proctorSetttings.proctor_candidates" />
+                                <input [(ngModel)]="proctorSetttings.candidates_per_proctor" type="number" class="form-control" style="max-width: max-content;" name="proctor_candidates" />
                             </div>
                         </div>
                         <div class="mb-3">
-                            <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+                            <!-- <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                                 <input class="form-check-input" type="checkbox" checked>
                                 <label class="form-check-label">Record candidate exam</label>
-                            </div>
+                            </div> -->
                             <div class="d-flex flex-wrap gap-2 align-items-center">
-                                <input class="form-check-input" type="checkbox" checked>
+                                <input [(ngModel)]="proctorSetttings.can_play_recording" [checked]="proctorSetttings.can_play_recording" name="can_play" class="form-check-input" type="checkbox">
                                 <label class="form-check-label">Play candidate exam recording</label>
                             </div>
                         </div>
@@ -643,6 +1013,47 @@
           </div>
         </div>
       </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #distributionConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to distribute participants?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        No, Cancel
+      </button>
+      <button
+        type="button"
+        (click)="distributeParticipants()"
+        class="btn btn-danger"
+        *ngIf="!isDristributingParticipants"
+      >
+        Yes, Distribute
+      </button>
+      <ng-template [ngIf]="isDristributingParticipants">
+        <button
+          class="btn btn-outline-danger btn-load"
+          [disabled]="isDristributingParticipants"
+        >
+          <span class="d-flex align-items-center">
+            <span class="spinner-border flex-shrink-0" role="status">
+              <span class="visually-hidden">Distributing...</span>
+            </span>
+            <span class="flex-grow-1 ms-2"> Distributing... </span>
+          </span>
+        </button>
+      </ng-template>
     </div>
   </div>
 </ng-template>

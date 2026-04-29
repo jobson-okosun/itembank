@@ -1,5 +1,7 @@
 export enum Role {
     ADMIN="ADMIN",
     AUTHOR="AUTHOR",
-    EXAMINER="EXAMINER"
+    EXAMINER="EXAMINER",
+    MONITOR="MONITOR",
+    ANALYTIC="ANALYTIC"
 }

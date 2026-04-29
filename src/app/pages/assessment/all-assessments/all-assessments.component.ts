@@ -36,7 +36,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   pageNo: number = 0;
 
-  pageSize: number = 20;
+  pageSize: number = 100;
 
   selectedAssessment: SingleAssessment;
 

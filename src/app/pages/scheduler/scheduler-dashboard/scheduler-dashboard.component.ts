@@ -12,6 +12,8 @@ import { AssessmentsService } from "../../assessment/service/assessments.service
 import { HttpErrorResponse } from "@angular/common/http";
 import {
   AssessmentList,
+  AssessmentListItemDTO,
+  AssessmentListPage,
   SingleAssessment,
 } from "../../assessment/model/assessment-list";
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
@@ -26,7 +28,7 @@ import { Publish } from "../../assessment/model/publish";
 export class SchedulerDashboardComponent implements OnInit {
   breadCrumbItems!: any;
 
-  assessments: AssessmentList;
+  assessments: AssessmentListPage;
 
   submitted: boolean = false;
 
@@ -38,7 +40,7 @@ export class SchedulerDashboardComponent implements OnInit {
 
   checkedList: any;
 
-  pageNo: number = 0;
+  pageNo: number = 1;
 
   pageSize: number = 10;
 
@@ -74,7 +76,7 @@ export class SchedulerDashboardComponent implements OnInit {
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
     this.loading = true
     this.assessmentService
-      .fetchAllAssessment(this.pageNo, this.pageSize)
+      .fetchAllAssessmentV2(this.pageNo, this.pageSize)
       .subscribe(
         (value) => {
           this.assessments = value;
@@ -90,11 +92,12 @@ export class SchedulerDashboardComponent implements OnInit {
   onScheduleExamListPageChange(event: any) {
     this.pageSize = event.rows; 
     this.pageNo = event.page * event.rows
-    console.log(this.pageNo, this.pageSize)
+    // console.log(this.pageNo, this.pageSize)
     // this.loading = true
 
+    this.loading = false;
     this.assessmentService
-      .fetchAllAssessment(this.pageNo, this.pageSize)
+      .fetchAllAssessmentV2(this.pageNo, this.pageSize)
       .subscribe(
         (value) => {
           this.assessments = value;
@@ -168,11 +171,13 @@ export class SchedulerDashboardComponent implements OnInit {
     } */
   }
 
-  setCurrentAssessment(assessment: SingleAssessment) {
+  setCurrentAssessment(assessment: AssessmentListItemDTO) {
     this.assessmentService.activeAssessment = assessment.name;
-    this.assessmentService.schedulerAssessmentId = assessment.schId;
+    // this.assessmentService.schedulerAssessmentId = assessment.schId;
+    this.assessmentService.schedulerAssessmentId = assessment.id;
     this.assessmentService.activeAssessmentId = assessment.id;
-    this.assessmentService.activeAssessmentDeliveryMethod = assessment.deliveryMethod;
+    this.assessmentService.activeAssessmentDeliveryMethod = assessment.delivery_method;
+  
   }
 
   confirm() {
@@ -193,7 +198,7 @@ export class SchedulerDashboardComponent implements OnInit {
 
   onPageChange(event: any) {
     this.pageSize = event.rows;
-    this.pageNo = event.page;
+    this.pageNo = event.page + 1;
     //this.fetchAssessmentCenters(this.centerPage, this.centerSize);
     this.ngOnInit();
   }

@@ -381,7 +381,7 @@ export interface IAssessmentBatchDTO {
   start_date_time: string;
   end_date_time: string;
   participants_count?: number;
-  // paticipant
+  proctors_count?: number
 }
 
 export interface IParticipantBatchMovementDTO {
@@ -426,7 +426,12 @@ export interface ProctorList {
   state?: string;
   address?: string;
   suspended: boolean;
+  candidate_count: number;
+  assigned_batches: any;
+
+  filteredBatches?: any[]
 }
+
 
 export interface ListProctorPage {
   proctors: ProctorList[];
@@ -542,5 +547,44 @@ export interface NewInfractionTemplateDTO {
 export interface ProctorSettings {
   proctor_guide: string,
   proctor_allowed_actions: Array<{ action: string, enabled: boolean }>,
-  proctor_candidates: number
+  candidates_per_proctor: number
+  can_play_recording: boolean
+}
+
+export interface ProctorParticipantParams {
+  page: number,
+  size: number,
+  batches?: string[]
+}
+
+export interface FilterProctorDTO {
+  name?: string;
+  email?: string;
+  enabled?: boolean;
+  batch_id?: string;
+  assigned_candidates?: boolean;
+  not_assigned_candidates?: boolean;
+}
+
+export interface AssignProctorDTO {
+  unassigned_ca_ids: string[],
+  batch_ids: string[],
+}
+
+export interface ProctorDashboardMetrics {
+  total_participants: number;
+  total_proctors: number;
+  total_assigned_participants: number;
+  total_unassigned_participants: number;
+  total_assigned_proctors: number;
+  total_unassigned_proctors: number;
+}
+
+export interface BatchFilter {
+    batches?: string[],
+}
+
+export interface ProctorDistributionResult {
+  distributed: number,
+  not_distributed: number,
 }
