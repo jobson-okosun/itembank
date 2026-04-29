@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 import { IUser } from '../model/user.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SchedulerAccountService {
-  currentUser!: IUser
-  constructor() { }
+  currentUser!: IUser;
+  constructor() {}
 
-  
-  setCurrentUser(user:IUser){
-    this.currentUser = user
- }
+  setCurrentUser(user: IUser) {
+    this.currentUser = user;
+    console.log(user);
+  }
 
- getUser(): IUser{
-   return this.currentUser
- }
+  getUser(): IUser {
+    return this.currentUser;
+  }
 }

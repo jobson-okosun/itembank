@@ -1,4 +1,4 @@
-import { NgbDropdown, NgbModal, NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbDropdown, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import {
   Component,
   ElementRef,
@@ -9,46 +9,45 @@ import {
   ViewChild,
   OnChanges,
   SimpleChanges,
-  OnDestroy,
-} from "@angular/core";
-import Swal from "sweetalert2";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ItemHttpService } from "../item-http.service";
-import { ListAllItemsPage } from "../models/list-all-items-page.model";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { ItemTypes } from "../models/item-types";
-import { FilterItems, ItemUsed } from "../models/filter-items.model";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { NewSubTopic } from "../models/new-sub-topic.model";
-import { SubjectTopicsTree } from "../models/subject-topics-tree.model";
-import { NewTopic } from "../models/new-topic.model";
-import { Location } from "@angular/common";
-import { NotifierService } from "angular-notifier";
-import { SubjectService } from "../subject.service";
-import { UserService } from "src/app/shared/user.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { AssessmentFilterInformation } from "../models/assessment-filter-information";
-import { DropdownSubjectList } from "../models/dropdown-subject-list.model";
-import { CopyMoveItems } from "../models/copy-move-items";
-import { AssessmentFilterResult } from "../../assessment/model/assessment-filter-result";
-import { AssessmentsService } from "../../assessment/service/assessments.service";
-import { AssessmentPassageFilter } from "../../assessment/model/assessment-passage-filter";
-import { AssessmentPassageFilterInformation } from "../../assessment/model/assessment-passage-filter-information";
-import { ListPassageTopics } from "../../passages/model/list-passage-topics.model";
-import { ExistingItemsAndPasaagesInExamBlock } from "../models/existing-items-and-pasaages-in-exam-block";
-import { UsageHistory } from "../models/usage-history";
-import { ListAllSubjects } from "../models/list-all-subjects.model";
-import { DomSanitizer } from "@angular/platform-browser";
-import { Observable } from "rxjs";
+} from '@angular/core';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ItemHttpService } from '../item-http.service';
+import { ListAllItemsPage } from '../models/list-all-items-page.model';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { ItemTypes } from '../models/item-types';
+import { FilterItems, ItemUsed } from '../models/filter-items.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { NewSubTopic } from '../models/new-sub-topic.model';
+import { SubjectTopicsTree } from '../models/subject-topics-tree.model';
+import { NewTopic } from '../models/new-topic.model';
+import { Location } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
+import { SubjectService } from '../subject.service';
+import { UserService } from 'src/app/shared/user.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { AssessmentFilterInformation } from '../models/assessment-filter-information';
+import { DropdownSubjectList } from '../models/dropdown-subject-list.model';
+import { CopyMoveItems } from '../models/copy-move-items';
+import { AssessmentFilterResult } from '../../assessment/model/assessment-filter-result';
+import { AssessmentsService } from '../../assessment/service/assessments.service';
+import { AssessmentPassageFilter } from '../../assessment/model/assessment-passage-filter';
+import { AssessmentPassageFilterInformation } from '../../assessment/model/assessment-passage-filter-information';
+import { ListPassageTopics } from '../../passages/model/list-passage-topics.model';
+import { ExistingItemsAndPasaagesInExamBlock } from '../models/existing-items-and-pasaages-in-exam-block';
+import { UsageHistory } from '../models/usage-history';
+import { ListAllSubjects } from '../models/list-all-subjects.model';
+import { DomSanitizer } from '@angular/platform-browser';
+import { Observable, Subscription } from 'rxjs';
 export interface RenameTopicModel {
   name: string;
 }
 
 @Component({
-  selector: "app-subject",
-  templateUrl: "./subject.component.html",
-  styleUrls: ["./subject.component.scss"],
+  selector: 'app-subject',
+  templateUrl: './subject.component.html',
+  styleUrls: ['./subject.component.scss'],
 })
 export class SubjectComponent implements OnInit, OnChanges {
   @Input() _subjectName: string;
@@ -65,6 +64,9 @@ export class SubjectComponent implements OnInit, OnChanges {
   @Output() addItemToAssessment = new EventEmitter();
   @Output() removeItemFromAssessment = new EventEmitter();
   @Output() gotoNewItem = new EventEmitter();
+
+  // Subscriptions variables
+  deleteSubTopicSubscription!: Subscription;
 
   _errorMsg: string;
 
@@ -126,6 +128,10 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   currentTopic: any;
 
+  currentExistingTopic: any;
+
+  updatedTopicName: any;
+
   submitted: boolean = false;
 
   activePreviewItem: number;
@@ -152,7 +158,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   itemIdToBeMoved: string;
 
-  selectedSubtopic: string = "";
+  selectedSubtopic: string = '';
 
   selectedTopic: any;
 
@@ -451,7 +457,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   loading_usage_history: boolean = false;
   allSubjects: ListAllSubjects[] = [];
   loadingAllSubjects: boolean = true;
-  subjectId: string = "";
+  subjectId: string = '';
   itemToMove: any;
 
   constructor(
@@ -465,7 +471,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     private ar: ActivatedRoute,
     private assessmentService: AssessmentsService,
     private userService: UserService,
-    private domSanitizer: DomSanitizer
+    private domSanitizer: DomSanitizer,
   ) {
     this.currentUser = this.userService.getCurrentUser();
 
@@ -474,7 +480,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(this.assessmentFilter.totalQuestions);
 
     // dropdown for move/copy question
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService.fetchAllSubjectsDropdown().subscribe(
         (value) => {
           value.map((item) => {
@@ -486,13 +492,13 @@ export class SubjectComponent implements OnInit, OnChanges {
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
-        }
+        },
       );
     }
     // else{
     //   this.fetchTopicTreeUser()
     // }
-    this.subject_id = this.ar.snapshot.params["id"];
+    this.subject_id = this.ar.snapshot.params['id'];
   }
 
   updateErrorMessage(error_msg: string) {
@@ -500,11 +506,11 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   onSettingsButtonClicked() {
-    document.body.classList.toggle("right-bar-enabled");
-    const rightBar = document.getElementById("theme-settings-offcanvas");
+    document.body.classList.toggle('right-bar-enabled');
+    const rightBar = document.getElementById('theme-settings-offcanvas');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
@@ -564,32 +570,46 @@ export class SubjectComponent implements OnInit, OnChanges {
     // }
 
     /** starting point for Logic to fetch passage topic tree */
-    if ( this.assessmentActive && this._currentBlock.selectionType == "AUTOMATED" && this._currentBlock.blockType == "PASSAGES") {
+    if (
+      this.assessmentActive &&
+      this._currentBlock.selectionType == 'AUTOMATED' &&
+      this._currentBlock.blockType == 'PASSAGES'
+    ) {
       this.loadingAllSubjects = false;
       this.subjectName = this._subjectName;
       // console.log(this._currentBlock);
-      this.itemService.fetchAssessmentPassageTopicsTree( this._subjectId, this._currentBlock.totalQuestionsInPassage)
-      .subscribe((value) => {
-        this.passageTopics = value;
-        console.log(this.passageTopics);
-      });
+      this.itemService
+        .fetchAssessmentPassageTopicsTree(
+          this._subjectId,
+          this._currentBlock.totalQuestionsInPassage,
+        )
+        .subscribe((value) => {
+          this.passageTopics = value;
+          console.log(this.passageTopics);
+        });
     }
 
-    if (this.assessmentActive && this._currentBlock.selectionType == "MANUAL") {
+    if (this.assessmentActive && this._currentBlock.selectionType == 'MANUAL') {
       // console.log("hello world");
       this.loadingAllSubjects = false;
       this.fetchAssessmentSubjectTopicsTree();
-      this.itemService.fetchManualSelectedItemsInAssessment( this._assessmentId, this._sectionId)
-      .subscribe(
-        (value) => {
-          this.manuallySelectedItemsAndPassages = value;
-        },
-        (error: HttpErrorResponse) => {
-          this.notifier.notify("error", error.error.message);
-        }
-      );
-
-    } else if ( this.assessmentActive && this._currentBlock.selectionType == "AUTOMATED") {
+      this.itemService
+        .fetchManualSelectedItemsInAssessment(
+          this._assessmentId,
+          this._sectionId,
+        )
+        .subscribe(
+          (value) => {
+            this.manuallySelectedItemsAndPassages = value;
+          },
+          (error: HttpErrorResponse) => {
+            this.notifier.notify('error', error.error.message);
+          },
+        );
+    } else if (
+      this.assessmentActive &&
+      this._currentBlock.selectionType == 'AUTOMATED'
+    ) {
       // console.log("hello earth");
       this.loadingAllSubjects = false;
       this.fetchAssessmentSubjectTopicsTree();
@@ -599,47 +619,71 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.totalItems = this.itemService.totalItemsInCurrentSubject;
     }
 
-    if ( this.itemService.topicId ||(this.itemService.subtopicId && !this.assessmentActive)) {
+    if (
+      this.itemService.topicId ||
+      (this.itemService.subtopicId && !this.assessmentActive)
+    ) {
       /* console.log(this.itemService.topicId, 'topicId');
       console.log(this.itemService.subtopicId, 'subtopicId'); */
 
       // console.log(this.itemService.topicId, "topicId");
-      this.itemService.fetchAllItems( this.itemService.subjectId, this.itemService.topicId, this.itemService.subtopicId, this.pageNo, this.pageSize)
-      .subscribe(
-        (value) => {
-          this.itemsPage = value;
-          this.itemsPage.content.forEach(
-            (item) => (item.showFullItem = false)
-          );
-          this.itemService.topicId = "";
-          this.itemService.subtopicId = "";
-          this.loading_items = false;
-        },
-        (error: HttpErrorResponse) => {
-          // console.log(error);
-        }
-      );
-    }
-
-    if (
-      (this.assessmentActive && this.itemService.subtopicId && this._currentBlock && this._currentBlock.sectionId) || this.itemService.topicId) {
-      // console.log("asseement is active");
-      /* console.log(this.itemService.topicId, 'topicId');
-      console.log(this.itemService.subtopicId, 'subtopicId'); */
-      this.itemService.fetchAllAssessmentItems( this._assessmentId, this._currentBlock && this._currentBlock.sectionId, this.itemService.subjectId, this.itemService.topicId, this.itemService.subtopicId, this.pageNo, this.pageSize)
+      this.itemService
+        .fetchAllItems(
+          this.itemService.subjectId,
+          this.itemService.topicId,
+          this.itemService.subtopicId,
+          this.pageNo,
+          this.pageSize,
+        )
         .subscribe(
           (value) => {
             this.itemsPage = value;
             this.itemsPage.content.forEach(
-              (item) => (item.showFullItem = false)
+              (item) => (item.showFullItem = false),
             );
-            this.itemService.topicId = "";
-            this.itemService.subtopicId = "";
+            this.itemService.topicId = '';
+            this.itemService.subtopicId = '';
             this.loading_items = false;
           },
           (error: HttpErrorResponse) => {
             // console.log(error);
-          }
+          },
+        );
+    }
+
+    if (
+      (this.assessmentActive &&
+        this.itemService.subtopicId &&
+        this._currentBlock &&
+        this._currentBlock.sectionId) ||
+      this.itemService.topicId
+    ) {
+      // console.log("asseement is active");
+      /* console.log(this.itemService.topicId, 'topicId');
+      console.log(this.itemService.subtopicId, 'subtopicId'); */
+      this.itemService
+        .fetchAllAssessmentItems(
+          this._assessmentId,
+          this._currentBlock && this._currentBlock.sectionId,
+          this.itemService.subjectId,
+          this.itemService.topicId,
+          this.itemService.subtopicId,
+          this.pageNo,
+          this.pageSize,
+        )
+        .subscribe(
+          (value) => {
+            this.itemsPage = value;
+            this.itemsPage.content.forEach(
+              (item) => (item.showFullItem = false),
+            );
+            this.itemService.topicId = '';
+            this.itemService.subtopicId = '';
+            this.loading_items = false;
+          },
+          (error: HttpErrorResponse) => {
+            // console.log(error);
+          },
         );
     }
 
@@ -670,7 +714,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     if (
       this.itemService.subjectId === undefined &&
-      (this._subjectId === "" || this._subjectId === undefined)
+      (this._subjectId === '' || this._subjectId === undefined)
     ) {
       /* console.log(this.itemService.subjectId);
       console.log(this._subjectId); */
@@ -682,11 +726,14 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     //this.fetchItems();
 
-    const itemTrail = this.itemUtil.getSavedItemTrail()
-    if(itemTrail) {
+    const itemTrail = this.itemUtil.getSavedItemTrail();
+    if (itemTrail) {
       //  this.itemUtil.currentItemTrail = this.itemUtil.currentItemTrail ?? itemTrail
     }
-    this.breadCrumbItems = [{ label: "Subjects" }, { label: this.subjectName ?? itemTrail?.subjectName, active: true }];
+    this.breadCrumbItems = [
+      { label: 'Subjects' },
+      { label: this.subjectName ?? itemTrail?.subjectName, active: true },
+    ];
   }
 
   fetchAssessmentSubjectTopicsTree() {
@@ -718,7 +765,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
           this.itemProps = itemTrail;
           this.itemUtil.currentItemTrail = itemTrail;
-          this.itemUtil.saveCurrentItemTrail()
+          this.itemUtil.saveCurrentItemTrail();
           this.loading_topics = false;
         },
         error: (err: HttpErrorResponse) => {
@@ -735,7 +782,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     //   return;
     // }
     if (this.itemService.subjectId)
-      this.itemService.fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
+      this.itemService
+        .fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
         .subscribe(
           (value) => {
             this.subject = value;
@@ -756,8 +804,9 @@ export class SubjectComponent implements OnInit, OnChanges {
             this.fetchItems(this.subject.topics[0]);
             this.clickedTopic = this.subject.topics[0];
             if (this.itemUtil.currentItemTrail) {
-              const foundTopic = this.subject.topics.find((topic) =>
-                  topic.topicId === this.itemUtil.currentItemTrail.topicId
+              const foundTopic = this.subject.topics.find(
+                (topic) =>
+                  topic.topicId === this.itemUtil.currentItemTrail.topicId,
               );
               this.fetchItems(foundTopic);
               this.clickedTopic = foundTopic;
@@ -774,7 +823,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
             this.loading_topics = false;
             //console.log(this.subject);
           },
@@ -782,25 +831,25 @@ export class SubjectComponent implements OnInit, OnChanges {
             // console.log(error);
             if (error) {
               this.loading_topics = false;
-              return this.notifier.notify("error", `${error.error.msg}`);
+              return this.notifier.notify('error', `${error.error.msg}`);
             }
-          }
+          },
         );
   }
 
   fetchSubjectDetails() {
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.handleAdminActions();
     }
     // else if (this.currentUser.authorities.includes("EXAMINER")) {
     //   this.handleExaminerActions();
     // }
-    else if (this.currentUser.authorities.includes("MODERATOR")) {
+    else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.handleModeratorActions();
-    } else if (this.currentUser.authorities.includes("AUTHOR")) {
+    } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.handleAuthorActions();
     } else {
-      console.warn("Unhandled role");
+      console.warn('Unhandled role');
     }
   }
 
@@ -816,7 +865,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           return;
         }
 
-        if (this.subject_id === "questions" && this.allSubjects.length > 0) {
+        if (this.subject_id === 'questions' && this.allSubjects.length > 0) {
           const defaultSubject = this.allSubjects[0];
           this.setSubjectDetails(defaultSubject);
         }
@@ -826,7 +875,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           this.fetchSubjectTopicsTreeAdmin();
         }
       },
-      (error: HttpErrorResponse) => this.handleError(error)
+      (error: HttpErrorResponse) => this.handleError(error),
     );
   }
 
@@ -834,8 +883,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.fetchAllSubNonAdmin();
     this.fetchAndHandleSubjectTree(
       this.itemService.fetchAssessmentSubjectTopicsTree(
-        this.itemService.subjectId
-      )
+        this.itemService.subjectId,
+      ),
     );
   }
 
@@ -897,14 +946,14 @@ export class SubjectComponent implements OnInit, OnChanges {
       (value) => {
         if (value) {
           this.subject = value;
-          console.log(value, "value");
+          console.log(value, 'value');
           const firstTopic = this.subject.topics[0];
           this.fetchItems(firstTopic);
           this.setItemTrail(firstTopic);
           this.loading_topics = false;
         }
       },
-      (error: HttpErrorResponse) => this.handleError(error)
+      (error: HttpErrorResponse) => this.handleError(error),
     );
   }
 
@@ -926,13 +975,13 @@ export class SubjectComponent implements OnInit, OnChanges {
     };
     this.itemProps = itemTrail;
     this.itemUtil.currentItemTrail = itemTrail;
-    this.itemUtil.saveCurrentItemTrail()
+    this.itemUtil.saveCurrentItemTrail();
   }
 
   handleError(error: HttpErrorResponse) {
     this.loadingAllSubjects = false;
     this.loading_topics = false;
-    this.notifier.notify("error", `${error.error.msg}`);
+    this.notifier.notify('error', `${error.error.msg}`);
   }
 
   handleSubjectSelection(subject: ListAllSubjects) {
@@ -941,7 +990,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   selectSubject(subjectId: string) {
     this.itemService.subjectId = subjectId;
     const foundSubject = this.allSubjects.find(
-      (subject) => subject.subjectId === subjectId
+      (subject) => subject.subjectId === subjectId,
     );
 
     this.itemService.setSubjectName(foundSubject.name);
@@ -955,11 +1004,11 @@ export class SubjectComponent implements OnInit, OnChanges {
       ? true
       : false;
 
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.fetchSubjectTopicsTreeAdmin();
-    } else if (this.currentUser.authorities.includes("AUTHOR")) {
+    } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.fetchTopicTreeAuthor();
-    } else if (this.currentUser.authorities.includes("MODERATOR")) {
+    } else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.fetchTopicTreeModerator();
     }
 
@@ -972,7 +1021,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       subtopicId: null,
       subtopicName: null,
     };
-    this.itemUtil.saveCurrentItemTrail(itemTrail)
+    this.itemUtil.saveCurrentItemTrail(itemTrail);
   }
 
   fetchTopicTreeAuthor() {
@@ -995,14 +1044,14 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
             this.loading_topics = false;
           }
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.loading_topics = false;
-        }
+        },
       );
   }
 
@@ -1011,7 +1060,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.itemService
       .fetchItemsAwaitingModerationTopicsTree(
         this.itemService.subjectId,
-        ItemStatusEnum.AWAITING_MODERATION
+        ItemStatusEnum.AWAITING_MODERATION,
       )
       .subscribe(
         (value) => {
@@ -1029,7 +1078,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
             this.loading_topics = false;
             this.loading_topics = false;
           }
@@ -1037,7 +1086,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.loading_topics = false;
-        }
+        },
       );
   }
 
@@ -1069,7 +1118,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
           this.itemProps = itemTrail;
           this.itemUtil.currentItemTrail = itemTrail;
-          this.itemUtil.saveCurrentItemTrail()
+          this.itemUtil.saveCurrentItemTrail();
           this.loading_topics = false;
           //console.log(this.subject);
         },
@@ -1077,9 +1126,9 @@ export class SubjectComponent implements OnInit, OnChanges {
           // console.log(error);
           if (error) {
             this.loading_topics = false;
-            return this.notifier.notify("error", `${error.error.msg}`);
+            return this.notifier.notify('error', `${error.error.msg}`);
           }
-        }
+        },
       );
   }
   listAssessmentFilterBlocks() {
@@ -1088,21 +1137,21 @@ export class SubjectComponent implements OnInit, OnChanges {
         this._assessmentId,
         this._sectionId,
         this._subjectId,
-        this._currentBlock.blockId
+        this._currentBlock.blockId,
       )
       .subscribe(
         (value) => {
-          if (this._currentBlock.blockType === "SINGLE_QUESTIONS") {
+          if (this._currentBlock.blockType === 'SINGLE_QUESTIONS') {
             this.assessmentFilters = value;
             this.updateSelectedBlockFilterQuestionsCount();
-          } else if (this._currentBlock.blockType === "PASSAGES") {
+          } else if (this._currentBlock.blockType === 'PASSAGES') {
             this.assessmentPassageFilters = value;
             this.updateSelectedBlockFilterPassagesCount();
           }
         },
         (error) => {
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -1127,19 +1176,19 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   openNewRandomSelectionFilterModal(randomFilterModal: any) {
     if (
-      this.subject.topics[0].topicId !== "00000000-0000-0000-0000-000000000000"
+      this.subject.topics[0].topicId !== '00000000-0000-0000-0000-000000000000'
     ) {
       this.subject.topics.unshift({
-        topicName: "ALL-TOPIC(S)",
-        topicId: "00000000-0000-0000-0000-000000000000",
+        topicName: 'ALL-TOPIC(S)',
+        topicId: '00000000-0000-0000-0000-000000000000',
         totalItems: this.itemService.totalItemsInCurrentSubject,
       }); //add all-topics to topic list
     }
     this.assessmentFilter.totalQuestions = this._currentBlock.totalQuestions;
     this.modalReference = this.modal.open(randomFilterModal, {
       centered: true,
-      size: "md",
-      backdrop: "static",
+      size: 'md',
+      backdrop: 'static',
       keyboard: false,
     });
     this.assessmentFilter.totalQuestions -= this.totalFilterSelections;
@@ -1154,10 +1203,10 @@ export class SubjectComponent implements OnInit, OnChanges {
   openNewPassageSelectionFilterModal(randomFilterOptions: any) {
     this.modalReference = this.modal.open(randomFilterOptions, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
 
-    console.log(this._currentBlock, "current block");
+    console.log(this._currentBlock, 'current block');
     this.assessmentPassageFilter.totalPassages =
       this._currentBlock.totalQuestions;
     this.assessmentPassageFilter.totalPassages -= this.totalFilterSelections;
@@ -1178,7 +1227,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   pickTopic(event: any) {
     // console.log('selected topic', event);
     this.assessmentSelectedTopic = event;
-    console.log(event, "selected topic");
+    console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
     this.assessmentFilter.topicId = event.topicId;
     this.assessmentFilter.topicName = event.topicName;
@@ -1187,7 +1236,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   pickTopicForAssessmentPassageFilter(event: any) {
     this.assessmentSelectedTopic = event;
-    console.log(event, "selected topic");
+    console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
     this.assessmentPassageFilter.topicId = event.topicId;
     this.assessmentPassageFilter.topicName = event.topicName;
@@ -1198,7 +1247,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(event);
     // todo: refactor this
     // reload topics tree
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService
         .fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
         .subscribe(
@@ -1206,7 +1255,7 @@ export class SubjectComponent implements OnInit, OnChanges {
             this.subject = value;
             /* this.subject.topics.unshift({ topicName: 'ALL-TOPIC(S)', topicId: '00000000-0000-0000-0000-000000000000', totalItems: 0 }) */
             this.fetchItems(
-              this.clickedTopic ? this.clickedTopic : this.subject.topics[0]
+              this.clickedTopic ? this.clickedTopic : this.subject.topics[0],
             );
             let itemTrail = {
               subjectId: this.itemService.subjectId,
@@ -1219,7 +1268,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1228,11 +1277,11 @@ export class SubjectComponent implements OnInit, OnChanges {
             //console.log(error);
             if (error) {
               this.loading_topics = false;
-              return this.notifier.notify("error", `${error.error.msg}`);
+              return this.notifier.notify('error', `${error.error.msg}`);
             }
-          }
+          },
         );
-    } else if (this.currentUser.authorities.includes("AUTHOR")) {
+    } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.itemService
         .fetchSubjectTopicsTreeAuthor(this.itemService.subjectId)
         .subscribe(
@@ -1240,7 +1289,7 @@ export class SubjectComponent implements OnInit, OnChanges {
             this.subject = value;
             /* this.subject.topics.unshift({ topicName: 'ALL-TOPIC(S)', topicId: '00000000-0000-0000-0000-000000000000', totalItems: 0 }) */
             this.fetchItems(
-              this.clickedTopic ? this.clickedTopic : this.subject.topics[0]
+              this.clickedTopic ? this.clickedTopic : this.subject.topics[0],
             );
             let itemTrail = {
               subjectId: this.itemService.subjectId,
@@ -1253,7 +1302,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1262,22 +1311,22 @@ export class SubjectComponent implements OnInit, OnChanges {
             //console.log(error);
             if (error) {
               this.loading_topics = false;
-              return this.notifier.notify("error", `${error.error.msg}`);
+              return this.notifier.notify('error', `${error.error.msg}`);
             }
-          }
+          },
         );
-    } else if (this.currentUser.authorities.includes("MODERATOR")) {
+    } else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.itemService
         .fetchItemsAwaitingModerationTopicsTree(
           this.itemService.subjectId,
-          ItemStatusEnum.AWAITING_MODERATION
+          ItemStatusEnum.AWAITING_MODERATION,
         )
         .subscribe(
           (value) => {
             this.subject = value;
             /* this.subject.topics.unshift({ topicName: 'ALL-TOPIC(S)', topicId: '00000000-0000-0000-0000-000000000000', totalItems: 0 }) */
             this.fetchItems(
-              this.clickedTopic ? this.clickedTopic : this.subject.topics[0]
+              this.clickedTopic ? this.clickedTopic : this.subject.topics[0],
             );
             let itemTrail = {
               subjectId: this.itemService.subjectId,
@@ -1290,7 +1339,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
             this.itemProps = itemTrail;
             this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail()
+            this.itemUtil.saveCurrentItemTrail();
 
             this.loading_topics = false;
             //console.log(this.subject);
@@ -1299,9 +1348,9 @@ export class SubjectComponent implements OnInit, OnChanges {
             //console.log(error);
             if (error) {
               this.loading_topics = false;
-              return this.notifier.notify("error", `${error.error.msg}`);
+              return this.notifier.notify('error', `${error.error.msg}`);
             }
-          }
+          },
         );
     }
   }
@@ -1323,13 +1372,13 @@ export class SubjectComponent implements OnInit, OnChanges {
   addQuestionToAssessment(assessmentItem: any) {
     if (this.assessmentItems.length === this._noOfItems) {
       return this.notifier.notify(
-        "error",
-        "Sorry, you already have the required number of items!"
+        'error',
+        'Sorry, you already have the required number of items!',
       );
     } else if (this.assessmentItems.includes(assessmentItem)) {
       this.notifier.notify(
-        "error",
-        "Oops...Sorry, this question has already been picked!"
+        'error',
+        'Oops...Sorry, this question has already been picked!',
       );
     } else {
       this.addItemToAssessment.emit(assessmentItem);
@@ -1343,7 +1392,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   backToAssessment() {
-    this._currentActivity = "assessment";
+    this._currentActivity = 'assessment';
     this.back.emit(this._currentActivity);
   }
 
@@ -1362,22 +1411,22 @@ export class SubjectComponent implements OnInit, OnChanges {
   showTopicDetails(topic: any, subtopicId?: string, index?: number) {
     if (
       this.assessmentActive &&
-      this._currentBlock.selectionType === "AUTOMATED"
+      this._currentBlock.selectionType === 'AUTOMATED'
     ) {
       return;
     }
     this.showFilter = false;
-    let subtopicName = "";
+    let subtopicName = '';
     this.selectedTopic = topic;
     this.selectedSubtopicId = subtopicId;
     this.itemService.topicId = topic.topicId;
     this.itemService.subtopicId = topic.subtopicId;
     if (
       this.assessmentActive &&
-      this._currentBlock.selectionType === "AUTOMATED"
+      this._currentBlock.selectionType === 'AUTOMATED'
     ) {
       this.fetchItems(topic);
-      this.selectedSubtopic = "";
+      this.selectedSubtopic = '';
       this.clickedTopic = topic;
       // return;
     }
@@ -1393,7 +1442,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       });
     } else {
       this.fetchItems(topic);
-      this.selectedSubtopic = "";
+      this.selectedSubtopic = '';
       this.clickedTopic = topic;
       // console.log('selected topic', this.clickedTopic);
     }
@@ -1408,7 +1457,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     this.itemProps = itemTrail;
     this.itemUtil.currentItemTrail = itemTrail;
-    this.itemUtil.saveCurrentItemTrail()
+    this.itemUtil.saveCurrentItemTrail();
   }
 
   fetchItems(topic: any, subtopicId?: string) {
@@ -1417,6 +1466,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.pageNo = 0;
     this.pageSize = 20;
     this.currentTopic = topic;
+    this.currentExistingTopic = { ...topic };
     if (this.assessmentActive && this._sectionId) {
       this.itemService
         .fetchAllAssessmentItems(
@@ -1426,7 +1476,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           topic.topicId,
           subtopicId,
           this.pageNo,
-          this.pageSize
+          this.pageSize,
         )
         .subscribe(
           (value) => {
@@ -1441,7 +1491,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           (error: HttpErrorResponse) => {
             // console.log(error);
             this.loading_items = false;
-          }
+          },
         );
     } else {
       this.itemService
@@ -1450,7 +1500,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           topic?.topicId,
           subtopicId,
           this.pageNo,
-          this.pageSize
+          this.pageSize,
         )
         .subscribe(
           (value) => {
@@ -1458,7 +1508,7 @@ export class SubjectComponent implements OnInit, OnChanges {
             this.itemsPage.content.forEach((item) => {
               item.showFullItem = false;
               item.stimulusSafeHtml = this.domSanitizer.bypassSecurityTrustHtml(
-                this.itemService.sanitize(item.stimulus)
+                this.itemService.sanitize(item.stimulus),
               );
 
               // Store a plain string version for previewing
@@ -1470,7 +1520,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           (error: HttpErrorResponse) => {
             // console.log(error);
             this.loading_items = false;
-          }
+          },
         );
     }
   }
@@ -1479,7 +1529,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.loading_usage_history = true;
     this.modalReference = this.modal.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -1490,8 +1540,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
-      }
+        this.notifier.notify('error', error.error.message);
+      },
     );
 
     /* this.router.navigate([
@@ -1520,7 +1570,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           : this.subject.topics[0].topicId,
         this.selectedSubtopicId,
         this.pageNo,
-        this.pageSize
+        this.pageSize,
       )
       .subscribe(
         (value) => {
@@ -1532,7 +1582,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.loading_items = false;
-        }
+        },
       );
   }
 
@@ -1549,7 +1599,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         this.selectedTopic.topicId,
         this.selectedSubtopicId,
         this.pageNo,
-        this.pageSize
+        this.pageSize,
       )
       .subscribe(
         (value) => {
@@ -1561,7 +1611,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.loading_items = false;
-        }
+        },
       );
   }
 
@@ -1579,7 +1629,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   preview(item: any, i: number) {
     item.showingPreviewLoader = true;
-    
+
     if (this.previewData) {
       this.itemsPage.content[this.activePreviewItem].showFullItem = false;
       item.showingPreviewLoader = false;
@@ -1591,7 +1641,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         if (value) {
           this.activePreviewItem = i;
           this.previewData = value;
-          const sanitizedHtml = this.itemService.sanitize(this.previewData.stimulus);
+          const sanitizedHtml = this.itemService.sanitize(
+            this.previewData.stimulus,
+          );
           // this.previewData.stimulus =
           //   this.domSanitizer.bypassSecurityTrustHtml(sanitizedHtml);
           item.showFullItem = true;
@@ -1601,8 +1653,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       (err: HttpErrorResponse) => {
         item.showingPreviewLoader = false;
         //console.log(err);
-        this.notifier.notify("error", `${err.error.message}`);
-      }
+        this.notifier.notify('error', `${err.error.message}`);
+      },
     );
   }
 
@@ -1626,8 +1678,8 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     if (this.filterQuestionsScore < 0) {
       return this.notifier.notify(
-        "error",
-        "Please ensure the score is not a negative value!"
+        'error',
+        'Please ensure the score is not a negative value!',
       );
     }
 
@@ -1659,7 +1711,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .filterAssessmentItems(
           this._assessmentId,
           this._sectionId,
-          this.filterInformation
+          this.filterInformation,
         )
         .subscribe(
           (value) => {
@@ -1667,13 +1719,13 @@ export class SubjectComponent implements OnInit, OnChanges {
             this.loading_items = false;
             this.itemsPage = value;
             this.itemsPage.content.forEach(
-              (item) => (item.showFullItem = false)
+              (item) => (item.showFullItem = false),
             );
           },
           (error: HttpErrorResponse) => {
             this.loading_items = false;
-            this.notifier.notify("error", error.error.message);
-          }
+            this.notifier.notify('error', error.error.message);
+          },
         );
     } else {
       this.itemService.filterItems(this.filterInformation).subscribe(
@@ -1686,8 +1738,8 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           //console.log(error);
           this.loading_items = false;
-          this.notifier.notify("error", error.error.message);
-        }
+          this.notifier.notify('error', error.error.message);
+        },
       );
     }
   }
@@ -1697,20 +1749,20 @@ export class SubjectComponent implements OnInit, OnChanges {
     if (!this.newTopic.name.trim() || this.newTopic.name.trim().length < 5) {
       this.submitted = false;
       return this.notifier.notify(
-        "error",
-        "Please provide a valid topic name not less than 5 characters!"
+        'error',
+        'Please provide a valid topic name not less than 5 characters!',
       );
     }
 
     this.newTopic.subjectId = this.itemService.subjectId;
-    this.newTopic.name = this.newTopic.name.trim()
+    this.newTopic.name = this.newTopic.name.trim();
     this.itemService.createNewTopic(this.newTopic).subscribe(
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "You have successfully added a new topic!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'You have successfully added a new topic!',
           });
         }
         this.ngOnInit();
@@ -1720,33 +1772,36 @@ export class SubjectComponent implements OnInit, OnChanges {
       },
       (error: HttpErrorResponse) => {
         this.submitted = false;
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
   }
 
   saveSubTopic() {
     this.submitted = true;
 
-    if (!this.newSubtopic.name.trim() || this.newSubtopic.name.trim().length < 5) {
+    if (
+      !this.newSubtopic.name.trim() ||
+      this.newSubtopic.name.trim().length < 5
+    ) {
       this.submitted = false;
       return this.notifier.notify(
-        "error",
-        "Please provide a valid subtopic name not less than 5 characters!"
+        'error',
+        'Please provide a valid subtopic name not less than 5 characters!',
       );
     }
 
     this.newSubtopic.subjectId = this.itemService.subjectId;
     this.newSubtopic.topicId = this.currentTopic.topicId;
-    this.newSubtopic.name = this.newSubtopic.name.trim()
+    this.newSubtopic.name = this.newSubtopic.name.trim();
     // console.log(this.newSubtopic);
     this.itemService.createNewSubTopic(this.newSubtopic).subscribe(
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "You have successfully added a new topic!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'You have successfully added a new topic!',
           });
         }
         this.submitted = false;
@@ -1756,20 +1811,20 @@ export class SubjectComponent implements OnInit, OnChanges {
       },
       (error: HttpErrorResponse) => {
         this.submitted = false;
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
   }
 
   // open confirmation dialog when delete subtopic button is clicked
   openDeleteSubtopicConfirmationModal(
     deleteSubtopicConfirmationModal: any,
-    clickedTopic: any
+    clickedTopic: any,
   ) {
     this.clickedTopic = clickedTopic;
     this.modal.open(deleteSubtopicConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -1779,15 +1834,15 @@ export class SubjectComponent implements OnInit, OnChanges {
       .deleteSubTopic(
         this.itemService.subjectId,
         this.clickedTopic.topic.topicId,
-        this.clickedTopic.topicId
+        this.clickedTopic.topicId,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "The selected subtopic has been deleted successfully.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'The selected subtopic has been deleted successfully.',
+              icon: 'success',
             });
           }
           this.ngOnInit();
@@ -1795,22 +1850,22 @@ export class SubjectComponent implements OnInit, OnChanges {
         },
         (error: HttpErrorResponse) => {
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
           this.modal.dismissAll();
-        }
+        },
       );
   }
 
   sendData() {
     // console.log(this.itemUtil)
-    // return 
+    // return
 
-    this.itemUtil.passageId = "";
-    if (this._currentActivity === "addingItems") {
-      this._currentActivity = "addingNewItem";
+    this.itemUtil.passageId = '';
+    if (this._currentActivity === 'addingItems') {
+      this._currentActivity = 'addingNewItem';
       this.gotoNewItem.emit(this._currentActivity);
     } else {
       this.router.navigate([
@@ -1837,14 +1892,14 @@ export class SubjectComponent implements OnInit, OnChanges {
       // console.log(newItemTrail);
       this.itemProps = newItemTrail;
       this.itemUtil.currentItemTrail = newItemTrail;
-      this.itemUtil.saveCurrentItemTrail()
+      this.itemUtil.saveCurrentItemTrail();
     } else {
       this.itemProps = itemTrail;
       this.itemUtil.currentItemTrail = itemTrail;
-      this.itemUtil.saveCurrentItemTrail()
+      this.itemUtil.saveCurrentItemTrail();
     }
-    if (this._currentActivity === "addingItems") {
-      this._currentActivity = "addingNewItem";
+    if (this._currentActivity === 'addingItems') {
+      this._currentActivity = 'addingNewItem';
       this.gotoNewItem.emit(this._currentActivity);
     } else {
       this.router.navigate([`/itembank/subjects/${this.subjectName}/new-item`]);
@@ -1853,7 +1908,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   openNewTopicModal(newTopicModal?: any) {
-    if (this.currentUser.authorities.includes("ADMIN") && !this._currentBlock)
+    if (this.currentUser.authorities.includes('ADMIN') && !this._currentBlock)
       this.modal.open(newTopicModal, { centered: true });
   }
 
@@ -1878,12 +1933,12 @@ export class SubjectComponent implements OnInit, OnChanges {
   // open modal to confirm the deletion of a topic
   openDeleteTopicConfirmationModal(
     deleteTopicConfirmationModal: any,
-    topic: any
+    topic: any,
   ) {
     this.clickedTopic = topic;
     this.modal.open(deleteTopicConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -1895,9 +1950,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully deleted the selected Topic.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully deleted the selected Topic.',
+              icon: 'success',
             });
           }
           this.ngOnInit();
@@ -1905,12 +1960,12 @@ export class SubjectComponent implements OnInit, OnChanges {
         },
         (error: HttpErrorResponse) => {
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
           this.modal.dismissAll();
-        }
+        },
       );
   }
 
@@ -1921,12 +1976,12 @@ export class SubjectComponent implements OnInit, OnChanges {
   // open modal to confirm the delete action of an item
   openDeleteQuestionConfirmationModal(
     deleteQuestionConfirmationModal: any,
-    item: any
+    item: any,
   ) {
     this.questionIdMarkedForDeletion = item.itemId;
     this.modal.open(deleteQuestionConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -1936,9 +1991,9 @@ export class SubjectComponent implements OnInit, OnChanges {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
         }
         this.ngOnInit();
@@ -1953,12 +2008,12 @@ export class SubjectComponent implements OnInit, OnChanges {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.modal.dismissAll();
-      }
+      },
     );
   }
 
@@ -1971,10 +2026,11 @@ export class SubjectComponent implements OnInit, OnChanges {
       .renameTopic(topic, this.itemService.subjectId, this.currentTopic.topicId)
       .subscribe(
         (value) => {
+          this.currentExistingTopic = this.currentTopic.topicName;
           Swal.fire({
-            icon: "success",
-            title: "Congratulations!",
-            text: "You successfully changed the topic name",
+            icon: 'success',
+            title: 'Congratulations!',
+            text: 'You successfully changed the topic name',
           });
           this.modal.dismissAll();
           this.ngOnInit();
@@ -1983,11 +2039,11 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           this.submitted = false;
           Swal.fire({
-            title: "",
+            title: '',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
@@ -1996,30 +2052,30 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.submitted = true;
     let subtopic = {
       name: this.currentTopic.subtopicName.trim(),
-      code: "",
+      code: '',
     };
     this.subjectService
       .renameSubtopic(
         subtopic,
         this.itemService.subjectId,
         this.selectedTopic.topicId,
-        this.selectedSubtopicId
+        this.selectedSubtopicId,
       )
       .subscribe(
         (value) => {
           this.submitted = false;
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully renamed the selected subtopic.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully renamed the selected subtopic.',
+            icon: 'success',
           });
           this.modal.dismissAll();
           this.ngOnInit();
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -2039,36 +2095,36 @@ export class SubjectComponent implements OnInit, OnChanges {
   openSelectCopyLocationModal(
     copyQuestionModal: any,
     item: any,
-    itemId: string
+    itemId: string,
   ) {
     this.itemIdToBeCopied = itemId;
-    this.modal.open(copyQuestionModal, { centered: true, size: "md" });
+    this.modal.open(copyQuestionModal, { centered: true, size: 'md' });
   }
 
   openSelectMoveLocationModal(
     moveQuestionModal: any,
     item: any,
-    itemId: string
+    itemId: string,
   ) {
     this.itemIdToBeCopied = itemId;
     this.itemToMove = item;
-    this.modal.open(moveQuestionModal, { centered: true, size: "md" });
+    this.modal.open(moveQuestionModal, { centered: true, size: 'md' });
   }
 
   moveQuestion(movequestion: any) {
     // console.log(this.movedItems);
     this.moving = true;
-    console.log(this.itemToMove, "item to move");
-    console.log(this.movedItems, "moved item");
-    console.log(this.movedItems.subjectId, "move sub id");
-    console.log(this.itemService.subjectId, "item servive  sub id");
-    console.log(this.subjectId, "  sub id");
+    console.log(this.itemToMove, 'item to move');
+    console.log(this.movedItems, 'moved item');
+    console.log(this.movedItems.subjectId, 'move sub id');
+    console.log(this.itemService.subjectId, 'item servive  sub id');
+    console.log(this.subjectId, '  sub id');
     if (
       this.itemService.subjectId === this.movedItems.subjectId &&
       this.itemService.topicId === this.movedItems.topicId &&
       this.itemService.subtopicId === this.movedItems.subtopicId
     ) {
-      this.notifier.notify("error", "Cannot move item to the same location");
+      this.notifier.notify('error', 'Cannot move item to the same location');
       this.moving = false;
       return;
     }
@@ -2076,9 +2132,9 @@ export class SubjectComponent implements OnInit, OnChanges {
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "Item has been moved successfully!",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'Item has been moved successfully!',
+            icon: 'success',
           });
           this.ngOnInit();
           this.movedItems = new CopyMoveItems();
@@ -2089,7 +2145,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       (error: HttpErrorResponse) => {
         // console.log(error);
         this.moving = false;
-      }
+      },
     );
   }
 
@@ -2103,7 +2159,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.itemService.topicId === this.copiedItems.topicId &&
       this.itemService.subtopicId === this.copiedItems.subtopicId
     ) {
-      this.notifier.notify("error", "Cannot copy item to the same location");
+      this.notifier.notify('error', 'Cannot copy item to the same location');
       this.copying = false;
       return;
     }
@@ -2114,9 +2170,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "Item has been copied successfully!",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'Item has been copied successfully!',
+              icon: 'success',
             });
           }
           this.copying = false;
@@ -2127,7 +2183,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.copying = false;
-        }
+        },
       );
   }
 
@@ -2137,7 +2193,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.copiedItems.subtopicId = null; // Reset selected subtopic if needed
     this.copyDestinationTopicTree = []; // Clear topics array
     this.copyDestinationSubtopicTree = [];
-    console.log("called me");
+    console.log('called me');
     this.itemService
       .fetchSubjectTopicsTreeAdmin(this.copiedItems.subjectId)
       .subscribe(
@@ -2148,9 +2204,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           //console.log(error);
           if (error) {
-            this.notifier.notify("error", `${error.error.msg}`);
+            this.notifier.notify('error', `${error.error.msg}`);
           }
-        }
+        },
       );
   }
 
@@ -2165,9 +2221,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           //console.log(error);
           if (error) {
-            this.notifier.notify("error", `${error.error.msg}`);
+            this.notifier.notify('error', `${error.error.msg}`);
           }
-        }
+        },
       );
   }
 
@@ -2196,9 +2252,9 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.assessmentFilter.tagIds = tag.tagName;
     });
 
-    console.log(assessmentFilter, "assessment filteer");
+    console.log(assessmentFilter, 'assessment filteer');
     if (score < 0) {
-      this.notifier.notify("error", "Score cannot be negative");
+      this.notifier.notify('error', 'Score cannot be negative');
       this.submitted = false;
       return;
     }
@@ -2219,8 +2275,8 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     if (this.assessmentFilter.totalQuestions <= 0) {
       this.notifier.notify(
-        "error",
-        "total questions must be greater than zero"
+        'error',
+        'total questions must be greater than zero',
       );
       this.submitted = false;
       return;
@@ -2231,7 +2287,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         this.assessmentFilter,
         this._assessmentId,
         this._sectionId,
-        this._currentBlock.blockId
+        this._currentBlock.blockId,
       )
       .subscribe(
         (value) => {
@@ -2250,8 +2306,8 @@ export class SubjectComponent implements OnInit, OnChanges {
             };
             this.assessmentFilters.push(filter);
             this.notifier.notify(
-              "success",
-              "Filter was successfully implemented"
+              'success',
+              'Filter was successfully implemented',
             );
             this.modalReference.dismiss();
             //this.updateSelectedBlockFilterQuestionsCount();
@@ -2264,9 +2320,9 @@ export class SubjectComponent implements OnInit, OnChanges {
           }
         },
         (error: HttpErrorResponse) => {
-          this.notifier.notify("error", `${error.error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.submitted = false;
-        }
+        },
       );
   }
 
@@ -2292,15 +2348,15 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.assessmentPassageFilter.maxPassageItemsCount =
       this._currentBlock.totalQuestionsInPassage;
 
-    console.log(this.assessmentPassageFilter, "filter");
-    console.log(this._currentBlock, "current block");
+    console.log(this.assessmentPassageFilter, 'filter');
+    console.log(this._currentBlock, 'current block');
     // console.log(this.assessmentPassageFilter);
     this.assessmentService
       .newAssessmentPassageFilter(
         this._assessmentId,
         this._sectionId,
         this._currentBlock.blockId,
-        this.assessmentPassageFilter
+        this.assessmentPassageFilter,
       )
 
       /* .newAssessmentPassageFilter(
@@ -2318,8 +2374,8 @@ export class SubjectComponent implements OnInit, OnChanges {
             };
             this.assessmentFilters.push(passageFilter);
             this.notifier.notify(
-              "success",
-              "Passage Filter was successfully implemented"
+              'success',
+              'Passage Filter was successfully implemented',
             );
             this.modalReference.dismiss();
             //this.updateSelectedBlockFilterPassagesCount();
@@ -2332,9 +2388,9 @@ export class SubjectComponent implements OnInit, OnChanges {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.modalReference.closed;
-        }
+        },
       );
   }
 
@@ -2342,7 +2398,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     if (this.selectedQuestionIds.includes(itemId)) {
       this.selectedQuestionIds.splice(
         this.selectedQuestionIds.indexOf(itemId),
-        1
+        1,
       );
       this.addItemToAssessment.emit(this.selectedQuestionIds);
     } else {
@@ -2372,15 +2428,15 @@ export class SubjectComponent implements OnInit, OnChanges {
         this._assessmentId,
         this._sectionId,
         this._currentBlock.blockId,
-        assessmentFilter.filterId
+        assessmentFilter.filterId,
       )
       .subscribe(
         (value) => {
           if (value) this.submitted = false;
           Swal.fire({
-            title: "Congratulations!",
+            title: 'Congratulations!',
             text: `The selected block criteria has been deleted successfully.`,
-            icon: "success",
+            icon: 'success',
           });
           //this.ngOnInit();
           this.listAssessmentFilterBlocks();
@@ -2388,11 +2444,11 @@ export class SubjectComponent implements OnInit, OnChanges {
         (error: HttpErrorResponse) => {
           this.submitted = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
@@ -2403,7 +2459,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   onQuestionTypeChange(selectedItemType: string) {
-    if (selectedItemType.toLowerCase() == "any") {
+    if (selectedItemType.toLowerCase() == 'any') {
       this.assessmentFilter.itemType = null;
     } else {
       this.assessmentFilter.itemType = selectedItemType;
@@ -2411,7 +2467,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   onDiffLevelChange(selectedDiffLevel: string) {
-    if (selectedDiffLevel == "any") {
+    if (selectedDiffLevel == 'any') {
       this.assessmentFilter.difficultyLevel = null;
     } else {
       this.assessmentFilter.difficultyLevel = parseInt(selectedDiffLevel);

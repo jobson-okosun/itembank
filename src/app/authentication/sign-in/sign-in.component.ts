@@ -4,9 +4,12 @@ import { AuthenticationService } from '../authentication.service';
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   OnChanges,
   OnInit,
+  QueryList,
   SimpleChanges,
+  ViewChildren,
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -25,9 +28,14 @@ declare const MathJax: any;
 })
 export class SignInComponent implements OnInit, AfterViewInit {
   private readonly notifier: NotifierService;
+
   // Login Form
   loginForm!: FormGroup;
   schedulerLoginForm!: FormGroup;
+
+  //OTP Form
+  otpForm!: FormGroup;
+
   submitted = false;
   fieldTextType!: boolean;
   error_msg = '';
@@ -39,7 +47,10 @@ export class SignInComponent implements OnInit, AfterViewInit {
   error: boolean = false;
 
   itembankForm: boolean = true;
-  showAppAssets = environment.showAppAssets
+  showAppAssets = environment.showAppAssets;
+
+  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
+  isSubmittingOtp: boolean = false;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,7 +58,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
     private notifierService: NotifierService,
     private router: Router,
     private userService: UserService,
-    private schedulerAccountService: SchedulerAccountService
+    private schedulerAccountService: SchedulerAccountService,
   ) {
     this.notifier = notifierService;
   }
@@ -65,10 +76,21 @@ export class SignInComponent implements OnInit, AfterViewInit {
       username: ['', [Validators.required]],
       password: ['', Validators.required],
     });
+
+    /**
+     * OTP Form group
+     */
+    this.otpForm = this.formBuilder.group({
+      otp: ['', [Validators.required]],
+    });
   }
 
   ngAfterViewInit(): void {
     this.renderMath();
+
+    // Access elements as an array
+    const inputsArray = this.otpInputs.toArray();
+    console.log('Total OTP inputs:', inputsArray.length);
   }
 
   // convenience getter for easy access to form fields
@@ -157,7 +179,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
           this.submitted = false;
 
           /* console.log(err); */
-        }
+        },
       );
     }
   }
@@ -196,9 +218,42 @@ export class SignInComponent implements OnInit, AfterViewInit {
           this.error_msg = err.error;
           this.submitted = false;
           // console.log(err);
-        }
+        },
       );
     }
+  }
+
+  moveFocus(event: KeyboardEvent, index: number) {
+    const inputs = this.otpInputs.toArray();
+
+    // Example: Move focus to next input if value is entered
+    if (event.key !== 'Backspace' && index < inputs.length - 1) {
+      inputs[index + 1].nativeElement.focus();
+    } else if (event.key === 'Backspace' && index > 0) {
+      inputs[index - 1]?.nativeElement.focus();
+    }
+  }
+
+  // Check if all OTP input has a value
+  isOtpComplete(): boolean {
+    if (!this.otpInputs) return false;
+    return this.otpInputs
+      .toArray()
+      .every((input) => input.nativeElement.value.length === 1);
+  }
+
+  // Get the combined string
+  getOtpValue(): string {
+    return this.otpInputs
+      .toArray()
+      .map((input) => input.nativeElement.value)
+      .join('');
+  }
+
+  submitOtp() {
+    this.isSubmittingOtp = true;
+    const otpValue = this.getOtpValue();
+    console.log('OTP: ', otpValue);
   }
 
   /**
@@ -282,7 +337,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
         const target = event.target as HTMLElement;
         if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            '.math-expression'
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 

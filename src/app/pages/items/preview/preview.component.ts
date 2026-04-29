@@ -25,9 +25,13 @@ export class PreviewComponent implements OnInit {
   @Input() formTypePreview = '';
   @Input() previewData: any; //SingleChoiceModel;
   @Input() itemTrailInfo: any;
+  @Input() showDeleteBtnInProfileActivitiesQuestionPreview: boolean = true;
+  @Input() showEditBtnInProfileActivitiesQuestionPreview: boolean = true;
   @Output() hidePreview = new EventEmitter<boolean>(false);
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
 
   answer: string;
 
@@ -82,18 +86,18 @@ export class PreviewComponent implements OnInit {
     private userService: UserService,
     private recycleService: RecycleService,
     private notificationService: NotificationService,
-    private notifier: NotifierService
+    private notifier: NotifierService,
   ) {}
 
   ngOnInit(): void {
+    console.log('PREVIEW QUESTION/PASSAGE:: ', this.previewData);
     this.currentUser = this.userService.getCurrentUser();
     this.subjectId = this.itemService.subjectId;
     this.assessmentActive = this.itemService.assessmentActive;
     this.recycleComponentActive = this.recycleService.recycleActive;
-    
-    
+
     this.answer = this.previewData.scoringOption.answers[0];
-    console.log(this.previewData)
+    console.log(this.previewData);
   }
 
   openUsageHistoryModal(itemUsageModal: any, itemId: string) {
@@ -102,16 +106,19 @@ export class PreviewComponent implements OnInit {
       centered: true,
       size: 'md',
     });
-    this.itemService.fetchItemUsageCount(itemId).subscribe((value) => {
-      if(value){
-        this.itemUsageHistory = value;
+    this.itemService.fetchItemUsageCount(itemId).subscribe(
+      (value) => {
+        if (value) {
+          this.itemUsageHistory = value;
+          this.loading_usage_history = false;
+        }
+      },
+      (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-      }
-    }, (error: HttpErrorResponse) => {
-      this.loading_usage_history = false;
-      this.notifier.notify('error', error.error.message);
-    })
-    
+        this.notifier.notify('error', error.error.message);
+      },
+    );
+
     /* this.router.navigate([
       '/examalpha/subjects/' +
         this.subject_id +
@@ -134,7 +141,7 @@ export class PreviewComponent implements OnInit {
             type: `${this.previewData.type}`,
             id: `${this.previewData.id}`,
           },
-        }
+        },
       );
     } else {
       this.returnPreviewData.emit(this.previewData);
@@ -144,7 +151,7 @@ export class PreviewComponent implements OnInit {
   review() {
     if (this.previewData.id) {
       //this.returnPreviewData.emit(this.previewData);
-      
+
       this.router.navigate(
         ['/examalpha/subjects/' + this.previewData.subjectId + '/edit-item'],
         {
@@ -152,7 +159,7 @@ export class PreviewComponent implements OnInit {
             type: `${this.previewData.type}`,
             id: `${this.previewData.id}`,
           },
-        }
+        },
       );
     } else {
       this.returnPreviewData.emit(this.previewData);
@@ -168,9 +175,9 @@ export class PreviewComponent implements OnInit {
   }
 
   openDeleteItemModal(deleteConfirmationModal: any, itemId: any) {
-    console.log(this.previewData, "preview data")
+    console.log(this.previewData, 'preview data');
     this.selectedItemId = itemId;
-    console.log(itemId, " item id")
+    console.log(itemId, ' item id');
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
       size: 'md',
@@ -179,24 +186,24 @@ export class PreviewComponent implements OnInit {
 
   openDeletePassageItemModal(
     deletePassageQuestionConfirmationModal: any,
-    itemId: any
+    itemId: any,
   ) {
     this.selectedItemId = itemId;
 
-    console.log(this.previewData, "preview pass data")
-    console.log(itemId, " item id")
+    console.log(this.previewData, 'preview pass data');
+    console.log(itemId, ' item id');
     this.modalRef = this.modalService.open(
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
         size: 'md',
-      }
+      },
     );
   }
 
   deleteItem() {
     this.processing_delete = true;
-   
+
     this.itemService.deleteItem(this.selectedItemId).subscribe(
       (value) => {
         if (value) {
@@ -207,7 +214,7 @@ export class PreviewComponent implements OnInit {
           });
           this.refresh();
         }
-       
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },
@@ -219,12 +226,12 @@ export class PreviewComponent implements OnInit {
         });
         this.processing_delete = false;
         this.modalService.dismissAll();
-      }
+      },
     );
   }
 
   refresh() {
-    this.reload.emit("reload");
+    this.reload.emit('reload');
   }
 
   deletePassageItem() {
@@ -253,7 +260,7 @@ export class PreviewComponent implements OnInit {
             text: `${error.error.message}`,
             icon: 'error',
           });
-        }
+        },
       );
   }
 }

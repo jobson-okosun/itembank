@@ -1,46 +1,46 @@
-import { MatchingRuleEnums } from "./../models/matching-rule-enums";
+import { MatchingRuleEnums } from './../models/matching-rule-enums';
 import {
   Component,
   OnInit,
   Input,
   Output,
   EventEmitter,
-  AfterViewInit,
   NgZone,
   ViewChild,
   ElementRef,
   OnDestroy,
-} from "@angular/core";
-import { SingleChoiceModel } from "./model/single-response-model.model";
-import { Option } from "../models/option";
-import { ItemTagsDtos } from "../models/item-tags-dtos";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { ItemHttpService } from "../item-http.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { ItemTypes } from "../models/item-types";
-import Swal from "sweetalert2";
-import { DefaultItemProperties } from "../models/default-item-properties";
-import { UserService } from "src/app/shared/user.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { NotifierService } from "angular-notifier";
-import { Location } from "@angular/common";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { RejectionReason } from "../models/rejection-reason";
-import { ActivatedRoute, Router } from "@angular/router";
-import { SinglePassageModel } from "../passage-item/model/single-passage-model.model";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
+  SimpleChanges,
+} from '@angular/core';
+import { SingleChoiceModel } from './model/single-response-model.model';
+import { Option } from '../models/option';
+import { ItemTagsDtos } from '../models/item-tags-dtos';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { ItemHttpService } from '../item-http.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { ItemTypes } from '../models/item-types';
+import Swal from 'sweetalert2';
+import { DefaultItemProperties } from '../models/default-item-properties';
+import { UserService } from 'src/app/shared/user.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { NotifierService } from 'angular-notifier';
+import { Location } from '@angular/common';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RejectionReason } from '../models/rejection-reason';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 // import { Editor } from "dist/velzon/tinymce/tinymce";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
-import { environment } from "src/environments/environment";
+import { ItemTagComponent } from '../item-tag/item-tag.component';
+import { environment } from 'src/environments/environment';
 
 declare var tinymce: any;
 declare const MathJax: any;
 @Component({
-  selector: "app-single-response",
-  templateUrl: "./single-response.component.html",
-  styleUrls: ["./single-response.component.scss"],
+  selector: 'app-single-response',
+  templateUrl: './single-response.component.html',
+  styleUrls: ['./single-response.component.scss'],
 })
 export class SingleResponseComponent implements OnInit, OnDestroy {
   @Input() itemTrail!: any;
@@ -51,9 +51,10 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   @Input() formType!: string;
   @Output() savedItem = new EventEmitter();
   @Output() getTopicQuestions = new EventEmitter();
+  @Output() stimulus = new EventEmitter<string>();
 
-  @ViewChild("eqEditorModal") eqEditorModal: ElementRef;
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('eqEditorModal') eqEditorModal: ElementRef;
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   breadCrumbItems!: Array<{}>;
 
@@ -89,7 +90,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
   displayEquationEditor: boolean = false;
   showPassage: boolean = false;
-  passageId: string = "";
+  passageId: string = '';
   passageForPreview: SinglePassageModel;
   processingRejection: boolean = false;
   itemUtil_: ItemUtilitiesService = null;
@@ -105,7 +106,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private ar: ActivatedRoute,
-    private ngZone: NgZone
+    private ngZone: NgZone,
   ) {
     this.itemUtil_ = itemUtil;
   }
@@ -118,11 +119,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit(): void {
+    this.passageId = this.ar.snapshot.params['passageId'];
+    console.log('PASS ID: ', this.passageId);
+    console.log('SHOW PASS: ', this.showPassage);
+
     // console.log("hello");
     // this.passageId = this.ar.snapshot.params["passageId"];
     // console.log(this.passageId);
 
-  // console.log(this.recycleService.recycleActive)
+    // console.log(this.recycleService.recycleActive)
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
@@ -134,7 +139,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     }
 
     if (!this.selectedItemType) {
-      this.selectedItemType = "Multiple choice";
+      this.selectedItemType = 'Multiple choice';
     }
     this.currentUser = this.userService.getCurrentUser();
     this.scoringType = Object.values(ScoringTypeEnum);
@@ -214,9 +219,9 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup,
 
@@ -224,7 +229,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
 
   setShowPassage(value: boolean) {
@@ -234,8 +239,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     return this.displayEquationEditor;
   }
 
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
   click() {
-    console.log("clikced");
+    console.log('clikced');
   }
 
   setup(editor: any) {
@@ -243,47 +252,47 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: async (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             const response = await fetch(
               `${environment.developmentIP}/itembank/items/convert_to_latex`,
               {
-                credentials: "include",
+                credentials: 'include',
                 headers: {
-                  "Content-Type": "application/json",
+                  'Content-Type': 'application/json',
                 },
-                method: "POST",
+                method: 'POST',
                 body: JSON.stringify({ text: updatedLatex }),
-              }
+              },
             );
             response.json().then((data) => {
-              console.log(data.base64Equation, "data");
+              console.log(data.base64Equation, 'data');
               const value = data.base64Equation;
               const content = `<img src="${
-                "data:image/jpg;base64," + value
+                'data:image/jpg;base64,' + value
               }" class="math-expression" data-latex="${updatedLatex}">`;
               editor.insertContent(content);
               editor.selection.collapse(false);
@@ -301,48 +310,48 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
-        this.convertLatexToBase64,
+        (this.convertLatexToBase64,
           editor.windowManager.open({
-            title: "Insert Equation",
-            size: "normal",
+            title: 'Insert Equation',
+            size: 'normal',
             body: {
-              type: "panel",
+              type: 'panel',
               items: [
                 {
-                  type: "htmlpanel",
+                  type: 'htmlpanel',
                   html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
                 },
               ],
             },
             buttons: [
-              { type: "cancel", name: "cancel", text: "Cancel" },
-              { type: "submit", name: "insert", text: "Insert", primary: true },
+              { type: 'cancel', name: 'cancel', text: 'Cancel' },
+              { type: 'submit', name: 'insert', text: 'Insert', primary: true },
             ],
             onSubmit: async (api) => {
-              const mathField = document.getElementById("mathfield") as any;
+              const mathField = document.getElementById('mathfield') as any;
               const latex = mathField.getValue();
 
               // Create span for the math equations
@@ -364,19 +373,19 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
               const response = await fetch(
                 `${environment.developmentIP}/itembank/items/convert_to_latex`,
                 {
-                  credentials: "include",
+                  credentials: 'include',
                   headers: {
-                    "Content-Type": "application/json",
+                    'Content-Type': 'application/json',
                   },
-                  method: "POST",
+                  method: 'POST',
                   body: JSON.stringify({ text: latex }),
-                }
+                },
               );
               response.json().then((data) => {
-                console.log(data.base64Equation, "data");
+                console.log(data.base64Equation, 'data');
                 const value = data.base64Equation;
                 const content = `<img src="${
-                  "data:image/jpg;base64," + value
+                  'data:image/jpg;base64,' + value
                 }" class="math-expression" data-latex="${latex}">`;
                 editor.insertContent(content);
                 editor.selection.collapse(false);
@@ -388,18 +397,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
               api.close();
             },
-          });
+          }));
       },
     });
   }
 
-  
-
-
   convertLatexToBase64 = () => {
     return new Promise((resolve) => {
       // Perform some action
-      const result = "Data from Angular";
+      const result = 'Data from Angular';
       resolve(result);
     });
   };
@@ -414,7 +420,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   }
   addOption(index: number): Option {
     let option: Option = new Option();
-    (option.label = `[option${index + 1}]`), (option.value = index + "");
+    ((option.label = `[option${index + 1}]`), (option.value = index + ''));
     return option;
   }
 
@@ -425,7 +431,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   deleteOption(index: number) {
     this.options.splice(index, 1);
     this.options.map((option, i) => {
-      option.value = i + "";
+      option.value = i + '';
     });
     if (this.selectedAnswers.has(index)) {
       this.selectedAnswers.delete(index);
@@ -470,14 +476,14 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId
       ? this.itemUtil.currentItemTrail.subtopicId
-      : "";
+      : '';
 
     item.images = this.defaultItemProperties.images;
 
     item.itemType = ItemTypes.MCQ;
 
     this.options.forEach((option, index) => {
-      option.value = index + "";
+      option.value = index + '';
       /* if (this.selectedAnswers.has(index)) {
         option.value = index + '';
       } */
@@ -501,7 +507,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         item.scoringOption.answers.push(value + '');
       } else {
         item.scoringOption.answers = []; */
-      item.scoringOption.answers.push(value + "");
+      item.scoringOption.answers.push(value + '');
       //}
     });
 
@@ -519,6 +525,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     if (!result) {
       return;
     }
+
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     //this.publishingItem = true;
 
     /* if (item.scoringOption.answers.length == 0) {
@@ -529,7 +544,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     } */
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.moderationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -541,7 +556,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     //this.publishLoader();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
     //this.back();
   }
 
@@ -553,12 +568,20 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveAndNew(form?: any) {
@@ -568,6 +591,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     if (!result) {
       return;
     }
+
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     this.publishingItem = true;
 
     if (this.moderationStatus) {
@@ -576,7 +608,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new", "save");
+    this.saveFunction(item, 'save_and_new', 'save');
   }
 
   saveFunction(item: any, action?: string, type?: string) {
@@ -584,15 +616,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     this.publishLoader();
 
     let msg: string;
-    if (type == "save") {
+    if (type == 'save') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.moderationStatus
     ) {
       msg = `item successfully sent for moderation`;
@@ -606,20 +638,20 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         this.publishingItem = false;
         Swal.close();
         Swal.fire({
-          title: "Congratulations!",
-          icon: "success",
+          title: 'Congratulations!',
+          icon: 'success',
           html: msg,
         });
         if (
-          action === "save" ||
-          action == "draft" ||
-          action == "save-to-passage"
+          action === 'save' ||
+          action == 'draft' ||
+          action == 'save-to-passage'
         ) {
           this.back();
         }
 
-        if (action == "save_and_new" || action !== "") {
-          console.log("hello");
+        if (action == 'save_and_new' || action !== '') {
+          console.log('hello');
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -638,11 +670,11 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         this.publishingItem = false;
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           text: `${error.error.message}`,
-          title: "Failed!",
+          title: 'Failed!',
         });
-      }
+      },
     );
   }
 
@@ -667,7 +699,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
     // console.log(itemForm);
 
-    this.saveFunction(item, "save-to-passage", "passage-item");
+    this.saveFunction(item, 'save-to-passage', 'passage-item');
 
     /* this.createItem.createMultipleChoiceItem(item).subscribe(
       (value) => {
@@ -698,7 +730,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     }
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
           this.moderationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
@@ -710,13 +742,13 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
 
         break;
 
@@ -728,16 +760,16 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
         }
         this.back();
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
   }
 
@@ -761,11 +793,11 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   editPassage(e: Event) {
     e.preventDefault();
     this.router.navigate([
-      "examalpha/passages/subjects/" +
+      'examalpha/passages/subjects/' +
         this.passageService.subjectId +
-        "/passage/" +
+        '/passage/' +
         this.editData.passageId +
-        "/edit-passage",
+        '/edit-passage',
     ]);
   }
 
@@ -774,14 +806,14 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   }
 
   viewPassage(passageModal: any) {
-    this.passageService.fetchSinglePassage("passage_id").subscribe(
+    this.passageService.fetchSinglePassage('passage_id').subscribe(
       (value) => {
         this.itemPassage = value;
         this.showPassageModal(passageModal);
       },
       (error: HttpErrorResponse) => {
         // console.log(error);
-      }
+      },
     );
   }
 
@@ -801,7 +833,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: msg ? msg : "Saving your question, Please Wait...",
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -814,13 +846,13 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   }
 
   approveQuestion(itemForm: any) {
-    this.updateItem(itemForm, "approve");
+    this.updateItem(itemForm, 'approve');
   }
 
   openRejectionReasonModal(rejectionReasonModal: any) {
     this.modalService.open(rejectionReasonModal, {
       centered: true,
-      size: "lg",
+      size: 'lg',
     });
   }
 
@@ -838,9 +870,9 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
+              title: 'Congratulations!',
               text: `The question was rejected sucessfully.`,
-              icon: "success",
+              icon: 'success',
             });
           }
           //this.notificationService.setNotifications();
@@ -850,8 +882,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.processingRejection = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -862,9 +894,9 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
   openConfirmationModal(content: any) {
     this.modalService.open(content, {
-      ariaLabelledBy: "modal-basic-title",
+      ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: "modal-holder",
+      windowClass: 'modal-holder',
     });
   }
 

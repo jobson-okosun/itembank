@@ -13,7 +13,10 @@ import { Injectable } from '@angular/core';
 import { SignIn } from './sign-in/model/sign-in';
 import { Role } from '../shared/enum/role';
 import { UserService } from '../shared/user.service';
-import { ActivateUsernamePassword, IResourceCreated } from '../pages/scheduler/models/resource-created';
+import {
+  ActivateUsernamePassword,
+  IResourceCreated,
+} from '../pages/scheduler/models/resource-created';
 import { SecureStorageService } from '../services/secure-storage.service';
 
 @Injectable({
@@ -103,6 +106,7 @@ export class AuthenticationService {
           value.authority = Role[value.authorities[0]];
 
           this.userService.setCurrentUser(value);
+
           this.secureStorage.setItem(environment.secureStorageId, value);
           return value;
         })
@@ -129,11 +133,8 @@ export class AuthenticationService {
 
   getSchedulerRefreshToken(): Observable<any> {
     // const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/auth_token/auth_refresh/refresh-token`
-    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/authentication/account/refresh`
-    return this.http.get(
-      url,
-      { withCredentials: true }
-    );
+    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/authentication/account/refresh`;
+    return this.http.get(url, { withCredentials: true });
   }
 
   doPasswordReset(email: string): Observable<IResourceCreated> {
@@ -150,11 +151,12 @@ export class AuthenticationService {
     );
   }
 
-  updateExistingUserUsernameAndPassword(payload: ActivateUsernamePassword): Observable<IResourceCreated> {
+  updateExistingUserUsernameAndPassword(
+    payload: ActivateUsernamePassword
+  ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.developmentIP}/accounts/new-user-account/set-credentials`,
       payload
     );
   }
-
 }

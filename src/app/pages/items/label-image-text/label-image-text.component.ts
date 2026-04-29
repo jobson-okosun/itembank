@@ -7,34 +7,37 @@ import {
   ViewChild,
   ElementRef,
   OnDestroy,
-} from "@angular/core";
-import { DefaultItemProperties } from "../models/default-item-properties";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { MatchingRuleEnums } from "../models/matching-rule-enums";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+} from '@angular/core';
+import { DefaultItemProperties } from '../models/default-item-properties';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { MatchingRuleEnums } from '../models/matching-rule-enums';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   CdkDragDrop,
   CdkDragEnd,
   moveItemInArray,
   transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { RejectionReason } from "../models/rejection-reason";
-import { NewClozeItem } from "../cloze/model/new-cloze-item.model";
-import { Images } from "../models/images";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { ItemTagsDtos } from "../models/item-tags-dtos";
-import { Option } from "../models/option";
-import Swal from "sweetalert2";
-import { ItemHttpService } from "../item-http.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { Location } from "@angular/common";
-import { ItemTypes } from "../models/item-types";
-import { NewLabelImageText } from "./models/label-image-text-model";
-import { NotifierService } from "angular-notifier";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
+} from '@angular/cdk/drag-drop';
+import { RejectionReason } from '../models/rejection-reason';
+import { NewClozeItem } from '../cloze/model/new-cloze-item.model';
+import { Images } from '../models/images';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { ItemTagsDtos } from '../models/item-tags-dtos';
+import { Option } from '../models/option';
+import Swal from 'sweetalert2';
+import { ItemHttpService } from '../item-http.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Location } from '@angular/common';
+import { ItemTypes } from '../models/item-types';
+import { NewLabelImageText } from './models/label-image-text-model';
+import { NotifierService } from 'angular-notifier';
+import { ItemTagComponent } from '../item-tag/item-tag.component';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { ActivatedRoute } from '@angular/router';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -60,19 +63,20 @@ export class LabelImageText {
 } */
 
 @Component({
-  selector: "app-label-image-text",
-  templateUrl: "./label-image-text.component.html",
-  styleUrls: ["./label-image-text.component.scss"],
+  selector: 'app-label-image-text',
+  templateUrl: './label-image-text.component.html',
+  styleUrls: ['./label-image-text.component.scss'],
 })
 export class LabelImageTextComponent implements OnInit, OnDestroy {
   @Input() selectedItemType!: string;
   @Input() formType!: string;
   @Input() editData!: NewLabelImageText;
   @Output() savedItem = new EventEmitter();
+  @Output() stimulus = new EventEmitter<string>();
 
-  @ViewChild("imgUpload") imgUpload: ElementRef;
-  @ViewChild("imageRef") imageElement: ElementRef;
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('imgUpload') imgUpload: ElementRef;
+  @ViewChild('imageRef') imageElement: ElementRef;
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   previewData: NewLabelImageText = new NewLabelImageText();
   currentUser: Account;
@@ -100,6 +104,10 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   private imageHeight: number;
   processingRejection: boolean = false;
 
+  passageId: string = '';
+  showPassage: boolean = false;
+  passageForPreview: SinglePassageModel;
+
   dropdownLabels: Array<{
     x: number;
     y: number;
@@ -112,19 +120,19 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     {
       x: 50,
       y: 50,
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: null,
 
-      id: "1",
+      id: '1',
       item: null,
     },
     {
       x: 80,
       y: 80,
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: null,
 
-      id: "2",
+      id: '2',
       item: null,
     },
   ];
@@ -133,16 +141,16 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
   constructor(
     public itemUtil: ItemUtilitiesService,
@@ -150,7 +158,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private itemService: ItemHttpService,
     private location: Location,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private ar: ActivatedRoute,
+    private passageService: AllPassagesService,
   ) {}
 
   // ngAfterViewInit() {
@@ -163,6 +173,20 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   // }
 
   ngOnInit(): void {
+    this.passageId = this.ar.snapshot.params['passageId'];
+    console.log('PASS ID: ', this.passageId);
+    console.log('SHOW PASS: ', this.showPassage);
+
+    if (this.passageId) {
+      this.passageService.fetchSinglePassage(this.passageId).subscribe({
+        next: (value) => {
+          this.passageForPreview = value;
+
+          console.log('PASS PREVIEW: ', this.passageForPreview);
+        },
+      });
+    }
+
     this.currentUser = this.authService.getCurrentUser();
     this.scoringType = Object.values(ScoringTypeEnum);
     this.matchingRules = Object.values(MatchingRuleEnums);
@@ -171,13 +195,12 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.subjectModerationStatus =
       this.itemService.currentSubjectModerationEnabled;
 
-    this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces =
-      true;
+    this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces = true;
 
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {
-      console.log("edit data");
+      console.log('edit data');
       console.log(this.editData);
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =
@@ -215,9 +238,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         height: this.editData.images[0].height,
         url: this.editData.images[0].url,
         width: this.editData.images[0].width,
-        altText: "",
-        hoverText: "",
-        label: "",
+        altText: '',
+        hoverText: '',
+        label: '',
       };
 
       // this.dropdownLabels = this.dropdownLabels.map((label, index) => ({
@@ -233,11 +256,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
           x: position.x || 50, // Default to 50 if not provided
           y: position.y || 50, // Default to 50 if not provided
 
-          inputValue: this.editData.options[index].label || "",
+          inputValue: this.editData.options[index].label || '',
           id: index.toString(),
           item: null,
           selectedOptionIndex: null,
-        })
+        }),
       );
 
       this.tags = this.editData.itemTagDTOs;
@@ -255,40 +278,44 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     //this.createOption();
   }
 
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
   setup(editor: any) {
     let activeEquation: HTMLElement | null = null;
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering updated"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering updated'))
+              .catch((err) => console.error('Math rendering failed:', err));
           }
 
           activeEquation = null;
@@ -297,60 +324,60 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
         editor.windowManager.open({
-          title: "Insert Equation",
-          size: "normal",
+          title: 'Insert Equation',
+          size: 'normal',
           body: {
-            type: "panel",
+            type: 'panel',
             items: [
               {
-                type: "htmlpanel",
+                type: 'htmlpanel',
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: "cancel", name: "cancel", text: "Cancel" },
-            { type: "submit", name: "insert", text: "Insert", primary: true },
+            { type: 'cancel', name: 'cancel', text: 'Cancel' },
+            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById("mathfield") as any;
+            const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent("&nbsp;");
+            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering complete"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering complete'))
+              .catch((err) => console.error('Math rendering failed:', err));
 
             api.close();
           },
@@ -380,6 +407,10 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   onChange() {}
+
+  setShowPassage(value: boolean) {
+    this.showPassage = value;
+  }
 
   onUploadError(event: any) {
     // console.log(event);
@@ -421,7 +452,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   openImageUploadModal(imageUploadModal: any) {
-    this.modalService.open(imageUploadModal, { centered: true, size: "lg" });
+    this.modalService.open(imageUploadModal, { centered: true, size: 'lg' });
   }
 
   addResponsePosition() {
@@ -468,7 +499,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   buildItem(itemForm?: any) {
     if (!this.imageElement.nativeElement) {
-      this.notifierService.notify("error", "Please upload an image");
+      this.notifierService.notify('error', 'Please upload an image');
     }
     const imageRect = this.imageElement.nativeElement.getBoundingClientRect();
     let item: NewLabelImageText = new NewLabelImageText();
@@ -492,13 +523,13 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     item.topicId = this.itemUtil.currentItemTrail.topicId;
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId
       ? this.itemUtil.currentItemTrail.subtopicId
-      : "";
+      : '';
 
     item.images = this.defaultItemProperties.images;
 
     item.imageData = {
       altText: this.image.altText,
-      dimension: "",
+      dimension: '',
       height: imageRect.height,
       image: item.images[0].url,
       width: imageRect.width,
@@ -579,7 +610,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -592,7 +623,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     }
 
     this.publishLoader();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
   }
 
   recieveTag(tag: any) {
@@ -615,7 +646,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveItemToPassage(itemForm: any) {
@@ -630,7 +661,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.publishLoader();
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -644,7 +675,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
     item.topicId = this.itemUtil.currentItemTrail.topicId;
 
-    this.saveFunction(item, "passage-item");
+    this.saveFunction(item, 'passage-item');
   }
 
   saveAndNew(itemForm: any) {
@@ -666,7 +697,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   saveAndNewItem(itemForm: any) {
@@ -685,21 +716,21 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   saveFunction(item: any, type?: string) {
     let msg: string;
-    if (type == "save" || type === "save_and_new") {
+    if (type == 'save' || type === 'save_and_new') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       msg = `item successfully sent for moderation`;
@@ -712,17 +743,17 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         }
         // console.log(value);
         Swal.fire({
-          icon: "success",
+          icon: 'success',
           html: msg,
         });
         this.publishingItem = false;
         this.publishLoader();
 
-        if (type === "save" || type === "draft") {
+        if (type === 'save' || type === 'draft') {
           this.back();
         }
 
-        if (type == "save_and_new" || type !== "") {
+        if (type == 'save_and_new' || type !== '') {
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -732,30 +763,30 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
           this.image = {
             height: null,
-            url: "",
+            url: '',
             width: null,
-            altText: "",
-            hoverText: "",
-            label: "",
+            altText: '',
+            hoverText: '',
+            label: '',
           };
 
           this.dropdownLabels = [
             {
               x: 50,
               y: 50,
-              inputValue: "",
+              inputValue: '',
               selectedOptionIndex: null,
 
-              id: "1",
+              id: '1',
               item: null,
             },
             {
               x: 80,
               y: 80,
-              inputValue: "",
+              inputValue: '',
               selectedOptionIndex: null,
 
-              id: "2",
+              id: '2',
               item: null,
             },
           ];
@@ -775,10 +806,10 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
@@ -791,7 +822,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: "Saving your question, Please Wait...",
+        title: 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -807,8 +838,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, "edit data");
-    console.log(item, "built item");
+    console.log(this.editData, 'edit data');
+    console.log(item, 'built item');
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
@@ -817,10 +848,10 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    console.log("builtItem", item);
+    console.log('builtItem', item);
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
@@ -832,13 +863,13 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
 
         break;
 
@@ -850,9 +881,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
         }
         this.back();
@@ -862,19 +893,19 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
   approveQuestion(itemForm: any) {
-    this.updateItem(itemForm, "approve");
+    this.updateItem(itemForm, 'approve');
   }
 
   openRejectionReasonModal(rejectionModal: any) {
-    this.modalService.open(rejectionModal, { centered: true, size: "lg" });
+    this.modalService.open(rejectionModal, { centered: true, size: 'lg' });
   }
 
   submitRejection(questionRejectionForm: any) {
@@ -882,14 +913,14 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(event: MouseEvent, index: number) {
-    console.log("i am down");
+    console.log('i am down');
     console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   // While dragging
@@ -903,11 +934,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
       this.dropdownLabels[this.currentLabelIndex].x = Math.max(
         0,
-        Math.min(100, xPercent)
+        Math.min(100, xPercent),
       );
       this.dropdownLabels[this.currentLabelIndex].y = Math.max(
         0,
-        Math.min(100, yPercent)
+        Math.min(100, yPercent),
       );
 
       // console.log("Authoring Position:", this.dropdownLabels);
@@ -916,10 +947,10 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   // When mouse button is released
   onMouseUp() {
-    console.log("release");
+    console.log('release');
     this.isDragging = false;
-    document.removeEventListener("mousemove", this.onMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   onWindowResize() {
@@ -939,7 +970,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       x: Math.random() * 80, // Random position within bounds
       y: Math.random() * 80,
       item: null, // Initially no item is associated
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: 1,
     };
     this.dropdownLabels.push(newLabel);
@@ -947,16 +978,14 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   deleteLabel(index: number) {
     this.dropdownLabels.splice(index, 1);
-    this.notifierService.notify("success", "Label Deleted");
+    this.notifierService.notify('success', 'Label Deleted');
   }
-
-
 
   openConfirmationModal(content: any) {
     this.modalService.open(content, {
-      ariaLabelledBy: "modal-basic-title",
+      ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: "modal-holder",
+      windowClass: 'modal-holder',
     });
   }
   preProcess(pl, o) {
@@ -965,7 +994,6 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.itemUtil.previewItem = false
-     
-   }
+    this.itemUtil.previewItem = false;
+  }
 }

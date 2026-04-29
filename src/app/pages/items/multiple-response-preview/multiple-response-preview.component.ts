@@ -24,6 +24,8 @@ export class MultipleResponsePreviewComponent implements OnInit {
   @Input() itemTrailInfo: any;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
+  @Input() formType!: string;
+  @Input() selectedItemType!: string;
 
   answers: string[];
 
@@ -82,7 +84,7 @@ export class MultipleResponsePreviewComponent implements OnInit {
     this.answers = this.previewData.scoringOption.answers;
     this.recycleComponentActive = this.recycleService.recycleActive;
 
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     // console.log(this.previewData.options);
     // console.log(this.answers);
   }
@@ -147,7 +149,7 @@ export class MultipleResponsePreviewComponent implements OnInit {
           });
           this.refresh();
         }
-       
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

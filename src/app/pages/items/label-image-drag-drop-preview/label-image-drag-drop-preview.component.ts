@@ -6,32 +6,34 @@ import {
   OnInit,
   Output,
   ViewChild,
-} from "@angular/core";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { ItemHttpService } from "../item-http.service";
-import { CdkDragDrop, transferArrayItem } from "@angular/cdk/drag-drop";
-import { Option } from "../models/option";
-import { NewClozeItem } from "../cloze/model/new-cloze-item.model";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { RecycleService } from "../../recycle/recycle.service";
-import { Router } from "@angular/router";
-import { HttpErrorResponse } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import Swal from "sweetalert2";
-import { NotifierService } from "angular-notifier";
-import { UsageHistory } from "../models/usage-history";
+} from '@angular/core';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { ItemHttpService } from '../item-http.service';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Option } from '../models/option';
+import { NewClozeItem } from '../cloze/model/new-cloze-item.model';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { RecycleService } from '../../recycle/recycle.service';
+import { Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import Swal from 'sweetalert2';
+import { NotifierService } from 'angular-notifier';
+import { UsageHistory } from '../models/usage-history';
 
 @Component({
-  selector: "app-label-image-drag-drop-preview",
-  templateUrl: "./label-image-drag-drop-preview.component.html",
-  styleUrls: ["./label-image-drag-drop-preview.component.scss"],
+  selector: 'app-label-image-drag-drop-preview',
+  templateUrl: './label-image-drag-drop-preview.component.html',
+  styleUrls: ['./label-image-drag-drop-preview.component.scss'],
 })
 export class LabelImageDragDropPreviewComponent implements OnInit {
   @Input() previewData!: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
-  @ViewChild("previewImage") previewImage!: ElementRef;
+  @ViewChild('previewImage') previewImage!: ElementRef;
   @Input() component!: string;
   @Output() reload = new EventEmitter();
 
@@ -39,12 +41,12 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   assessmentActive: boolean;
   showAnswer: boolean = false;
   options: Option[] = [
-    { label: "option A", value: "0" },
-    { label: "option B", value: "1" },
-    { label: "option C", value: "2" },
-    { label: "option D", value: "3" },
+    { label: 'option A', value: '0' },
+    { label: 'option B', value: '1' },
+    { label: 'option C', value: '2' },
+    { label: 'option D', value: '3' },
   ];
-  answers: any[] = ["0", "1", "2", "3"];
+  answers: any[] = ['0', '1', '2', '3'];
   containerList: string[] = [];
   containers: any[] = [];
   previewImageWidth: any;
@@ -75,7 +77,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
 
   ngAfterViewInit() {
     const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
-    console.log("Preview Image Dimensions:", imageRect.width, imageRect.height);
+    console.log('Preview Image Dimensions:', imageRect.width, imageRect.height);
 
     // Validate response positions
     this.previewData.responsePositions.forEach((position, index) => {
@@ -96,16 +98,16 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     this.containerList = this.getContainers();
     this.recycleComponentActive = this.recycleService.recycleActive;
 
-    this.isEditPreview = this.router.url.includes("edit-item");
+    this.isEditPreview = this.router.url.includes('edit-item');
     this.subjectName = this.itemService.subjectName;
 
-    this.hiddenAnswers = new Array(this.previewData.scoringOption.answers.length).fill('');
+    this.hiddenAnswers = new Array(
+      this.previewData.scoringOption.answers.length
+    ).fill('');
 
     console.log(this.previewData);
   }
-  review(){
-    
-  }
+  review() {}
 
   backToEdit() {
     this.itemUtil.previewItem = false;
@@ -175,7 +177,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -198,7 +200,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -211,7 +213,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -222,9 +224,9 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -234,8 +236,8 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -255,9 +257,9 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -270,9 +272,9 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -282,7 +284,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -293,13 +295,10 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
-
-    
   }
-
 
   onDragStart(event: DragEvent, item: string) {
     // this.draggedItem = item;

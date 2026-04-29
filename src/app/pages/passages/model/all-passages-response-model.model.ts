@@ -19,11 +19,11 @@ export class AllPassagesResponseModel {
           tagId: string;
           tagTypeId: string;
           tagName: string;
-        }
+        },
       ];
       itemUsed?: string;
       status: string;
-    }
+    },
   ];
   number: number;
   sort: {

@@ -1,6 +1,6 @@
-import { ItemHttpService } from "./../item-http.service";
-import { Router, ActivatedRoute, ParamMap } from "@angular/router";
-import { ItemUtilitiesService } from "./../item-utilities.service";
+import { ItemHttpService } from './../item-http.service';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { ItemUtilitiesService } from './../item-utilities.service';
 import {
   Component,
   OnInit,
@@ -8,17 +8,17 @@ import {
   Output,
   EventEmitter,
   ViewChild,
-} from "@angular/core";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { Location } from "@angular/common";
-import { ClozeDropdown } from "../cloze-dropdown/cloze-dropdown.model";
-import { newClozeDropDown } from "../utility/ClozeTextUtil";
+} from '@angular/core';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { Location } from '@angular/common';
+import { ClozeDropdown } from '../cloze-dropdown/cloze-dropdown.model';
+import { newClozeDropDown } from '../utility/ClozeTextUtil';
 
 declare var tinymce: any;
 @Component({
-  selector: "app-new-item",
-  templateUrl: "./new-item.component.html",
-  styleUrls: ["./new-item.component.scss"],
+  selector: 'app-new-item',
+  templateUrl: './new-item.component.html',
+  styleUrls: ['./new-item.component.scss'],
 })
 export class NewItemComponent implements OnInit {
   @Input() currentActivity: string;
@@ -41,13 +41,14 @@ export class NewItemComponent implements OnInit {
 
   itemTrailInformation: any;
   preview: boolean;
+  stimulus: string = '';
 
   constructor(
     private itemUtil: ItemUtilitiesService,
     private passageService: AllPassagesService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private location: Location
+    private location: Location,
   ) {
     /* this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.itemId = params.get('id');
@@ -55,11 +56,11 @@ export class NewItemComponent implements OnInit {
   }
 
   onSettingsButtonClicked() {
-    document.body.classList.toggle("right-bar-enabled");
-    const rightBar = document.getElementById("theme-settings-offcanvas");
+    document.body.classList.toggle('right-bar-enabled');
+    const rightBar = document.getElementById('theme-settings-offcanvas');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
@@ -73,17 +74,18 @@ export class NewItemComponent implements OnInit {
       this.selectedItemType = 'Multiple choice';
       this.formType = 'Single Response';
     } */
-    this.selectedItemType = "Multiple choice";
-    this.formType = "Single Response";
+    this.selectedItemType = 'Multiple choice';
+    this.formType = 'Single Response';
 
     this.breadCrumbItems = [
-      { label: "Questions" },
-      { label: "New question", active: true },
+      { label: 'Questions' },
+      { label: 'New question', active: true },
     ];
 
     if (this.itemId !== null) {
     }
-    this.itemTrailInformation = this.itemUtil.currentItemTrail ?? this.itemUtil.getSavedItemTrail();
+    this.itemTrailInformation =
+      this.itemUtil.currentItemTrail ?? this.itemUtil.getSavedItemTrail();
     // console.log(this.itemTrailInformation);
     /* console.log(this.itemId); */
   }
@@ -92,26 +94,31 @@ export class NewItemComponent implements OnInit {
     //console.log('current item type::::::', value);
 
     this.selectedItemType = value;
-  
-    if (this.selectedItemType === "Fill in the gap") {
-      this.setFormType("Cloze with dropdown");
-    } else if (this.selectedItemType === "Multiple choice") {
-      this.setFormType("Single Response");
-    } else if (this.selectedItemType === "Written") {
-      this.setFormType("Rich Text Essay");
-    } else if (this.selectedItemType === "Match & Order") {
-      this.setFormType("Matching");
-    } else if (this.selectedItemType === "Passage") {
-      this.setFormType("Passage");
-    }
-    else if (this.selectedItemType === "DRAWING_AND_WRITING") {
-      this.setFormType("DRAWING_AND_WRITING");
+
+    if (this.selectedItemType === 'Fill in the gap') {
+      this.setFormType('Cloze with dropdown');
+    } else if (this.selectedItemType === 'Multiple choice') {
+      this.setFormType('Single Response');
+    } else if (this.selectedItemType === 'Written') {
+      // this.setFormType("Rich Text Essay");
+      this.setFormType('Essay');
+    } else if (this.selectedItemType === 'Match & Order') {
+      this.setFormType('Matching');
+    } else if (this.selectedItemType === 'Passage') {
+      this.setFormType('Passage');
+    } else if (this.selectedItemType === 'DRAWING_AND_WRITING') {
+      this.setFormType('DRAWING_AND_WRITING');
     }
   }
 
   setFormType(formType: string) {
     this.itemUtil.setSelectedTags([]);
     this.formType = formType;
+    //this.stimulus = '';
+  }
+
+  handleStimulusChangeOnQuestionTypes(value: string): void {
+    this.stimulus = value;
   }
 
   saved(item: any) {
@@ -136,5 +143,6 @@ export class NewItemComponent implements OnInit {
       this.itemUtil.previewItem = false;
     }
     this.location.back();
+    // history.back();
   }
 }

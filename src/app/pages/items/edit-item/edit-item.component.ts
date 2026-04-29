@@ -1,16 +1,16 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
-import { EditItemService } from "../edit-item.service";
-import { ItemHttpService } from "../item-http.service";
-import { Router, ActivatedRoute } from "@angular/router";
-import { ItemDetails, ItemUtilitiesService } from "../item-utilities.service";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { Location } from "@angular/common";
-import { ItemTypes } from "../models/item-types";
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { EditItemService } from '../edit-item.service';
+import { ItemHttpService } from '../item-http.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { ItemDetails, ItemUtilitiesService } from '../item-utilities.service';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { Location } from '@angular/common';
+import { ItemTypes } from '../models/item-types';
 
 @Component({
-  selector: "app-edit-item",
-  templateUrl: "./edit-item.component.html",
-  styleUrls: ["./edit-item.component.scss"],
+  selector: 'app-edit-item',
+  templateUrl: './edit-item.component.html',
+  styleUrls: ['./edit-item.component.scss'],
   providers: [],
 })
 export class EditItemComponent implements OnInit, OnDestroy {
@@ -52,42 +52,42 @@ export class EditItemComponent implements OnInit, OnDestroy {
     private location: Location
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
-      this.itemId = params["id"];
-      this.itemType = params["type"];
+      this.itemId = params['id'];
+      this.itemType = params['type'];
     });
 
-    if (this.itemType === "MCQ") {
-      this.formType = "Single Response";
+    if (this.itemType === 'MCQ') {
+      this.formType = 'Single Response';
       //console.log(this.formType);
-    } else if (this.itemType === "MRQ") {
-      this.formType = "Multiple Response";
-    } else if (this.itemType === "TRUE_FALSE") {
-      this.formType = "True or False";
-    } else if (this.itemType === "YES_NO") {
-      this.formType = "Yes or No";
-    } else if (this.itemType === "CLOZE_TEXT") {
-      this.formType = "Cloze with Text";
-    } else if (this.itemType === "CLOZE_DROPDOWN") {
-      this.formType = "Cloze with dropdown";
-    } else if (this.itemType === "ESSAY_RICH_TEXT") {
-      this.formType = "Rich Text Essay";
-    } else if (this.itemType === "SHORT_TEXT") {
-      this.formType = "Short Answer";
-    } else if (this.itemType === "ASSOCIATION") {
-      this.formType = "Matching";
-    } else if (this.itemType === "ORDER_LIST") {
-      this.formType = "Ordering";
-    } else if (this.itemType === "CHOICE_MATRIX") {
-      this.formType = "Choice Matrix";
+    } else if (this.itemType === 'MRQ') {
+      this.formType = 'Multiple Response';
+    } else if (this.itemType === 'TRUE_FALSE') {
+      this.formType = 'True or False';
+    } else if (this.itemType === 'YES_NO') {
+      this.formType = 'Yes or No';
+    } else if (this.itemType === 'CLOZE_TEXT') {
+      this.formType = 'Cloze with Text';
+    } else if (this.itemType === 'CLOZE_DROPDOWN') {
+      this.formType = 'Cloze with dropdown';
+    } else if (this.itemType === 'ESSAY_RICH_TEXT') {
+      // this.formType = "Rich Text Essay";
+      this.formType = 'Essay';
+    } else if (this.itemType === 'SHORT_TEXT') {
+      this.formType = 'Short Answer';
+    } else if (this.itemType === 'ASSOCIATION') {
+      this.formType = 'Matching';
+    } else if (this.itemType === 'ORDER_LIST') {
+      this.formType = 'Ordering';
+    } else if (this.itemType === 'CHOICE_MATRIX') {
+      this.formType = 'Choice Matrix';
     } else if (this.itemType === ItemTypes.CLOZE_DROPDOWN_IMAGE) {
-      this.formType = "Label Image with Dropdown";
+      this.formType = 'Label Image with Dropdown';
     } else if (this.itemType === ItemTypes.IMAGE_DRAG_AND_DROP) {
-      this.formType = "Label Image with Drag and Drop";
-    } else if (this.itemType === ItemTypes.CLOZE_TEXT_IMAGE){
-      this.formType = "Label Image with Text";
-    }
-    else if (this.itemType === ItemTypes.DRAW_WRITING){
-      this.formType = "DRAWING_AND_WRITING";
+      this.formType = 'Label Image with Drag and Drop';
+    } else if (this.itemType === ItemTypes.CLOZE_TEXT_IMAGE) {
+      this.formType = 'Label Image with Text';
+    } else if (this.itemType === ItemTypes.DRAW_WRITING) {
+      this.formType = 'DRAWING_AND_WRITING';
     }
   }
 
@@ -95,11 +95,17 @@ export class EditItemComponent implements OnInit, OnDestroy {
     // console.log(this.itemTrailInformation);
     this.breadCrumbItems = [
       {
-        label: "Edit-question",
+        label: 'Edit-question',
         active: false,
       },
       {
-        label: this.itemService.subjectName ?? `${ this.itemUtil.getSavedItemTrail().subjectName ?? '' } ${ this.itemUtil.getSavedItemTrail().subtopicName ? (' > ' + this.itemUtil.getSavedItemTrail().subtopicName) : '' }`,
+        label:
+          this.itemService.subjectName ??
+          `${this.itemUtil.getSavedItemTrail().subjectName ?? ''} ${
+            this.itemUtil.getSavedItemTrail().subtopicName
+              ? ' > ' + this.itemUtil.getSavedItemTrail().subtopicName
+              : ''
+          }`,
         active: true,
       },
     ];
@@ -119,7 +125,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
   editPassage() {
     // console.log(this.item.passageId);
     this.router.navigate([
-      "itembank/passages/subjects/" + this.item.passageId + "/edit-passage",
+      'itembank/passages/subjects/' + this.item.passageId + '/edit-passage',
     ]);
   }
 

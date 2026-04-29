@@ -4,7 +4,9 @@
       <div class="d-flex justify-content-between flex-wrap mb-5">
         <h3 class="card-title">
           {{ selectedItemType?.replaceAll('_AND_', ' & ') }} |
-          <span class="text-muted">{{ formType?.replaceAll('_AND_', ' & ') }}</span>
+          <span class="text-muted">{{
+            formType?.replaceAll('_AND_', ' & ')
+            }}</span>
         </h3>
         <div class="d-flex flex-wrap gap-2 float-end">
           <button type="button" class="btn btn-outline-success waves-effect waves-light" (click)="doPreview(itemForm)">
@@ -98,7 +100,7 @@
             </button>
             <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
               <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                (click)="openConfirmationModal(acceptConfirmationModal);">
+                (click)="openConfirmationModal(acceptConfirmationModal)">
                 <a class="dropdown-item">Approve</a>
               </li>
 
@@ -107,7 +109,7 @@
                 <a class="dropdown-item">Save</a>
               </li>
               <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
-                (click)="openConfirmationModal(rejectConfirmationModal);">
+                (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
             </ul>
@@ -170,7 +172,8 @@
       </div>
       <div class="mb-3">
         <label>Compose Question</label>
-        <editor name="stimulus" #stimulus="ngModel" [(ngModel)]="defaultItemProperties.stimulus" [init]="{
+        <editor name="stimulus" #stimulus="ngModel" [(ngModel)]="defaultItemProperties.stimulus"
+          (ngModelChange)="onStimulusChange($event)" [init]="{
             branding: false,
             base_url: '/tinymce',
             height: 200,
@@ -242,8 +245,6 @@
     </div>
     <!--end row-->
   </div>
-
-
 
   <ng-template #acceptConfirmationModal let-modal>
     <div class="modal-body p-5">
@@ -411,7 +412,8 @@
   <!-- end card -->
 </form>
 
-<app-drawing-and-writing-preview *ngIf="itemUtil.previewItem === true" (returnPreviewData)="returnData()" (reload)="ngOnInit()"
+<app-drawing-and-writing-preview *ngIf="itemUtil.previewItem === true" (returnPreviewData)="returnData()"
+  (reload)="ngOnInit()" [selectedItemType]="selectedItemType" [formType]="formType"
   [previewData]="previewData"></app-drawing-and-writing-preview>
 
 <ng-template #rejectionModal let-modal>
@@ -442,7 +444,7 @@
           <i class="ri-close-line"></i>Close
         </button>
         <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
-          <i class=" las la-file-excel"></i>Reject
+          <i class="las la-file-excel"></i>Reject
         </button>
 
         <ng-template [ngIf]="processingRejection">

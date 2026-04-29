@@ -1,5 +1,15 @@
 <div class="card">
   <div class="card-body">
+    <div
+      class="d-flex justify-content-between flex-wrap mb-5"
+      *ngIf="!!selectedItemType && !!formType"
+    >
+      <h3 class="card-title">
+        {{ selectedItemType }} |
+        <span class="text-muted">{{ formType }}</span>
+      </h3>
+    </div>
+
     <div class="row">
       <div
         *ngIf="
@@ -67,8 +77,8 @@
             !recycleComponentActive &&
             !previewData.passageId &&
             previewData.id &&
-          
-            component !== 'question_status'
+            component !== 'question_status' &&
+            showDeleteBtnInProfileActivitiesQuestionPreview
           "
           class="btn btn-sm btn-danger"
           type="button"
@@ -103,7 +113,9 @@
             !currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
             !recycleComponentActive &&
-            component !== 'question-status'
+            component !== 'question-status' &&
+            showEditBtnInProfileActivitiesQuestionPreview &&
+            !!previewData.passageId
           "
           type="button"
           class="btn btn-primary"
@@ -112,12 +124,12 @@
           <i class="ri-edit-fill align-middle fs-14"></i>Edit
         </button>
         <button
-        *ngIf="
-        currentUser.authorities.includes('MODERATOR') && 
-        !assessmentActive &&
-        previewData.itemStatus !== 'REJECTED' &&
-        previewData.itemStatus !== 'PUBLISHED'
-      "
+          *ngIf="
+            currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            previewData.itemStatus !== 'REJECTED' &&
+            previewData.itemStatus !== 'PUBLISHED' 
+          "
           type="button"
           class="btn btn-outline-danger btn-sm"
           (click)="review()"

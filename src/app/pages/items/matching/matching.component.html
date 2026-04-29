@@ -1,8 +1,4 @@
-<form
-  *ngIf="itemUtil.previewItem === false"
-  #itemForm="ngForm"
-  (ngSubmit)="saveItem(itemForm)"
->
+<form *ngIf="itemUtil.previewItem === false" #itemForm="ngForm" (ngSubmit)="saveItem(itemForm)">
   <div class="card">
     <div class="card-body">
       <div class="d-flex justify-content-between flex-wrap mb-5">
@@ -11,12 +7,13 @@
           <span class="text-muted">{{ formType }}</span>
         </h3>
         <div class="d-flex flex-wrap gap-2 float-end">
-          <button
-            type="button"
-            class="btn btn-outline-success waves-effect waves-light"
-            (click)="doPreview(itemForm)"
-          >
+          <button type="button" class="btn btn-outline-success waves-effect waves-light" (click)="doPreview(itemForm)">
             Preview
+          </button>
+
+          <button type="button" *ngIf="passageId" class="btn btn-outline-warning waves-effect waves-light"
+            (click)="setShowPassage(!showPassage)">
+            View Passage
           </button>
 
           <!-- <button
@@ -27,12 +24,8 @@
             View Passage
           </button> -->
 
-          <button
-            type="button"
-            *ngIf="editData && editData.passageId"
-            class="btn btn-outline-primary mr-2"
-            (click)="editPassage($event)"
-          >
+          <button type="button" *ngIf="editData && editData.passageId" class="btn btn-outline-primary mr-2"
+            (click)="editPassage($event)">
             <i class="ri-pencil-line align-middle me-2"></i>Edit passage
           </button>
 
@@ -45,36 +38,18 @@
             Save
           </button> -->
 
-          <div
-            *ngIf="editData && currentUser.authorities.includes('AUTHOR')"
-            class="btn-group"
-            role="group"
-            ngbDropdown
-          >
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+          <div *ngIf="editData && currentUser.authorities.includes('AUTHOR')" class="btn-group" role="group"
+            ngbDropdown>
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')"
-                  >Save</a
-                >
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <!-- <li style="cursor: pointer">
             <a class="dropdown-item" (click)="saveAndNew()">Save and new</a>
@@ -116,49 +91,26 @@
             </button>
           </div> -->
 
-          <div
-            ngbDropdown
-            class="d-flex gap-2"
-            *ngIf="
+          <div ngbDropdown class="d-flex gap-2" *ngIf="
               editData &&
               (currentUser.authorities.includes('MODERATOR') ||
                 currentUser.authorities.includes('ADMIN'))
-            "
-          >
-            <button
-              id="btnGroupDrop3"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            ">
+            <button id="btnGroupDrop3" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop3"
-              ngbDropdownMenu
-            >
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                (click)="openConfirmationModal(acceptConfirmationModal)"
-              >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
+                (click)="openConfirmationModal(acceptConfirmationModal)">
                 <a class="dropdown-item">Approve</a>
               </li>
-              <li
-              style="cursor: pointer"
-              *ngIf="editData.itemStatus === 'PUBLISHED'"
-              (click)="approveQuestion(itemForm)"
-            >
-              <a class="dropdown-item">Save</a>
-            </li>
-              <li
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                style="cursor: pointer"
-                 (click)="openConfirmationModal(rejectConfirmationModal)"
-              >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'PUBLISHED'"
+                (click)="approveQuestion(itemForm)">
+                <a class="dropdown-item">Save</a>
+              </li>
+              <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
+                (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
             </ul>
@@ -184,33 +136,19 @@
           </div>
 
           <div *ngIf="!editData" class="btn-group" role="group" ngbDropdown>
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
                 <a class="dropdown-item" (click)="saveItem(itemForm)">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveAndNew(itemForm)"
-                  >Save and new</a
-                >
+                <a class="dropdown-item" (click)="saveAndNew(itemForm)">Save and new</a>
               </li>
               <!-- <li>
                 <a
@@ -224,15 +162,13 @@
           </div>
         </div>
       </div>
+
+      <app-passage-preview [previewData]="passageForPreview" *ngIf="showPassage"></app-passage-preview>
+
       <div class="mb-3">
         <label class="form-label" for="autoSizingInputGroup">Title</label>
-        <input
-          type="text"
-          class="form-control"
-          name="reference"
-          [(ngModel)]="defaultItemProperties.reference"
-          placeholder="Title"
-        />
+        <input type="text" class="form-control" name="reference" [(ngModel)]="defaultItemProperties.reference"
+          placeholder="Title" />
       </div>
 
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
@@ -242,9 +178,7 @@
 
       <div class="mb-3">
         <label>Compose Question</label>
-        <editor
-          name="stimulus"
-          [(ngModel)]="defaultItemProperties.stimulus"
+        <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
           [init]="{
             branding: false,
             base_url: '/tinymce',
@@ -258,40 +192,26 @@
             quickbars_insert_toolbars: false,
             toolbar:
               'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"
-        ></editor>
+          }"></editor>
       </div>
       <div *ngIf="stems.length > 0 && options.length > 0" class="row">
         <div class="col-xl-6 mb-3">
           <label class="form-label">Stimulus List</label>
-          <div
-            ngModelGroup="stimulusList"
-            *ngFor="let stem of stems; let i = index"
-          >
+          <div ngModelGroup="stimulusList" *ngFor="let stem of stems; let i = index">
             <div class="d-flex gap-1 mb-2">
-              <editor
-                name="stem{{ i }}"
-                class="editor"
-                [(ngModel)]="stem.stem"
-                [inline]="true"
-                [init]="{
+              <editor name="stem{{ i }}" class="editor" [(ngModel)]="stem.stem" [inline]="true" [init]="{
                   base_url: '/tinymce',
                   height: 200,
                   menubar: true,
                   plugins: 'table quickbars lists autoresize paste',
                   paste_preprocess: preProcess,
                   quickbars_insert_toolbars: false,
-                  branding:false,
+                  branding: false,
                   toolbar:
                     'undo redo | formatselect | subscript superscript | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-                }"
-              ></editor>
+                }"></editor>
               <div>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger btn-icon"
-                  (click)="delete(i)"
-                >
+                <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
                   <i class="ri-delete-bin-line"></i>
                 </button>
               </div>
@@ -300,33 +220,20 @@
         </div>
         <div class="col-xl-6 mb-3">
           <label class="form-label">Options List</label>
-          <div
-            ngModelGroup="options"
-            *ngFor="let option of options; let i = index"
-          >
+          <div ngModelGroup="options" *ngFor="let option of options; let i = index">
             <div class="d-flex gap-1 mb-2">
-              <editor
-                name="label{{ i }}"
-                class="editor"
-                [(ngModel)]="option.label"
-                [inline]="true"
-                [init]="{
+              <editor name="label{{ i }}" class="editor" [(ngModel)]="option.label" [inline]="true" [init]="{
                   height: 200,
                   menubar: true,
                   plugins: 'table quickbars lists autoresize paste',
                   paste_preprocess: preProcess,
                   quickbars_insert_toolbars: false,
-                  branding:false,
+                  branding: false,
                   toolbar:
                     'undo redo | formatselect | subscript superscript | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-                }"
-              ></editor>
+                }"></editor>
               <div>
-                <button
-                  type="button"
-                  class="btn btn-outline-danger btn-icon"
-                  (click)="delete(i)"
-                >
+                <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
                   <i class="ri-delete-bin-line"></i>
                 </button>
               </div>
@@ -337,24 +244,17 @@
 
       <div class="mb-3">
         <div class="d-flex flex-wrap justify-content-between">
-          <button
-            class="btn btn-soft-primary"
-            (click)="newStimulusAndOption($event)"
-          >
+          <button class="btn btn-soft-primary" (click)="newStimulusAndOption($event)">
             {{
-              options.length > 0 && stems.length > 0
-                ? "Add More"
-                : "Add Match Items"
+            options.length > 0 && stems.length > 0
+            ? 'Add More'
+            : 'Add Match Items'
             }}<i class="ri-add-line align-bottom me-1"></i>
           </button>
 
           <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              name="shuffleOptions"
-              [(ngModel)]="defaultItemProperties.shuffleOptions"
-            />
+            <input class="form-check-input" type="checkbox" name="shuffleOptions"
+              [(ngModel)]="defaultItemProperties.shuffleOptions" />
             <label class="form-check-label"> Shuffle options </label>
           </div>
         </div>
@@ -380,23 +280,13 @@
 
       <div class="card">
         <div class="live-preview">
-          <ngb-accordion
-            #acc="ngbAccordion"
-            activeIds="static-1"
-            [closeOthers]="true"
-            class="custom-accordionwithicon accordion-border-box"
-          >
+          <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true"
+            class="custom-accordionwithicon accordion-border-box">
             <ngb-panel id="static-1">
               <ng-template ngbPanelTitle class="accordion-header">
                 <h2 class="accordion-header" id="gen-ques-headingOne">
-                  <button
-                    class="accordion-button"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#gen-ques-collapseOne"
-                    aria-expanded="false"
-                    aria-controls="gen-ques-collapseOne"
-                  >
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#gen-ques-collapseOne" aria-expanded="false" aria-controls="gen-ques-collapseOne">
                     More options
                   </button>
                 </h2>
@@ -408,94 +298,49 @@
                       <div class="row gy-2 gx-3 mb-3 align-items-center">
                         <div class="col-sm-auto col-lg-6">
                           <label class="form-label">Score</label>
-                          <input
-                            type="number"
-                            min="0"
-                            class="form-control"
-                            placeholder="Score"
-                            name="score"
+                          <input type="number" min="0" class="form-control" placeholder="Score" name="score"
                             [(ngModel)]="
                               defaultItemProperties.scoringOption.score
-                            "
-                          />
+                            " />
                         </div>
                         <!--end col-->
                         <div class="col-sm-auto col-lg-6">
-                          <label
-                            for="choices-privacy-status-input"
-                            class="form-label"
-                            >Scoring Type</label
-                          >
-                          <select
-                            class="form-select"
-                            data-choices
-                            data-choices-search-false
-                            id="choices-privacy-status-input"
-                            name="scoringType"
-                            [(ngModel)]="
+                          <label for="choices-privacy-status-input" class="form-label">Scoring Type</label>
+                          <select class="form-select" data-choices data-choices-search-false
+                            id="choices-privacy-status-input" name="scoringType" [(ngModel)]="
                               defaultItemProperties.scoringOption.scoringType
-                            "
-                            disabled
-                          >
-                            <option
-                              *ngFor="let scoreType of scoringType"
-                              value="{{ scoreType }}"
-                              selected=" defaultItemProperties.scoringOption.scoringType === scoreType"
-
-                              disabled
-                            >
+                            " disabled>
+                            <option *ngFor="let scoreType of scoringType" value="{{ scoreType }}"
+                              selected=" defaultItemProperties.scoringOption.scoringType === scoreType" disabled>
                               {{ scoreType }}
                             </option>
                           </select>
                         </div>
                         <!--end col-->
                         <div class="col-sm-auto col-lg-6">
-                          <label
-                            for="choices-privacy-status-input"
-                            class="form-label"
-                            >Matching Rule</label
-                          >
-                          <select
-                            class="form-select"
-                            data-choices
-                            data-choices-search-false
-                            name="matchingRule"
+                          <label for="choices-privacy-status-input" class="form-label">Matching Rule</label>
+                          <select class="form-select" data-choices data-choices-search-false name="matchingRule"
                             [(ngModel)]="
                               defaultItemProperties.scoringOption.matchingRule
-                            "
-                            disabled
-                          >
-                            <option
-                              *ngFor="let matchRule of matchingRules"
-                              value="{{ matchRule }}"
-
-                              selected=" defaultItemProperties.scoringOption.matchingRule === matchRule "
-                              disabled
-                            >
+                            " disabled>
+                            <option *ngFor="let matchRule of matchingRules" value="{{ matchRule }}"
+                              selected=" defaultItemProperties.scoringOption.matchingRule === matchRule " disabled>
                               {{ matchRule }}
                             </option>
                           </select>
                         </div>
                         <!--end col-->
                         <div class="col-sm-auto col-lg-6">
-                          <label class="form-label" for="autoSizingInputGroup"
-                            >Penalty</label
-                          >
+                          <label class="form-label" for="autoSizingInputGroup">Penalty</label>
                           <div class="input-group">
-                            <input
-                              type="number"
-                              min="0"
-                              class="form-control"
-                              placeholder="Penalty value"
-                              name="penalty"
+                            <input type="number" min="0" class="form-control" placeholder="Penalty value" name="penalty"
                               [(ngModel)]="
                                 defaultItemProperties.scoringOption.penalty
-                              "
-                            />
+                              " />
                           </div>
                         </div>
                         <!--end col-->
-                        <div class="col-sm-auto col-lg-6">
+                        <!-- <div class="col-sm-auto col-lg-6">
                           <label class="form-label">
                             Minimum points on attempt
                           </label>
@@ -511,26 +356,14 @@
                                 .minimumScoreIfAttempted
                             "
                           />
-                        </div>
+                        </div> -->
                         <!--end col-->
                         <div class="col-sm-auto col-lg-6">
-                          <label
-                            for="choices-privacy-status-input"
-                            class="form-label"
-                            >Difficulty level</label
-                          >
-                          <select
-                            class="form-select"
-                            data-choices
-                            data-choices-search-false
-                            id="choices-privacy-status-input"
-                            name="difficultyLevel"
-                            [(ngModel)]="defaultItemProperties.difficultyLevel"
-                          >
-                            <option
-                              *ngFor="let difficulty of difficultyLevel"
-                              value="{{ difficulty }}"
-                            >
+                          <label for="choices-privacy-status-input" class="form-label">Difficulty level</label>
+                          <select class="form-select" data-choices data-choices-search-false
+                            id="choices-privacy-status-input" name="difficultyLevel"
+                            [(ngModel)]="defaultItemProperties.difficultyLevel">
+                            <option *ngFor="let difficulty of difficultyLevel" value="{{ difficulty }}">
                               {{ difficulty }}
                             </option>
                           </select>
@@ -538,14 +371,9 @@
                         <!--end col-->
                         <div class="col-sm-auto col-lg-6">
                           <div class="form-check mb-3">
-                            <input
-                              class="form-check-input mb-2"
-                              type="checkbox"
-                              name="autoScore"
-                              [(ngModel)]="
+                            <input class="form-check-input mb-2" type="checkbox" name="autoScore" [(ngModel)]="
                                 defaultItemProperties.scoringOption.autoScore
-                              "
-                            />
+                              " />
                             <label class="form-check-label"> Auto Score </label>
                           </div>
                         </div>
@@ -598,8 +426,6 @@
     </div>
   </div>
 
-
-
   <ng-template #acceptConfirmationModal let-modal>
     <div class="modal-body p-5">
       <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
@@ -609,11 +435,7 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
         <button type="button" (click)="approveQuestion(itemForm)">
@@ -645,17 +467,10 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button
-          type="button"
-          (click)="openRejectionReasonModal(rejectionModal)"
-        >
+        <button type="button" (click)="openRejectionReasonModal(rejectionModal)">
           Yes, reject It
         </button>
         <!-- <ng-template [ngIf]="processing_delete">
@@ -674,67 +489,45 @@
       </div>
     </div>
   </ng-template>
-
 </form>
 
-<app-matching-preview
-  *ngIf="itemUtil.previewItem === true"
-  [previewData]="previewData"
-  (returnPreviewData)="closePreview($event)"
-></app-matching-preview>
+<app-matching-preview *ngIf="itemUtil.previewItem === true" [previewData]="previewData"
+  [selectedItemType]="selectedItemType" [formType]="formType"
+  (returnPreviewData)="closePreview($event)"></app-matching-preview>
 
 <ng-template #rejectionModal let-modal>
   <div class="modal-body p-5">
-    <form
-      #questionRejectionForm="ngForm"
-      (ngSubmit)="submitRejection(questionRejectionForm)"
-    >
+    <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
       <h4 class="text-center mb-4">Reason for Rejection</h4>
       <p class="text-muted text-center">
         provide a reason why you have rejected the question.
       </p>
       <div class="row mb-2">
         <label>Reason</label>
-        <editor
-          name="reason"
-          [(ngModel)]="newRejectionReason.reason"
-          initialValue="reason(s)...."
-          [init]="{
+        <editor name="reason" [(ngModel)]="newRejectionReason.reason" initialValue="reason(s)...." [init]="{
             base_url: '/tinymce',
             height: 200,
             suffix: '.min',
             menubar: true,
             plugins: 'table quickbars lists autoresize',
             quickbars_insert_toolbars: false,
-            branding:false,
+            branding: false,
             toolbar:
               'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-          }"
-        ></editor>
+          }"></editor>
       </div>
 
       <div class="d-flex gap-2 float-end mt-4">
-        <button
-          type="button"
-          class="btn btn-outline-primary d-flex gap-1 align-items-center"
-          data-bs-dismiss="modal"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="btn btn-outline-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
           <i class="ri-close-line"></i>Close
         </button>
-        <button
-        *ngIf="!processingRejection"
-          type="submit"
-          class="btn btn-danger d-flex gap-1 align-items-center"
-        >
-          <i class=" las la-file-excel"></i>Reject
+        <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
+          <i class="las la-file-excel"></i>Reject
         </button>
 
         <ng-template [ngIf]="processingRejection">
-          <button
-            class="btn btn-outline-success btn-load"
-            [disabled]="processingRejection"
-          >
+          <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>
@@ -751,12 +544,7 @@
 <ng-template #passageModal let-modal>
   <div class="modal-header d-flex justify-content-between">
     <h3>Passage</h3>
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      data-bs-dismiss="modal"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
       <i class="ri-close-line me-2 align-middle"></i>Close
     </button>
   </div>

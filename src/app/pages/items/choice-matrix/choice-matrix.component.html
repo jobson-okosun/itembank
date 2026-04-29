@@ -7,11 +7,7 @@
           <span class="text-muted">{{ formType }}</span>
         </h3>
         <div class="d-flex flex-wrap gap-2 float-end">
-          <button
-            type="button"
-            class="btn btn-outline-success waves-effect waves-light"
-            (click)="doPreview(itemForm)"
-          >
+          <button type="button" class="btn btn-outline-success waves-effect waves-light" (click)="doPreview(itemForm)">
             Preview
           </button>
 
@@ -24,21 +20,13 @@
             View Passage
           </button> -->
 
-          <button
-            type="button"
-            *ngIf="passageId"
-            class="btn btn-outline-warning waves-effect waves-light"
-            (click)="setShowPassage(!showPassage)"
-          >
+          <button type="button" *ngIf="passageId" class="btn btn-outline-warning waves-effect waves-light"
+            (click)="setShowPassage(!showPassage)">
             View Passage
           </button>
 
-          <button
-            type="button"
-            *ngIf="editData && editData.passageId"
-            class="btn btn-outline-primary mr-2"
-            (click)="editPassage($event)"
-          >
+          <button type="button" *ngIf="editData && editData.passageId" class="btn btn-outline-primary mr-2"
+            (click)="editPassage($event)">
             <i class="ri-pencil-line align-middle me-2"></i>Edit passage
           </button>
           <!-- <button
@@ -51,36 +39,18 @@
           </button> -->
 
           <!-- author -->
-          <div
-            *ngIf="editData && currentUser.authorities.includes('AUTHOR')"
-            class="btn-group"
-            role="group"
-            ngbDropdown
-          >
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+          <div *ngIf="editData && currentUser.authorities.includes('AUTHOR')" class="btn-group" role="group"
+            ngbDropdown>
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')"
-                  >Save</a
-                >
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <!-- <li style="cursor: pointer">
               <a class="dropdown-item" (click)="saveAndNew()">Save and new</a>
@@ -97,67 +67,34 @@
           </div>
 
           <!-- moderator and admin -->
-          <div
-            ngbDropdown
-            class="d-flex gap-2"
-            *ngIf="
+          <div ngbDropdown class="d-flex gap-2" *ngIf="
               editData &&
               (currentUser.authorities.includes('MODERATOR') ||
                 currentUser.authorities.includes('ADMIN'))
-            "
-          >
-            <button
-              id="btnGroupDrop3"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            ">
+            <button id="btnGroupDrop3" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop3"
-              ngbDropdownMenu
-            >
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                (click)="openConfirmationModal(acceptConfirmationModal)"
-              >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
+                (click)="openConfirmationModal(acceptConfirmationModal)">
                 <a class="dropdown-item">Approve</a>
               </li>
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'PUBLISHED'"
-                (click)="approveQuestion(itemForm)"
-              >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'PUBLISHED'"
+                (click)="approveQuestion(itemForm)">
                 <a class="dropdown-item">Save</a>
               </li>
-              <li
-                *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                style="cursor: pointer"
-                (click)="openRejectionReasonModal(rejectionModal)"
-              >
+              <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
+                (click)="openRejectionReasonModal(rejectionModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
 
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'DRAFT'"
-              >
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')"
-                  >Save as Draft</a
-                >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')">Save as Draft</a>
               </li>
-              <li
-                style="cursor: pointer"
-                *ngIf="editData.itemStatus === 'DRAFT'"
-              >
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')"
-                  >Save</a
-                >
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
               </li>
             </ul>
 
@@ -207,33 +144,19 @@
           </div> -->
 
           <div *ngIf="!editData" class="btn-group" role="group" ngbDropdown>
-            <button
-              id="btnGroupDrop1"
-              type="button"
-              class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              ngbDropdownToggle
-            >
+            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
               Save <i class="mdi mdi-chevron-down"></i>
             </button>
-            <ul
-              class="dropdown-menu"
-              aria-labelledby="btnGroupDrop1"
-              ngbDropdownMenu
-            >
+            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
               <li style="cursor: pointer">
                 <a class="dropdown-item" (click)="saveAsItem(itemForm)">Save</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)"
-                  >Save as draft</a
-                >
+                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
               </li>
               <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveAndNew(itemForm)"
-                  >Save and new</a
-                >
+                <a class="dropdown-item" (click)="saveAndNew(itemForm)">Save and new</a>
               </li>
               <!-- <li>
                 <a
@@ -248,20 +171,12 @@
         </div>
       </div>
 
-      <app-passage-preview
-        [previewData]="passageForPreview"
-        *ngIf="showPassage"
-      ></app-passage-preview>
+      <app-passage-preview [previewData]="passageForPreview" *ngIf="showPassage"></app-passage-preview>
 
       <div class="mb-3">
         <label class="form-label" for="autoSizingInputGroup">Title</label>
-        <input
-          type="text"
-          class="form-control"
-          name="reference"
-          [(ngModel)]="defaultItemProperties.reference"
-          placeholder="Title"
-        />
+        <input type="text" class="form-control" name="reference" [(ngModel)]="defaultItemProperties.reference"
+          placeholder="Title" />
       </div>
 
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
@@ -271,9 +186,7 @@
 
       <div class="mb-3">
         <label>Compose Question</label>
-        <editor
-          name="stimulus"
-          [(ngModel)]="defaultItemProperties.stimulus"
+        <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
           [init]="{
             branding: false,
             base_url: '/tinymce',
@@ -287,20 +200,14 @@
             quickbars_insert_toolbars: false,
             toolbar:
               'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"
-        ></editor>
+          }"></editor>
       </div>
 
       <div class="mb-3">
         <label class="form-label">Stems</label>
         <div ngModelGroup="stems" *ngFor="let stem of stems; let i = index">
           <div class="d-flex gap-1 mb-2">
-            <editor
-              name="label{{ i }}"
-              class="editor"
-              [(ngModel)]="stem.stem"
-              [inline]="true"
-              [init]="{
+            <editor name="label{{ i }}" class="editor" [(ngModel)]="stem.stem" [inline]="true" [init]="{
                 height: 200,
                 menubar: true,
                 base_url: '/tinymce',
@@ -311,25 +218,17 @@
 
                 toolbar:
                   'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-              }"
-            ></editor>
+              }"></editor>
             <div>
-              <button
-                type="button"
-                class="btn btn-outline-danger btn-icon"
-                (click)="removeStem(i)"
-              >
+              <button type="button" class="btn btn-outline-danger btn-icon" (click)="removeStem(i)"
+                [disabled]="stems.length <= 2">
                 <i class="ri-delete-bin-line"></i>
               </button>
             </div>
           </div>
         </div>
         <div>
-          <button
-            type="button"
-            class="btn btn-soft-primary btn-sm"
-            (click)="newStem()"
-          >
+          <button type="button" class="btn btn-soft-primary btn-sm" (click)="newStem()">
             <i class="ri-add-line fs-14 align-bottom me-1"></i>add stem
           </button>
         </div>
@@ -338,19 +237,10 @@
       <div class="mb-3">
         <label class="form-label">Options</label>
         <div class="row">
-          <div
-            ngModelGroup="options"
-            class="col-xl-6"
-            *ngFor="let option of options; let i = index"
-          >
+          <div ngModelGroup="options" class="col-xl-6" *ngFor="let option of options; let i = index">
             <div>
               <div class="d-flex gap-1 mb-2">
-                <editor
-                  name="label{{ i }}"
-                  class="editor"
-                  [(ngModel)]="option.label"
-                  [inline]="true"
-                  [init]="{
+                <editor name="label{{ i }}" class="editor" [(ngModel)]="option.label" [inline]="true" [init]="{
                     height: 200,
                     menubar: true,
                     branding: false,
@@ -361,14 +251,10 @@
 
                     toolbar:
                       'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-                  }"
-                ></editor>
+                  }"></editor>
                 <div>
-                  <button
-                    type="button"
-                    class="btn btn-outline-danger btn-icon"
-                    (click)="removeOption(i)"
-                  >
+                  <button type="button" class="btn btn-outline-danger btn-icon" (click)="removeOption(i)"
+                    [disabled]="options.length <= 2">
                     <i class="ri-delete-bin-line"></i>
                   </button>
                 </div>
@@ -377,22 +263,14 @@
           </div>
         </div>
         <div>
-          <button
-            type="button"
-            class="btn btn-soft-primary btn-sm"
-            (click)="newOption()"
-          >
+          <button type="button" class="btn btn-soft-primary btn-sm" (click)="newOption()">
             <i class="ri-add-line fs-14 align-bottom me-1"></i>add options
           </button>
         </div>
       </div>
 
       <div class="mb-3">
-        <app-item-tag
-          #tagRef
-          [recievedTag]="tags"
-          (sendTags)="recieveTags($event)"
-        ></app-item-tag>
+        <app-item-tag #tagRef [recievedTag]="tags" (sendTags)="recieveTags($event)"></app-item-tag>
       </div>
 
       <!-- start set answers row-->
@@ -401,17 +279,11 @@
         <div class="row">
           <div class="col-xl-12">
             <div class="table-responsive">
-              <table
-                class="table table-bordered align-middle table-nowrap mb-0"
-              >
+              <table class="table table-bordered align-middle table-nowrap mb-0">
                 <thead>
                   <tr>
                     <th></th>
-                    <th
-                      scope="col"
-                      *ngFor="let option of options; let i = index"
-                      [innerHTML]="option.label"
-                    >
+                    <th scope="col" *ngFor="let option of options; let i = index" [innerHTML]="option.label">
                       {{ option.label }}
                     </th>
                   </tr>
@@ -420,14 +292,8 @@
                   <tr *ngFor="let stem of stems; let i = index">
                     <td class="fw-medium" [innerHTML]="stem.stem"></td>
                     <td *ngFor="let option of options; let j = index">
-                      <input
-                        class="form-check-input"
-                        id="form-radio-right5"
-                        type="radio"
-                        name="stem_{{ i }}"
-                        (change)="selectedAnswer(stem, option.value)"
-                        [checked]="stem.selectedAnswer === j + ''"
-                      />
+                      <input class="form-check-input" id="form-radio-right5" type="radio" name="stem_{{ i }}"
+                        (change)="selectedAnswer(stem, option.value)" [checked]="stem.selectedAnswer === j + ''" />
                     </td>
                   </tr>
                 </tbody>
@@ -443,12 +309,8 @@
         <div class="d-flex flex-wrap justify-content-end">
           <div class="float-end mt-2">
             <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                name="shuffleOptions"
-                [(ngModel)]="defaultItemProperties.shuffleOptions"
-              />
+              <input class="form-check-input" type="checkbox" name="shuffleOptions"
+                [(ngModel)]="defaultItemProperties.shuffleOptions" />
               <label class="form-check-label"> Shuffle options </label>
             </div>
           </div>
@@ -466,11 +328,7 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
         <button type="button" (click)="approveQuestion(itemForm)">
@@ -502,17 +360,10 @@
         </p>
       </div>
       <div class="d-flex justify-content-center gap-2 mt-2">
-        <button
-          type="button"
-          (click)="modal.close('Close click')"
-          class="btn btn-secondary"
-        >
+        <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button
-          type="button"
-          (click)="openRejectionReasonModal(rejectionModal)"
-        >
+        <button type="button" (click)="openRejectionReasonModal(rejectionModal)">
           Yes, reject It
         </button>
         <!-- <ng-template [ngIf]="processing_delete">
@@ -534,23 +385,13 @@
 
   <div class="card">
     <div class="live-preview">
-      <ngb-accordion
-        #acc="ngbAccordion"
-        activeIds="static-1"
-        [closeOthers]="true"
-        class="custom-accordionwithicon accordion-border-box"
-      >
+      <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true"
+        class="custom-accordionwithicon accordion-border-box">
         <ngb-panel id="static-1">
           <ng-template ngbPanelTitle class="accordion-header">
             <h2 class="accordion-header" id="gen-ques-headingOne">
-              <button
-                class="accordion-button"
-                type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#gen-ques-collapseOne"
-                aria-expanded="false"
-                aria-controls="gen-ques-collapseOne"
-              >
+              <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                data-bs-target="#gen-ques-collapseOne" aria-expanded="false" aria-controls="gen-ques-collapseOne">
                 More options
               </button>
             </h2>
@@ -562,86 +403,46 @@
                   <div class="row gy-2 gx-3 mb-3 align-items-center">
                     <div class="col-sm-auto col-lg-6">
                       <label class="form-label">Score</label>
-                      <input
-                        type="number"
-                        class="form-control"
-                        placeholder="Score"
-                        name="score"
-                        [(ngModel)]="defaultItemProperties.scoringOption.score"
-                      />
+                      <input type="number" class="form-control" placeholder="Score" name="score"
+                        [(ngModel)]="defaultItemProperties.scoringOption.score" />
                     </div>
                     <!--end col-->
                     <div class="col-sm-auto col-lg-6">
-                      <label
-                        for="choices-privacy-status-input"
-                        class="form-label"
-                        >Scoring Type</label
-                      >
-                      <select
-                        class="form-select"
-                        data-choices
-                        data-choices-search-false
-                        id="choices-privacy-status-input"
-                        name="scoringType"
-                        [(ngModel)]="
+                      <label for="choices-privacy-status-input" class="form-label">Scoring Type</label>
+                      <select class="form-select" data-choices data-choices-search-false
+                        id="choices-privacy-status-input" name="scoringType" [(ngModel)]="
                           defaultItemProperties.scoringOption.scoringType
-                        "
-                      >
-                        <option
-                          *ngFor="let scoreType of scoringType"
-                          value="{{ scoreType }}"
-                        >
+                        ">
+                        <option *ngFor="let scoreType of scoringType" value="{{ scoreType }}">
                           {{ scoreType }}
                         </option>
                       </select>
                     </div>
                     <!--end col-->
                     <div class="col-sm-auto col-lg-6">
-                      <label
-                        for="choices-privacy-status-input"
-                        class="form-label"
-                        >Matching Rule</label
-                      >
-                      <select
-                        class="form-select"
-                        data-choices
-                        data-choices-search-false
-                        name="matchingRule"
+                      <label for="choices-privacy-status-input" class="form-label">Matching Rule</label>
+                      <select class="form-select" data-choices data-choices-search-false name="matchingRule"
                         [(ngModel)]="
                           defaultItemProperties.scoringOption.matchingRule
-                        "
-                        disabled
-                      >
-                        <option
-                          *ngFor="let matchRule of matchingRule"
-                          value="{{ matchRule }}"
-                          selected=" defaultItemProperties.scoringOption.matchingRule === matchRule "
-                          disabled
-                        >
+                        " disabled>
+                        <option *ngFor="let matchRule of matchingRule" value="{{ matchRule }}"
+                          selected=" defaultItemProperties.scoringOption.matchingRule === matchRule " disabled>
                           {{ matchRule }}
                         </option>
                       </select>
                     </div>
                     <!--end col-->
                     <div class="col-sm-auto col-lg-6">
-                      <label class="form-label" for="autoSizingInputGroup"
-                        >Penalty</label
-                      >
+                      <label class="form-label" for="autoSizingInputGroup">Penalty</label>
                       <div class="input-group">
-                        <input
-                          type="number"
-                          min="0"
-                          class="form-control"
-                          placeholder="Penalty value"
-                          name="penalty"
+                        <input type="number" min="0" class="form-control" placeholder="Penalty value" name="penalty"
                           [(ngModel)]="
                             defaultItemProperties.scoringOption.penalty
-                          "
-                        />
+                          " />
                       </div>
                     </div>
                     <!--end col-->
-                    <div class="col-sm-auto col-lg-6">
+                    <!-- <div class="col-sm-auto col-lg-6">
                       <label class="form-label">
                         Minimum points on attempt
                       </label>
@@ -656,25 +457,13 @@
                             .minimumScoreIfAttempted
                         "
                       />
-                    </div>
+                    </div> -->
                     <!--end col-->
                     <div class="col-sm-auto col-lg-6">
-                      <label
-                        for="choices-privacy-status-input"
-                        class="form-label"
-                        >Difficulty level</label
-                      >
-                      <select
-                        class="form-select"
-                        data-choices
-                        data-choices-search-false
-                        name="difficultyLevel"
-                        [(ngModel)]="defaultItemProperties.difficultyLevel"
-                      >
-                        <option
-                          *ngFor="let difficulty of difficultyLevels"
-                          value="{{ difficulty }}"
-                        >
+                      <label for="choices-privacy-status-input" class="form-label">Difficulty level</label>
+                      <select class="form-select" data-choices data-choices-search-false name="difficultyLevel"
+                        [(ngModel)]="defaultItemProperties.difficultyLevel">
+                        <option *ngFor="let difficulty of difficultyLevels" value="{{ difficulty }}">
                           {{ difficulty }}
                         </option>
                       </select>
@@ -682,14 +471,9 @@
                     <!--end col-->
                     <div class="col-sm-auto col-lg-6">
                       <div class="form-check mb-3">
-                        <input
-                          class="form-check-input mb-2"
-                          type="checkbox"
-                          name="autoScore"
-                          [(ngModel)]="
+                        <input class="form-check-input mb-2" type="checkbox" name="autoScore" [(ngModel)]="
                             defaultItemProperties.scoringOption.autoScore
-                          "
-                        />
+                          " />
                         <label class="form-check-label"> Auto Score </label>
                       </div>
                     </div>
@@ -706,31 +490,20 @@
   </div>
 </form>
 
-<app-choice-matrix-preview
-  *ngIf="itemUtil.previewItem === true"
-  [component]="'choiceMatrix'"
-  [previewData]="previewData"
-  (reload)="ngOnInit()"
-  (return)="editPreviewData()"
-></app-choice-matrix-preview>
+<app-choice-matrix-preview *ngIf="itemUtil.previewItem === true" [component]="'choiceMatrix'"
+  [previewData]="previewData" [selectedItemType]="selectedItemType" [formType]="formType" (reload)="ngOnInit()"
+  (return)="editPreviewData()"></app-choice-matrix-preview>
 
 <ng-template #rejectionModal let-modal>
   <div class="modal-body p-5">
-    <form
-      #questionRejectionForm="ngForm"
-      (ngSubmit)="submitRejection(questionRejectionForm)"
-    >
+    <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
       <h4 class="text-center mb-4">Reason for Rejection</h4>
       <p class="text-muted text-center">
         provide a reason why you have rejected the question.
       </p>
       <div class="row mb-2">
         <label>Reason</label>
-        <editor
-          name="reason"
-          [(ngModel)]="newRejectionReason.reason"
-          initialValue="reason(s)...."
-          [init]="{
+        <editor name="reason" [(ngModel)]="newRejectionReason.reason" initialValue="reason(s)...." [init]="{
             base_url: '/tinymce',
             height: 200,
             suffix: '.min',
@@ -740,32 +513,20 @@
             branding: false,
             toolbar:
               'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-          }"
-        ></editor>
+          }"></editor>
       </div>
 
       <div class="d-flex gap-2 float-end mt-4">
-        <button
-          type="button"
-          class="btn btn-outline-primary d-flex gap-1 align-items-center"
-          data-bs-dismiss="modal"
-          (click)="modal.close('Close click')"
-        >
+        <button type="button" class="btn btn-outline-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
           <i class="ri-close-line"></i>Close
         </button>
-        <button
-          *ngIf="!processingRejection"
-          type="submit"
-          class="btn btn-danger d-flex gap-1 align-items-center"
-        >
+        <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
           <i class="las la-file-excel"></i>Reject
         </button>
 
         <ng-template [ngIf]="processingRejection">
-          <button
-            class="btn btn-outline-success btn-load"
-            [disabled]="processingRejection"
-          >
+          <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
                 <span class="visually-hidden">Saving...</span>
@@ -782,12 +543,7 @@
 <ng-template #passageModal let-modal>
   <div class="modal-header d-flex justify-content-between">
     <h3>Passage</h3>
-    <button
-      type="button"
-      class="btn btn-outline-danger"
-      data-bs-dismiss="modal"
-      (click)="modal.close('Close click')"
-    >
+    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
       <i class="ri-close-line me-2 align-middle"></i>Close
     </button>
   </div>
@@ -798,11 +554,6 @@
 
 <ng-template #equationEditorModal [displayEquationEditor]>
   <div class="modal-body">
-    <iframe
-      src="http://localhost:4201"
-      width="600px"
-      height="500px"
-      style="overflow: hidden"
-    ></iframe>
+    <iframe src="http://localhost:4201" width="600px" height="500px" style="overflow: hidden"></iframe>
   </div>
 </ng-template>

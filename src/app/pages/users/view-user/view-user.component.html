@@ -119,8 +119,8 @@
                                 Account status:
                                 <span class="text-capitalize">{{
                                   userDetail.activated === true
-                                    ? "active"
-                                    : "inactive"
+                                    ? 'active'
+                                    : 'inactive'
                                 }}</span>
                               </li>
                             </ul>
@@ -198,7 +198,7 @@
                 </ng-template>
               </li>
               <li
-              *ngIf="currentUser.authorities.includes('AUTHOR')"
+                *ngIf="currentUser.authorities.includes('AUTHOR')"
                 [ngbNavItem]="2"
                 class="nav-item"
                 (click)="fetchUserItemAnalysis(userId)"
@@ -311,11 +311,14 @@
                                   userActivityFilter.userActivityType
                                 "
                               >
+                                <option selected disabled value="null">
+                                  Select Activity Type
+                                </option>
                                 <option
                                   *ngFor="let activityType of activityTypes"
                                   value="{{ activityType }}"
                                 >
-                                  {{ activityType.split("_").join(" ") }}
+                                  {{ activityType.split('_').join(' ') }}
                                 </option>
                               </select>
                             </div>
@@ -323,21 +326,22 @@
                           <div class="col-lg-4 col-sm-12">
                             <div>
                               <label for="username" class="form-label"
-                                >startDate</label
+                                >Start Date</label
                               >
                               <input
                                 class="form-control flatpickr-input"
                                 type="text"
                                 name="startDate"
+                                placeholder="Enter start date"
                                 required
                                 mwlFlatpickr
                                 data-id="datetime"
                                 [type]="'datetime-local'"
                                 [altInput]="false"
-                                [enableTime]="true"
+                                [enableTime]="false"
                                 [convertModelValue]="true"
                                 [altFormat]=""
-                                [dateFormat]="'Y-m-d H:i'"
+                                [dateFormat]="'Y-m-d'"
                                 [(ngModel)]="userActivityFilter.startDate"
                               />
                             </div>
@@ -345,21 +349,22 @@
                           <div class="col-lg-4 col-sm-12">
                             <div>
                               <label for="username" class="form-label"
-                                >endDate</label
+                                >End Date</label
                               >
                               <input
                                 class="form-control flatpickr-input"
                                 type="text"
                                 name="endDate"
+                                placeholder="Enter end date"
                                 required
                                 mwlFlatpickr
                                 data-id="datetime"
                                 [type]="'datetime-local'"
                                 [altInput]="false"
-                                [enableTime]="true"
+                                [enableTime]="false"
                                 [convertModelValue]="true"
                                 [altFormat]=""
-                                [dateFormat]="'Y-m-d H:i'"
+                                [dateFormat]="'Y-m-d'"
                                 [(ngModel)]="userActivityFilter.endDate"
                               />
                             </div>
@@ -512,7 +517,7 @@
                                           {{ activity.userActivityType }} -
                                           <span class="fw-normal">{{
                                             activity.activityDate
-                                              | date : "medium"
+                                              | date : 'medium'
                                           }}</span>
                                         </h6>
                                       </div>
@@ -535,7 +540,7 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Logged in at
@@ -543,7 +548,7 @@
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
@@ -571,11 +576,11 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Created a new question
-                                        <a
+                                        <!-- <a
                                           style="cursor: pointer"
                                           class="text-primary underline"
                                           (click)="
@@ -586,24 +591,24 @@
                                           "
                                           >{{ activity.itemId }}</a
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <p class="text-muted mb-0">
@@ -611,6 +616,36 @@
                                         {{ activity.itemStatus }} |
                                         {{ activity.moderationStatus }}
                                       </p>
+                                      <button
+                                        *ngIf="
+                                          !!activity.itemId &&
+                                          !!!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchItem(
+                                            activity.itemId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view question
+                                      </button>
+                                      <button
+                                        *ngIf="
+                                          !!!activity.itemId &&
+                                          !!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchPassage(
+                                            activity.passageId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view passage
+                                      </button>
                                     </div>
                                   </div>
 
@@ -629,11 +664,11 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Edited a question
-                                        <a
+                                        <!-- <a
                                           style="cursor: pointer"
                                           class="text-primary underline"
                                           (click)="
@@ -644,24 +679,24 @@
                                           "
                                           >{{ activity.itemId }}</a
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <p class="text-muted mb-0">
@@ -669,9 +704,39 @@
                                         {{ activity.itemStatus }}
                                         {{
                                           activity.moderationStatus &&
-                                            "|" + activity.moderationStatus
+                                            '|' + activity.moderationStatus
                                         }}
                                       </p>
+                                      <button
+                                        *ngIf="
+                                          !!activity.itemId &&
+                                          !!!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchItem(
+                                            activity.itemId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view question
+                                      </button>
+                                      <button
+                                        *ngIf="
+                                          !!!activity.itemId &&
+                                          !!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchPassage(
+                                            activity.passageId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view passage
+                                      </button>
                                     </div>
                                   </div>
 
@@ -690,7 +755,7 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Deleted a question
@@ -699,24 +764,24 @@
                                           class="text-danger"
                                           >{{ activity.itemId }}</span
                                         >
-                                        at
+                                        <!-- at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <!-- <p class="text-muted mb-0">
@@ -744,7 +809,7 @@
                                           activity.firstName + activity.lastName
                                         }}
                                         Created a new passage
-                                        <a
+                                        <!-- <a
                                           style="cursor: pointer"
                                           class="text-primary underline"
                                           (click)="
@@ -755,24 +820,24 @@
                                           "
                                           >{{ activity.passageId }}</a
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <!-- <p class="text-muted mb-0">
@@ -780,6 +845,36 @@
                                         {{ activity.itemStatus }} |
                                         {{ activity.moderationStatus }}
                                       </p> -->
+                                      <button
+                                        *ngIf="
+                                          !!activity.itemId &&
+                                          !!!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchItem(
+                                            activity.itemId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view question
+                                      </button>
+                                      <button
+                                        *ngIf="
+                                          !!!activity.itemId &&
+                                          !!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchPassage(
+                                            activity.passageId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view passage
+                                      </button>
                                     </div>
                                   </div>
 
@@ -800,7 +895,7 @@
                                           activity.firstName + activity.lastName
                                         }}
                                         Edited a passage
-                                        <a
+                                        <!-- <a
                                           style="cursor: pointer"
                                           class="text-primary underline"
                                           (click)="
@@ -811,24 +906,24 @@
                                           "
                                           >{{ activity.passageId }}</a
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <!-- <p class="text-muted mb-0">
@@ -836,6 +931,36 @@
                                         {{ activity.itemStatus }} |
                                         {{ activity.moderationStatus }}
                                       </p> -->
+                                      <button
+                                        *ngIf="
+                                          !!activity.itemId &&
+                                          !!!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchItem(
+                                            activity.itemId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view question
+                                      </button>
+                                      <button
+                                        *ngIf="
+                                          !!!activity.itemId &&
+                                          !!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchPassage(
+                                            activity.passageId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view passage
+                                      </button>
                                     </div>
                                   </div>
 
@@ -854,28 +979,28 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Deleted a passage
-                                        <span
+                                        <!-- <span
                                           style="cursor: pointer"
                                           class="text-danger"
                                           >{{ activity.passageId }}</span
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
@@ -907,7 +1032,7 @@
                                           activity.firstName + activity.lastName
                                         }}
                                         Created a new passage question
-                                        <a
+                                        <!-- <a
                                           style="cursor: pointer"
                                           class="text-primary underline"
                                           (click)="
@@ -918,24 +1043,24 @@
                                           "
                                           >{{ activity.itemId }}</a
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <p class="text-muted mb-0">
@@ -943,6 +1068,36 @@
                                         {{ activity.itemStatus }} |
                                         {{ activity.moderationStatus }}
                                       </p>
+                                      <button
+                                        *ngIf="
+                                          !!activity.itemId &&
+                                          !!!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchItem(
+                                            activity.itemId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view question
+                                      </button>
+                                      <button
+                                        *ngIf="
+                                          !!!activity.itemId &&
+                                          !!activity.passageId
+                                        "
+                                        class="btn btn-success mt-2 text-capitalize"
+                                        (click)="
+                                          fetchPassage(
+                                            activity.passageId,
+                                            previewModal
+                                          )
+                                        "
+                                      >
+                                        view passage
+                                      </button>
                                     </div>
                                   </div>
 
@@ -961,33 +1116,33 @@
                                       <h6 class="mb-1">
                                         {{
                                           activity.firstName +
-                                            " " +
+                                            ' ' +
                                             activity.lastName
                                         }}
                                         Deleted a passage question
-                                        <span
+                                        <!-- <span
                                           style="cursor: pointer"
                                           class="text-danger"
                                           >{{ activity.itemId }}</span
                                         >
-                                        at
+                                        at -->
                                       </h6>
                                       <p class="text-muted">
                                         {{
                                           activity.activityDate
-                                            | date : "medium"
+                                            | date : 'medium'
                                         }}.
                                       </p>
 
-                                      <h6 class="mb-1">
+                                      <h6 class="mb-1 text-capitalize">
                                         {{
                                           activity.subject +
-                                            "|" +
+                                            ' | ' +
                                             activity.topic
                                         }}
                                         {{
                                           activity.subtopic &&
-                                            "|" + activity.subtopic
+                                            ' | ' + activity.subtopic
                                         }}
                                       </h6>
                                       <!-- <p class="text-muted mb-0">
@@ -1027,7 +1182,7 @@
                       </div>
                       <!--end card-body-->
 
-                      <p-paginator
+                      <!-- <p-paginator
                         *ngIf="
                           activityListPage &&
                           activityListPage.content.length > 0
@@ -1038,6 +1193,23 @@
                         [rowsPerPageOptions]="[50, 70, 100]"
                         [rows]="50"
                         [showCurrentPageReport]="true"
+                        [showPageLinks]="true"
+                        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                      >
+                      </p-paginator> -->
+
+                      <p-paginator
+                        *ngIf="
+                          activityListPage &&
+                          activityListPage.content.length > 0
+                        "
+                        [totalRecords]="activityListPage.totalElements"
+                        (onPageChange)="activityListChange($event)"
+                        [first]="first"
+                        [rowsPerPageOptions]="[50, 70, 100]"
+                        [rows]="rows"
+                        [showCurrentPageReport]="true"
+                        [showPageLinks]="true"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                       >
                       </p-paginator>
@@ -1062,6 +1234,19 @@
                     </div>
                   </div>
                 </ng-template>
+                <!-- <p-paginator
+                  *ngIf="
+                    activityListPage && activityListPage.content.length > 0
+                  "
+                  [totalRecords]="activityListPage.totalElements"
+                  (onPageChange)="activityListChange($event)"
+                  [first]="page"
+                  [rowsPerPageOptions]="[50, 70, 100]"
+                  [rows]="50"
+                  [showCurrentPageReport]="true"
+                  currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                >
+                </p-paginator> -->
               </li>
             </ul>
           </div>
@@ -1114,59 +1299,72 @@
           *ngIf="item.type === 'MCQ'"
           [previewData]="item"
           [component]="'usage-history'"
+          [showDeleteBtnInProfileActivitiesQuestionPreview]="false"
+          [showEditBtnInProfileActivitiesQuestionPreview]="false"
         ></app-preview>
+
         <app-matching-preview
           *ngIf="item.type === 'ASSOCIATION'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-matching-preview>
+
         <app-ordering-preview
           *ngIf="item.type === 'ORDER_LIST'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-ordering-preview>
+
         <app-rich-essay-preview
           *ngIf="item.type === 'ESSAY_RICH_TEXT'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-rich-essay-preview>
+
         <app-multiple-response-preview
           *ngIf="item.type === 'MRQ'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-multiple-response-preview>
+
         <app-short-text-preview
           *ngIf="item.type === 'SHORT_TEXT'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-short-text-preview>
+
         <app-yes-or-no-preview
           *ngIf="item.type === 'YES_NO'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-yes-or-no-preview>
+
         <app-true-or-false-preview
           *ngIf="item.type === 'TRUE_FALSE'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-true-or-false-preview>
+
         <app-cloze-dropdown-preview
           *ngIf="item.type === 'CLOZE_DROPDOWN'"
           [previewData]="item"
           [component]="'usage-history'"
         ></app-cloze-dropdown-preview>
+
         <app-cloze-text-preview
           *ngIf="item.type === 'CLOZE_TEXT'"
           [previewData]="item"
           [component]="'usage-history'"
           (closeOuterModal)="modal.close('Close click')"
         ></app-cloze-text-preview>
+
         <app-choice-matrix-preview
           *ngIf="item.type === 'CHOICE_MATRIX'"
           [previewData]="item"
           [component]="'usage-history'"
           (closeOuterModal)="modal.close('Close click')"
         ></app-choice-matrix-preview>
+
         <app-drawing-and-writing-preview
           *ngIf="item.type === 'DRAWING_AND_WRITING'"
           [previewData]="item"
@@ -1174,8 +1372,12 @@
           (closeOuterModal)="modal.close('Close click')"
         ></app-drawing-and-writing-preview>
       </div>
+
       <div *ngIf="currentPreview === 'Passage' && passage">
-        <app-passage-preview [previewData]="passage"></app-passage-preview>
+        <app-passage-preview
+          [previewData]="passage"
+          [showEditBtnInProfileActivitiesPassagePreview]="false"
+        ></app-passage-preview>
       </div>
     </div>
   </div>

@@ -38,6 +38,8 @@ export class DrawingAndWritingPreviewComponent
   @Input() previewData: DrawAndWritingModel | any;
   @Input() component!: string;
   @Input() itemTrailInfo: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
@@ -53,9 +55,9 @@ export class DrawingAndWritingPreviewComponent
   itemUsageHistory: UsageHistory[] = [];
   loading_usage_history: boolean = false;
   containerSize = 500;
-  canvasSize = 1000
-  
-  constructor( 
+  canvasSize = 1000;
+
+  constructor(
     private konvaDrawingService: KonvaDrawingService,
     private konvaFreehandDrawing: PerfectFreehandKonvaDrawingService,
     private itemUtil: ItemUtilitiesService,
@@ -64,7 +66,7 @@ export class DrawingAndWritingPreviewComponent
     private itemService: ItemHttpService,
     private router: Router,
     private passageService: AllPassagesService,
-    private notifier: NotifierService,
+    private notifier: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -81,7 +83,7 @@ export class DrawingAndWritingPreviewComponent
     const width = canvasContainer.offsetWidth;
     const height = canvasContainer.offsetHeight;
 
-     this.useDrawingService().resizeStage(width, height, this.containerSize);
+    this.useDrawingService().resizeStage(width, height, this.containerSize);
   }
 
   ngAfterViewInit(): void {
@@ -89,22 +91,34 @@ export class DrawingAndWritingPreviewComponent
     if (canvasContainer) {
       const width = canvasContainer.offsetWidth;
 
-       this.useDrawingService().initialize('canvas', width, this.canvasSize, this.containerSize);
-       this.useDrawingService().mode = this._currentTool;
-       this.useDrawingService().gridType = this.previewData.backgroundType;
+      this.useDrawingService().initialize(
+        'canvas',
+        width,
+        this.canvasSize,
+        this.containerSize
+      );
+      this.useDrawingService().mode = this._currentTool;
+      this.useDrawingService().gridType = this.previewData.backgroundType;
     } else {
-       this.useDrawingService().initialize('canvas', 800, this.canvasSize, this.containerSize);
-       this.useDrawingService().mode = this._currentTool;
-       this.useDrawingService().gridType = this.previewData.backgroundType;
+      this.useDrawingService().initialize(
+        'canvas',
+        800,
+        this.canvasSize,
+        this.containerSize
+      );
+      this.useDrawingService().mode = this._currentTool;
+      this.useDrawingService().gridType = this.previewData.backgroundType;
     }
   }
 
-  useDrawingService(type: string = 'perfect-freehand'): KonvaDrawingService | PerfectFreehandKonvaDrawingService {
-    if(type == 'perfect-freehand') {
-      return this.konvaFreehandDrawing
+  useDrawingService(
+    type: string = 'perfect-freehand'
+  ): KonvaDrawingService | PerfectFreehandKonvaDrawingService {
+    if (type == 'perfect-freehand') {
+      return this.konvaFreehandDrawing;
     }
 
-    return this.konvaDrawingService
+    return this.konvaDrawingService;
   }
 
   edit() {
@@ -126,7 +140,7 @@ export class DrawingAndWritingPreviewComponent
   }
 
   ngOnDestroy(): void {
-     this.useDrawingService().destroy();
+    this.useDrawingService().destroy();
   }
 
   get CurrentTool(): 'brush' | 'eraser' {
@@ -135,8 +149,8 @@ export class DrawingAndWritingPreviewComponent
 
   set CurrentTool(value: 'brush' | 'eraser') {
     this._currentTool = value;
-    if ( this.useDrawingService()) {
-       this.useDrawingService().mode = value;
+    if (this.useDrawingService()) {
+      this.useDrawingService().mode = value;
     }
   }
 
@@ -146,8 +160,8 @@ export class DrawingAndWritingPreviewComponent
 
   set selectedGridType(value: string) {
     this._selectedGridType = value;
-    if ( this.useDrawingService()) {
-       this.useDrawingService().gridType = value;
+    if (this.useDrawingService()) {
+      this.useDrawingService().gridType = value;
     }
   }
 
@@ -156,7 +170,7 @@ export class DrawingAndWritingPreviewComponent
   }
 
   clearCanvas(): void {
-     this.useDrawingService().clearDrawing();
+    this.useDrawingService().clearDrawing();
   }
 
   openDeleteItemModal(deleteConfirmationModal: any, itemId: any) {
@@ -264,8 +278,8 @@ export class DrawingAndWritingPreviewComponent
   }
 
   urlIsUserSettingsPage() {
-    const url = this.router.url
+    const url = this.router.url;
 
-    return url.includes('users/view')
+    return url.includes('users/view');
   }
 }

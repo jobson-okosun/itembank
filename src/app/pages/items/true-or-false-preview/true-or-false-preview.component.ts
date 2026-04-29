@@ -1,28 +1,30 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { TrueOrFalseModel } from "../true-or-false/model/true-or-false-model.model";
-import { Router } from "@angular/router";
-import { ItemHttpService } from "../item-http.service";
-import { UserService } from "src/app/shared/user.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { HttpErrorResponse } from "@angular/common/http";
-import Swal from "sweetalert2";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { RecycleService } from "../../recycle/recycle.service";
-import { UsageHistory } from "../models/usage-history";
-import { NotifierService } from "angular-notifier";
-import { ItemUtilitiesService } from "../item-utilities.service";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { TrueOrFalseModel } from '../true-or-false/model/true-or-false-model.model';
+import { Router } from '@angular/router';
+import { ItemHttpService } from '../item-http.service';
+import { UserService } from 'src/app/shared/user.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { RecycleService } from '../../recycle/recycle.service';
+import { UsageHistory } from '../models/usage-history';
+import { NotifierService } from 'angular-notifier';
+import { ItemUtilitiesService } from '../item-utilities.service';
 
 @Component({
-  selector: "app-true-or-false-preview",
-  templateUrl: "./true-or-false-preview.component.html",
-  styleUrls: ["./true-or-false-preview.component.scss"],
+  selector: 'app-true-or-false-preview',
+  templateUrl: './true-or-false-preview.component.html',
+  styleUrls: ['./true-or-false-preview.component.scss'],
 })
 export class TrueOrFalsePreviewComponent implements OnInit {
   @Input() component!: string;
-  @Input() formTypePreview = "";
+  @Input() formTypePreview = '';
   @Input() previewData!: any;
   @Input() itemTrailInfo!: any;
+  @Input() formType!: string;
+  @Input() selectedItemType!: string;
   @Output() hidePreview = new EventEmitter<string>();
   @Output() returnPreviewData = new EventEmitter();
   @Output() savedItem = new EventEmitter();
@@ -32,7 +34,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
   selected: string;
   currentUser: Account;
   subjectName!: string;
-  optionLabels: string[] = ["A", "B"];
+  optionLabels: string[] = ['A', 'B'];
   showAnswer: boolean = false;
   assessmentActive: boolean = false;
   selectedItemId!: string;
@@ -60,7 +62,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
     this.assessmentActive = this.itemService.assessmentActive;
     this.recycleComponentActive = this.recycleService.recycleActive;
 
-    this.isEditPreview = this.router.url.includes("edit-item");
+    this.isEditPreview = this.router.url.includes('edit-item');
     // console.log(this.previewData);
     this.answer = this.previewData.scoringOption.answers[0];
   }
@@ -75,7 +77,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -96,7 +98,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -109,7 +111,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -120,9 +122,9 @@ export class TrueOrFalsePreviewComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -132,8 +134,8 @@ export class TrueOrFalsePreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -153,9 +155,9 @@ export class TrueOrFalsePreviewComponent implements OnInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -168,9 +170,9 @@ export class TrueOrFalsePreviewComponent implements OnInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -180,7 +182,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -191,7 +193,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
   }

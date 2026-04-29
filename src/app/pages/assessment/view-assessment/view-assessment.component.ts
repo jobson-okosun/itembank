@@ -4,35 +4,35 @@ import {
   OnDestroy,
   ViewChild,
   AfterViewInit,
-} from "@angular/core";
-import { ActivatedRoute } from "@angular/router";
-import { AssessmentSettings } from "../model/assessment-settings";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AssessmentInstruction } from "../model/assessment-instruction";
-import { SectionSettings } from "../model/new-assessment-section-template.model";
-import { AssessmentSections } from "../model/assessment-sections";
-import { DropdownSubjectList } from "../../items/models/dropdown-subject-list.model";
-import { ItemHttpService } from "../../items/item-http.service";
-import { AssessmentsService } from "../service/assessments.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AssessmentDeliveryEnum } from "../model/assessment-delivery-enum";
-import Swal from "sweetalert2";
-import { FontSizes } from "../model/font-sizes";
-import { BlockTypesEnum } from "../model/block-types-enum";
-import { BlockQuestionsSelectionTypesEnum } from "../model/block-questions-selection-types-enum";
-import { NewAssessmentSection } from "../model/new-assessment-section";
-import { SingleAssessment } from "../model/single-assessment";
-import { BlockDetails, SectionDetails } from "../model/section-details";
-import { NewSectionBlock } from "../model/new-section-block";
-import { NotifierService } from "angular-notifier";
-import { ListBlockItems } from "../model/list-block-items";
-import { NewAssessmentTemplate } from "../model/new-assessment-template";
-import { SectionItemCount } from "../model/section-item-count";
-import { TemplatesService } from "../../templates/service/templates.service";
-import { TemplatesPage } from "../../templates/model/templates-page.model";
-import { ImportTemplate } from "../model/import-template";
-import { Publish } from "../model/publish";
-import { SubjectComponent } from "../../items/subject/subject.component";
+} from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { AssessmentSettings } from '../model/assessment-settings';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AssessmentInstruction } from '../model/assessment-instruction';
+import { SectionSettings } from '../model/new-assessment-section-template.model';
+import { AssessmentSections } from '../model/assessment-sections';
+import { DropdownSubjectList } from '../../items/models/dropdown-subject-list.model';
+import { ItemHttpService } from '../../items/item-http.service';
+import { AssessmentsService } from '../service/assessments.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AssessmentDeliveryEnum } from '../model/assessment-delivery-enum';
+import Swal from 'sweetalert2';
+import { FontSizes } from '../model/font-sizes';
+import { BlockTypesEnum } from '../model/block-types-enum';
+import { BlockQuestionsSelectionTypesEnum } from '../model/block-questions-selection-types-enum';
+import { NewAssessmentSection } from '../model/new-assessment-section';
+import { SingleAssessment } from '../model/single-assessment';
+import { BlockDetails, SectionDetails } from '../model/section-details';
+import { NewSectionBlock } from '../model/new-section-block';
+import { NotifierService } from 'angular-notifier';
+import { ListBlockItems } from '../model/list-block-items';
+import { NewAssessmentTemplate } from '../model/new-assessment-template';
+import { SectionItemCount } from '../model/section-item-count';
+import { TemplatesService } from '../../templates/service/templates.service';
+import { TemplatesPage } from '../../templates/model/templates-page.model';
+import { ImportTemplate } from '../model/import-template';
+import { Publish } from '../model/publish';
+import { SubjectComponent } from '../../items/subject/subject.component';
 
 interface Card {
   title: string;
@@ -40,9 +40,9 @@ interface Card {
 }
 
 @Component({
-  selector: "app-view-assessment",
-  templateUrl: "./view-assessment.component.html",
-  styleUrls: ["./view-assessment.component.scss"],
+  selector: 'app-view-assessment',
+  templateUrl: './view-assessment.component.html',
+  styleUrls: ['./view-assessment.component.scss'],
 })
 export class ViewAssessmentComponent implements OnInit, OnDestroy {
   breadCrumbItems!: any;
@@ -126,7 +126,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   newAssessmentTemplate: NewAssessmentTemplate = new NewAssessmentTemplate();
   newSectionTemplate: NewAssessmentTemplate = new NewAssessmentTemplate();
   fetchingBlockItems: boolean = false;
-  currentTab: string = "EXAMS";
+  currentTab: string = 'EXAMS';
   totalPassages: number = 0;
   sectionItems: SectionItemCount[] = [];
   schedulerAssessmentId: string;
@@ -148,6 +148,17 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   warnEndOfReadingTimeChecked: boolean = false;
   instructionReadTimeChecked: boolean = false;
 
+  DELIVERY_METHOD_LABEL: string[] = [
+    'LIVE PROCTORING',
+    'AUTO PROCTORING',
+    'ONLINE WITH NO PROCTORING',
+    'ON PREMISE WITH LOCKDOWN BROWSER',
+    'ON PREMISE WITHOUT LOCKDOWN BROWSER',
+    'E-PAPER',
+  ];
+
+  deliveryMethodsWithLabel: { label: string; value: string }[] = [];
+
   // @ViewChild('Pills') nav; */
 
   /* ngAfterViewInit() {
@@ -161,9 +172,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     private assessmentService: AssessmentsService,
     public itemService: ItemHttpService,
     private notifier: NotifierService,
-    private templateService: TemplatesService
+    private templateService: TemplatesService,
   ) {
-    this.assessmentId = this.ar.snapshot.params["assessmentId"];
+    this.assessmentId = this.ar.snapshot.params['assessmentId'];
     this.currentAssessment = this.assessmentService.activeAssessment;
     this.currentAssessmentDeliveryMethod =
       this.assessmentService.activeAssessmentDeliveryMethod;
@@ -175,11 +186,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   // Open manual drawer
   onSettingsButtonClicked() {
-    document.body.classList.toggle("right-bar-enabled");
-    const rightBar = document.getElementById("theme-settings-offcanvas");
+    document.body.classList.toggle('right-bar-enabled');
+    const rightBar = document.getElementById('theme-settings-offcanvas');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
@@ -188,9 +199,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(this.assessmentService.activeAssessment)
+    console.log(this.assessmentService.activeAssessment);
 
-    
     this.totalPassages = 0;
     this.itemService.assessmentActive = true;
     this.getAssessment();
@@ -213,7 +223,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
-        }
+        },
       );
 
     // Fetch subjects for dropdown
@@ -229,13 +239,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.assessment_templates = value;
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
 
     // Breadcrumbs
     this.breadCrumbItems = [
-      { label: "Exams", active: false },
+      { label: 'Exams', active: false },
       {
         label: this.assessmentService?.activeAssessment?.toLowerCase(),
         active: true,
@@ -245,6 +255,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.blockTypes = Object.values(BlockTypesEnum);
     this.deliveryMethods = Object.values(AssessmentDeliveryEnum);
     this.selectionTypes = Object.values(BlockQuestionsSelectionTypesEnum);
+
+    this.deliveryMethodsWithLabel = this.deliveryMethods.map(
+      (value: string, index: number) => ({
+        value: value,
+        label: this.DELIVERY_METHOD_LABEL[index],
+      }),
+    );
     // this.getAssessment();
   }
 
@@ -275,7 +292,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           section.totalSelectedQuestions = 0;
           section.blockDetailsDTOS.forEach((block) => {
             if (
-              block.blockType === "PASSAGES" &&
+              block.blockType === 'PASSAGES' &&
               block.totalFound > block.totalQuestionsPerStudent
             ) {
               section.totalCandidateSelectedQuestions +=
@@ -284,7 +301,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
                 block.totalFound * block.totalQuestionsInPassage;
             }
             if (
-              block.blockType === "PASSAGES" &&
+              block.blockType === 'PASSAGES' &&
               block.totalFound <= block.totalQuestionsPerStudent
             ) {
               section.totalCandidateSelectedQuestions +=
@@ -293,7 +310,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
                 block.totalFound * block.totalQuestionsInPassage;
             }
             if (
-              block.blockType === "SINGLE_QUESTIONS" &&
+              block.blockType === 'SINGLE_QUESTIONS' &&
               block.totalFound >= block.totalQuestionsPerStudent
             ) {
               section.totalCandidateSelectedQuestions +=
@@ -301,7 +318,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
               section.totalSelectedQuestions += block.totalFound;
             }
             if (
-              block.blockType === "SINGLE_QUESTIONS" &&
+              block.blockType === 'SINGLE_QUESTIONS' &&
               block.totalFound < block.totalQuestionsPerStudent
             ) {
               section.totalCandidateSelectedQuestions += block.totalFound;
@@ -336,21 +353,21 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
         this.assessment = value;
 
-        console.log(value, "assessment");
+        console.log(value, 'assessment');
 
         // console.log(this.assessment);
       },
       (error: HttpErrorResponse) => {
         // console.log(error);
-      }
+      },
     );
   }
 
   openAssessmentSettingsModal(assessmentSettingsModal: any) {
     this.modalService.open(assessmentSettingsModal, {
       centered: true,
-      size: "lg",
-      backdrop: "static",
+      size: 'lg',
+      backdrop: 'static',
       keyboard: false,
     });
   }
@@ -358,30 +375,30 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   openAssessmentInstructionModal(assessmentInstructionModal: any) {
     this.modalService.open(assessmentInstructionModal, {
       centered: true,
-      size: "lg",
+      size: 'lg',
     });
   }
 
   openAssessmentPreviewModal(content: any) {
     this.modalService.open(content, {
       centered: true,
-      size: "xl",
-      windowClass: "modal-fullscreen",
+      size: 'xl',
+      windowClass: 'modal-fullscreen',
     });
   }
 
   fetchAlreadyExistingPassageIds(manualPassageItemSelectionModal) {
-    if (this.selectedBlock.selectionType === "MANUAL") {
+    if (this.selectedBlock.selectionType === 'MANUAL') {
       this.loadingExistingPassageIds = true;
       this.modalService.open(manualPassageItemSelectionModal, {
         centered: true,
-        size: "xl",
-        windowClass: "modal-fullscreen",
+        size: 'xl',
+        windowClass: 'modal-fullscreen',
       });
       this.assessmentService
         .fetchExistingPassageIds(
           this.assessmentId,
-          this.selectedSection.sectionId
+          this.selectedSection.sectionId,
         )
         .subscribe({
           next: (value) => {
@@ -391,30 +408,30 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           error: (err: HttpErrorResponse) => {
             this.loadingExistingPassageIds = false;
             Swal.fire({
-              title: "Failed!",
+              title: 'Failed!',
               text: `${err.error.message}`,
-              icon: "error",
+              icon: 'error',
             });
           },
         });
     } else {
       this.modalService.open(manualPassageItemSelectionModal, {
         centered: true,
-        size: "xl",
-        windowClass: "modal-fullscreen",
+        size: 'xl',
+        windowClass: 'modal-fullscreen',
       });
     }
   }
 
   fetchAlreadyExistingItemIds(manualItemSelectionModal) {
-    if (this.selectedBlock.selectionType === "MANUAL") {
+    if (this.selectedBlock.selectionType === 'MANUAL') {
       this.loadingExistingItemIds = true;
       this.modalService.open(manualItemSelectionModal, {
-        backdrop: "static",
+        backdrop: 'static',
         keyboard: false,
         centered: true,
-        size: "xl",
-        windowClass: "modal-fullscreen",
+        size: 'xl',
+        windowClass: 'modal-fullscreen',
       });
       this.assessmentService
         .fetchExistingItemIds(this.assessmentId, this.selectedSection.sectionId)
@@ -426,19 +443,19 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           error: (err: HttpErrorResponse) => {
             this.loadingExistingItemIds = false;
             Swal.fire({
-              title: "Failed!",
+              title: 'Failed!',
               text: `${err.error.message}`,
-              icon: "error",
+              icon: 'error',
             });
           },
         });
     } else {
       this.modalService.open(manualItemSelectionModal, {
-        backdrop: "static",
+        backdrop: 'static',
         keyboard: false,
         centered: true,
-        size: "xl",
-        windowClass: "modal-fullscreen",
+        size: 'xl',
+        windowClass: 'modal-fullscreen',
       });
     }
   }
@@ -456,33 +473,33 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           // console.log(error);
-        }
+        },
       );
     this.selectedSubject = new DropdownSubjectList();
     this.modalService.open(assessmentSectionModal, {
       centered: true,
-      size: "lg",
-      backdrop: "static",
+      size: 'lg',
+      backdrop: 'static',
       keyboard: false,
     });
   }
 
   openNewSectionModal(newSectionModal: any) {
-    this.modalService.open(newSectionModal, { centered: true, size: "md" });
+    this.modalService.open(newSectionModal, { centered: true, size: 'md' });
   }
 
   openEditSectionSettingsModal(editSectionSettingsModal: any) {
     this.modalService.open(editSectionSettingsModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
   openNewBlockModal(newBlockModal: any, section: any) {
-    this.newBlock.name = "BLOCK " + (section.blockCount + 1);
+    this.newBlock.name = 'BLOCK ' + (section.blockCount + 1);
     this.newBlock.totalQuestions;
-    console.log(section, "section");
-    this.modalService.open(newBlockModal, { centered: true, size: "md" });
+    console.log(section, 'section');
+    this.modalService.open(newBlockModal, { centered: true, size: 'md' });
   }
 
   openManualItemSelectionModal(manualItemSelectionModal: any) {
@@ -496,28 +513,28 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   openListBlockItemsModal(listBlockItemsModal: any) {
     this.modalService.open(listBlockItemsModal, {
       centered: true,
-      size: "xl",
-      windowClass: "modal-fullscreen",
+      size: 'xl',
+      windowClass: 'modal-fullscreen',
     });
   }
 
   openListBlockPassagesModal(listBlockPassagesModal: any) {
     this.modalService.open(listBlockPassagesModal, {
       centered: true,
-      size: "xl",
-      windowClass: "modal-fullscreen",
+      size: 'xl',
+      windowClass: 'modal-fullscreen',
     });
   }
 
   openEditBlockModal(editBlockModal: any, block?: any) {
     this.editBlock = block;
     this.editBlock.name = block.blockName;
-    this.modalService.open(editBlockModal, { centered: true, size: "md" });
+    this.modalService.open(editBlockModal, { centered: true, size: 'md' });
   }
 
   openNewAssessmentTemplateModal(newAssessmentTemplateModal: any) {
     this.modalService.open(newAssessmentTemplateModal, {
-      size: "md",
+      size: 'md',
       centered: true,
     });
   }
@@ -525,7 +542,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   openNewSectionTemplateModal(newSectionTemplateModal: any) {
     this.modalService.open(newSectionTemplateModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -563,6 +580,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     }
   }
 
+  onKeyDown(event: KeyboardEvent) {
+    // Prevent '-' (minus sign) and 'e' (scientific notation)
+    if (['-', 'e', 'E'].includes(event.key)) {
+      event.preventDefault();
+    }
+  }
+
   saveSectionSettings(sectionSettingForm: any) {
     this.submitted = true;
     this.editSection.name = this.editSection.name.trim();
@@ -571,15 +595,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .updateSectionSettings(
         this.assessmentId,
         this.selectedSection.sectionId,
-        this.editSection
+        this.editSection,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully updated the section settings.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully updated the section settings.',
+              icon: 'success',
             });
             this.submitted = false;
             this.modalService.dismissAll();
@@ -589,13 +613,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
           this.submitted = false;
           //console.log(error);
-        }
+        },
       );
   }
 
@@ -624,7 +648,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
     let validated = this.assessmentService.validateBlockSection(
       this.newBlock,
-      this.selectedSection
+      this.selectedSection,
     );
 
     if (!validated) {
@@ -636,15 +660,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .createNewBlock(
         this.assessmentId,
         this.selectedSection.sectionId,
-        this.newBlock
+        this.newBlock,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfuly added a new TOS block.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfuly added a new TOS block.',
+              icon: 'success',
             });
           }
           this.submitted = false;
@@ -655,13 +679,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
   openTemplateImportModal(importTemplateModal: any) {
-    this.modalService.open(importTemplateModal, { centered: true, size: "md" });
+    this.modalService.open(importTemplateModal, { centered: true, size: 'md' });
   }
 
   importTemplate() {
@@ -684,7 +708,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (error: HttpErrorResponse) => {
           this.submitted = false;
           this.notifier.notify(`error`, `${error.error.message}`);
-        }
+        },
       );
   }
 
@@ -727,21 +751,21 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
           this.cards = [
             {
-              title: "Total Section(s)",
+              title: 'Total Section(s)',
               count: this.sectionItems.length,
             },
-            { title: "Total Question(s)", count: totalQuestions },
-            { title: "Total Passage(s)", count: this.totalPassages },
-            { title: "Total Mark(s)", count: totalMarks },
+            { title: 'Total Question(s)', count: totalQuestions },
+            { title: 'Total Passage(s)', count: this.totalPassages },
+            { title: 'Total Mark(s)', count: totalMarks },
           ];
 
           this.loading = false;
           //console.log(this.assessment);
         },
         (error: HttpErrorResponse) => {
-          this.notifier.notify("error", `${error.error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.loading = false;
-        }
+        },
       );
   }
 
@@ -756,15 +780,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.assessmentId,
         this.selectedSection.sectionId,
         this.selectedBlock.blockId,
-        this.editBlock
+        this.editBlock,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully updated a block information.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully updated a block information.',
+              icon: 'success',
             });
           }
           this.submitted = false;
@@ -775,24 +799,24 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (error: HttpErrorResponse) => {
           this.submitted = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
   openDeleteBlockConfirmationModal(
     deleteBlockConfirmationModal: any,
     section?: any,
-    block?: any
+    block?: any,
   ) {
     this.selectedSection = section;
     this.selectedBlock = block;
     this.modalService.open(deleteBlockConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -802,15 +826,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .deleteBlock(
         this.assessmentId,
         this.selectedSection.sectionId,
-        this.selectedBlock.blockId
+        this.selectedBlock.blockId,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
+              title: 'Congratulations!',
               text: `You have successfully deleted ${this.selectedBlock.blockName} of ${this.selectedSection.sectionName}`,
-              icon: "success",
+              icon: 'success',
             });
           }
           this.submitted = false;
@@ -820,23 +844,23 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
           this.submitted = false;
-        }
+        },
       );
   }
 
   openDeleteSectionConfirmationModal(
     deleteSectionConfirmationModal: any,
-    selectedSection: any
+    selectedSection: any,
   ) {
     this.setSelectedSection(selectedSection);
     this.modalService.open(deleteSectionConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -848,9 +872,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully deleted a new section.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully deleted a new section.',
+              icon: 'success',
             });
           }
           this.submitted = false;
@@ -860,8 +884,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -871,24 +895,24 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
     // Ensure startDate and endDate are strings and end with "Z"
     this.assessmentSettings.startDate =
-      typeof this.assessmentSettings.startDate === "string"
+      typeof this.assessmentSettings.startDate === 'string'
         ? this.assessmentSettings.startDate
         : this.assessmentSettings.startDate.toISOString();
 
     this.assessmentSettings.startDate =
-      !this.assessmentSettings.startDate.endsWith("Z")
-        ? this.assessmentSettings.startDate + "Z"
+      !this.assessmentSettings.startDate.endsWith('Z')
+        ? this.assessmentSettings.startDate + 'Z'
         : this.assessmentSettings.startDate;
 
     this.assessmentSettings.endDate =
-      typeof this.assessmentSettings.endDate === "string"
+      typeof this.assessmentSettings.endDate === 'string'
         ? this.assessmentSettings.endDate
         : this.assessmentSettings.endDate.toISOString();
 
     this.assessmentSettings.endDate = !this.assessmentSettings.endDate.endsWith(
-      "Z"
+      'Z',
     )
-      ? this.assessmentSettings.endDate + "Z"
+      ? this.assessmentSettings.endDate + 'Z'
       : this.assessmentSettings.endDate;
 
     // Ensure unchecked settings are set to 0
@@ -896,8 +920,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     if (this.compensatoryChecked) {
       if (this.assessmentSettings.compensatoryTimeMins < 5) {
         return this.notifier.notify(
-          "error",
-          "Compensatory time cannot be less than 5"
+          'error',
+          'Compensatory time cannot be less than 5',
         );
       }
     }
@@ -905,22 +929,23 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     if (this.inactivityChecked) {
       if (this.assessmentSettings.inactivityWaringSec < 15) {
         return this.notifier.notify(
-          "error",
-          "Inactivity warning  cannot be less than 15"
+          'error',
+          'Inactivity warning  cannot be less than 15',
         );
       }
     }
 
-    console.log(this.instructionReadTimeChecked, "instructionReadTimeChecked");
+    console.log(this.instructionReadTimeChecked, 'instructionReadTimeChecked');
+
     if (this.instructionReadTimeChecked) {
-      console.log(this.assessmentSettings.instructionReadTimeSec, "inredtime");
+      console.log(this.assessmentSettings.instructionReadTimeSec, 'inredtime');
       if (
         this.assessmentSettings.instructionReadTimeSec !== 0 &&
-        this.assessmentSettings.instructionReadTimeSec < 40
+        this.assessmentSettings.instructionReadTimeSec < 120
       ) {
         return this.notifier.notify(
-          "error",
-          "Instruction read time cannot be less than 40"
+          'error',
+          'Instruction read time cannot be less than 120',
         );
       }
     }
@@ -928,11 +953,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     if (this.warnEndOfReadingTimeChecked) {
       if (
         this.assessmentSettings.warnEndOfReadingTimeSec !== 0 &&
-        this.assessmentSettings.warnEndOfReadingTimeSec < 20
+        this.assessmentSettings.warnEndOfReadingTimeSec < 40
       ) {
         return this.notifier.notify(
-          "error",
-          "Warn end of read time  cannot be less than 20"
+          'error',
+          'Warn end of read time  cannot be less than 40',
         );
       }
     }
@@ -944,7 +969,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     if (!this.assessmentSettings.instantResult) {
       delete this.assessmentSettings.passMark;
     }
-    console.log(this.assessmentSettings, "assessment seetings");
+    console.log(this.assessmentSettings, 'assessment seetings');
 
     this.submitted = true;
     this.assessmentService
@@ -953,9 +978,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "Your exam settings has been saved successfully.....",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'Your exam settings has been saved successfully.....',
+              icon: 'success',
             });
 
             this.ngOnInit();
@@ -966,11 +991,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (error: HttpErrorResponse) => {
           this.submitted = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
@@ -985,14 +1010,14 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.incompleteSections++;
         // console.log(this.incompleteSections);
       }
-      console.log(section, "section");
+      console.log(section, 'section');
       if (section.totalSelectedQuestions !== section.totalQuestions) {
         this.notifier.notify(
-          "error",
-          `The total expected questions and total found questions are not equal per section`
+          'error',
+          `The total expected questions and total found questions are not equal per section`,
         );
         console.log(
-          `totalslected and ${section.totalSelectedQuestions} section total found ${section.totalQuestions} are not equal`
+          `totalslected and ${section.totalSelectedQuestions} section total found ${section.totalQuestions} are not equal`,
         );
 
         return;
@@ -1001,19 +1026,19 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         section.totalCandidateSelectedQuestions
       ) {
         this.notifier.notify(
-          "error",
-          `The total expected question per candidate and total found questions  per candidate are  not equal per sections`
+          'error',
+          `The total expected question per candidate and total found questions  per candidate are  not equal per sections`,
         );
         console.log(
-          `total question percandiate ${section.totalQuestionsPerCandidate} is not equal to totalfound for percandidate in section ${section.totalCandidateSelectedQuestions}`
+          `total question percandiate ${section.totalQuestionsPerCandidate} is not equal to totalfound for percandidate in section ${section.totalCandidateSelectedQuestions}`,
         );
         return;
       }
       // console.log(section.totalCandidateSelectedQuestions);
     });
 
-    console.log(this.incompleteSections, "incompleteSection");
-    if (assessmentStatus === "PUBLISHED" || this.incompleteSections > 0) {
+    console.log(this.incompleteSections, 'incompleteSection');
+    if (assessmentStatus === 'PUBLISHED' || this.incompleteSections > 0) {
       return false;
     }
     return true;
@@ -1049,13 +1074,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully created a new section.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully created a new section.',
+              icon: 'success',
             });
           }
-          
-          (document.getElementById('modalbtn') as HTMLButtonElement)?.click()
+
+          (document.getElementById('modalbtn') as HTMLButtonElement)?.click();
           this.getAssessment();
           this.getTotalItemsAndScores();
           this.submitted = false;
@@ -1064,8 +1089,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -1124,14 +1149,14 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.assessmentId,
         this.selectedSection.sectionId,
         this.selectedBlock.blockId,
-        this.selectedPassageIds
+        this.selectedPassageIds,
       )
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The selected passage(s) has been added to your assessment.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The selected passage(s) has been added to your assessment.',
+            icon: 'success',
           });
           this.modalService.dismissAll();
           this.getTotalItemsAndScores();
@@ -1140,9 +1165,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.itemService.setDuplicateStatus(error.error.message);
-          this.notifier.notify("error", `${error.error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.savingManualSelectedPassageItems = false;
-        }
+        },
       );
   }
 
@@ -1155,15 +1180,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           this.assessmentId,
           this.selectedSection.sectionId,
           this.selectedBlock.blockId,
-          this.selectedItems
+          this.selectedItems,
         )
         .subscribe(
           (value) => {
             if (value) {
               Swal.fire({
-                title: "Congratulations!",
+                title: 'Congratulations!',
                 text: `You have successfully added ${this.selectedBlock.totalQuestions} question(s) to the Block.`,
-                icon: "success",
+                icon: 'success',
               });
             }
             this.modalService.dismissAll();
@@ -1173,13 +1198,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           },
           (error: HttpErrorResponse) => {
             this.submitted = false;
-            this.notifier.notify("error", `${error.error.message}`);
-          }
+            this.notifier.notify('error', `${error.error.message}`);
+          },
         );
     } else {
       return this.notifier.notify(
-        "error",
-        `You have selected only ${this.selectedItems.length}/${this.selectedBlock.totalQuestions} questions!`
+        'error',
+        `You have selected only ${this.selectedItems.length}/${this.selectedBlock.totalQuestions} questions!`,
       );
     }
   }
@@ -1205,18 +1230,18 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           this.loader();
           // console.log(this.fetchingBlockItems);
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
   viewBlockPassages(
     listBlockPassagesModal: any,
     sectionId: string,
-    blockId: string
+    blockId: string,
   ) {
     this.fetchingBlockItems = true;
     this.loader();
@@ -1236,11 +1261,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           this.fetchingBlockItems = false;
           this.loader();
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
-        }
+        },
       );
   }
 
@@ -1258,7 +1283,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       },
       (err: HttpErrorResponse) => {
         // console.log(err);
-      }
+      },
     );
   }
 
@@ -1277,9 +1302,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "This assessment has been saved to your assessment templates.",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'This assessment has been saved to your assessment templates.',
+              icon: 'success',
             });
           }
           this.newAssessmentTemplate = new NewAssessmentTemplate();
@@ -1289,8 +1314,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -1303,15 +1328,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .saveAssessmentSectionTemplate(
         this.assessmentId,
         this.selectedSection.sectionId,
-        this.newSectionTemplate
+        this.newSectionTemplate,
       )
       .subscribe(
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
-              text: "You have successfully saved a new section to your section templates",
-              icon: "success",
+              title: 'Congratulations!',
+              text: 'You have successfully saved a new section to your section templates',
+              icon: 'success',
             });
           }
           this.submitted = false;
@@ -1320,8 +1345,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -1331,7 +1356,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     } else {
       // console.log('I am still displaying');
       Swal.fire({
-        title: "Loading your questions, Please Wait...",
+        title: 'Loading your questions, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -1350,7 +1375,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   openPublishExamConfirmationModal(publishAssessmentConfirmationModal: any) {
     this.modalService.open(publishAssessmentConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -1371,9 +1396,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
               this.submitted = false;
               this.publishLoader();
               Swal.fire({
-                title: "Congratulations!",
+                title: 'Congratulations!',
                 text: `You have successfully published ${this.assessment.name}`,
-                icon: "success",
+                icon: 'success',
               });
               this.ngOnInit();
               this.modalService.dismissAll();
@@ -1382,8 +1407,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           (error: HttpErrorResponse) => {
             this.submitted = false;
             Swal.close();
-            this.notifier.notify("error", `${error.error.message}`);
-          }
+            this.notifier.notify('error', `${error.error.message}`);
+          },
         );
     }
   }
@@ -1393,7 +1418,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: "Saving your question, Please Wait...",
+        title: 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -1426,12 +1451,12 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       (err: HttpErrorResponse) => {
         this.loadingPassageItemPreview = false;
         // console.log(err);
-      }
+      },
     );
   }
 
   handleDispayAllSectionOption(value: string) {
-    if (value === "allAtOnce") {
+    if (value === 'allAtOnce') {
       this.assessmentSettings.displayAllSectionsAtOnce = true;
     } else {
       this.assessmentSettings.displayAllSectionsAtOnce = false;

@@ -6,24 +6,24 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
-} from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription, timer } from "rxjs";
-import Swal from "sweetalert2";
-import { ISectionProgress, ItemService } from "../services/item.service";
-import { ItemType } from "src/app/shared/enum/itemTypes";
-import { TrueOrFalseComponent } from "./true-or-false/true-or-false.component";
-import { StandardChoiceComponent } from "./standard-choice/standard-choice.component";
-import { MultipleResponseComponent } from "./multiple-response/multiple-response.component";
-import { ClozeWithDropDownComponent } from "./cloze-with-drop-down/cloze-with-drop-down.component";
-import { ClozeWithTextComponent } from "./cloze-with-text/cloze-with-text.component";
-import { EssayWithRichTextComponent } from "./essay-with-rich-text/essay-with-rich-text.component";
-import { EssayWithShortTextComponent } from "./essay-with-short-text/essay-with-short-text.component";
-import { ClassifyByMatchingComponent } from "./classify-by-matching/classify-by-matching.component";
-import { ClassifyByOrderingComponent } from "./classify-by-ordering/classify-by-ordering.component";
-import { PrimeNGConfig } from "primeng/api";
+} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, timer } from 'rxjs';
+import Swal from 'sweetalert2';
+import { ISectionProgress, ItemService } from '../services/item.service';
+import { ItemType } from 'src/app/shared/enum/itemTypes';
+import { TrueOrFalseComponent } from './true-or-false/true-or-false.component';
+import { StandardChoiceComponent } from './standard-choice/standard-choice.component';
+import { MultipleResponseComponent } from './multiple-response/multiple-response.component';
+import { ClozeWithDropDownComponent } from './cloze-with-drop-down/cloze-with-drop-down.component';
+import { ClozeWithTextComponent } from './cloze-with-text/cloze-with-text.component';
+import { EssayWithRichTextComponent } from './essay-with-rich-text/essay-with-rich-text.component';
+import { EssayWithShortTextComponent } from './essay-with-short-text/essay-with-short-text.component';
+import { ClassifyByMatchingComponent } from './classify-by-matching/classify-by-matching.component';
+import { ClassifyByOrderingComponent } from './classify-by-ordering/classify-by-ordering.component';
+import { PrimeNGConfig } from 'primeng/api';
 // import { SettingsService } from "../services/settings.service";
-import { Paginator } from "primeng/paginator";
+import { Paginator } from 'primeng/paginator';
 import {
   ICandidateAutoSave,
   ICandidateAutoSaveItems,
@@ -31,38 +31,38 @@ import {
   ICandidateData,
   ICandidateEndExamData,
   ICandidateItem,
-} from "../models/candidate";
-import { CandidateService } from "../services/candidate.service";
-import { DOCUMENT } from "@angular/common";
-import { YesOrNoComponent } from "./yes-or-no/yes-or-no.component";
-import { HttpErrorResponse } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AssessmentFont } from "src/app/shared/enum/assessmentFonts";
-import { NotifierService } from "angular-notifier";
-import { BlockType } from "src/app/shared/enum/blockTypes";
-import { ChoiceMatrixComponent } from "./choice-matrix/choice-matrix.component";
-import { ExamPreviewService } from "../services/exam-preview.service";
+} from '../models/candidate';
+import { CandidateService } from '../services/candidate.service';
+import { DOCUMENT } from '@angular/common';
+import { YesOrNoComponent } from './yes-or-no/yes-or-no.component';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AssessmentFont } from 'src/app/shared/enum/assessmentFonts';
+import { NotifierService } from 'angular-notifier';
+import { BlockType } from 'src/app/shared/enum/blockTypes';
+import { ChoiceMatrixComponent } from './choice-matrix/choice-matrix.component';
+import { ExamPreviewService } from '../services/exam-preview.service';
 import {
   ExamPreviewData,
   SectionPreviewData,
-} from "../models/exam-preview-data";
-import { ClozeImageWithDragDropComponent } from "./cloze-image-with-drag-drop/cloze-image-with-drag-drop.component";
-import { ClozeImageWithDropdownComponent } from "./cloze-image-with-dropdown/cloze-image-with-dropdown.component";
-import { ClozeImageWithTextComponent } from "./cloze-image-with-text/cloze-image-with-text.component";
+} from '../models/exam-preview-data';
+import { ClozeImageWithDragDropComponent } from './cloze-image-with-drag-drop/cloze-image-with-drag-drop.component';
+import { ClozeImageWithDropdownComponent } from './cloze-image-with-dropdown/cloze-image-with-dropdown.component';
+import { ClozeImageWithTextComponent } from './cloze-image-with-text/cloze-image-with-text.component';
 
 @Component({
-  selector: "app-exam-page",
-  templateUrl: "./exam-page.component.html",
-  styleUrls: ["./exam-page.component.scss"],
+  selector: 'app-exam-page',
+  templateUrl: './exam-page.component.html',
+  styleUrls: ['./exam-page.component.scss'],
 })
 export class ExamPageComponent implements OnInit, OnDestroy {
-  @Input() assessmentId: string = "";
+  @Input() assessmentId: string = '';
   currentQuestionNumber: number = 0;
   currentQuestion: ICandidateItem;
   itemTypes = ItemType;
   itemsLength: number;
-  keyPressed: string = "";
-  shortcutKeys: string[] = ["a", "b", "c", "d"];
+  keyPressed: string = '';
+  shortcutKeys: string[] = ['a', 'b', 'c', 'd'];
   attemptedQuestionsNumbers: number[] = [];
   sections: Array<{ name: string; id: string }> = [];
   questionNumbers: number[] = [];
@@ -83,7 +83,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     secs: 0o00,
   };
   unAttemptedQuestionNumbersInAllSections: any[];
-  currentSectionName: string = "";
+  currentSectionName: string = '';
   lastAutoSaveTime: Date = new Date();
   isOffline: boolean = false;
 
@@ -121,7 +121,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   classifyByMatchingRef!: ClassifyByMatchingComponent;
   @ViewChild(ClassifyByOrderingComponent)
   classifyByOrderingRef!: ClassifyByOrderingComponent;
-  @ViewChild("paginator", { static: false }) paginator: Paginator;
+  @ViewChild('paginator', { static: false }) paginator: Paginator;
   fontSize: string;
   fontsEnum = AssessmentFont;
   autoSaveResponse: ICandidateAutoSaveResponse;
@@ -145,10 +145,10 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private notifierService: NotifierService,
     private examPreviewService: ExamPreviewService,
-    private ar: ActivatedRoute
+    private ar: ActivatedRoute,
   ) {}
 
-  @HostListener("document:keypress", ["$event"])
+  @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
     this.keyPressed = event.key;
     //shortCuts
@@ -163,7 +163,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.assessmentId = this.ar.snapshot.params["assessmentId"];
+    this.assessmentId = this.ar.snapshot.params['assessmentId'];
 
     //  0194b283-8417-78da-a9ae-76f71c13d3df
     // 0194cc2c-d704-75d5-bcd0-d8e4b9438477
@@ -187,11 +187,11 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
           this.currentSectionName = this.sections[0].name;
 
-          console.log(this.sections[0].id, "id");
+          console.log(this.sections[0].id, 'id');
 
           this.getCandidateDataForSection(
             this.assessmentId,
-            this.sections[0].id
+            this.sections[0].id,
           );
         },
       });
@@ -231,11 +231,11 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           this.currentSectionData = value;
           this.buildItemForSection(value);
           const foundSection = this.sections.find(
-            (section) => section.id === sectionId
+            (section) => section.id === sectionId,
           );
           this.sections = this.itemService.getAssessmentSections();
           this.captureSectionAndSetQuestion(foundSection.name);
-          console.log(value + "section preview");
+          console.log(value + 'section preview');
 
           this.itemService.setSectionQuestion(this.sections[0].name);
           this.currentSectionName = this.itemService.currentSection;
@@ -248,7 +248,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           this.assessmentName =
             this.candidateService.getCandidateData().assessment_data.name;
           this.setFontSize(
-            this.candidateService.getCandidateData().assessment_data.font_size
+            this.candidateService.getCandidateData().assessment_data.font_size,
           );
           // this.setQuestionNumbers();
 
@@ -276,7 +276,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     // trae
     this.currentSectionData = value;
 
-    console.log(this.currentSectionData, "current section data");
+    console.log(this.currentSectionData, 'current section data');
 
     this.candidateService.candidateData = {
       assessment_data: {
@@ -315,15 +315,15 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           this.assessmentPreviewDetails.assessmentSettings.startExamInstruction,
       },
       candidate_data: {
-        id: "123456",
-        login_field_value: "previewcandiate@gmail.com",
+        id: '123456',
+        login_field_value: 'previewcandiate@gmail.com',
         login_times: [],
         minutes_left: 1000,
-        name: "Test Candidate",
-        passport: "",
+        name: 'Test Candidate',
+        passport: '',
         seconds_left: 100,
         section_ids: this.assessmentPreviewDetails.assessmentSections.map(
-          (section) => section.id
+          (section) => section.id,
         ),
       },
       sections_overview: this.assessmentPreviewDetails.assessmentSections.map(
@@ -333,7 +333,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
             name: section.name,
             total_questions: section.totalQuestions,
           };
-        }
+        },
       ),
 
       sections_questions: this.assessmentPreviewDetails.assessmentSections.map(
@@ -380,14 +380,14 @@ export class ExamPageComponent implements OnInit, OnDestroy {
                     allow_cut: item.allowCut,
                     plain_text: item.plainText,
                     responses: [],
-                    selectedResponse: "",
+                    selectedResponse: '',
                     block_id: block.id,
                     revisit: false,
                     max_responses: item.maxWords,
                     image_data: item.images,
 
                     answers: item.scoringOption.answers,
-                    showAnswer: false
+                    showAnswer: false,
                   };
                 }),
                 passages: block.passages.map((passage) => {
@@ -415,13 +415,13 @@ export class ExamPageComponent implements OnInit, OnDestroy {
                         allow_cut: item.allowCut,
                         plain_text: item.plainText,
                         responses: [],
-                        selectedResponse: "",
+                        selectedResponse: '',
                         block_id: block.id,
                         revisit: false,
                         max_responses: item.maxWords,
                         image_data: item.images,
                         answers: item.scoringOption.answers,
-                        showAnswer: false
+                        showAnswer: false,
                       };
                     }),
                   };
@@ -429,31 +429,31 @@ export class ExamPageComponent implements OnInit, OnDestroy {
               };
             }),
           };
-        }
+        },
       ),
     };
 
-    console.log(this.candidateService.candidateData, "candidate data");
+    console.log(this.candidateService.candidateData, 'candidate data');
   }
 
   confirm(): void {
     let itemSection = {};
 
     Swal.fire({
-      title: "Are you sure you want to end this exam?",
+      title: 'Are you sure you want to end this exam?',
       text: "You won't be able to revert this!",
-      icon: "warning",
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "rgb(3, 142, 220)",
-      cancelButtonColor: "rgb(243, 78, 78)",
-      confirmButtonText: "Yes, end exam!",
+      confirmButtonColor: 'rgb(3, 142, 220)',
+      cancelButtonColor: 'rgb(243, 78, 78)',
+      confirmButtonText: 'Yes, end exam!',
     }).then((result) => {
       if (result.value) {
         Swal.fire({
-          title: "Exam submitted!",
-          text: "You have submitted successfully.",
-          confirmButtonColor: "rgb(3, 142, 220)",
-          icon: "success",
+          title: 'Exam submitted!',
+          text: 'You have submitted successfully.',
+          confirmButtonColor: 'rgb(3, 142, 220)',
+          icon: 'success',
         });
 
         this.doEndExam(false);
@@ -503,8 +503,8 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   endExam(content?: any): void {
     console.log(
-      "section prg",
-      this.itemService.getUnattemptedQuestionsInAllSections()
+      'section prg',
+      this.itemService.getUnattemptedQuestionsInAllSections(),
     );
 
     if (this.warnCandidatesOfUnattemptedQuestions() === true) {
@@ -527,7 +527,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
         this.currentCandidateData.login_field_value,
 
-        timedOut
+        timedOut,
       )
       .subscribe({
         next: (value) => {
@@ -539,7 +539,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           if (this.examTimerSub$ !== undefined) {
             this.examTimerSub$.unsubscribe();
           }
-          this.router.navigate(["examalpha/on-premise/candidate/end-exam"]);
+          this.router.navigate(['examalpha/on-premise/candidate/end-exam']);
         },
       });
   }
@@ -562,7 +562,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     // console.log(this.attemptedQuestionsNumbers);
     this.fetchProgressUpdates();
     this.changePaginatorToNext();
-    if (this.isTheSameItemType("nextQuestion")) {
+    if (this.isTheSameItemType('nextQuestion')) {
       this.callNgOnInit();
     } else {
       this.setCurrentQuestionNumber();
@@ -582,7 +582,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     this.itemService.captureAttemptedQuestionNumber();
     this.fetchProgressUpdates();
     this.changePaginatorToPrevious();
-    if (this.isTheSameItemType("previousQuestion")) {
+    if (this.isTheSameItemType('previousQuestion')) {
       this.callNgOnInit();
     } else {
       this.setCurrentQuestionNumber();
@@ -618,8 +618,6 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       [ItemType.CLOZE_DROPDOWN_IMAGE]: this.clozeImageWithDropdownRef,
     };
 
-    
-
     const currentItemType = this.itemService.getCurrentQuestion().item_type;
 
     // Check if the reference exists for the current item type, and call ngOnInit if so
@@ -638,14 +636,14 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   useShortcut(): void {
     if (this.currentQuestionNumber != 0) {
       switch (this.keyPressed.toLowerCase()) {
-        case "p":
+        case 'p':
           this.previousQuestion();
           break;
       }
     }
     if (this.currentQuestionNumber + 1 != this.itemsLength) {
       switch (this.keyPressed.toLowerCase()) {
-        case "n":
+        case 'n':
           this.nextQuestion();
           break;
       }
@@ -656,22 +654,22 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       switch (this.keyPressed.toLowerCase()) {
         case `a`:
           this.multipleResponseRef.optionClicked(
-            this.getCurrentQuestion().options[0].value
+            this.getCurrentQuestion().options[0].value,
           );
           break;
-        case "b":
+        case 'b':
           this.multipleResponseRef.optionClicked(
-            this.getCurrentQuestion().options[1].value
+            this.getCurrentQuestion().options[1].value,
           );
           break;
-        case "c":
+        case 'c':
           this.multipleResponseRef.optionClicked(
-            this.getCurrentQuestion().options[2].value
+            this.getCurrentQuestion().options[2].value,
           );
           break;
-        case "d":
+        case 'd':
           this.multipleResponseRef.optionClicked(
-            this.getCurrentQuestion().options[3].value
+            this.getCurrentQuestion().options[3].value,
           );
           break;
         // }
@@ -681,25 +679,25 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       switch (this.keyPressed.toLowerCase()) {
         case `a`:
           this.standardChoiceRef.optionSelected(
-            this.getCurrentQuestion().options[0].value
+            this.getCurrentQuestion().options[0].value,
           );
           // this.getCurrentQuestion().responses[0] = "0";
           break;
-        case "b":
+        case 'b':
           this.standardChoiceRef.optionSelected(
-            this.getCurrentQuestion().options[1].value
+            this.getCurrentQuestion().options[1].value,
           );
           // this.getCurrentQuestion().responses[0] = "1";
           break;
-        case "c":
+        case 'c':
           this.standardChoiceRef.optionSelected(
-            this.getCurrentQuestion().options[2].value
+            this.getCurrentQuestion().options[2].value,
           );
           // this.getCurrentQuestion().responses[0] = "2";
           break;
-        case "d":
+        case 'd':
           this.standardChoiceRef.optionSelected(
-            this.getCurrentQuestion().options[3].value
+            this.getCurrentQuestion().options[3].value,
           );
           // this.getCurrentQuestion().responses[0] = "3";
           break;
@@ -713,7 +711,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           this.getCurrentQuestion().responses[0] =
             this.getCurrentQuestion().options[0].value;
           break;
-        case "b":
+        case 'b':
           this.getCurrentQuestion().responses[0] =
             this.getCurrentQuestion().options[1].value;
           break;
@@ -724,7 +722,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   isTheSameItemType(reference: string): boolean {
     switch (reference) {
-      case "nextQuestion":
+      case 'nextQuestion':
         if (
           this.itemService.getCurrentQuestion().item_type ==
           this.itemService.getNextQuestionItemType()
@@ -732,7 +730,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           return true;
         }
         break;
-      case "previousQuestion":
+      case 'previousQuestion':
         if (
           this.itemService.getCurrentQuestion().item_type ==
           this.itemService.getPreviousQuestionItemType()
@@ -778,7 +776,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   fetchProgressUpdates(): void {
     const currentSectionIndex = this.itemService.sectionProgress.findIndex(
-      (section) => section.sectionName === this.itemService.currentSection
+      (section) => section.sectionName === this.itemService.currentSection,
     );
     this.attemptedQuestionsNumbers =
       this.itemService.sectionProgress[currentSectionIndex].attemptedQuestions;
@@ -802,7 +800,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     // this.itemService.captureUnattemptedQuestionNumbers()
     this.unAttemptedQuestionNumbers =
       this.itemService.getUnattemptedQuestionNumbersInSection(
-        this.itemService.currentSection
+        this.itemService.currentSection,
       );
 
     // console.log(this.unAttemptedQuestionNumbers)
@@ -811,7 +809,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   setQuestionNumbersForRevisit(): void {
     this.questionNumbersForRevisit =
       this.itemService.getQuestionNumbersForRevisitInsection(
-        this.itemService.currentSection
+        this.itemService.currentSection,
       );
   }
 
@@ -819,14 +817,14 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     // console.log(this.attemptedQuestionsNumbers);
     // this.fetchProgressUpdates();
     const itemFound = this.attemptedQuestionsNumbers.find(
-      (item) => item + 1 == number
+      (item) => item + 1 == number,
     );
 
     // console.log(itemFound);
     if (itemFound != null) {
-      return "#ffffff";
+      return '#ffffff';
     }
-    return "#25a0e2";
+    return '#25a0e2';
     // return "";
   }
 
@@ -852,36 +850,36 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     // console.log("calle");
     const foundAttemptedQuestionNumber = this.attemptedQuestionsNumbers.find(
       (attemptedQuestionNumber) =>
-        attemptedQuestionNumber + 1 == currentQuestionNumber
+        attemptedQuestionNumber + 1 == currentQuestionNumber,
     );
 
     const foundRevisitQuestionNumber = this.questionNumbersForRevisit.find(
       (revisitQuestionNumber) =>
-        revisitQuestionNumber + 1 == currentQuestionNumber
+        revisitQuestionNumber + 1 == currentQuestionNumber,
     );
 
     if (foundAttemptedQuestionNumber != undefined) {
-      return " btn-success border-success";
+      return ' btn-success border-success';
     } else if (foundRevisitQuestionNumber != undefined) {
-      return "btn-warning border-warming";
+      return 'btn-warning border-warming';
     } else {
-      return "border-danger btn-danger";
+      return 'border-danger btn-danger';
     }
   }
 
   showInstruction(): void {
-    const rightBar = document.getElementById("instructionSideBar");
+    const rightBar = document.getElementById('instructionSideBar');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
   hideSideBar(): void {
-    const rightBar = document.getElementById("instructionSideBar");
+    const rightBar = document.getElementById('instructionSideBar');
     if (rightBar != null) {
-      rightBar.classList.remove("show");
-      rightBar.removeAttribute("style");
+      rightBar.classList.remove('show');
+      rightBar.removeAttribute('style');
     }
   }
 
@@ -927,7 +925,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
           this.startAutoSave();
         }
       } else if (this.examDuration <= 0) {
-        console.log("Exam time is up");
+        console.log('Exam time is up');
         this.doEndExam(true);
         // this.examTimerSub$.unsubscribe();
       }
@@ -952,11 +950,11 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   setFontSize(font: AssessmentFont) {
     if (font === AssessmentFont.LARGE) {
-      this.fontSize = "20px!important";
+      this.fontSize = '20px!important';
     } else if (font === AssessmentFont.NORMAL) {
-      this.fontSize = "16px!important";
+      this.fontSize = '16px!important';
     } else if (font === AssessmentFont.SMALL) {
-      this.fontSize = "12px!important";
+      this.fontSize = '12px!important';
     }
   }
 
@@ -973,17 +971,17 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   captureSectionAndSetQuestion(sectionName: string): void {
     const foundSelectedSectionIndex = this.sections.findIndex(
-      (section) => section.name === sectionName
+      (section) => section.name === sectionName,
     );
 
-    console.log(foundSelectedSectionIndex, "section index");
+    console.log(foundSelectedSectionIndex, 'section index');
 
     if (foundSelectedSectionIndex !== -1) {
       this.currentSectionIndex = foundSelectedSectionIndex;
     }
-    console.log(this.sections, "sections");
+    console.log(this.sections, 'sections');
     this.currentSectionName = sectionName;
-    console.log(this.currentSectionName, "current section name");
+    console.log(this.currentSectionName, 'current section name');
 
     // todo: handle when switching section and the question type is the same, question number is not updating
     // this.setCurrentQuestionNumber
@@ -1002,7 +1000,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
     this.itemService.currentQuestionNumber = 0;
     this.getCurrentQuestion();
 
-    console.log(this.itemsLength), console.log(this.currentQuestion);
+    (console.log(this.itemsLength), console.log(this.currentQuestion));
     console.log(this.currentQuestion.item_type);
     console.log(this.currentQuestionNumber);
   }
@@ -1012,7 +1010,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   }
 
   changePaginatorToNext() {
-    console.log("hello");
+    console.log('hello');
     this.paginator.changePageToNext(event);
   }
 
@@ -1021,7 +1019,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   }
 
   fullscreen() {
-    document.body.classList.toggle("fullscreen-enable");
+    document.body.classList.toggle('fullscreen-enable');
     if (
       !document.fullscreenElement &&
       !this.element.mozFullScreenElement &&
@@ -1089,12 +1087,12 @@ export class ExamPageComponent implements OnInit, OnDestroy {
                     // use map
 
                     for (let i = 0; i < itemInPassage.responses.length; i++) {
-                      if (typeof itemInPassage.responses[i] !== "string") {
-                        itemInPassage.responses[i] = ""; // Replace non-string elements with an empty string
+                      if (typeof itemInPassage.responses[i] !== 'string') {
+                        itemInPassage.responses[i] = ''; // Replace non-string elements with an empty string
                       }
                     }
 
-                    console.log(itemInPassage, "itemInPassage in block");
+                    console.log(itemInPassage, 'itemInPassage in block');
                   }
                   // Create an ICandidateAutoSaveItems object for each question
                   const passageItem: ICandidateAutoSaveItems = {
@@ -1123,9 +1121,9 @@ export class ExamPageComponent implements OnInit, OnDestroy {
               ) {
                 //rodo: use a map
                 let modRes = itemInBlock.responses.map((response) => {
-                  if (typeof response !== "string") {
+                  if (typeof response !== 'string') {
                     return {
-                      response: "",
+                      response: '',
                     };
 
                     // itemInBlock.responses[i] = ""; // Replace non-string elements with an empty string
@@ -1134,12 +1132,12 @@ export class ExamPageComponent implements OnInit, OnDestroy {
                 });
 
                 for (let i = 0; i < itemInBlock.responses.length; i++) {
-                  if (typeof itemInBlock.responses[i] !== "string") {
-                    itemInBlock.responses[i] = ""; // Replace non-string elements with an empty string
+                  if (typeof itemInBlock.responses[i] !== 'string') {
+                    itemInBlock.responses[i] = ''; // Replace non-string elements with an empty string
                   }
                 }
 
-                console.log(itemInBlock, "item in block");
+                console.log(itemInBlock, 'item in block');
               }
               // Create an ICandidateAutoSaveItems object for each question
               const item: ICandidateAutoSaveItems = {
@@ -1174,7 +1172,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
         });
       });
 
-    console.log("autoSaveData", autoSaveData);
+    console.log('autoSaveData', autoSaveData);
     return autoSaveData;
   }
 
@@ -1185,7 +1183,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       .doAutoSave(
         this.candidateService.getPreLoginData().id,
         this.currentCandidateData.login_field_value,
-        this.generatePayLoadForAutoSave()
+        this.generatePayLoadForAutoSave(),
       )
       .subscribe({
         next: (value) => {
@@ -1217,13 +1215,13 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       this.candidateService.getCandidateData().assessment_data
         .compensatory_time_value;
 
-    console.log(this.currentCandidateData.minutes_left, "minu");
+    console.log(this.currentCandidateData.minutes_left, 'minu');
 
-    this.notifierService.notify("success", "Compensatory time added");
+    this.notifierService.notify('success', 'Compensatory time added');
   }
 
   handleMessageFromAdmin(message: string) {
-    this.notifierService.notify("success", message);
+    this.notifierService.notify('success', message);
   }
 
   getTotalQuestionsInAllSections() {
@@ -1238,7 +1236,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
   gotoNextSection() {
     // Get the index of the current section
     const currentSectionIndex = this.sections.findIndex(
-      (section) => section.name === this.currentSectionName
+      (section) => section.name === this.currentSectionName,
     );
 
     // Get the next section if available
@@ -1253,7 +1251,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       this.captureSectionAndSetQuestion(nextSectionName.name);
     } else {
       this.onLastSection = true;
-      console.log("No more sections available.");
+      console.log('No more sections available.');
       // Optionally, handle end of sections (e.g., show a message, disable the button)
     }
   }
@@ -1269,7 +1267,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
   prevSection() {
     const currentSectionIndex = this.sections.findIndex(
-      (section) => section.name === this.currentSectionName
+      (section) => section.name === this.currentSectionName,
     );
 
     if (currentSectionIndex > 0) {
@@ -1277,7 +1275,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       this.currentSectionName = this.sections[this.currentSectionIndex].name;
       this.getCandidateDataForSection(
         this.assessmentId,
-        this.sections[this.currentSectionIndex].id
+        this.sections[this.currentSectionIndex].id,
       );
       this.captureSectionAndSetQuestion(this.currentSectionName);
 
@@ -1361,7 +1359,7 @@ export class ExamPageComponent implements OnInit, OnDestroy {
       .sections_questions.find(
         (section) =>
           section.name.toLowerCase() ==
-          this.itemService.currentSection.toLowerCase()
+          this.itemService.currentSection.toLowerCase(),
       ).section_settings.section_instruction;
   }
 

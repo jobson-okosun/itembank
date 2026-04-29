@@ -1,4 +1,4 @@
-import { ItemUtilitiesService } from "./../item-utilities.service";
+import { ItemUtilitiesService } from './../item-utilities.service';
 import {
   Component,
   OnInit,
@@ -7,38 +7,38 @@ import {
   EventEmitter,
   ViewChild,
   OnDestroy,
-} from "@angular/core";
-import { ChoiceMatrix } from "./model/choice-matrix";
+} from '@angular/core';
+import { ChoiceMatrix } from './model/choice-matrix';
 //import { Option } from '../models/option';
-import { ItemHttpService } from "../item-http.service";
-import Swal from "sweetalert2";
-import { HttpErrorResponse } from "@angular/common/http";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { RejectionReason } from "../models/rejection-reason";
-import { SinglePassageModel } from "../passage-item/model/single-passage-model.model";
-import { NewAssociationItem } from "../matching/model/new-association-item.model";
-import { Account } from "src/app/authentication/model/account.model";
-import { Location } from "@angular/common";
-import { NotifierService } from "angular-notifier";
-import { DefaultItemProperties } from "../models/default-item-properties";
-import { ItemTagsDtos } from "../models/item-tags-dtos";
-import { Option } from "../models/option";
-import { StimulusList } from "../matching/model/matching";
-import { ItemTypes } from "../models/item-types";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { UserService } from "src/app/shared/user.service";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { MatchingRuleEnums } from "../models/matching-rule-enums";
-import { ActivatedRoute, Router } from "@angular/router";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
+import { ItemHttpService } from '../item-http.service';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { RejectionReason } from '../models/rejection-reason';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { NewAssociationItem } from '../matching/model/new-association-item.model';
+import { Account } from 'src/app/authentication/model/account.model';
+import { Location } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
+import { DefaultItemProperties } from '../models/default-item-properties';
+import { ItemTagsDtos } from '../models/item-tags-dtos';
+import { Option } from '../models/option';
+import { StimulusList } from '../matching/model/matching';
+import { ItemTypes } from '../models/item-types';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { UserService } from 'src/app/shared/user.service';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { MatchingRuleEnums } from '../models/matching-rule-enums';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ItemTagComponent } from '../item-tag/item-tag.component';
 
 declare var tinymce: any;
 declare const MathJax: any;
 @Component({
-  selector: "app-choice-matrix",
-  templateUrl: "./choice-matrix.component.html",
-  styleUrls: ["./choice-matrix.component.scss"],
+  selector: 'app-choice-matrix',
+  templateUrl: './choice-matrix.component.html',
+  styleUrls: ['./choice-matrix.component.scss'],
 })
 export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   //@Input() formType: string = '';
@@ -46,7 +46,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   @Input() selectedItemType!: string;
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @Output() stimulus = new EventEmitter<string>();
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   currentUser: Account;
 
@@ -91,27 +92,27 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
   publishingItem: boolean = false;
   showPassage: boolean = false;
-  passageId: string = "";
+  passageId: string = '';
   passageForPreview: SinglePassageModel;
-  processingRejection =  false;
+  processingRejection = false;
 
   option: Object = {
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
 
-  moderationAction: string = "";
+  moderationAction: string = '';
   constructor(
     public itemUtil: ItemUtilitiesService,
     private itemService: ItemHttpService,
@@ -126,10 +127,10 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (!this.selectedItemType) {
-      this.selectedItemType = "Choice Matrix";
+      this.selectedItemType = 'Choice Matrix';
     }
 
-    this.passageId = this.ar.snapshot.params["passageId"];
+    this.passageId = this.ar.snapshot.params['passageId'];
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
@@ -146,10 +147,10 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     this.matchingRule = Object.values(MatchingRuleEnums);
 
     this.defaultItemProperties.scoringOption.matchingRule =
-    MatchingRuleEnums.EXACT_MATCH;
+      MatchingRuleEnums.EXACT_MATCH;
 
     this.defaultItemProperties.scoringOption.scoringType =
-    ScoringTypeEnum.EXACT_MATCH;
+      ScoringTypeEnum.EXACT_MATCH;
 
     this.defaultItemProperties.shuffleOptions = true;
 
@@ -164,16 +165,15 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       //scoring Options
       this.defaultItemProperties.scoringOption.answers =
         this.editData.scoringOption.answers;
-  
+
       this.defaultItemProperties.scoringOption.minimumScoreIfAttempted =
         this.editData.scoringOption.minimumScoreIfAttempted;
 
-        
       this.defaultItemProperties.scoringOption.score =
         this.editData.scoringOption.score;
       this.defaultItemProperties.scoringOption.penalty =
         this.editData.scoringOption.penalty;
-  
+
       this.defaultItemProperties.scoringOption.matchingRule =
         this.editData.scoringOption.matchingRule;
 
@@ -197,7 +197,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         edit_stem.selectedAnswer = this.editData.scoringOption.answers[i];
         this.stems.push(edit_stem);
       });
-      console.log("editData stems::::::::::::::", this.stems);
+      console.log('editData stems::::::::::::::', this.stems);
     } else {
       this.createOptions(2);
       this.createStems(this.init_Options_Count);
@@ -208,40 +208,44 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     }
   }
 
+        onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
   setup(editor: any) {
     let activeEquation: HTMLElement | null = null;
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering updated"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering updated'))
+              .catch((err) => console.error('Math rendering failed:', err));
           }
 
           activeEquation = null;
@@ -250,60 +254,60 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression'
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
         editor.windowManager.open({
-          title: "Insert Equation",
-          size: "normal",
+          title: 'Insert Equation',
+          size: 'normal',
           body: {
-            type: "panel",
+            type: 'panel',
             items: [
               {
-                type: "htmlpanel",
+                type: 'htmlpanel',
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: "cancel", name: "cancel", text: "Cancel" },
-            { type: "submit", name: "insert", text: "Insert", primary: true },
+            { type: 'cancel', name: 'cancel', text: 'Cancel' },
+            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById("mathfield") as any;
+            const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent("&nbsp;");
+            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering complete"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering complete'))
+              .catch((err) => console.error('Math rendering failed:', err));
 
             api.close();
           },
@@ -331,7 +335,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   addOption(index: number) {
     let option: Option = new Option();
     option.label = `[option${index + 1}]`;
-    option.value = index + "";
+    option.value = index + '';
     return option;
   }
 
@@ -350,7 +354,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   newOption() {
     let option: Option = new Option();
     option.label = `[option${this.options.length + 1}]`;
-    option.value = this.options.length + "";
+    option.value = this.options.length + '';
     this.options.push(option);
   }
 
@@ -403,7 +407,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     item.topicId = this.itemUtil.currentItemTrail.topicId;
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId
       ? this.itemUtil.currentItemTrail.subtopicId
-      : "";
+      : '';
     item.itemTagsDTOS = this.tags.map((tag) => {
       return { tagId: tag.tagId };
     });
@@ -426,6 +430,65 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Validation 2: Ensure the length for answer and stem are same
+    if (item.scoringOption.answers.length !== item.stems.length) {
+      this.notifier.notify('error', `An error occurred!`);
+      return;
+    }
+
+    // Validation 3: Check if all element is null/undefined
+    const isAllElementNull: boolean = item.scoringOption.answers.every(
+      (answer) => answer === undefined
+    );
+
+    if (isAllElementNull) {
+      this.notifier.notify('error', `No answer selected for Stimulus!`);
+      return;
+    }
+
+    // Validate 4: Check if any element is null/undefined
+    const isAnyElementNull: boolean = item.scoringOption.answers.some(
+      (answer) => answer === undefined
+    );
+
+    if (isAnyElementNull) {
+      for (
+        let answer = 0;
+        answer < item.scoringOption.answers.length;
+        answer++
+      ) {
+        if (item.scoringOption.answers[answer] === undefined) {
+          this.notifier.notify(
+            'error',
+            `No answer selected for Stimulus[${answer + 1}]!`
+          );
+          break;
+        }
+      }
+      return;
+    }
+
+    // Validate 5: Locate answer element that is not found in options
+    const optSet: Set<string> = new Set(item.options.map((item) => item.value));
+    var missingAnswerElementIndex = -1;
+
+    const isAnswerArrElementExistingInOptionArrElement: boolean =
+      item.scoringOption.answers.every((answer: string, index: number) => {
+        if (!optSet.has(answer)) {
+          missingAnswerElementIndex = index;
+          return false;
+        }
+        return true;
+      });
+
+    if (isAnswerArrElementExistingInOptionArrElement) {
+      this.notifier.notify(
+        'error',
+        `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`
+      );
+      return;
+    }
+
     if (this.subjectModerationStatusEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
@@ -433,14 +496,14 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatusEnabled
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     }
 
     Swal.close();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
   }
 
   saveAndNew(itemForm: any) {
@@ -451,6 +514,65 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     }
 
+    // Validation 2: Ensure the length for answer and stem are same
+    if (item.scoringOption.answers.length !== item.stems.length) {
+      this.notifier.notify('error', `An error occurred!`);
+      return;
+    }
+
+    // Validation 3: Check if all element is null/undefined
+    const isAllElementNull: boolean = item.scoringOption.answers.every(
+      (answer) => answer === undefined
+    );
+
+    if (isAllElementNull) {
+      this.notifier.notify('error', `No answer selected for Stimulus!`);
+      return;
+    }
+
+    // Validate 4: Check if any element is null/undefined
+    const isAnyElementNull: boolean = item.scoringOption.answers.some(
+      (answer) => answer === undefined
+    );
+
+    if (isAnyElementNull) {
+      for (
+        let answer = 0;
+        answer < item.scoringOption.answers.length;
+        answer++
+      ) {
+        if (item.scoringOption.answers[answer] === undefined) {
+          this.notifier.notify(
+            'error',
+            `No answer selected for Stimulus[${answer + 1}]!`
+          );
+          break;
+        }
+      }
+      return;
+    }
+
+    // Validate 5: Locate answer element that is not found in options
+    const optSet: Set<string> = new Set(item.options.map((item) => item.value));
+    var missingAnswerElementIndex = -1;
+
+    const isAnswerArrElementExistingInOptionArrElement: boolean =
+      item.scoringOption.answers.every((answer: string, index: number) => {
+        if (!optSet.has(answer)) {
+          missingAnswerElementIndex = index;
+          return false;
+        }
+        return true;
+      });
+
+    if (isAnswerArrElementExistingInOptionArrElement) {
+      this.notifier.notify(
+        'error',
+        `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`
+      );
+      return;
+    }
+
     this.publishingItem = true;
 
     if (this.subjectModerationStatusEnabled) {
@@ -459,14 +581,75 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   saveToDraft(itemForm: any) {
     let item = this.buildItem(itemForm);
+
+    // Validation 1
     let validated = this.itemService.validateItem(item);
 
     if (!validated) {
+      return;
+    }
+
+    // Validation 2: Ensure the length for answer and stem are same
+    if (item.scoringOption.answers.length !== item.stems.length) {
+      this.notifier.notify('error', `An error occurred!`);
+      return;
+    }
+
+    // Validation 3: Check if all element is null/undefined
+    const isAllElementNull: boolean = item.scoringOption.answers.every(
+      (answer) => answer === undefined
+    );
+
+    if (isAllElementNull) {
+      this.notifier.notify('error', `No answer selected for Stimulus!`);
+      return;
+    }
+
+    // Validate 4: Check if any element is null/undefined
+    const isAnyElementNull: boolean = item.scoringOption.answers.some(
+      (answer) => answer === undefined
+    );
+
+    if (isAnyElementNull) {
+      for (
+        let answer = 0;
+        answer < item.scoringOption.answers.length;
+        answer++
+      ) {
+        if (item.scoringOption.answers[answer] === undefined) {
+          this.notifier.notify(
+            'error',
+            `No answer selected for Stimulus[${answer + 1}]!`
+          );
+          break;
+        }
+      }
+      return;
+    }
+
+    // Validate 5: Locate answer element that is not found in options
+    const optSet: Set<string> = new Set(item.options.map((item) => item.value));
+    var missingAnswerElementIndex = -1;
+
+    const isAnswerArrElementExistingInOptionArrElement: boolean =
+      item.scoringOption.answers.every((answer: string, index: number) => {
+        if (!optSet.has(answer)) {
+          missingAnswerElementIndex = index;
+          return false;
+        }
+        return true;
+      });
+
+    if (isAnswerArrElementExistingInOptionArrElement) {
+      this.notifier.notify(
+        'error',
+        `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`
+      );
       return;
     }
 
@@ -475,7 +658,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveItemToPassage(itemForm: any) {
@@ -492,22 +675,22 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
 
-    this.saveFunction(item, "passage-item");
+    this.saveFunction(item, 'passage-item');
   }
 
   saveFunction(item: any, type: string) {
     let msg: string;
 
-    if (type == "save" || type === "save_and_new") {
+    if (type == 'save' || type === 'save_and_new') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
 
     if (
-      this.currentUser.authorities.includes("AUTHOR")
+      this.currentUser.authorities.includes('AUTHOR')
       //  && this. check mod atatus
     ) {
       msg = `item successfully sent for moderation`;
@@ -518,17 +701,17 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
           this.publishingItem = false;
           Swal.close();
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
+            icon: 'success',
+            title: 'Congratulations',
             text: msg,
           });
         }
 
-        if (type === "save" || type == "draft") {
+        if (type === 'save' || type == 'draft') {
           this.back();
         }
 
-        if (type == "save_and_new" || type !== "") {
+        if (type == 'save_and_new' || type !== '') {
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -551,8 +734,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         this.publishingItem = false;
         Swal.close();
         Swal.fire({
-          icon: "error",
-          title: "Failed",
+          icon: 'error',
+          title: 'Failed',
           text: err.error.message,
         });
       }
@@ -580,10 +763,10 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     // }
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
-          (!this.currentUser.authorities.includes("MODERATOR") &&
-            !this.currentUser.authorities.includes("ADMIN")) || // Both roles are missing
+          (!this.currentUser.authorities.includes('MODERATOR') &&
+            !this.currentUser.authorities.includes('ADMIN')) || // Both roles are missing
           this.subjectModerationStatusEnabled ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
         ) {
@@ -594,13 +777,13 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
         break;
 
       default:
@@ -611,15 +794,15 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
         }
         this.back();
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify("error", `${error.error.message}`);
+        this.notifier.notify('error', `${error.error.message}`);
       }
     );
   }
@@ -629,7 +812,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: msg ? msg : "Saving your question, Please Wait...",
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -640,13 +823,12 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       });
     }
   }
-  openConfirmationModal(content: any){
+  openConfirmationModal(content: any) {
     this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: 'modal-holder'
+      windowClass: 'modal-holder',
     });
-
   }
 
   back() {
@@ -666,7 +848,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   showAnswer(event: any) {}
 
   viewPassage(passageModal: any) {
-    this.passageService.fetchSinglePassage("passage_id").subscribe(
+    this.passageService.fetchSinglePassage('passage_id').subscribe(
       (value) => {
         this.itemPassage = value;
         this.showPassageModal(passageModal);
@@ -680,11 +862,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   editPassage(e: Event) {
     e.preventDefault();
     this.router.navigate([
-      "examalpha/passages/subjects/" +
+      'examalpha/passages/subjects/' +
         this.passageService.subjectId +
-        "/passage/" +
+        '/passage/' +
         this.editData.passageId +
-        "/edit-passage",
+        '/edit-passage',
     ]);
   }
 
@@ -693,18 +875,18 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   }
 
   approveQuestion(itemForm: any) {
-    this.updateItem(itemForm, "approve");
+    this.updateItem(itemForm, 'approve');
   }
 
   openRejectionReasonModal(rejectionReasonModal: any) {
     this.modalService.open(rejectionReasonModal, {
       centered: true,
-      size: "lg",
+      size: 'lg',
     });
   }
 
   submitRejection(questionRejectionForm: any) {
-    this.processingRejection =  true
+    this.processingRejection = true;
     this.newRejectionReason.itemId = this.editData.id;
     // console.log(this.newRejectionReason);
     this.itemService
@@ -717,19 +899,19 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
+              title: 'Congratulations!',
               text: `The question was rejected sucessfully.`,
-              icon: "success",
+              icon: 'success',
             });
           }
           //this.notificationService.setNotifications();
-          this.processingRejection =  false
+          this.processingRejection = false;
           this.modalService.dismissAll();
           this.back();
         },
         (error: HttpErrorResponse) => {
-          this.processingRejection =  false
-          this.notifier.notify("error", `${error.error.message}`);
+          this.processingRejection = false;
+          this.notifier.notify('error', `${error.error.message}`);
         }
       );
   }
@@ -740,7 +922,6 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.itemUtil.previewItem = false
-     
-   }
+    this.itemUtil.previewItem = false;
+  }
 }

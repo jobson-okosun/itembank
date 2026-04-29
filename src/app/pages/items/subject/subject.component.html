@@ -11,9 +11,6 @@
   </div>
 </ng-container>
 
-
-
-
 <div *ngIf="subject || (allSubjects && !loadingAllSubjects)">
   <app-breadcrumbs *ngIf="!_noOfItems" title="{{ subjectName }} | QUESTIONS ({{ totalItems }})"
     [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
@@ -91,8 +88,8 @@
                             data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle
                             ngbTooltip="{{ topic.topicName.toUpperCase() }}" placement="bottom"><i
                               class="ri-folder-line me-1 align-bottom"></i>
-                            {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL ITEMS"
+                            {{ topic.topicName.toUpperCase() | slice: 0 : 25
+                            }}{{ topic.topicName.length > 25 ? '...' : '' }}</a><span ngbTooltip="TOTAL ITEMS"
                             class="position-absolute top-50 start-100 translate-middle badge rounded bg-primary border-secondary">{{
                             topic.totalItems }}</span>
                         </div>
@@ -110,9 +107,9 @@
                                 subtopic.subtopicName.toUpperCase()
                               }}"><i class="ri-folder-line"></i>{{
                               subtopic.subtopicName.toUpperCase()
-                              | slice : 0 : 20
+                              | slice: 0 : 20
                               }}{{
-                              subtopic.subtopicName.length > 20 ? "..." : ""
+                              subtopic.subtopicName.length > 20 ? '...' : ''
                               }}<span ngbTooltip="TOTAL ITEMS"
                                 class="position-absolute top-50 start-0 translate-middle btn btn-sm">{{
                                 subtopic.totalItems }}</span></a>
@@ -174,8 +171,8 @@
                             data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle
                             ngbTooltip="{{ topic.topicName.toUpperCase() }}" placement="bottom"><i
                               class="ri-folder-line me-1 align-bottom"></i>
-                            {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                            }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL ITEMS"
+                            {{ topic.topicName.toUpperCase() | slice: 0 : 25
+                            }}{{ topic.topicName.length > 25 ? '...' : '' }}</a><span ngbTooltip="TOTAL ITEMS"
                             class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary">{{
                             topic.totalItems }}</span>
                         </div>
@@ -193,9 +190,9 @@
                                 subtopic.subtopicName.toUpperCase()
                               }}"><i class="ri-folder-line"></i>{{
                               subtopic.subtopicName.toUpperCase()
-                              | slice : 0 : 20
+                              | slice: 0 : 20
                               }}{{
-                              subtopic.subtopicName.length > 20 ? "..." : ""
+                              subtopic.subtopicName.length > 20 ? '...' : ''
                               }}<span ngbTooltip="TOTAL ITEMS"
                                 class="position-absolute top-50 start-0 translate-middle btn btn-sm btn-outline-secondary">{{
                                 subtopic.totalItems }}</span></a>
@@ -252,8 +249,8 @@
                         class="fw-small fs-11 text-primary dropdown arrow-none" data-bs-toggle="dropdown"
                         aria-expanded="false" ngbDropdownToggle ngbTooltip="{{ topic.topicName.toUpperCase() }}"
                         placement="top"><i class="ri-folder-line me-1 align-bottom"></i>
-                        {{ topic.topicName.toUpperCase() | slice : 0 : 25
-                        }}{{ topic.topicName.length > 25 ? "..." : "" }}</a><span ngbTooltip="TOTAL PASSAGES"
+                        {{ topic.topicName.toUpperCase() | slice: 0 : 25
+                        }}{{ topic.topicName.length > 25 ? '...' : '' }}</a><span ngbTooltip="TOTAL PASSAGES"
                         class="position-absolute top-50 start-100 translate-middle badge bg-primary">{{
                         topic.totalPassages }}</span>
                     </div>
@@ -276,26 +273,29 @@
             <div class="topic-container">
               <h5 class="card-title mb-0 text-primary">
                 <span *ngIf="assessmentActive">
-                  <div style="font-size: 14px;">
+                  <div style="font-size: 14px">
                     Topic: {{ currentTopic?.topicName }}
                   </div>
-                  <div style="font-size: 14px;">
+                  <div style="font-size: 14px">
                     Subtopic: {{ selectedSubtopic ? selectedSubtopic : 'None' }}
                   </div>
-                  <div style="font-size: 14px;">
+                  <div style="font-size: 14px">
                     Total Questions: {{ itemsPage?.totalElements }}
                   </div>
                 </span>
                 <span *ngIf="!assessmentActive">
-                  {{ assessmentActive ? _currentBlock.blockName : "Questions" }}
+                  {{ assessmentActive ? _currentBlock.blockName : 'Questions' }}
                   <span *ngIf="currentTopic || selectedSubtopic">
                     |
-                    {{ selectedSubtopic ? selectedSubtopic.toUpperCase() : (currentTopic?.topicName | uppercase) }}
-                    {{ itemsPage && "(" + itemsPage.totalElements + ")" }}
+                    {{
+                    selectedSubtopic
+                    ? selectedSubtopic.toUpperCase()
+                    : (currentExistingTopic?.topicName | uppercase)
+                    }}
+                    {{ itemsPage && '(' + itemsPage.totalElements + ')' }}
                   </span>
                 </span>
               </h5>
-
             </div>
 
             <!-- Action Buttons -->
@@ -306,9 +306,9 @@
                   {{ selectedQuestionIds.length }} /
                   {{ _currentBlock.totalQuestions }}
                   {{
-                  _currentBlock.selectionType === "PASSAGES"
-                  ? "passage(s) added"
-                  : "questions added"
+                  _currentBlock.selectionType === 'PASSAGES'
+                  ? 'passage(s) added'
+                  : 'questions added'
                   }}
                 </span>
               </div>
@@ -338,6 +338,10 @@
                     ">
                     <i class="ri-pencil-line"></i>
                   </button>
+                  <!-- *ngIf="
+                      clickedTopic.subtopicName &&
+                      currentUser.authorities.includes('ADMIN')
+                    " -->
                   <button *ngIf="
                       clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
@@ -382,7 +386,7 @@
                 <i class="{{
                     !showFilter ? 'ri-equalizer-fill' : 'ri-close-line fs-14'
                   }} me-2 align-middle"></i>
-                {{ !showFilter ? "Filter Questions" : "Hide Filter" }}
+                {{ !showFilter ? 'Filter Questions' : 'Hide Filter' }}
               </button>
             </div>
           </div>
@@ -715,7 +719,7 @@
                                   ">
                                   <a class="fs-10">
                                     {{
-                                    tag.tagName | slice : 0 : 50 | uppercase
+                                    tag.tagName | slice: 0 : 50 | uppercase
                                     }}
                                   </a>
                                 </li>
@@ -808,8 +812,9 @@
                         [itemTrailInfo]="itemProps" (reload)="reload($event)">
                       </app-label-image-text-preview>
 
-                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-drawing-and-writing-preview>
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps"
+                        (reload)="reload($event)"></app-drawing-and-writing-preview>
                     </div>
                   </div>
                 </a>
@@ -997,7 +1002,7 @@
                                   ">
                                   <a class="fs-10">
                                     {{
-                                    tag.tagName | slice : 0 : 50 | uppercase
+                                    tag.tagName | slice: 0 : 50 | uppercase
                                     }}
                                   </a>
                                 </li>
@@ -1067,8 +1072,8 @@
                       <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps"></app-choice-matrix-preview>
 
-                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
                     </div>
                   </div>
                 </a>
@@ -1226,7 +1231,7 @@
                             {{
                             assessmentFilter.itemType
                             ? assessmentFilter.itemType
-                            : "NONE"
+                            : 'NONE'
                             }}
                           </div>
                         </span>
@@ -1256,7 +1261,7 @@
                           <span class="fs-10 fw-bold">Search Content</span>
                           :
                           <div class="badge badge-soft-secondary fs-10">
-                            {{ assessmentFilter.content ? "YES" : "NO" }}
+                            {{ assessmentFilter.content ? 'YES' : 'NO' }}
                           </div>
                         </span>
                       </div>
@@ -1301,7 +1306,7 @@
                           {{
                           assessmentFilter.content
                           ? assessmentFilter.content
-                          : "NONE"
+                          : 'NONE'
                           }}
                         </p>
                       </div>
@@ -1360,6 +1365,7 @@
             </div>
           </div>
         </ngx-simplebar>
+
         <div *ngIf="!assessmentActive && itemsPage" class="card-footer">
           <!-- Pagination-->
           <p-paginator [totalRecords]="itemsPage.totalElements" (onPageChange)="itemsPageChange($event)" [first]="0"
@@ -1396,8 +1402,10 @@
           </p>
           <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
             <label>Topic Name</label>
-            <input type="text" name="topicName" class="form-control mb-3" placeholder="Topic" required
+            <input type="text" name="topicName" class="form-control" placeholder="Topic" required
               [ngModel]="newTopic.name" (ngModelChange)="newTopic.name = $event.toUpperCase()" />
+            <span class="text-danger" *ngIf="newTopic.name ? newTopic.name.length > 255 : false">Maximum character(255)
+              exceeded</span>
           </div>
         </form>
       </div>
@@ -1408,7 +1416,8 @@
             <i class="ri-close-line"></i>Close
           </button>
           <button type="button" *ngIf="!submitted" (click)="addNewTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center">
+            class="btn btn-primary d-flex gap-1 align-items-center"
+            [disabled]="!newTopic.name || newTopic.name.length > 255">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
@@ -1451,7 +1460,7 @@
             <i class="ri-close-line"></i>Close
           </button>
           <button *ngIf="!submitted" type="button" (click)="renameTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center">
+            class="btn btn-primary d-flex gap-1 align-items-center" [disabled]="!currentTopic.topicName">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
@@ -1544,7 +1553,7 @@
             <i class="ri-close-line"></i>Close
           </button>
           <button type="button" *ngIf="!submitted" (click)="saveSubTopic()"
-            class="btn btn-primary d-flex gap-1 align-items-center">
+            class="btn btn-primary d-flex gap-1 align-items-center" [disabled]="!newSubtopic.name">
             <i class="ri-save-line"></i>Save
           </button>
           <ng-template [ngIf]="submitted">
@@ -2086,7 +2095,7 @@
                     data-bs-parent="#accordionExample">
                     <div class="accordion-body ms-2 ps-5 pt-0">
                       <p class="text-muted">
-                        used at {{ usage.usedAt | date : "medium" }}.
+                        used at {{ usage.usedAt | date: 'medium' }}.
                       </p>
                     </div>
                   </div>

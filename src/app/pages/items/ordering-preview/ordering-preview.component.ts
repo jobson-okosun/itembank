@@ -22,6 +22,7 @@ import { ItemUtilitiesService } from '../item-utilities.service';
 export class OrderingPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() formType!: string;
+  @Input() selectedItemType!: string;
   @Input() previewData!: any;
   @Input() itemTrailInfo: any;
   @Input() editData!: any;
@@ -59,17 +60,17 @@ export class OrderingPreviewComponent implements OnInit {
     this.assessmentActive = this.itemService.assessmentActive;
     this.currentUser = this.userService.getCurrentUser();
     this.subjectName = this.itemService.subjectName;
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     this.previewData.options.forEach((option, index) => {
       this.opts.push(option.label);
 
       this.ans[index] = option.label;
 
-      console.log(this.ans, "answer")
-      console.log(this.opts, "options")
+      console.log(this.ans, 'answer');
+      console.log(this.opts, 'options');
     });
 
-    console.log(this.previewData)
+    console.log(this.previewData);
     // this.ans = this.previewData.scoringOption.answers;
     this.opts = this.shuffleOptions(this.opts);
   }
@@ -167,7 +168,7 @@ export class OrderingPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-     
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

@@ -1,4 +1,4 @@
-import { CdkDragEnd } from "@angular/cdk/drag-drop";
+import { CdkDragEnd } from '@angular/cdk/drag-drop';
 import {
   Component,
   Input,
@@ -10,30 +10,33 @@ import {
   HostListener,
   AfterViewInit,
   OnDestroy,
-} from "@angular/core";
-import { LabelImageText } from "../label-image-text/label-image-text.component";
-import { MatchingRuleEnums } from "../models/matching-rule-enums";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { UserService } from "src/app/shared/user.service";
-import { RejectionReason } from "../models/rejection-reason";
-import { DefaultItemProperties } from "../models/default-item-properties";
-import { Account } from "src/app/authentication/model/account.model";
-import { Option } from "../models/option";
-import { ClozeDropdown } from "../cloze-dropdown/cloze-dropdown.model";
-import { Images } from "../models/images";
-import { NewLabelImageText } from "../label-image-text/models/label-image-text-model";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { LabelImageDropdown } from "./models/label-image-dropdown";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ItemHttpService } from "../item-http.service";
-import { Location } from "@angular/common";
-import Swal from "sweetalert2";
-import { ItemTypes } from "../models/item-types";
-import { NotifierService } from "angular-notifier";
-import { DropzoneConfigInterface } from "ngx-dropzone-wrapper";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
+} from '@angular/core';
+import { LabelImageText } from '../label-image-text/label-image-text.component';
+import { MatchingRuleEnums } from '../models/matching-rule-enums';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { UserService } from 'src/app/shared/user.service';
+import { RejectionReason } from '../models/rejection-reason';
+import { DefaultItemProperties } from '../models/default-item-properties';
+import { Account } from 'src/app/authentication/model/account.model';
+import { Option } from '../models/option';
+import { ClozeDropdown } from '../cloze-dropdown/cloze-dropdown.model';
+import { Images } from '../models/images';
+import { NewLabelImageText } from '../label-image-text/models/label-image-text-model';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { LabelImageDropdown } from './models/label-image-dropdown';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ItemHttpService } from '../item-http.service';
+import { Location } from '@angular/common';
+import Swal from 'sweetalert2';
+import { ItemTypes } from '../models/item-types';
+import { NotifierService } from 'angular-notifier';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { ItemTagComponent } from '../item-tag/item-tag.component';
+import { ActivatedRoute } from '@angular/router';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -42,9 +45,9 @@ export class Responses {
 }
 
 @Component({
-  selector: "app-label-image-dropdown",
-  templateUrl: "./label-image-dropdown.component.html",
-  styleUrls: ["./label-image-dropdown.component.scss"],
+  selector: 'app-label-image-dropdown',
+  templateUrl: './label-image-dropdown.component.html',
+  styleUrls: ['./label-image-dropdown.component.scss'],
 })
 export class LabelImageDropdownComponent
   implements OnInit, AfterViewInit, OnDestroy
@@ -53,7 +56,8 @@ export class LabelImageDropdownComponent
   @Input() formType!: string;
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
-  @ViewChild("imgUpload") imgUpload: ElementRef;
+  @Output() stimulus = new EventEmitter<string>();
+  @ViewChild('imgUpload') imgUpload: ElementRef;
 
   dropZoneConfig: DropzoneConfigInterface = {
     maxFilesize: 200,
@@ -88,7 +92,7 @@ export class LabelImageDropdownComponent
       options: [],
       x: 50,
       y: 50,
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: null,
       correctAnswerIndex: null,
     },
@@ -96,7 +100,7 @@ export class LabelImageDropdownComponent
       options: [],
       x: 80,
       y: 80,
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: null,
       correctAnswerIndex: null,
     },
@@ -111,23 +115,23 @@ export class LabelImageDropdownComponent
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
 
-  @ViewChild("container", { static: false }) containerRef!: ElementRef;
-  @ViewChild("card", { static: false }) cardRef!: ElementRef;
+  @ViewChild('container', { static: false }) containerRef!: ElementRef;
+  @ViewChild('card', { static: false }) cardRef!: ElementRef;
 
-  @ViewChild("imageRef") imageElement: ElementRef;
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('imageRef') imageElement: ElementRef;
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   currentUser: Account;
   previewData: LabelImageDropdown = new LabelImageDropdown();
@@ -149,11 +153,15 @@ export class LabelImageDropdownComponent
   tags: { tagId: string }[];
   publishingItem: boolean = false;
 
-  inputValue: string = ""; // Stores the input value
+  inputValue: string = ''; // Stores the input value
   selectedOptionIndex: number | null = null; //
   base64Image: string;
   subjectModerationStatus: boolean = false;
   processingRejection: boolean = false;
+
+  passageId: string = '';
+  showPassage: boolean = false;
+  passageForPreview: SinglePassageModel;
 
   constructor(
     private itemUtil: ItemUtilitiesService,
@@ -161,7 +169,9 @@ export class LabelImageDropdownComponent
     private modalService: NgbModal,
     private itemService: ItemHttpService,
     private location: Location,
-    private notifierService: NotifierService
+    private notifierService: NotifierService,
+    private ar: ActivatedRoute,
+    private passageService: AllPassagesService,
   ) {}
 
   onSelect(event: any): void {
@@ -171,7 +181,7 @@ export class LabelImageDropdownComponent
     // Check file size (already restricted in Dropzone, but double-checking)
     const maxSizeInBytes = 5242880; // 5 MB
     if (file.size > maxSizeInBytes) {
-      alert("File size exceeds the 5 MB limit.");
+      alert('File size exceeds the 5 MB limit.');
       return;
     }
 
@@ -182,7 +192,7 @@ export class LabelImageDropdownComponent
       console.log(this.base64Image);
     };
     reader.onerror = () => {
-      alert("Failed to convert the file.");
+      alert('Failed to convert the file.');
     };
     reader.readAsDataURL(file);
   }
@@ -192,10 +202,24 @@ export class LabelImageDropdownComponent
     this.imageWidth = this.imageElement.nativeElement.offsetWidth;
     this.imageHeight = this.imageElement.nativeElement.offsetHeight;
     const rect = this.imageElement.nativeElement.getBoundingClientRect();
-    console.log("Image Dimensions:", rect.width, rect.height);
+    console.log('Image Dimensions:', rect.width, rect.height);
   }
 
   ngOnInit(): void {
+    this.passageId = this.ar.snapshot.params['passageId'];
+    console.log('PASS ID: ', this.passageId);
+    console.log('SHOW PASS: ', this.showPassage);
+
+    if (this.passageId) {
+      this.passageService.fetchSinglePassage(this.passageId).subscribe({
+        next: (value) => {
+          this.passageForPreview = value;
+
+          console.log('PASS PREVIEW: ', this.passageForPreview);
+        },
+      });
+    }
+
     this.currentUser = this.authService.getCurrentUser();
     this.scoringType = Object.values(ScoringTypeEnum);
     this.matchingRules = Object.values(MatchingRuleEnums);
@@ -204,14 +228,13 @@ export class LabelImageDropdownComponent
       MatchingRuleEnums.EXACT_MATCH;
 
     this.defaultItemProperties.scoringOption.autoScore = true;
-    this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces =
-      true;
+    this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces = true;
     this.subjectModerationStatus =
       this.itemService.currentSubjectModerationEnabled;
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {
-      console.log("edit data");
+      console.log('edit data');
       console.log(this.editData);
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =
@@ -249,9 +272,9 @@ export class LabelImageDropdownComponent
         height: this.editData.images[0].height,
         url: this.editData.images[0].url,
         width: this.editData.images[0].width,
-        altText: "",
-        hoverText: "",
-        label: "",
+        altText: '',
+        hoverText: '',
+        label: '',
       };
 
       // this.dropdownLabels = this.dropdownLabels.map((label, index) => ({
@@ -274,12 +297,12 @@ export class LabelImageDropdownComponent
           options: this.editData.possibleResponses[index]?.responses || [],
           x: position.x || 50, // Default to 50 if not provided
           y: position.y || 50, // Default to 50 if not provided
-          inputValue: "",
+          inputValue: '',
           selectedOptionIndex: 0, // Or a default value
           correctAnswerIndex:
             this.editData.scoringOption.answers[index] || null,
           id: index.toString(),
-        })
+        }),
       );
       console.log();
       this.defaultItemProperties.possibleResponses =
@@ -299,40 +322,48 @@ export class LabelImageDropdownComponent
     console.log(this.dropdownLabels);
   }
 
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
+  setShowPassage(value: boolean) {
+    this.showPassage = value;
+  }
+
   setup(editor: any) {
     let activeEquation: HTMLElement | null = null;
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering updated"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering updated'))
+              .catch((err) => console.error('Math rendering failed:', err));
           }
 
           activeEquation = null;
@@ -341,60 +372,60 @@ export class LabelImageDropdownComponent
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
         editor.windowManager.open({
-          title: "Insert Equation",
-          size: "normal",
+          title: 'Insert Equation',
+          size: 'normal',
           body: {
-            type: "panel",
+            type: 'panel',
             items: [
               {
-                type: "htmlpanel",
+                type: 'htmlpanel',
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: "cancel", name: "cancel", text: "Cancel" },
-            { type: "submit", name: "insert", text: "Insert", primary: true },
+            { type: 'cancel', name: 'cancel', text: 'Cancel' },
+            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById("mathfield") as any;
+            const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent("&nbsp;");
+            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering complete"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering complete'))
+              .catch((err) => console.error('Math rendering failed:', err));
 
             api.close();
           },
@@ -409,7 +440,7 @@ export class LabelImageDropdownComponent
 
   createOption() {
     let option: Option = new Option();
-    let options = ["A", "B", "C", "D"];
+    let options = ['A', 'B', 'C', 'D'];
     let responses = [];
     let possibleResponse = new Responses();
 
@@ -425,7 +456,7 @@ export class LabelImageDropdownComponent
     this.options.push(option);
 
     for (let i = 0; i < options.length; i++) {
-      responses.push("option" + options[i]);
+      responses.push('option' + options[i]);
     }
     possibleResponse.responses = responses;
     this.possibleResponses.push(possibleResponse);
@@ -459,7 +490,7 @@ export class LabelImageDropdownComponent
   }
 
   openImageUploadModal(imageUploadModal: any) {
-    this.modalService.open(imageUploadModal, { centered: true, size: "lg" });
+    this.modalService.open(imageUploadModal, { centered: true, size: 'lg' });
   }
 
   addResponsePosition() {
@@ -500,7 +531,7 @@ export class LabelImageDropdownComponent
       let reader = new FileReader();
 
       reader.onload = () => {
-        this.image.url = "assets/images/Itembank/association.png";
+        this.image.url = 'assets/images/Itembank/association.png';
       };
 
       reader.readAsDataURL(this.file);
@@ -520,7 +551,7 @@ export class LabelImageDropdownComponent
 
   buildItem(itemForm?: any) {
     if (!this.imageElement) {
-      this.notifierService.notify("error", "Please upload an image");
+      this.notifierService.notify('error', 'Please upload an image');
     }
 
     const imageRect = this.imageElement.nativeElement.getBoundingClientRect();
@@ -548,9 +579,9 @@ export class LabelImageDropdownComponent
 
     item.imageData = {
       altText: this.image.altText,
-      dimension: "",
+      dimension: '',
       height: imageRect.height,
-      image: item.images[0]?.url || "",
+      image: item.images[0]?.url || '',
       width: imageRect.width,
     };
 
@@ -564,7 +595,7 @@ export class LabelImageDropdownComponent
         label.correctAnswerIndex !== null &&
         label.correctAnswerIndex !== undefined
           ? label.correctAnswerIndex.toString()
-          : "";
+          : '';
 
       label.options = label.options.map((option) => option.trim());
       item.possibleResponses[index] = { responses: label.options };
@@ -596,7 +627,7 @@ export class LabelImageDropdownComponent
 
     this.publishingItem = true;
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -609,16 +640,16 @@ export class LabelImageDropdownComponent
     }
 
     this.publishLoader();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
   }
 
   saveFunction(item: any, type?: string) {
     let msg: string;
-    if (type == "save" || type === "save_and_new") {
+    if (type == 'save' || type === 'save_and_new') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
 
@@ -636,17 +667,17 @@ export class LabelImageDropdownComponent
         }
         // console.log(value);
         Swal.fire({
-          icon: "success",
+          icon: 'success',
           html: msg,
         });
         this.publishingItem = false;
         this.publishLoader();
 
-        if (type === "save" || type === "draft") {
+        if (type === 'save' || type === 'draft') {
           this.back();
         }
 
-        if (type == "save_and_new" || type !== "") {
+        if (type == 'save_and_new' || type !== '') {
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -656,18 +687,18 @@ export class LabelImageDropdownComponent
 
           this.image = {
             height: null,
-            url: "",
+            url: '',
             width: null,
-            altText: "",
-            hoverText: "",
-            label: "",
+            altText: '',
+            hoverText: '',
+            label: '',
           };
 
           this.dropdownLabels = [
             {
               x: 50,
               y: 50,
-              inputValue: "",
+              inputValue: '',
               selectedOptionIndex: null,
 
               correctAnswerIndex: null,
@@ -676,7 +707,7 @@ export class LabelImageDropdownComponent
             {
               x: 80,
               y: 80,
-              inputValue: "",
+              inputValue: '',
               selectedOptionIndex: null,
 
               correctAnswerIndex: null,
@@ -699,10 +730,10 @@ export class LabelImageDropdownComponent
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
@@ -715,7 +746,7 @@ export class LabelImageDropdownComponent
       return;
     } else {
       Swal.fire({
-        title: "Saving your question, Please Wait...",
+        title: 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -745,7 +776,7 @@ export class LabelImageDropdownComponent
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveItemToPassage(itemForm?: any) {}
@@ -770,18 +801,18 @@ export class LabelImageDropdownComponent
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   approveQuestion(itemForm: any) {
-    this.updateItem(itemForm, "approve");
+    this.updateItem(itemForm, 'approve');
   }
 
   updateItem(itemForm?: any, status?: string) {
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, "edit data");
+    console.log(this.editData, 'edit data');
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
@@ -789,10 +820,10 @@ export class LabelImageDropdownComponent
     // }
     this.publishingItem = true;
     this.publishLoader();
-    console.log("builtItem", item);
+    console.log('builtItem', item);
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
@@ -804,13 +835,13 @@ export class LabelImageDropdownComponent
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
 
         break;
 
@@ -822,9 +853,9 @@ export class LabelImageDropdownComponent
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
         }
         this.back();
@@ -834,15 +865,15 @@ export class LabelImageDropdownComponent
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
   openRejectionReasonModal(rejectionModal: any) {
-    this.modalService.open(rejectionModal, { centered: true, size: "lg" });
+    this.modalService.open(rejectionModal, { centered: true, size: 'lg' });
   }
 
   submitRejection(questionRejectionForm: any) {
@@ -856,8 +887,8 @@ export class LabelImageDropdownComponent
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   // While dragging
@@ -874,11 +905,11 @@ export class LabelImageDropdownComponent
       // Constrain within image bounds (0-100%)
       this.dropdownLabels[this.currentLabelIndex].x = Math.max(
         0,
-        Math.min(100, xPercent)
+        Math.min(100, xPercent),
       );
       this.dropdownLabels[this.currentLabelIndex].y = Math.max(
         0,
-        Math.min(100, yPercent)
+        Math.min(100, yPercent),
       );
 
       console.log(this.dropdownLabels);
@@ -888,8 +919,8 @@ export class LabelImageDropdownComponent
   // When mouse button is released
   onMouseUp() {
     this.isDragging = false;
-    document.removeEventListener("mousemove", this.onMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   // Add a new label to the array at a fixed position
@@ -906,7 +937,7 @@ export class LabelImageDropdownComponent
       options: [],
       x: 50,
       y: 50,
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: null,
       correctAnswerIndex: null,
     });
@@ -923,17 +954,17 @@ export class LabelImageDropdownComponent
     }
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.onWindowResize();
   }
   addDropOption(index: number, value: string) {
     if (value.trim()) {
       this.dropdownLabels[index].options.push(value);
-      this.dropdownLabels[index].inputValue = ""; // Clear the input box for this label
+      this.dropdownLabels[index].inputValue = ''; // Clear the input box for this label
       this.notifierService.notify(
-        "success",
-        `Drop option ${value} added to label ${index + 1}`
+        'success',
+        `Drop option ${value} added to label ${index + 1}`,
       );
     }
   }
@@ -941,11 +972,11 @@ export class LabelImageDropdownComponent
   editDropOption(labelIndex: number, optionIndex: number, newValue: string) {
     if (optionIndex !== null && newValue.trim()) {
       this.dropdownLabels[labelIndex].options[optionIndex] = newValue;
-      this.dropdownLabels[labelIndex].inputValue = ""; // Clear input box after editing
+      this.dropdownLabels[labelIndex].inputValue = ''; // Clear input box after editing
       this.selectedOptionIndex = null; // Reset selected option index
       this.notifierService.notify(
-        "success",
-        `Drop option edited to ${newValue} for label ${labelIndex + 1}`
+        'success',
+        `Drop option edited to ${newValue} for label ${labelIndex + 1}`,
       );
     }
   }
@@ -963,10 +994,10 @@ export class LabelImageDropdownComponent
     // if (selectedOptionIndex !== null) {
     this.dropdownLabels[labelIndex].correctAnswerIndex = selectedOptionIndex;
     this.notifierService.notify(
-      "success",
+      'success',
       `Correct answer set to "${
         this.dropdownLabels[labelIndex].options[selectedOptionIndex]
-      }" for label ${labelIndex + 1}`
+      }" for label ${labelIndex + 1}`,
     );
     // }
   }
@@ -976,28 +1007,28 @@ export class LabelImageDropdownComponent
       this.dropdownLabels[labelIndex].selectedOptionIndex;
     if (selectedOptionIndex !== null) {
       this.dropdownLabels[labelIndex].options.splice(selectedOptionIndex, 1);
-      this.dropdownLabels[labelIndex].inputValue = ""; // Clear input box after deletion
+      this.dropdownLabels[labelIndex].inputValue = ''; // Clear input box after deletion
       this.dropdownLabels[labelIndex].selectedOptionIndex = null; // Clear selected index
       this.dropdownLabels[labelIndex].correctAnswerIndex = null; // Clear selected index
       this.notifierService.notify(
-        "success",
-        `Drop option deleted from label ${labelIndex + 1}`
+        'success',
+        `Drop option deleted from label ${labelIndex + 1}`,
       );
     }
   }
 
   deleteLabel(index: number) {
     this.dropdownLabels.splice(index, 1);
-    this.notifierService.notify("success", `Label deleted`);
+    this.notifierService.notify('success', `Label deleted`);
 
     console.log(this.dropdownLabels);
   }
 
   openConfirmationModal(content: any) {
     this.modalService.open(content, {
-      ariaLabelledBy: "modal-basic-title",
+      ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: "modal-holder",
+      windowClass: 'modal-holder',
     });
   }
 

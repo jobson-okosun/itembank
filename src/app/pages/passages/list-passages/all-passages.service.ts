@@ -36,26 +36,28 @@ export class AllPassagesService {
   topicName: string;
   subjectName: string;
 
+  selectedPassageIndex: number = 0;
+
   constructor(private passagehttpService: HttpClient) {}
 
   fetchAllPassages(): Observable<AllPassagesResponseModel> {
     return this.passagehttpService.get<AllPassagesResponseModel>(
       `${environment.developmentIP}/itembank/items/passage`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSinglePassage(passageId: string): Observable<SinglePassageModel> {
     return this.passagehttpService.get<SinglePassageModel>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchPassageItems(passageId: string): Observable<SinglePassageItems> {
     return this.passagehttpService.get<SinglePassageItems>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage-items`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -63,7 +65,7 @@ export class AllPassagesService {
     return this.passagehttpService.post<AllPassagesResponseModel>(
       `${environment.developmentIP}/itembank/items/passage-filter/items_in_passage`,
       filter,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -71,14 +73,14 @@ export class AllPassagesService {
     return this.passagehttpService.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage`,
       passage,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deletePassage(passageId: string): Observable<ResourceCreated> {
     return this.passagehttpService.delete<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -86,24 +88,24 @@ export class AllPassagesService {
     //items/assessment/passage-filter/assessment/items_in_passage/{itemsInPassage}
     return this.passagehttpService.post<any>(
       `${environment.developmentIP}/itembank/items/assessment/passage-filter/assessment/items_in_passage/${itemsInPassage}`,
-      itemsInPassage
+      itemsInPassage,
     );
   }
 
   deletePassageItem(
     itemId: string,
-    passageId: string
+    passageId: string,
   ): Observable<ResourceCreated> {
     return this.passagehttpService.delete<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/${passageId}/passage`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   getPassageUsageHistory(passageId: string): Observable<UsageHistory[]> {
     return this.passagehttpService.get<UsageHistory[]>(
       `${environment.developmentIP}/itembank/items/passage/${passageId}/usages`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 }

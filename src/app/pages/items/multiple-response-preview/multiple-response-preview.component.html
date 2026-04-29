@@ -1,6 +1,16 @@
 <div class="card">
   <div class="card-body">
     <div
+      class="d-flex justify-content-between flex-wrap mb-5"
+      *ngIf="!!selectedItemType && !!formType"
+    >
+      <h3 class="card-title">
+        {{ selectedItemType }} |
+        <span class="text-muted">{{ formType }}</span>
+      </h3>
+    </div>
+
+    <div
       *ngIf="
         previewData && previewData.itemPassage && component !== 'passageItem'
       "
@@ -13,7 +23,7 @@
     <div class="row">
       <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
         <div
-          [innerHTML]="previewData.stimulus |htmlSanitizer"
+          [innerHTML]="previewData.stimulus | htmlSanitizer"
           style="line-height: normal"
         ></div>
       </div>
@@ -65,9 +75,8 @@
             !recycleComponentActive &&
             !previewData.passageId &&
             previewData.id &&
-            component !== 'question_status'
-            &&
-                !isEditPreview
+            component !== 'question_status' &&
+            !isEditPreview
           "
           class="btn btn-danger"
           type="button"
@@ -84,9 +93,8 @@
             !recycleComponentActive &&
             previewData.id &&
             previewData.passageId &&
-            component !== 'question-status'
-            &&
-                !isEditPreview
+            component !== 'question-status' &&
+            !isEditPreview
           "
           class="btn btn-danger"
           type="button"
@@ -113,12 +121,12 @@
           <i class="ri-edit-fill align-middle fs-14"></i>Edit
         </button>
         <button
-        *ngIf="
-        currentUser.authorities.includes('MODERATOR') && 
-        !assessmentActive &&
-        previewData.itemStatus !== 'REJECTED' &&
-        previewData.itemStatus !== 'PUBLISHED'
-      "
+          *ngIf="
+            currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            previewData.itemStatus !== 'REJECTED' &&
+            previewData.itemStatus !== 'PUBLISHED'
+          "
           type="button"
           class="btn btn-outline-danger"
           (click)="edit()"

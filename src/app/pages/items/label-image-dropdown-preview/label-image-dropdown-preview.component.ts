@@ -7,30 +7,32 @@ import {
   OnInit,
   Output,
   ViewChild,
-} from "@angular/core";
-import { UserService } from "src/app/shared/user.service";
-import { ItemHttpService } from "../item-http.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import Swal from "sweetalert2";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { RecycleService } from "../../recycle/recycle.service";
-import { Router } from "@angular/router";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
+} from '@angular/core';
+import { UserService } from 'src/app/shared/user.service';
+import { ItemHttpService } from '../item-http.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { RecycleService } from '../../recycle/recycle.service';
+import { Router } from '@angular/router';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 
 @Component({
-  selector: "app-label-image-dropdown-preview",
-  templateUrl: "./label-image-dropdown-preview.component.html",
-  styleUrls: ["./label-image-dropdown-preview.component.scss"],
+  selector: 'app-label-image-dropdown-preview',
+  templateUrl: './label-image-dropdown-preview.component.html',
+  styleUrls: ['./label-image-dropdown-preview.component.scss'],
 })
 export class LabelImageDropdownPreviewComponent
   implements OnInit, AfterViewInit
 {
   @Input() component!: string;
   @Input() previewData!: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
-  @ViewChild("previewImage") previewImage!: ElementRef;
+  @ViewChild('previewImage') previewImage!: ElementRef;
   @Output() reload = new EventEmitter();
   recycleComponentActive: boolean = this.recycleService.recycleActive;
 
@@ -40,10 +42,10 @@ export class LabelImageDropdownPreviewComponent
   previewImageWidth: any;
   previewImageHeight: any;
   processing_delete: boolean = false;
-  selectedItemId: string = "";
+  selectedItemId: string = '';
   modalRef: any;
   isEditPreview: boolean = false;
-  subjectName: string = "";
+  subjectName: string = '';
   subjectId: string = this.itemService.subjectId;
 
   constructor(
@@ -62,14 +64,14 @@ export class LabelImageDropdownPreviewComponent
     // console.log(this.previewData);
     this.currentUser = this.userService.getCurrentUser();
     this.currentUser = this.userService.getCurrentUser();
-    this.isEditPreview = this.router.url.includes("edit-item");
+    this.isEditPreview = this.router.url.includes('edit-item');
     this.assessmentActive = this.itemService.assessmentActive;
     this.subjectName = this.itemService.subjectName;
   }
 
   ngAfterViewInit() {
     const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
-    console.log("Preview Image Dimensions:", imageRect.width, imageRect.height);
+    console.log('Preview Image Dimensions:', imageRect.width, imageRect.height);
 
     // Validate response positions
     this.previewData.responsePositions.forEach((position, index) => {
@@ -95,7 +97,7 @@ export class LabelImageDropdownPreviewComponent
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -108,7 +110,7 @@ export class LabelImageDropdownPreviewComponent
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -119,9 +121,9 @@ export class LabelImageDropdownPreviewComponent
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -131,8 +133,8 @@ export class LabelImageDropdownPreviewComponent
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -150,7 +152,7 @@ export class LabelImageDropdownPreviewComponent
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -167,7 +169,7 @@ export class LabelImageDropdownPreviewComponent
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -181,12 +183,13 @@ export class LabelImageDropdownPreviewComponent
   }
 
   @ViewChild('previewContainer') previewContainer!: ElementRef;
-  
+
   check() {
     this.showAnswer = !this.showAnswer;
-    
+
     // Get dropdowns only from this component instance
-    const dropdowns = this.previewContainer.nativeElement.querySelectorAll('select');
+    const dropdowns =
+      this.previewContainer.nativeElement.querySelectorAll('select');
 
     if (this.showAnswer && this.previewData.scoringOption?.answers) {
       // Show correct answers
@@ -218,9 +221,9 @@ export class LabelImageDropdownPreviewComponent
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -233,9 +236,9 @@ export class LabelImageDropdownPreviewComponent
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
