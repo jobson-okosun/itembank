@@ -126,6 +126,7 @@ export class ProctoringComponent implements OnInit {
         next: (value) => {
           this.notifierService.notify('success', `Distributed:${value.distributed} | Undistributed:${value.not_distributed}`)
           this.fetchProctorDashboard()
+          this.modalService.dismissAll()
         },
         error: (err: HttpErrorResponse) => {
           this.notifierService.notify('error', err.error.message ?? 'Sorry! Unable to complete distribution')
@@ -138,10 +139,6 @@ export class ProctoringComponent implements OnInit {
 
     const payload = ids
 
-    // if(!payload.batches.length) {
-    //   delete payload.batches
-    // }
-
     this.isUnassigningProctor = true;
 
     this.schedulerService
@@ -152,6 +149,7 @@ export class ProctoringComponent implements OnInit {
           this.notifierService.notify('success', 'Unassign successful')
           this.fetchProctorDashboard()
           this.fetchAssignedProctors()
+          this.modalService.dismissAll()
         },
         error: (err: HttpErrorResponse) => {
           this.notifierService.notify('error', err.error.message ?? 'Sorry! Unable to complete task')
@@ -596,7 +594,7 @@ export class ProctoringComponent implements OnInit {
 
   onProctorParticipantChange(event: any) {
     const size = event.rows;
-    const page = (event.page ?? 0) + 1;
+    const page = (event.page ?? 0) + 1; 
 
     this.proctorParticipantParams = {
       ...this.proctorParticipantParams,

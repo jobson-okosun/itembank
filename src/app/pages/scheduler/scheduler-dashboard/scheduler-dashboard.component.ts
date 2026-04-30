@@ -42,7 +42,7 @@ export class SchedulerDashboardComponent implements OnInit {
 
   pageNo: number = 1;
 
-  pageSize: number = 10;
+  pageSize: number = 100;
 
   selectedAssessment: SingleAssessment;
 
