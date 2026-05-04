@@ -69,17 +69,17 @@ export class ListNotificationsComponent implements OnInit, OnDestroy {
           }
         );
     } else { */
-      this.notificationService
-        .fetchAllNotifications(this.currentUser.id, this.page, this.pageSize)
-        .subscribe(
-          (value) => {
-            this.notifications = value;
-            this.loading = false;
-          },
-          (error: HttpErrorResponse) => {
-            this.notifier.notify('error', `${error.error.message}`);
-          }
-        );
+    this.notificationService
+      .fetchAllNotifications(this.currentUser.id, this.page, this.pageSize)
+      .subscribe(
+        (value) => {
+          this.notifications = value;
+          this.loading = false;
+        },
+        (error: HttpErrorResponse) => {
+          this.notifier.notify('error', `${error.error.message}`);
+        }
+      );
     //}
   }
 
@@ -113,9 +113,7 @@ export class ListNotificationsComponent implements OnInit, OnDestroy {
     );
   }
 
-  previewItem(notification: any) {
-    
-  }
+  previewItem(notification: any) {}
 
   openNotification(notification?: any) {
     // console.log(notification);

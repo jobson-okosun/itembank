@@ -57,7 +57,7 @@
             <span class="badge badge-soft-primary">{{ i.code }}</span></span>
         </div>
         <div class="card card-overlay p-2" [ngClass]="{ 'border border-1 border-primary': i.type === formType }"
-          (click)="setFormType(i.type)">
+          (click)="setFormType(i.type);">
           <img class="card-img img-fluid" src="{{ i.imgPath }}" alt="Card image" />
           <!-- <div class="card-img-overlay p-2">
             <div class="card-header bg-transparent">
@@ -134,11 +134,12 @@
     </div>
 
     <div *ngIf="selectedItemType === 'DRAWING_AND_WRITING'" class="row mt-3">
-      <div class="card border-0" (click)="setFormType(item.type)" *ngFor="let item of drawingAndWriting;" >
+      <div class="card border-0" (click)="setFormType(item.type)" *ngFor="let item of drawingAndWriting;">
         <div class="mb-0">
           <h4 class="card-title">{{ item.type.replaceAll('_AND_', ' & ') }}</h4>
         </div>
-        <img class="card-img img-fluid mx-auto col-6 border rounded" src="{{ item.imgPath }}" alt="Card image" [ngClass]="{ 'border-primary': item.type === formType }"/>
+        <img class="card-img img-fluid mx-auto col-6 border rounded" src="{{ item.imgPath }}" alt="Card image"
+          [ngClass]="{ 'border-primary': item.type === formType }" />
         <!-- <div class="card-img-overlay p-0">
           <div class="card-header bg-transparent">
             <h4 class="card-title text-white mb-0">
@@ -151,6 +152,31 @@
     </div>
     <!-- end row-->
   </div>
-  <!-- end card body -->
+
+  <ng-template #comfirmNavigationModal [showModal] let-modal>
+    <div class="modal-header">
+      <h3 class="modal-title">COMFIRM NAVIGATION</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body px-4">
+      <h6>Are you sure you want to navigate to <i>{{ formType }}</i>, unsaved questions will be lost</h6>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex gap-2 float-end">
+        <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click');">
+          <i class="ri-close-line"></i>Close
+        </button>
+
+        <button type="button" class="btn btn-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click'); proceedNavigation();">
+          <i class="ri-save-line"></i>Proceed
+        </button>
+
+      </div>
+    </div>
+  </ng-template>
 </div>
 <!-- end card -->

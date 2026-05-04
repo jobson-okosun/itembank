@@ -25,14 +25,16 @@ import { UsageHistory } from "../models/usage-history";
 import { moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
-  selector: "app-label-image-drag-drop-preview",
-  templateUrl: "./label-image-drag-drop-preview.component.html",
-  styleUrls: ["./label-image-drag-drop-preview.component.scss"],
+  selector: 'app-label-image-drag-drop-preview',
+  templateUrl: './label-image-drag-drop-preview.component.html',
+  styleUrls: ['./label-image-drag-drop-preview.component.scss'],
 })
 export class LabelImageDragDropPreviewComponent implements OnInit {
   @Input() previewData!: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
-  @ViewChild("previewImage") previewImage!: ElementRef;
+  @ViewChild('previewImage') previewImage!: ElementRef;
   @Input() component!: string;
   @Output() reload = new EventEmitter();
 
@@ -40,12 +42,12 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   assessmentActive: boolean;
   showAnswer: boolean = false;
   options: Option[] = [
-    { label: "option A", value: "0" },
-    { label: "option B", value: "1" },
-    { label: "option C", value: "2" },
-    { label: "option D", value: "3" },
+    { label: 'option A', value: '0' },
+    { label: 'option B', value: '1' },
+    { label: 'option C', value: '2' },
+    { label: 'option D', value: '3' },
   ];
-  answers: any[] = ["0", "1", "2", "3"];
+  answers: any[] = ['0', '1', '2', '3'];
   containerList: string[] = [];
   containers: any[] = [];
   previewImageWidth: any;
@@ -227,7 +229,7 @@ ngOnInit(): void {
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -250,7 +252,7 @@ ngOnInit(): void {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -263,7 +265,7 @@ ngOnInit(): void {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -274,9 +276,9 @@ ngOnInit(): void {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -286,8 +288,8 @@ ngOnInit(): void {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -307,9 +309,9 @@ ngOnInit(): void {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -322,9 +324,9 @@ ngOnInit(): void {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -334,7 +336,7 @@ ngOnInit(): void {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -345,13 +347,10 @@ ngOnInit(): void {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
-
-    
   }
-
 
   onDragStart(event: DragEvent, item: string) {
     // this.draggedItem = item;

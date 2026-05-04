@@ -12,36 +12,38 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   OnDestroy,
-} from "@angular/core";
-import { NewClozeItem } from "../cloze/model/new-cloze-item.model";
-import { ItemStatusEnum } from "../models/item-status-enum";
+} from '@angular/core';
+import { NewClozeItem } from '../cloze/model/new-cloze-item.model';
+import { ItemStatusEnum } from '../models/item-status-enum';
 import {
   CdkDragDrop,
   CdkDragEnd,
   moveItemInArray,
   transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { Option } from "../models/option";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { MatchingRuleEnums } from "../models/matching-rule-enums";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { UserService } from "src/app/shared/user.service";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { RejectionReason } from "../models/rejection-reason";
-import { DefaultItemProperties } from "../models/default-item-properties";
-import { ItemTagsDtos } from "../models/item-tags-dtos";
-import { Images } from "../models/images";
-import { Account } from "src/app/authentication/model/account.model";
-import { DOCUMENT, Location } from "@angular/common";
-import { NewLabelImageText } from "../label-image-text/models/label-image-text-model";
-import { NotifierService } from "angular-notifier";
-import { LabelImageDragDrop } from "./models/label-image-drag-drop";
-import Swal from "sweetalert2";
-import { ItemHttpService } from "../item-http.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ItemTypes } from "../models/item-types";
-import { DropzoneComponent, DropzoneConfigInterface } from "ngx-dropzone-wrapper";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
+} from '@angular/cdk/drag-drop';
+import { Option } from '../models/option';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { MatchingRuleEnums } from '../models/matching-rule-enums';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { UserService } from 'src/app/shared/user.service';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { RejectionReason } from '../models/rejection-reason';
+import { DefaultItemProperties } from '../models/default-item-properties';
+import { ItemTagsDtos } from '../models/item-tags-dtos';
+import { Images } from '../models/images';
+import { Account } from 'src/app/authentication/model/account.model';
+import { DOCUMENT, Location } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
+import { LabelImageDragDrop } from './models/label-image-drag-drop';
+import Swal from 'sweetalert2';
+import { ItemHttpService } from '../item-http.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ItemTypes } from '../models/item-types';
+import { DropzoneConfigInterface } from 'ngx-dropzone-wrapper';
+import { ItemTagComponent } from '../item-tag/item-tag.component';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { ActivatedRoute } from '@angular/router';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 
 export class ResponseContainer {
   name: string;
@@ -52,16 +54,18 @@ declare var tinymce: any;
 declare const MathJax: any;
 
 @Component({
-  selector: "app-label-image-drag-drop",
-  templateUrl: "./label-image-drag-drop.component.html",
-  styleUrls: ["./label-image-drag-drop.component.scss"],
+  selector: 'app-label-image-drag-drop',
+  templateUrl: './label-image-drag-drop.component.html',
+  styleUrls: ['./label-image-drag-drop.component.scss'],
 })
-export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDestroy {
+export class LabelImageDragDropComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() selectedItemType!: string;
   @Input() formType!: string;
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
-  @ViewChild('dzRef') dzRef!: DropzoneComponent;
+  @Output() stimulus = new EventEmitter<string>();
 
   dropZoneConfig: DropzoneConfigInterface = {
     maxFilesize: 200,
@@ -76,24 +80,24 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   clientWidth = 0;
 
   labels: Array<{ text: string; x: number; y: number }> = [
-    { text: "Label 1", x: 50, y: 50 },
-    { text: "Label 2", x: 80, y: 80 },
+    { text: 'Label 1', x: 50, y: 50 },
+    { text: 'Label 2', x: 80, y: 80 },
   ];
   processingRejection: boolean = false;
-  @ViewChild("draggable") draggableElement: ElementRef;
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('draggable') draggableElement: ElementRef;
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   private isDragging = false;
   private offsetX: number;
   private offsetY: number;
   private currentLabelIndex: number;
 
-  @ViewChild("imgUpload") imgUpload: ElementRef;
+  @ViewChild('imgUpload') imgUpload: ElementRef;
 
-  @ViewChild("container", { static: false }) containerRef!: ElementRef;
-  @ViewChild("card", { static: false }) cardRef!: ElementRef;
+  @ViewChild('container', { static: false }) containerRef!: ElementRef;
+  @ViewChild('card', { static: false }) cardRef!: ElementRef;
 
-  @ViewChild("imageRef") imageElement: ElementRef;
+  @ViewChild('imageRef') imageElement: ElementRef;
 
   // Store labels and their relative positions as percentages
 
@@ -118,6 +122,10 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   responseContainers: any[] = [];
   publishingItem: boolean = false;
 
+  passageId: string = '';
+  showPassage: boolean = false;
+  passageForPreview: SinglePassageModel;
+
   dropdownLabels: Array<{
     x: number;
     y: number;
@@ -133,7 +141,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       inputValue: "",
       selectedOptionIndex: null,
 
-      id: "1",
+      id: '1',
       item: null,
     },
     // {
@@ -148,7 +156,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   ];
   selectedOptionIndex: number | null = null;
   draggedItem: any = null;
-  distractor: string = "";
+  distractor: string = '';
   subjectModerationStatus: boolean = false;
   rect: any;
 
@@ -156,16 +164,16 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
 
   activeTab = 0
@@ -179,7 +187,9 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     private cdRef: ChangeDetectorRef,
     private notifierService: NotifierService,
     private location: Location,
-    private itemService: ItemHttpService
+    private itemService: ItemHttpService,
+    private ar: ActivatedRoute,
+    private passageService: AllPassagesService,
   ) {}
 
   ngAfterViewInit() {
@@ -190,9 +200,21 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     // console.log("Image Dimensions:", rect.width, rect.height);
   }
 
- 
-
   ngOnInit(): void {
+    this.passageId = this.ar.snapshot.params['passageId'];
+    console.log('PASS ID: ', this.passageId);
+    console.log('SHOW PASS: ', this.showPassage);
+
+    if (this.passageId) {
+      this.passageService.fetchSinglePassage(this.passageId).subscribe({
+        next: (value) => {
+          this.passageForPreview = value;
+
+          console.log('PASS PREVIEW: ', this.passageForPreview);
+        },
+      });
+    }
+
     this.currentUser = this.authService.getCurrentUser();
     this.scoringType = Object.values(ScoringTypeEnum);
     this.matchingRules = Object.values(MatchingRuleEnums);
@@ -200,7 +222,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     this.defaultItemProperties.scoringOption.matchingRule =
       MatchingRuleEnums.EXACT_MATCH;
 
-      this.defaultItemProperties.scoringOption.autoScore = true
+    this.defaultItemProperties.scoringOption.autoScore = true;
 
     this.subjectModerationStatus =
       this.itemService.currentSubjectModerationEnabled;
@@ -213,7 +235,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         this.editData.difficultyLevel;
       this.defaultItemProperties.stimulus = this.editData.stimulus;
       this.defaultItemProperties.shuffleOptions = this.editData.shuffleOptions;
-      
+
       this.options = this.editData.options;
 
       //scoring Options
@@ -231,7 +253,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       //   this.editData.scoringOption.autoScore;
       this.defaultItemProperties.scoringOption.matchingRule =
         this.editData.scoringOption.matchingRule;
-        
+
       this.defaultItemProperties.scoringOption.scoringType =
         this.editData.scoringOption.scoringType;
       this.defaultItemProperties.scoringOption.answers =
@@ -246,9 +268,9 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         height: this.editData.images[0].height,
         url: this.editData.images[0].url,
         width: this.editData.images[0].width,
-        altText: "",
-        hoverText: "",
-        label: "",
+        altText: '',
+        hoverText: '',
+        label: '',
       };
 
       // this.dropdownLabels = this.dropdownLabels.map((label, index) => ({
@@ -264,11 +286,11 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
           x: position.x || 50, // Default to 50 if not provided
           y: position.y || 50, // Default to 50 if not provided
 
-          inputValue: this.editData.options[index].label || "",
+          inputValue: this.editData.options[index].label || '',
           id: index.toString(),
-          item: this.editData.options[index].label || "",
+          item: this.editData.options[index].label || '',
           selectedOptionIndex: null,
-        })
+        }),
       );
 
       this.tags = this.editData.itemTagsDTOS;
@@ -291,41 +313,49 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   log() {
     console.log('unploading')
   }
+  
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
+  setShowPassage(value: boolean) {
+    this.showPassage = value;
+  }
 
   setup(editor: any) {
     let activeEquation: HTMLElement | null = null;
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering updated"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering updated'))
+              .catch((err) => console.error('Math rendering failed:', err));
           }
 
           activeEquation = null;
@@ -334,60 +364,60 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
         editor.windowManager.open({
-          title: "Insert Equation",
-          size: "normal",
+          title: 'Insert Equation',
+          size: 'normal',
           body: {
-            type: "panel",
+            type: 'panel',
             items: [
               {
-                type: "htmlpanel",
+                type: 'htmlpanel',
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: "cancel", name: "cancel", text: "Cancel" },
-            { type: "submit", name: "insert", text: "Insert", primary: true },
+            { type: 'cancel', name: 'cancel', text: 'Cancel' },
+            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById("mathfield") as any;
+            const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent("&nbsp;");
+            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering complete"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering complete'))
+              .catch((err) => console.error('Math rendering failed:', err));
 
             api.close();
           },
@@ -399,7 +429,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   createOption() {
     let option: Option = new Option();
     option.label = null; //`option ${this.options.length + 1}`;
-    option.value = 0 + "";
+    option.value = 0 + '';
     /* option.positionX = `${
       this.options.length === 0 ? 0 : this.countXAxis * 25
     }%`; */
@@ -457,7 +487,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   }
 
   openImageUploadModal(imageUploadModal: any) {
-    this.modalService.open(imageUploadModal, { centered: true, size: "lg" });
+    this.modalService.open(imageUploadModal, { centered: true, size: 'lg' });
   }
 
   addResponsePosition() {
@@ -514,7 +544,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   }
 
   onUploadSuccess(event: any) {
-    console.log(event, "drag drop");
+    console.log(event, 'drag drop');
     this.image = new Images();
     this.image.width = event[0].width;
     this.image.height = event[0].height;
@@ -558,7 +588,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
   buildItem(itemForm?: any) {
     if (!this.imageElement) {
-      this.notifierService.notify("error", "Please upload an image");
+      this.notifierService.notify('error', 'Please upload an image');
     }
     const imageRect = this.imageElement.nativeElement.getBoundingClientRect();
     let item: LabelImageDragDrop = new LabelImageDragDrop();
@@ -582,7 +612,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
     item.imageData = {
       altText: this.image.altText,
-      dimension: "",
+      dimension: '',
       height: imageRect.height,
       image: item.images[0].url,
       width: imageRect.width,
@@ -663,7 +693,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     this.publishingItem = true;
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -676,16 +706,16 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     }
 
     this.publishLoader();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
   }
 
   saveFunction(item: any, type?: string) {
     let msg: string;
-    if (type == "save" || type === "save_and_new") {
+    if (type == 'save' || type === 'save_and_new') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
 
@@ -703,17 +733,17 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         }
         // console.log(value);
         Swal.fire({
-          icon: "success",
+          icon: 'success',
           html: msg,
         });
         this.publishingItem = false;
         this.publishLoader();
 
-        if (type === "save" || type === "draft") {
+        if (type === 'save' || type === 'draft') {
           this.back();
         }
 
-        if (type == "save_and_new" || type !== "") {
+        if (type == 'save_and_new' || type !== '') {
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -723,11 +753,11 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
           this.image = {
             height: null,
-            url: "",
+            url: '',
             width: null,
-            altText: "",
-            hoverText: "",
-            label: "",
+            altText: '',
+            hoverText: '',
+            label: '',
           };
 
           this.dropdownLabels = [
@@ -736,7 +766,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
               y: 0,
               inputValue: "",
               selectedOptionIndex: null,
-              id: "1",
+              id: '1',
               item: null,
             },
             {
@@ -744,7 +774,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
               y: 0,
               inputValue: "",
               selectedOptionIndex: null,
-              id: "2",
+              id: '2',
               item: null,
             },
           ];
@@ -753,7 +783,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
           this.tagRef.Tag = [];
           this.tagRef.ngOnInit();
           this.tagRef.sendTag([]);
-          this.distractors = [{ value: "" }];
+          this.distractors = [{ value: '' }];
           this.ngOnInit();
         }
       },
@@ -762,10 +792,10 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
@@ -778,7 +808,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       return;
     } else {
       Swal.fire({
-        title: "Saving your question, Please Wait...",
+        title: 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -806,7 +836,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   saveToDraft(itemForm?: any) {
@@ -825,7 +855,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveItemToPassage(itemForm?: any) {}
@@ -834,19 +864,19 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, "edit data");
+    console.log(this.editData, 'edit data');
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
     //   return;
     // }
 
-    console.log("builtItem", item);
+    console.log('builtItem', item);
     this.publishingItem = true;
     this.publishLoader();
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
@@ -858,13 +888,13 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
 
         break;
 
@@ -876,9 +906,9 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
         }
         this.back();
@@ -888,19 +918,19 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
+          icon: 'error',
           html: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
   approveQuestion(itemForm: any) {
-    this.updateItem(itemForm, "approve");
+    this.updateItem(itemForm, 'approve');
   }
 
   openRejectionReasonModal(rejectionModal: any) {
-    this.modalService.open(rejectionModal, { centered: true, size: "lg" });
+    this.modalService.open(rejectionModal, { centered: true, size: 'lg' });
   }
 
   submitRejection(questionRejectionForm: any) {
@@ -909,14 +939,14 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
-    console.log("i am down");
+    console.log('i am down');
     console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener("mousemove", this.onMouseMove.bind(this));
-    document.addEventListener("mouseup", this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.onMouseMove.bind(this));
+    document.addEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   // While dragging
@@ -933,11 +963,11 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
       this.dropdownLabels[this.currentLabelIndex].x = Math.max(
         0,
-        Math.min(100, xPercent)
+        Math.min(100, xPercent),
       );
       this.dropdownLabels[this.currentLabelIndex].y = Math.max(
         0,
-        Math.min(100, yPercent)
+        Math.min(100, yPercent),
       );
 
       // console.log("Authoring Position:", this.dropdownLabels);
@@ -948,8 +978,8 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   onMouseUp() {
     // console.log("release");
     this.isDragging = false;
-    document.removeEventListener("mousemove", this.onMouseMove.bind(this));
-    document.removeEventListener("mouseup", this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
+    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
   }
 
   // Add a new label to the array at a fixed position
@@ -969,7 +999,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
       x: 0,
       y: 0,
       item: null, // Initially no item is associated
-      inputValue: "",
+      inputValue: '',
       selectedOptionIndex: 1,
     };
 
@@ -992,7 +1022,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     }
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.onWindowResize();
   }
@@ -1012,7 +1042,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
   onDragStart(event: DragEvent, item: string) {
     this.draggedItem = item;
-    event.dataTransfer?.setData("text", item);
+    event.dataTransfer?.setData('text', item);
   }
 
   onDrop(event: DragEvent, labelIndex: number) {
@@ -1023,21 +1053,21 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     if (this.draggedItem && !targetLabel.item) {
       targetLabel.item = this.draggedItem; // Assign item to label
       this.distractors = this.distractors.filter(
-        (item) => item !== this.draggedItem
+        (item) => item !== this.draggedItem,
       ); // Remove from list
       console.log(
-        `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`
+        `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`,
       );
       this.notifierService.notify(
-        "success",
-        `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`
+        'success',
+        `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`,
       );
       this.draggedItem = null; // Reset dragged item
     } else if (targetLabel.item) {
-      this.notifierService.notify("warning", "Label is already occupied.");
-      console.error("Label is already occupied.");
+      this.notifierService.notify('warning', 'Label is already occupied.');
+      console.error('Label is already occupied.');
     } else {
-      console.error("Invalid drop target.");
+      console.error('Invalid drop target.');
     }
 
     // console.log(this.dropdownLabels);
@@ -1053,7 +1083,7 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
 
   addDistractor() {
     this.distractors.push({ value: this.distractor });
-    this.distractor = "";
+    this.distractor = '';
   }
 
   deleteDistractor(index: number) {
@@ -1063,8 +1093,8 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
   deleteLabel(index: number) {
     this.dropdownLabels.splice(index, 1);
     this.notifierService.notify(
-      "success",
-      `Label ${index} deleted successfully`
+      'success',
+      `Label ${index} deleted successfully`,
     );
   }
 
@@ -1077,17 +1107,15 @@ export class LabelImageDragDropComponent implements OnInit, AfterViewInit, OnDes
     let content = o.content;
   }
 
-  openConfirmationModal(content: any){
+  openConfirmationModal(content: any) {
     this.modalService.open(content, {
       ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: 'modal-holder'
+      windowClass: 'modal-holder',
     });
-
   }
 
   ngOnDestroy(): void {
-    this.itemUtil.previewItem = false
-     
-   }
+    this.itemUtil.previewItem = false;
+  }
 }

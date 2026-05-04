@@ -5,20 +5,18 @@ import { NgbNavModule, NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap';
 import { SettingsRoutingModule } from './settings-routing.module';
 import { SettingsDashboardComponent } from './settings-dashboard/settings-dashboard.component';
 import { BrandingComponent } from './branding/branding.component';
-import { ReactiveFormsModule } from '@angular/forms';
-
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @NgModule({
-  declarations: [
-    SettingsDashboardComponent,
-    BrandingComponent
-  ],
+  declarations: [SettingsDashboardComponent, BrandingComponent],
   imports: [
     CommonModule,
     SettingsRoutingModule,
     NgbNavModule,
     NgbPopoverModule,
-    ReactiveFormsModule
-  ]
+    ReactiveFormsModule,
+    FormsModule,
+  ],
 })
-export class SettingsModule { }
+export class SettingsModule {}

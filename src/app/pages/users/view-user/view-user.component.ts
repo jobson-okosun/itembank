@@ -45,6 +45,10 @@ export class ViewUserComponent implements OnInit {
 
   size: number = 50;
 
+  first: number = 0;
+
+  rows: number = 50;
+
   item: any;
 
   passage: SinglePassageModel;
@@ -91,7 +95,7 @@ export class ViewUserComponent implements OnInit {
     this.currentUser = this.userService.getCurrentUser()
       ? this.userService.getCurrentUser()
       : this.userService.getCurrentUserAfterReload();
-      
+
     this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.userId = params.get('id');
       // console.log(this.userId);
@@ -216,13 +220,18 @@ export class ViewUserComponent implements OnInit {
   }
 
   fetchItem(itemId: string, previewModal: any) {
+    console.log(itemId);
+    console.log(previewModal);
+
     this.loading_item = true;
     this.currentPreview = 'Question';
     this.modalService.open(previewModal, { centered: true, size: 'xl' });
+
     this.itemService.fetchIndividualItem(itemId).subscribe(
       (value) => {
         if (value) {
           this.item = value;
+          console.log('Items: ', this.item);
           this.loading_item = false;
         }
       },
@@ -265,11 +274,25 @@ export class ViewUserComponent implements OnInit {
     this.fetchActivities();
   }
 
+  // activityListChange(event: any) {
+  //   this.loadingActivityList = true;
+  //   // console.log(event);
+  //   this.size = event.rows;
+  //   this.page = event.page;
+  //   this.fetchActivities();
+  // }
+
   activityListChange(event: any) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 50;
+
+    event = { ...event, page: Number(event.page) + 1 };
+
     this.loadingActivityList = true;
     // console.log(event);
     this.size = event.rows;
     this.page = event.page;
+
     this.fetchActivities();
   }
 }

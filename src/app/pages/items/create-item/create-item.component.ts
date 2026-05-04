@@ -43,6 +43,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   @Input() editData!: any;
   @Output() hidePreview = new EventEmitter<string>();
   @Output() savedItem = new EventEmitter();
+  @Output() stimulus = new EventEmitter<string>();
 
   breadCrumbItems!: Array<{}>;
 
@@ -182,6 +183,10 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
       this.defaultItemProperties.difficultyLevel = 1;
     }
+  }
+
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
   }
 
   setup(editor: any) {

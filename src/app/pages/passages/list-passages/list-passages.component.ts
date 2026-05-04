@@ -1,34 +1,34 @@
-import { ListPassageTopics } from "./../model/list-passage-topics.model";
-import { ListAllSubjects } from "./../../items/models/list-all-subjects.model";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AllPassagesResponseModel } from "./../model/all-passages-response-model.model";
-import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
-import { AllPassagesService } from "./all-passages.service";
+import { ListPassageTopics } from './../model/list-passage-topics.model';
+import { ListAllSubjects } from './../../items/models/list-all-subjects.model';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AllPassagesResponseModel } from './../model/all-passages-response-model.model';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { AllPassagesService } from './all-passages.service';
 
-import Swal from "sweetalert2";
-import { ItemHttpService } from "../../items/item-http.service";
-import { Router, ActivatedRoute, ParamMap } from "@angular/router";
-import { ItemUtilitiesService } from "../../items/item-utilities.service";
-import { PassageFilter } from "../model/passage-filter";
-import { NotifierService } from "angular-notifier";
-import { SinglePassageItems } from "../../items/passage-item/model/single-passage-items.model";
-import { AssessmentsService } from "../../assessment/service/assessments.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { ItemStatusEnum } from "../../items/models/item-status-enum";
-import { ItemTypes } from "../../items/models/item-types";
-import { UserService } from "src/app/shared/user.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { NewTopic } from "../../items/models/new-topic.model";
-import { ItemUsed } from "../../items/models/filter-items.model";
-import { UsageHistory } from "../../items/models/usage-history";
-import { BlockDetails } from "../../assessment/model/section-details";
+import Swal from 'sweetalert2';
+import { ItemHttpService } from '../../items/item-http.service';
+import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { ItemUtilitiesService } from '../../items/item-utilities.service';
+import { PassageFilter } from '../model/passage-filter';
+import { NotifierService } from 'angular-notifier';
+import { SinglePassageItems } from '../../items/passage-item/model/single-passage-items.model';
+import { AssessmentsService } from '../../assessment/service/assessments.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ItemStatusEnum } from '../../items/models/item-status-enum';
+import { ItemTypes } from '../../items/models/item-types';
+import { UserService } from 'src/app/shared/user.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { NewTopic } from '../../items/models/new-topic.model';
+import { ItemUsed } from '../../items/models/filter-items.model';
+import { UsageHistory } from '../../items/models/usage-history';
+import { BlockDetails } from '../../assessment/model/section-details';
 import { Location } from '@angular/common';
-import { timer } from "rxjs";
+import { timer } from 'rxjs';
 
 @Component({
-  selector: "app-list-passages",
-  templateUrl: "./list-passages.component.html",
-  styleUrls: ["./list-passages.component.scss"],
+  selector: 'app-list-passages',
+  templateUrl: './list-passages.component.html',
+  styleUrls: ['./list-passages.component.scss'],
 })
 export class ListPassagesComponent implements OnInit {
   @Input() _subjectId!: string;
@@ -37,7 +37,7 @@ export class ListPassagesComponent implements OnInit {
   @Input() _currentBlock!: BlockDetails;
   @Input() _subjectName!: string;
   @Input() _existingPassageIds: string[] = [];
-  @Input() _loadingExistingPassageIds: boolean = false
+  @Input() _loadingExistingPassageIds: boolean = false;
   @Output() sendSelectedPassages = new EventEmitter();
 
   breadCrumbItems!: any;
@@ -50,7 +50,7 @@ export class ListPassagesComponent implements OnInit {
 
   subjectName: string;
 
-  subjectId: string = this.activatedRoute.snapshot.params["subjectId"];
+  subjectId: string = this.activatedRoute.snapshot.params['subjectId'];
 
   passageTopics: ListPassageTopics[] = [];
 
@@ -110,7 +110,6 @@ export class ListPassagesComponent implements OnInit {
   allSubjects: ListAllSubjects[];
   loadingAllSubjects: boolean = true;
 
-
   constructor(
     private passageService: AllPassagesService,
     private itemService: ItemHttpService,
@@ -121,14 +120,20 @@ export class ListPassagesComponent implements OnInit {
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
     private userService: UserService,
-    private location: Location
+    private location: Location,
   ) {}
 
   ngOnInit(): void {
-    this.subjectId = this.activatedRoute.snapshot.params["subjectId"];
-    this.breadCrumbItems = [{ label: "passages", active: true }];
+    this.subjectId = this.activatedRoute.snapshot.params['subjectId'];
+    console.log('PASSAGE ID: ', this.subjectId);
+    this.breadCrumbItems = [{ label: 'passages', active: true }];
     this.assessmentActive = this.itemService.assessmentActive;
     // console.log(this.assessmentActive)
+
+    console.log(
+      'SELECT PASS CLASS: ',
+      this.passageService.selectedPassageIndex,
+    );
 
     this.passageStatus = Object.values(ItemStatusEnum);
     this.itemType = Object.values(ItemTypes);
@@ -140,7 +145,7 @@ export class ListPassagesComponent implements OnInit {
           this.passageService.subjectId,
           this.passageService.topicId,
           this.pageNo,
-          this.pageSize
+          this.pageSize,
         )
         .subscribe((value) => {
           this.passages = value;
@@ -152,29 +157,29 @@ export class ListPassagesComponent implements OnInit {
 
     if (!this.assessmentActive) {
       // this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
-      if (this.subjectId === "passages") {
-        console.log("passages", "passed");
+      if (this.subjectId === 'passages') {
+        console.log('passages', 'passed');
         // this.loading_passages = false;
-        if (this.currentUser.authorities.includes("ADMIN")) {
+        if (this.currentUser.authorities.includes('ADMIN')) {
           this.fetchAllSubjects();
         } else {
           this.fetchAllSubjectsNonAdmin();
         }
       } else {
-        if (this.subjectId !== "passages") {
+        if (this.subjectId !== 'passages') {
           // this.subjectId = params.get("subjectId");
-          if (this.currentUser.authorities.includes("ADMIN")) {
+          if (this.currentUser.authorities.includes('ADMIN')) {
             this.fetchAllSubjects();
           } else {
             this.fetchAllSubjectsNonAdmin();
           }
           this.subjectName = this.passageService.subjectName;
-          if (this.currentUser.authorities.includes("ADMIN")) {
+          if (this.currentUser.authorities.includes('ADMIN')) {
             this.itemService
               .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log("i got here");
+                  console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -189,10 +194,10 @@ export class ListPassagesComponent implements OnInit {
                     let itemTrail = {
                       subjectId: this.subjectId,
                       topicId: this.selectedTopic.topicId,
-                      subtopicId: "",
+                      subtopicId: '',
                       subjectName: this.subjectName,
                       topicName: this.selectedTopic.topicName,
-                      subtopicName: "",
+                      subtopicName: '',
                     };
                     this.getPassages(this.passageTopics[0]);
                     this.selectedTopic = this.passageTopics[0];
@@ -205,14 +210,14 @@ export class ListPassagesComponent implements OnInit {
                 },
                 (error: HttpErrorResponse) => {
                   this.loading_topics_tree = false;
-                }
+                },
               );
-          } else if (this.currentUser.authorities.includes("MODERATOR")) {
+          } else if (this.currentUser.authorities.includes('MODERATOR')) {
             this.itemService
               .fetchPassageTopicTreeModerator(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log("i got here");
+                  console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -227,10 +232,10 @@ export class ListPassagesComponent implements OnInit {
                     let itemTrail = {
                       subjectId: this.subjectId,
                       topicId: this.selectedTopic.topicId,
-                      subtopicId: "",
+                      subtopicId: '',
                       subjectName: this.subjectName,
                       topicName: this.selectedTopic.topicName,
-                      subtopicName: "",
+                      subtopicName: '',
                     };
                     this.getPassages(this.passageTopics[0]);
                     this.selectedTopic = this.passageTopics[0];
@@ -243,14 +248,14 @@ export class ListPassagesComponent implements OnInit {
                 },
                 (error: HttpErrorResponse) => {
                   this.loading_topics_tree = false;
-                }
+                },
               );
-          } else if (this.currentUser.authorities.includes("AUTHOR")) {
+          } else if (this.currentUser.authorities.includes('AUTHOR')) {
             this.itemService
               .fetchPassageTopicTreeAuthor(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log("i got here");
+                  console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -265,10 +270,10 @@ export class ListPassagesComponent implements OnInit {
                     let itemTrail = {
                       subjectId: this.subjectId,
                       topicId: this.selectedTopic.topicId,
-                      subtopicId: "",
+                      subtopicId: '',
                       subjectName: this.subjectName,
                       topicName: this.selectedTopic.topicName,
-                      subtopicName: "",
+                      subtopicName: '',
                     };
                     this.getPassages(this.passageTopics[0]);
                     this.selectedTopic = this.passageTopics[0];
@@ -281,7 +286,7 @@ export class ListPassagesComponent implements OnInit {
                 },
                 (error: HttpErrorResponse) => {
                   this.loading_topics_tree = false;
-                }
+                },
               );
           }
         }
@@ -290,14 +295,14 @@ export class ListPassagesComponent implements OnInit {
     }
 
     if (this.assessmentActive) {
-      console.log("i got here assesment is active");
+      console.log('i got here assesment is active');
       this.loadingAllSubjects = false;
       this.subjectName = this._subjectName;
 
       this.itemService
         .fetchAssessmentPassageTopicsTree(
           this._subjectId,
-          this._currentBlock.totalQuestionsInPassage
+          this._currentBlock.totalQuestionsInPassage,
         )
         .subscribe(
           (value) => {
@@ -316,7 +321,7 @@ export class ListPassagesComponent implements OnInit {
               }; */
               //this.itemUtil.currentItemTrail = itemTrail;
               this.getAssessmentPassages(this.passageTopics[0]);
-              console.log("hello, get assessmenrt passages");
+              console.log('hello, get assessmenrt passages');
             } else {
               this.loading_passages = false;
             }
@@ -324,7 +329,7 @@ export class ListPassagesComponent implements OnInit {
           (error: HttpErrorResponse) => {
             this.loading_topics_tree = false;
             this.loading = false;
-          }
+          },
         );
     }
     // else {
@@ -334,20 +339,30 @@ export class ListPassagesComponent implements OnInit {
 
     // }
 
-    let passageTrail = localStorage.getItem('passage-trail')
-    if(passageTrail) {
-      passageTrail = JSON.parse(passageTrail)
+    let passageTrail = localStorage.getItem('passage-trail');
+    if (passageTrail) {
+      passageTrail = JSON.parse(passageTrail);
 
       timer(1000).subscribe(() => {
-        this.getPassages(passageTrail)
-        localStorage.removeItem('passage-trail')
-      })
+        this.getPassages(passageTrail);
+        localStorage.removeItem('passage-trail');
+      });
     }
   }
 
-  handleSubjectSelection(subject: ListAllSubjects){
-    this.selectSubject(subject.subjectId)
+  handleSubjectSelection(subject: ListAllSubjects) {
+    const subIndex: number = this.allSubjects.findIndex(
+      (subj) => subj.subjectId === subject.subjectId,
+    );
 
+    if (subIndex >= 0) {
+      console.log('SELECTED PASS INDEX: ', subIndex);
+      this.passageService.selectedPassageIndex = subIndex;
+    }
+
+    this.selectSubject(subject.subjectId);
+
+    console.log('SELECTED PASS: ', subject);
   }
 
   selectSubject(subjectId: string) {
@@ -355,10 +370,10 @@ export class ListPassagesComponent implements OnInit {
     this.subjectId = subjectId;
 
     this.subjectName = this.allSubjects.find(
-      (subject) => subject.subjectId === subjectId
+      (subject) => subject.subjectId === subjectId,
     ).name;
 
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService
         .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
         .subscribe(
@@ -366,6 +381,8 @@ export class ListPassagesComponent implements OnInit {
             value.forEach((topic) => {
               this.totalPassages += topic.totalPassages;
             });
+
+            console.log('SELECTED VALUE: ', value);
 
             this.passageTopics = value;
             this.loading_topics_tree = false;
@@ -375,10 +392,10 @@ export class ListPassagesComponent implements OnInit {
               let itemTrail = {
                 subjectId: this.subjectId,
                 topicId: this.selectedTopic.topicId,
-                subtopicId: "",
+                subtopicId: '',
                 subjectName: this.subjectName,
                 topicName: this.selectedTopic.topicName,
-                subtopicName: "",
+                subtopicName: '',
               };
               this.getPassages(this.passageTopics[0]);
               this.selectedTopic = this.passageTopics[0];
@@ -391,9 +408,9 @@ export class ListPassagesComponent implements OnInit {
           },
           (error: HttpErrorResponse) => {
             this.loading_topics_tree = false;
-          }
+          },
         );
-    } else if (this.currentUser.authorities.includes("MODERATOR")) {
+    } else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.itemService
         .fetchPassageTopicTreeModerator(this.passageService.subjectId)
         .subscribe(
@@ -410,10 +427,10 @@ export class ListPassagesComponent implements OnInit {
               let itemTrail = {
                 subjectId: this.subjectId,
                 topicId: this.selectedTopic.topicId,
-                subtopicId: "",
+                subtopicId: '',
                 subjectName: this.subjectName,
                 topicName: this.selectedTopic.topicName,
-                subtopicName: "",
+                subtopicName: '',
               };
               this.getPassages(this.passageTopics[0]);
               this.selectedTopic = this.passageTopics[0];
@@ -426,9 +443,9 @@ export class ListPassagesComponent implements OnInit {
           },
           (error: HttpErrorResponse) => {
             this.loading_topics_tree = false;
-          }
+          },
         );
-    } else if (this.currentUser.authorities.includes("AUTHOR")) {
+    } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.itemService
         .fetchPassageTopicTreeAuthor(this.passageService.subjectId)
         .subscribe(
@@ -445,10 +462,10 @@ export class ListPassagesComponent implements OnInit {
               let itemTrail = {
                 subjectId: this.subjectId,
                 topicId: this.selectedTopic.topicId,
-                subtopicId: "",
+                subtopicId: '',
                 subjectName: this.subjectName,
                 topicName: this.selectedTopic.topicName,
-                subtopicName: "",
+                subtopicName: '',
               };
               this.getPassages(this.passageTopics[0]);
               this.selectedTopic = this.passageTopics[0];
@@ -461,32 +478,32 @@ export class ListPassagesComponent implements OnInit {
           },
           (error: HttpErrorResponse) => {
             this.loading_topics_tree = false;
-          }
+          },
         );
     }
   }
 
   openNewTopicModal(newTopicModal: any) {
-    this.newTopic.name = "";
-    this.modalService.open(newTopicModal, { centered: true, size: "md" });
+    this.newTopic.name = '';
+    this.modalService.open(newTopicModal, { centered: true, size: 'md' });
   }
 
   addNewTopic(form?: any) {
     this.submitted = true;
 
-    if (this.newTopic.name.trim() === "" || this.newTopic.name === undefined) {
+    if (this.newTopic.name.trim() === '' || this.newTopic.name === undefined) {
       this.submitted = false;
       return this.notifier.notify(
-        "error",
-        "Please provide a valid topic name!"
+        'error',
+        'Please provide a valid topic name!',
       );
     }
 
     if (this.newTopic.name.length < 5) {
       this.submitted = false;
       return this.notifier.notify(
-        "error",
-        "Please provide a valid topic name not less than 3 characters!"
+        'error',
+        'Please provide a valid topic name not less than 3 characters!',
       );
     }
 
@@ -496,9 +513,9 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "You have successfully added a new topic!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'You have successfully added a new topic!',
           });
         }
         this.modalService.dismissAll();
@@ -509,11 +526,11 @@ export class ListPassagesComponent implements OnInit {
         //console.log(error);
         this.submitted = false;
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
@@ -541,7 +558,7 @@ export class ListPassagesComponent implements OnInit {
     this.itemService
       .fetchTopicPassages(
         this.assessmentActive ? this._subjectId : this.subjectId,
-        this.selectedTopic.topicId
+        this.selectedTopic.topicId,
       )
       .subscribe((value) => {
         this.passages = value;
@@ -558,23 +575,23 @@ export class ListPassagesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         // console.log(error);
-      }
+      },
     );
   }
 
   gotoUsageHistory(passageId: string) {
     this.router.navigate([
-      "/examalpha/passages/subjects/" +
+      '/examalpha/passages/subjects/' +
         this.subjectId +
-        "/passage/" +
+        '/passage/' +
         passageId +
-        "/usage",
+        '/usage',
     ]);
   }
 
   openUsageHistoryModal(passageId: string, passageHistoryModal: any) {
     this.loading_usage_history = true;
-    this.modalService.open(passageHistoryModal, { centered: true, size: "md" });
+    this.modalService.open(passageHistoryModal, { centered: true, size: 'md' });
     this.passageService.getPassageUsageHistory(passageId).subscribe(
       (value) => {
         if (value) {
@@ -584,8 +601,8 @@ export class ListPassagesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
-      }
+        this.notifier.notify('error', error.error.message);
+      },
     );
   }
 
@@ -598,21 +615,21 @@ export class ListPassagesComponent implements OnInit {
       topicId: topic.topicId,
     };
     this.itemUtil.currentItemTrail = itemTrail;
-    this.itemUtil.saveCurrentItemTrail()
+    this.itemUtil.saveCurrentItemTrail();
   }
 
   setTreeItemIndex(topic: any, index: number) {
-    if(index == undefined) {
-      return 
+    if (index == undefined) {
+      return;
     }
 
-    const passageTrail = {...topic, treeIndex: index}
-    localStorage.setItem('passage-trail', JSON.stringify(passageTrail))
+    const passageTrail = { ...topic, treeIndex: index };
+    localStorage.setItem('passage-trail', JSON.stringify(passageTrail));
   }
 
   getPassages(topic?: any, treeItemIndex?: number) {
-    if(treeItemIndex !== undefined && treeItemIndex !== null){
-      this.setTreeItemIndex(topic, treeItemIndex)
+    if (treeItemIndex !== undefined && treeItemIndex !== null) {
+      this.setTreeItemIndex(topic, treeItemIndex);
     }
 
     this.showFilter = false;
@@ -622,10 +639,10 @@ export class ListPassagesComponent implements OnInit {
     let itemTrail = {
       subjectId: this.subjectId,
       topicId: topic.topicId,
-      subtopicId: "",
+      subtopicId: '',
       subjectName: this.subjectName,
       topicName: topic.topicName,
-      subtopicName: "",
+      subtopicName: '',
     };
 
     if (topic) {
@@ -643,7 +660,7 @@ export class ListPassagesComponent implements OnInit {
           this.assessmentActive ? this._subjectId : this.subjectId,
           topic.topicId,
           this.pageNo,
-          this.pageSize
+          this.pageSize,
         )
         .subscribe((value) => {
           this.passages = value;
@@ -665,7 +682,7 @@ export class ListPassagesComponent implements OnInit {
         passageTopics.topicId,
         this._currentBlock.totalQuestionsInPassage,
         this.pageNo,
-        this.pageSize
+        this.pageSize,
       )
       .subscribe(
         (value) => {
@@ -673,19 +690,19 @@ export class ListPassagesComponent implements OnInit {
           this.loading_passages = false;
         },
         (error: HttpErrorResponse) => {
-          return this.notifier.notify("error", error.error.message);
-        }
+          return this.notifier.notify('error', error.error.message);
+        },
       );
   }
 
   openDeletePassageConfirmationModal(
     passage_id: string,
-    deletePassageConfirmationModal: any
+    deletePassageConfirmationModal: any,
   ) {
     this.selectedPassageIdToDelete = passage_id;
     this.modalService.open(deletePassageConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -695,9 +712,9 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations",
-            text: "The passage was deleted successfully.",
-            icon: "success",
+            title: 'Congratulations',
+            text: 'The passage was deleted successfully.',
+            icon: 'success',
           });
         }
         this.modalService.dismissAll();
@@ -705,24 +722,24 @@ export class ListPassagesComponent implements OnInit {
         this.ngOnInit();
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify("error", `${error.error.message}`);
+        this.notifier.notify('error', `${error.error.message}`);
         this.processing_delete = !this.processing_delete;
-      }
+      },
     );
   }
 
   confirm() {
     Swal.fire({
-      title: "You are about to delete a passage ?",
-      text: "Deleting this passage will permanently remove it from our database.",
-      icon: "warning",
+      title: 'You are about to delete a passage ?',
+      text: 'Deleting this passage will permanently remove it from our database.',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#f46a6a",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Close",
+      confirmButtonColor: '#f46a6a',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Close',
     }).then((result) => {
       if (result.value) {
-        Swal.fire("Deleted!", "Invoice has been deleted.", "success");
+        Swal.fire('Deleted!', 'Invoice has been deleted.', 'success');
       }
     });
   }
@@ -760,9 +777,9 @@ export class ListPassagesComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.filterState = !this.filterState;
-        this.notifier.notify("error", `${error.error.message}`);
+        this.notifier.notify('error', `${error.error.message}`);
         this.loading_passages = false;
-      }
+      },
     );
   }
 
@@ -779,7 +796,7 @@ export class ListPassagesComponent implements OnInit {
 
   setSubjectId() {
     this.itemUtil.currentItemTrail.subjectId = this.subject.subjectId;
-    this.router.navigate(["/itembank/items/subjects/new-item"]);
+    this.router.navigate(['/itembank/items/subjects/new-item']);
   }
 
   setTrailInfo(passageInfo: any) {
@@ -793,11 +810,11 @@ export class ListPassagesComponent implements OnInit {
       topicId: this.selectedTopic.topicId,
       subjectName: this.subjectName,
       topicName: this.selectedTopic.topicName,
-      assessmentActive: this.itemService.assessmentActive
-    }
+      assessmentActive: this.itemService.assessmentActive,
+    };
 
     this.itemUtil.currentItemTrail = trail;
-    this.itemUtil.saveCurrentItemTrail(trail)
+    this.itemUtil.saveCurrentItemTrail(trail);
   }
 
   sendInformation(topic: any) {
@@ -810,7 +827,7 @@ export class ListPassagesComponent implements OnInit {
 
     this.passageService.currentPassageTrail = this.itemTrail;
 
-    this.router.navigate(["/itembank/items/new-item"]);
+    this.router.navigate(['/itembank/items/new-item']);
   }
 
   gotoNewPassage() {
@@ -821,7 +838,7 @@ export class ListPassagesComponent implements OnInit {
       topicName: this.selectedTopic.topicName,
     };
     this.router.navigate([
-      "/examalpha/passages/subjects/" + this.subjectId + "/new-passage",
+      '/examalpha/passages/subjects/' + this.subjectId + '/new-passage',
     ]);
   }
 
@@ -834,11 +851,11 @@ export class ListPassagesComponent implements OnInit {
     };
 
     this.router.navigate([
-      "examalpha/passages/subjects/" +
+      'examalpha/passages/subjects/' +
         this.subjectId +
-        "/passage/" +
+        '/passage/' +
         passage.id +
-        "/edit-passage",
+        '/edit-passage',
     ]);
   }
 
@@ -847,18 +864,21 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         this.allSubjects = value;
         this.loadingAllSubjects = false;
-        this.subjectName = value[0].name;
+        this.subjectName = value[this.passageService.selectedPassageIndex].name;
+
+        // this.subjectId =
+        //   this.activatedRoute.snapshot.params['subjectId'] === 'passages'
+        //     ? value[0].subjectId
+        //     : this.activatedRoute.snapshot.params['subjectId'];
 
         this.subjectId =
-          this.activatedRoute.snapshot.params["subjectId"] === "passages"
-            ? value[0].subjectId
-            : this.activatedRoute.snapshot.params["subjectId"];
+          this.activatedRoute.snapshot.params['subjectId'] === 'passages'
+            ? value[this.passageService.selectedPassageIndex].subjectId
+            : this.activatedRoute.snapshot.params['subjectId'];
 
         this.passageService.subjectId = this.subjectId;
 
-        console.log("all sub", this.allSubjects);
-
-        console.log(value[0].subjectId);
+        console.log('all sub', this.allSubjects);
 
         this.fetchTopicTree(this.passageService.subjectId);
 
@@ -867,8 +887,8 @@ export class ListPassagesComponent implements OnInit {
       (error: HttpErrorResponse) => {
         //console.log(error);
         this.loadingAllSubjects = false;
-        this.notifier.notify("error", `${error.error.msg}`);
-      }
+        this.notifier.notify('error', `${error.error.msg}`);
+      },
     );
   }
 
@@ -877,18 +897,16 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         this.allSubjects = value;
         this.loadingAllSubjects = false;
-        this.subjectName = value[0].name;
+        this.subjectName = value[this.passageService.selectedPassageIndex].name;
 
         this.subjectId =
-          this.activatedRoute.snapshot.params["subjectId"] === "passages"
-            ? value[0].subjectId
-            : this.activatedRoute.snapshot.params["subjectId"];
+          this.activatedRoute.snapshot.params['subjectId'] === 'passages'
+            ? value[this.passageService.selectedPassageIndex].subjectId
+            : this.activatedRoute.snapshot.params['subjectId'];
 
         this.passageService.subjectId = this.subjectId;
 
-        console.log("all sub", this.allSubjects);
-
-        console.log(value[0].subjectId);
+        console.log('all sub', this.allSubjects);
 
         this.fetchTopicTree(this.passageService.subjectId);
 
@@ -897,13 +915,13 @@ export class ListPassagesComponent implements OnInit {
       (error: HttpErrorResponse) => {
         //console.log(error);
         this.loadingAllSubjects = false;
-        this.notifier.notify("error", `${error.error.msg}`);
-      }
+        this.notifier.notify('error', `${error.error.msg}`);
+      },
     );
   }
 
   fetchTopicTree(subjectId: string) {
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService.fetchPassageTopicTreeAdmin(subjectId).subscribe(
         (value) => {
           console.log(value);
@@ -920,10 +938,10 @@ export class ListPassagesComponent implements OnInit {
             let itemTrail = {
               subjectId: this.subjectId,
               topicId: this.selectedTopic.topicId,
-              subtopicId: "",
+              subtopicId: '',
               subjectName: this.subjectName,
               topicName: this.selectedTopic.topicName,
-              subtopicName: "",
+              subtopicName: '',
             };
             this.getPassages(this.passageTopics[0]);
             this.selectedTopic = this.passageTopics[0];
@@ -936,9 +954,9 @@ export class ListPassagesComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.loading_topics_tree = false;
-        }
+        },
       );
-    } else if (this.currentUser.authorities.includes("MODERATOR")) {
+    } else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.itemService.fetchPassageTopicTreeModerator(subjectId).subscribe(
         (value) => {
           console.log(value);
@@ -955,10 +973,10 @@ export class ListPassagesComponent implements OnInit {
             let itemTrail = {
               subjectId: this.subjectId,
               topicId: this.selectedTopic.topicId,
-              subtopicId: "",
+              subtopicId: '',
               subjectName: this.subjectName,
               topicName: this.selectedTopic.topicName,
-              subtopicName: "",
+              subtopicName: '',
             };
             this.getPassages(this.passageTopics[0]);
             this.selectedTopic = this.passageTopics[0];
@@ -971,9 +989,9 @@ export class ListPassagesComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.loading_topics_tree = false;
-        }
+        },
       );
-    } else if (this.currentUser.authorities.includes("AUTHOR")) {
+    } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.itemService.fetchPassageTopicTreeAuthor(subjectId).subscribe(
         (value) => {
           console.log(value);
@@ -990,10 +1008,10 @@ export class ListPassagesComponent implements OnInit {
             let itemTrail = {
               subjectId: this.subjectId,
               topicId: this.selectedTopic.topicId,
-              subtopicId: "",
+              subtopicId: '',
               subjectName: this.subjectName,
               topicName: this.selectedTopic.topicName,
-              subtopicName: "",
+              subtopicName: '',
             };
             this.getPassages(this.passageTopics[0]);
             this.selectedTopic = this.passageTopics[0];
@@ -1006,7 +1024,7 @@ export class ListPassagesComponent implements OnInit {
         },
         (error: HttpErrorResponse) => {
           this.loading_topics_tree = false;
-        }
+        },
       );
     }
   }

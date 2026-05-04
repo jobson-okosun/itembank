@@ -1,26 +1,28 @@
-import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import Swal from "sweetalert2";
-import { HttpErrorResponse } from "@angular/common/http";
-import { ItemHttpService } from "../item-http.service";
-import { RecycleService } from "../../recycle/recycle.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { Router } from "@angular/router";
-import { UsageHistory } from "../models/usage-history";
-import { NotifierService } from "angular-notifier";
-import { ItemUtilitiesService } from "../item-utilities.service";
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ItemHttpService } from '../item-http.service';
+import { RecycleService } from '../../recycle/recycle.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { Router } from '@angular/router';
+import { UsageHistory } from '../models/usage-history';
+import { NotifierService } from 'angular-notifier';
+import { ItemUtilitiesService } from '../item-utilities.service';
 
 @Component({
-  selector: "app-choice-matrix-preview",
-  templateUrl: "./choice-matrix-preview.component.html",
-  styleUrls: ["./choice-matrix-preview.component.scss"],
+  selector: 'app-choice-matrix-preview',
+  templateUrl: './choice-matrix-preview.component.html',
+  styleUrls: ['./choice-matrix-preview.component.scss'],
 })
 export class ChoiceMatrixPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() previewData: any;
   @Input() itemTrailInfo: any;
+  @Input() formType!: string;
+  @Input() selectedItemType!: string;
   @Output() return = new EventEmitter();
   @Output() reload = new EventEmitter();
   @Output() closeOuterModal = new EventEmitter();
@@ -51,7 +53,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
   ngOnInit(): void {
     // console.log(this.previewData);
     this.currentUser = this.userService.getCurrentUser();
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
   }
 
   check() {
@@ -60,13 +62,13 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
 
   edit() {
     this.itemUtil.previewItem = false;
-    if (this.component === "usage-history") {
+    if (this.component === 'usage-history') {
       this.closeOuterModal.emit();
     }
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -83,7 +85,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -100,7 +102,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -113,7 +115,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -124,9 +126,9 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -136,8 +138,8 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -157,9 +159,9 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -172,9 +174,9 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -184,7 +186,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -195,7 +197,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
   }

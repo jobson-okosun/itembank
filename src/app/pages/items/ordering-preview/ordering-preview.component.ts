@@ -22,6 +22,7 @@ import { ItemUtilitiesService } from '../item-utilities.service';
 export class OrderingPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() formType!: string;
+  @Input() selectedItemType!: string;
   @Input() previewData!: any;
   @Input() itemTrailInfo: any;
   @Input() editData!: any;
@@ -59,7 +60,7 @@ export class OrderingPreviewComponent implements OnInit {
     this.assessmentActive = this.itemService.assessmentActive;
     this.currentUser = this.userService.getCurrentUser();
     this.subjectName = this.itemService.subjectName;
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     this.previewData.options.forEach((option, index) => {
       this.opts.push(option.label);
 

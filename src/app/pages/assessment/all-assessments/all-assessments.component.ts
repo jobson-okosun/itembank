@@ -1,22 +1,22 @@
-import { AllAssessmentsService, Assessment } from "./all-assessments.service";
-import { Router } from "@angular/router";
-import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
-import { DecimalPipe } from "@angular/common";
+import { AllAssessmentsService, Assessment } from './all-assessments.service';
+import { Router } from '@angular/router';
+import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 
-import Swal from "sweetalert2";
-import { NewAssessment } from "../model/new-assessment.model";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AssessmentsService } from "../service/assessments.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import { AssessmentList, SingleAssessment } from "../model/assessment-list";
-import { AssessmentDeliveryEnum } from "../model/assessment-delivery-enum";
-import { NotifierService } from "angular-notifier";
-import { Publish } from "../model/publish";
+import Swal from 'sweetalert2';
+import { NewAssessment } from '../model/new-assessment.model';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AssessmentsService } from '../service/assessments.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { AssessmentList, SingleAssessment } from '../model/assessment-list';
+import { AssessmentDeliveryEnum } from '../model/assessment-delivery-enum';
+import { NotifierService } from 'angular-notifier';
+import { Publish } from '../model/publish';
 
 @Component({
-  selector: "app-all-assessments",
-  templateUrl: "./all-assessments.component.html",
-  styleUrls: ["./all-assessments.component.scss"],
+  selector: 'app-all-assessments',
+  templateUrl: './all-assessments.component.html',
+  styleUrls: ['./all-assessments.component.scss'],
   providers: [DecimalPipe],
 })
 export class AllAssessmentsComponent implements OnInit, OnDestroy {
@@ -27,6 +27,17 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   submitted: boolean = false;
 
   deliveryMethods: any[] = [];
+
+  DELIVERY_METHOD_LABEL: string[] = [
+    'LIVE PROCTORING',
+    'AUTO PROCTORING',
+    'ONLINE WITH NO PROCTORING',
+    'ON PREMISE WITH LOCKDOWN BROWSER',
+    'ON PREMISE WITHOUT LOCKDOWN BROWSER',
+    'E-PAPER',
+  ];
+
+  deliveryMethodsWithLabel: { label: string; value: string }[] = [];
 
   newAssessment: NewAssessment = new NewAssessment();
 
@@ -44,33 +55,42 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   loading: boolean = true;
 
+  currentUserTime = new Date();
+
   constructor(
     private router: Router,
     public assessmentList: AllAssessmentsService,
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
-    private notifier: NotifierService
+    private notifier: NotifierService,
   ) {}
 
   ngOnDestroy(): void {
-    console.log(this.assessmentService.activeAssessment)
+    console.log(this.assessmentService.activeAssessment);
   }
 
   onSettingsButtonClicked() {
-    document.body.classList.toggle("right-bar-enabled");
-    const rightBar = document.getElementById("theme-settings-offcanvas");
+    document.body.classList.toggle('right-bar-enabled');
+    const rightBar = document.getElementById('theme-settings-offcanvas');
     if (rightBar != null) {
-      rightBar.classList.toggle("show");
-      rightBar.setAttribute("style", "visibility: visible;");
+      rightBar.classList.toggle('show');
+      rightBar.setAttribute('style', 'visibility: visible;');
     }
   }
 
   ngOnInit(): void {
     let m = Object.keys(AssessmentDeliveryEnum);
+
     m.forEach((method) => {
       this.deliveryMethods.push(method);
     });
-    this.breadCrumbItems = [{ label: "Exams", active: true }];
+
+    this.deliveryMethodsWithLabel = m.map((value: string, index: number) => ({
+      value: value,
+      label: this.DELIVERY_METHOD_LABEL[index],
+    }));
+
+    this.breadCrumbItems = [{ label: 'Exams', active: true }];
 
     this.assessmentService
       .fetchAllAssessment(this.pageNo, this.pageSize)
@@ -82,7 +102,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
         (error: HttpErrorResponse) => {
           // console.log(error);
           this.loading = false;
-        }
+        },
       );
   }
 
@@ -100,7 +120,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       this.submitted = false;
       return this.notifier.notify(
         `error`,
-        `The end date of the examination cannot be earlier than the start date`
+        `The end date of the examination cannot be earlier than the start date`,
       );
     }
 
@@ -108,24 +128,22 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       this.submitted = false;
       return this.notifier.notify(
         `error`,
-        `Exam duration cannot be less than 5 minutes`
+        `Exam duration cannot be less than 5 minutes`,
       );
     }
 
-    this.newAssessment.description =  this.newAssessment.description.trim()
-    this.newAssessment.name =  this.newAssessment.name.trim()
+    this.newAssessment.description = this.newAssessment.description.trim();
+    this.newAssessment.name = this.newAssessment.name.trim();
 
-    console.log(this.newAssessment)
-
-    
+    console.log(this.newAssessment);
 
     this.assessmentService.createNewAssessment(this.newAssessment).subscribe(
       (value) => {
         if (value) {
           Swal.fire({
-            title: "Congratulations",
-            text: "Your exam was created successfully.",
-            icon: "success",
+            title: 'Congratulations',
+            text: 'Your exam was created successfully.',
+            icon: 'success',
           });
         }
         this.submitted = false;
@@ -135,24 +153,24 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.submitted = false;
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
   }
 
   openNewAssessmentModal(newAssessmentModal: any) {
     this.newAssessment = new NewAssessment();
-    this.modalService.open(newAssessmentModal, { centered: true, size: "lg" });
+    this.modalService.open(newAssessmentModal, { centered: true, size: 'lg' });
   }
 
   openPublishConfirmationModal(
     publishConfirmationModal: any,
-    assessment: SingleAssessment
+    assessment: SingleAssessment,
   ) {
     this.selectedAssessment = assessment;
     this.modalService.open(publishConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -173,16 +191,16 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   confirm() {
     Swal.fire({
-      title: "You are about to delete a order ?",
-      text: "Deleting your order will remove all of your information from our database.",
-      icon: "warning",
+      title: 'You are about to delete a order ?',
+      text: 'Deleting your order will remove all of your information from our database.',
+      icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: "#f46a6a",
-      confirmButtonText: "Yes, delete it!",
-      cancelButtonText: "Close",
+      confirmButtonColor: '#f46a6a',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Close',
     }).then((result) => {
       if (result.value) {
-        Swal.fire("Deleted!", "Invoice has been deleted.", "success");
+        Swal.fire('Deleted!', 'Invoice has been deleted.', 'success');
       }
     });
   }
@@ -212,9 +230,9 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
             //this.publishLoader();
             Swal.close();
             Swal.fire({
-              title: "Congratulations!",
+              title: 'Congratulations!',
               text: `You have successfully published ${assessment.name}`,
-              icon: "success",
+              icon: 'success',
             });
           }
         },
@@ -222,8 +240,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
           this.publishingAssessment = false;
           this.submitted = false;
           Swal.close();
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -232,7 +250,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: "Publishing your exam, Please Wait...",
+        title: 'Publishing your exam, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,

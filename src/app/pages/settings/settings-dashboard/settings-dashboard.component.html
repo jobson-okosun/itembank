@@ -8,23 +8,39 @@
         class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
         role="tablist"
       >
-        <li [ngbNavItem]="1" class="nav-item" *ngIf="currentUser.authorities.includes('ADMIN')">
+        <li
+          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 1"
+          class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')"
+        >
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-user-settings-fill align-middle me-2 fs-4"></i>
             Account Settings
           </a>
           <ng-template ngbNavContent>
-            <form action="javascript:void(0);" [formGroup]="accountSettingsForm">
+            <form
+              action="javascript:void(0);"
+              [formGroup]="accountSettingsForm"
+              (ngSubmit)="submitAccountSetting()"
+            >
               <div class="row">
                 <div class="col-lg-6">
                   <div class="mb-3">
-                    <label for="organizationName" class="form-label"
-                      >Organization Name</label
+                    <label
+                      for="organizationName"
+                      class="form-label d-flex flex-row gap-1"
+                      >Organization Name
+                      <span class="text-danger fs-6">*</span></label
                     >
                     <input
                       type="text"
                       class="form-control"
                       id="organizationName"
+                      [ngClass]="{
+                        'border border-danger':
+                          accountSettingsForm.get('organizationName').invalid &&
+                          accountSettingsForm.get('organizationName').touched
+                      }"
                       formControlName="organizationName"
                       placeholder="Enter your organization name"
                       value=""
@@ -33,18 +49,25 @@
                 </div>
                 <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label">Country</label>
+                  <label class="form-label d-flex flex-row gap-1" for="country"
+                    >Country <span class="text-danger fs-6">*</span></label
+                  >
                   <select
                     class="form-select form-select-md"
-                    id=""
+                    id="country"
                     (change)="setStates()"
                     formControlName="country"
                     [ngClass]="{
                       'is-invalid': submitted && f['country'].errors
                     }"
+                    [ngClass]="{
+                      'border border-danger':
+                        accountSettingsForm.get('country').invalid &&
+                        accountSettingsForm.get('country').touched
+                    }"
                     required
                   >
-                    <option disabled selected>Select one</option>
+                    <option disabled value="">Select Country</option>
                     <option
                       class="text-uppercase"
                       *ngFor="let country of countries"
@@ -61,18 +84,97 @@
                   </div>
                 </div>
                 <!--end col-->
+                <!-- Newly added input field -->
+                <!-- <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label
+                      for="firstName"
+                      class="form-label d-flex flex-row gap-1"
+                      >First Name <span class="text-danger fs-6">*</span></label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="firstName"
+                      formControlName="firstName"
+                      placeholder="Enter your first name"
+                      value=""
+                    />
+                  </div>
+                </div> -->
+                <!--end col-->
+                <!-- <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label
+                      for="lastName"
+                      class="form-label d-flex flex-row gap-1"
+                      >Last Name <span class="text-danger fs-6">*</span></label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="lastName"
+                      formControlName="lastName"
+                      placeholder="Enter your last name"
+                      value=""
+                    />
+                  </div>
+                </div> -->
+                <!--end col-->
+                <!-- <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label for="email" class="form-label d-flex flex-row gap-1"
+                      >Email <span class="text-danger fs-6">*</span></label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email"
+                      formControlName="email"
+                      placeholder="Enter your email"
+                      value=""
+                    />
+                  </div>
+                </div> -->
+                <!--end col-->
+                <!-- <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label
+                      for="phoneNumber"
+                      class="form-label d-flex flex-row gap-1"
+                      >Phone Number
+                      <span class="text-danger fs-6">*</span></label
+                    >
+                    <input
+                      type="tel"
+                      class="form-control"
+                      id="phoneNumber"
+                      formControlName="phoneNumber"
+                      placeholder="Enter your phone number"
+                      value=""
+                    />
+                  </div>
+                </div> -->
+                <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label">State</label>
+                  <label class="form-label d-flex flex-row gap-1" for="state"
+                    >State <span class="text-danger fs-6">*</span></label
+                  >
                   <select
                     class="form-select form-select-md"
-                    id=""
+                    id="state"
                     formControlName="state"
                     [ngClass]="{
                       'is-invalid': submitted && f['state'].errors
                     }"
+                    [ngClass]="{
+                      'border border-danger':
+                        accountSettingsForm.get('state').invalid &&
+                        accountSettingsForm.get('state').touched
+                    }"
                     required
                   >
-                    <option disabled selected>Select one</option>
+                    <option disabled value="">Select State</option>
                     <option
                       class="text-uppercase"
                       *ngFor="let state of states"
@@ -90,17 +192,24 @@
                 </div>
                 <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label">Industry</label>
+                  <label class="form-label d-flex flex-row gap-1" for="industry"
+                    >Industry <span class="text-danger fs-6">*</span></label
+                  >
                   <select
                     class="form-select form-select-md"
                     formControlName="industry"
-                    id=""
+                    id="industry"
                     required
                     [ngClass]="{
                       'is-invalid': submitted && f['industry'].errors
                     }"
+                    [ngClass]="{
+                      'border border-danger':
+                        accountSettingsForm.get('industry').invalid &&
+                        accountSettingsForm.get('industry').touched
+                    }"
                   >
-                    <option disabled selected>Select one</option>
+                    <option disabled value="">Select Industry</option>
                     <option
                       *ngFor="let industry of industries"
                       value="{{ industry }}"
@@ -116,7 +225,7 @@
                           </div> -->
                 </div>
                 <!--end col-->
-                
+
                 <div class="col-lg-6">
                   <div class="mb-3">
                     <label for="addressLine1" class="form-label"
@@ -127,7 +236,6 @@
                       class="form-control"
                       id="addressLine1"
                       placeholder="Address Line1"
-                     
                       formControlName="addressLine1"
                     />
                   </div>
@@ -135,7 +243,7 @@
                 <!--end col-->
                 <div class="col-lg-6">
                   <div class="mb-3">
-                    <label for="addressLine2"class="form-label"
+                    <label for="addressLine2" class="form-label"
                       >Address Line 2</label
                     >
                     <input
@@ -162,13 +270,42 @@
                   </div>
                 </div> -->
                 <!--end col-->
-                
+
+                <!-- <div [ngClass]="{'mt-2': hasError}" class="" #messageEl>
+                      <p [ngClass]="{'alert alert-danger alert-dismissible fade show': hasError}"></p>
+                    </div> -->
+
                 <div class="col-lg-12">
                   <div class="hstack gap-2 justify-content-end">
-                    <button type="submit" class="btn btn-primary">
-                      Updates
+                    <button
+                      type="submit"
+                      *ngIf="!isSubmittingAccountSetting"
+                      [disabled]="
+                        accountSettingsForm.invalid ||
+                        isSubmittingAccountSetting
+                      "
+                      class="btn btn-primary"
+                    >
+                      Update
                     </button>
-                    <button type="button" class="btn btn-soft-success">
+                    <button
+                      type="submit"
+                      *ngIf="isSubmittingAccountSetting"
+                      [disabled]="
+                        accountSettingsForm.invalid ||
+                        isSubmittingAccountSetting
+                      "
+                      class="btn btn-primary"
+                    >
+                      Updating...
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-soft-danger"
+                      (click)="resetAccountSettingForm()"
+                      [routerLink]="['/examalpha/dashboard']"
+                      [disabled]="isSubmittingAccountSetting"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -179,7 +316,11 @@
             </form>
           </ng-template>
         </li>
-        <li [ngbNavItem]="2" class="nav-item" *ngIf="currentUser.authorities.includes('ADMIN')">
+        <li
+          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 2"
+          class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')"
+        >
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-palette-fill me-2 align-middle fs-4"></i>
             Branding
@@ -188,10 +329,14 @@
             <app-branding></app-branding>
           </ng-template>
         </li>
-        <li [ngbNavItem]="3" class="nav-item">
+        <li
+          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 3"
+          class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')"
+        >
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-shield-fill me-2 align-middle fs-4"></i>
-            Privacy Policy
+            Security
           </a>
           <ng-template ngbNavContent>
             <div class="mb-4 pb-2">
@@ -214,7 +359,8 @@
                   >
                 </div>
               </div>
-              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
+
+              <!-- <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
                 <div class="flex-grow-1">
                   <h6 class="fs-14 mb-1">Secondary Verification</h6>
                   <p class="text-muted">
@@ -224,12 +370,11 @@
                   </p>
                 </div>
                 <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Set up secondary method</a
-                  >
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary">Set up secondary method</a>
                 </div>
-              </div>
-              <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
+              </div> -->
+
+              <!-- <div class="d-flex flex-column flex-sm-row mb-4 mb-sm-0 mt-2">
                 <div class="flex-grow-1">
                   <h6 class="fs-14 mb-1">Backup Codes</h6>
                   <p class="text-muted mb-sm-0">
@@ -240,42 +385,30 @@
                   </p>
                 </div>
                 <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Generate backup codes</a
-                  >
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary">Generate backup codes</a>
                 </div>
-              </div>
+              </div> -->
             </div>
-            <div class="mb-3">
+
+            <!-- <div class="mb-3">
               <h5 class="card-title text-decoration-underline mb-3">
                 Application Notifications:
               </h5>
               <ul class="list-unstyled mb-0">
                 <li class="d-flex">
                   <div class="flex-grow-1">
-                    <label for="directMessage" class="form-check-label fs-14"
-                      >Direct messages</label
-                    >
+                    <label for="directMessage" class="form-check-label fs-14">Direct messages</label>
                     <p class="text-muted">Messages from people you follow</p>
                   </div>
                   <div class="flex-shrink-0">
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="directMessage"
-                        checked
-                      />
+                      <input class="form-check-input" type="checkbox" role="switch" id="directMessage" checked />
                     </div>
                   </div>
                 </li>
                 <li class="d-flex mt-2">
                   <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-14"
-                      for="desktopNotification"
-                    >
+                    <label class="form-check-label fs-14" for="desktopNotification">
                       Show desktop notifications
                     </label>
                     <p class="text-muted">
@@ -286,22 +419,13 @@
                   </div>
                   <div class="flex-shrink-0">
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="desktopNotification"
-                        checked
-                      />
+                      <input class="form-check-input" type="checkbox" role="switch" id="desktopNotification" checked />
                     </div>
                   </div>
                 </li>
                 <li class="d-flex mt-2">
                   <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-14"
-                      for="emailNotification"
-                    >
+                    <label class="form-check-label fs-14" for="emailNotification">
                       Show email notifications
                     </label>
                     <p class="text-muted">
@@ -311,21 +435,13 @@
                   </div>
                   <div class="flex-shrink-0">
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="emailNotification"
-                      />
+                      <input class="form-check-input" type="checkbox" role="switch" id="emailNotification" />
                     </div>
                   </div>
                 </li>
                 <li class="d-flex mt-2">
                   <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-14"
-                      for="chatNotification"
-                    >
+                    <label class="form-check-label fs-14" for="chatNotification">
                       Show chat notifications
                     </label>
                     <p class="text-muted">
@@ -335,21 +451,13 @@
                   </div>
                   <div class="flex-shrink-0">
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="chatNotification"
-                      />
+                      <input class="form-check-input" type="checkbox" role="switch" id="chatNotification" />
                     </div>
                   </div>
                 </li>
                 <li class="d-flex mt-2">
                   <div class="flex-grow-1">
-                    <label
-                      class="form-check-label fs-14"
-                      for="purchaesNotification"
-                    >
+                    <label class="form-check-label fs-14" for="purchaesNotification">
                       Show purchase notifications
                     </label>
                     <p class="text-muted">
@@ -359,29 +467,24 @@
                   </div>
                   <div class="flex-shrink-0">
                     <div class="form-check form-switch">
-                      <input
-                        class="form-check-input"
-                        type="checkbox"
-                        role="switch"
-                        id="purchaesNotification"
-                      />
+                      <input class="form-check-input" type="checkbox" role="switch" id="purchaesNotification" />
                     </div>
                   </div>
                 </li>
               </ul>
-            </div>
+            </div> -->
+
             <div>
               <h5 class="card-title text-decoration-underline mb-3">
                 Delete This Account:
               </h5>
               <p class="text-muted">
-                Go to the Data & Privacy section of your profile Account.
-                Scroll to "Your data & privacy options." Delete your Profile
-                Account. Follow the instructions to delete your account :
+                Enter the name of your organization into the box below then
+                click the button. A mail will be sent to you verify your action.
               </p>
               <div>
                 <input
-                  type="password"
+                  type="text"
                   class="form-control"
                   id="passwordInput"
                   placeholder="Enter your password"
@@ -390,31 +493,52 @@
                 />
               </div>
               <div class="hstack gap-2 mt-3">
-                <a href="javascript:void(0);" class="btn btn-soft-danger"
-                  >Close & Delete This Account</a
+                <button type="button" class="btn btn-soft-danger">
+                  Close & Delete This Account
+                </button>
+                <a
+                  href="javascript:void(0);"
+                  class="btn btn-light"
+                  [routerLink]="['/examalpha/dashboard']"
+                  >Cancel</a
                 >
-                <a href="javascript:void(0);" class="btn btn-light">Cancel</a>
               </div>
             </div>
           </ng-template>
         </li>
-        <li [ngbNavItem]="4" class="nav-item">
+        <li
+          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 4 : 1"
+          class="nav-item"
+          *ngIf="!currentUser.authorities.includes(Role.CENTER_ADMIN)"
+        >
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-key-fill align-middle me-2 fs-4"></i>
-            Change Password
+            Change Password Application Notifications:
           </a>
           <ng-template ngbNavContent>
-            <form action="javascript:void(0);">
+            <form
+              [formGroup]="changePasswordForm"
+              action="javascript:void(0);"
+              (ngSubmit)="submitChangePassword()"
+            >
               <div class="row g-2">
                 <div class="col-lg-4">
                   <div>
-                    <label for="oldpasswordInput" class="form-label"
-                      >Old Password*</label
+                    <label
+                      for="oldpasswordInput"
+                      class="form-label d-flex flex-row gap-1"
+                      >Old Password<span class="text-danger">*</span></label
                     >
                     <input
                       type="password"
                       class="form-control"
                       id="oldpasswordInput"
+                      formControlName="oldPassword"
+                      [ngClass]="{
+                        'border border-danger':
+                          changePasswordForm.get('oldPassword').touched &&
+                          changePasswordForm.get('oldPassword').invalid
+                      }"
                       placeholder="Enter current password"
                     />
                   </div>
@@ -422,13 +546,21 @@
                 <!--end col-->
                 <div class="col-lg-4">
                   <div>
-                    <label for="newpasswordInput" class="form-label"
-                      >New Password*</label
+                    <label
+                      for="newpasswordInput"
+                      class="form-label d-flex flex-row gap-1"
+                      >New Password<span class="text-danger">*</span></label
                     >
                     <input
                       type="password"
                       class="form-control"
+                      [ngClass]="{
+                        'border border-danger':
+                          changePasswordForm.get('newPassword').touched &&
+                          changePasswordForm.get('newPassword').invalid
+                      }"
                       id="newpasswordInput"
+                      formControlName="newPassword"
                       placeholder="Enter new password"
                     />
                   </div>
@@ -436,19 +568,36 @@
                 <!--end col-->
                 <div class="col-lg-4">
                   <div>
-                    <label for="confirmpasswordInput" class="form-label"
-                      >Confirm Password*</label
+                    <label
+                      for="confirmpasswordInput"
+                      class="form-label d-flex flex-row gap-1"
+                      >Confirm Password<span class="text-danger">*</span></label
                     >
                     <input
                       type="password"
                       class="form-control"
+                      formControlName="confirmPassword"
+                      [ngClass]="{
+                        'border border-danger':
+                          (changePasswordForm.get('confirmPassword').touched &&
+                          changePasswordForm.get('confirmPassword').invalid) || (changePasswordForm.errors?.['passwordMismatch'] &&
+                        changePasswordForm.get('confirmPassword').touched)
+                      }"
                       id="confirmpasswordInput"
                       placeholder="Confirm password"
                     />
+                    <span
+                      *ngIf="
+                        changePasswordForm.errors?.['passwordMismatch'] &&
+                        changePasswordForm.get('confirmPassword').touched
+                      "
+                      class="fs-6 text-danger"
+                      >Password does not match</span
+                    >
                   </div>
                 </div>
                 <!--end col-->
-                <div class="col-lg-12">
+                <!-- <div class="col-lg-12">
                   <div class="mb-3">
                     <a
                       href="javascript:void(0);"
@@ -456,12 +605,25 @@
                       >Forgot Password ?</a
                     >
                   </div>
-                </div>
+                </div> -->
                 <!--end col-->
                 <div class="col-lg-12">
                   <div class="text-end">
-                    <button type="submit" class="btn btn-success">
+                    <button
+                      type="submit"
+                      class="btn btn-success"
+                      [disabled]="changePasswordForm.invalid"
+                      *ngIf="!isChangingPassword"
+                    >
                       Change Password
+                    </button>
+                    <button
+                      type="submit"
+                      class="btn btn-success"
+                      [disabled]="isChangingPassword"
+                      *ngIf="isChangingPassword"
+                    >
+                      Updating Password...
                     </button>
                   </div>
                 </div>
@@ -549,6 +711,133 @@
                 <a href="javascript:void(0);">Logout</a>
               </div>
             </div> -->
+          </ng-template>
+        </li>
+        <li
+          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 5 : 2"
+          class="nav-item"
+        >
+          <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
+            <i class="ri-user-line align-middle me-2 fs-4"></i>
+            Personal Info
+          </a>
+          <ng-template ngbNavContent>
+            <form #updateUserDetailForm="ngForm" novalidate>
+              <div class="row">
+                <div *ngIf="userDetail.username" class="col-12">
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Username</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="username"
+                      id="username"
+                      placeholder="Enter username"
+                      value="{{ userDetail.username }}"
+                      [(ngModel)]="userDetail.username"
+                      [disabled]="!currentUser.authorities.includes('ADMIN')"
+                    />
+                  </div>
+                </div>
+                <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="firstnameInput"
+                      name="firstName"
+                      placeholder="Enter your firstname"
+                      value="{{ userDetail.firstName }}"
+                      [(ngModel)]="userDetail.firstName"
+                    />
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="lastnameInput"
+                      name="lastName"
+                      placeholder="Enter your lastname"
+                      value="{{ userDetail.lastName }}"
+                      [(ngModel)]="userDetail.lastName"
+                    />
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="phone"
+                      id="phone"
+                      placeholder="Enter your phone number"
+                      value="{{ userDetail.phone }}"
+                      [(ngModel)]="userDetail.phone"
+                    />
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-lg-6">
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      name="email"
+                      id="email"
+                      placeholder="Enter your email"
+                      value="{{ userDetail.email }}"
+                      [(ngModel)]="userDetail.email"
+                    />
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-lg-12">
+                  <div class="hstack gap-2 justify-content-end">
+                    <button
+                      *ngIf="!updatingPersonalInfo"
+                      type="button"
+                      (click)="updateUserDetails()"
+                      class="btn btn-primary"
+                    >
+                      Update
+                    </button>
+                    <button
+                      *ngIf="updatingPersonalInfo"
+                      class="btn btn-outline-primary btn-load"
+                      [disabled]="updatingPersonalInfo"
+                    >
+                      <span class="d-flex align-items-center">
+                        <span
+                          class="spinner-border flex-shrink-0"
+                          role="status"
+                        >
+                          <span class="visually-hidden">Saving...</span>
+                        </span>
+                        <span class="flex-grow-1 ms-2"> Saving... </span>
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      (click)="cancel()"
+                      class="btn btn-danger"
+                      [disabled]="updatingPersonalInfo"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+                <!--end col-->
+              </div>
+              <!--end row-->
+            </form>
           </ng-template>
         </li>
       </ul>

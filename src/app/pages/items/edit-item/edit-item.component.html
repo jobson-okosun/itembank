@@ -23,7 +23,7 @@
         {{ itemTrailInformation.subjectName.toUpperCase() }}
       </span>
       <span
-        class="d-flex align-items-center text-muted" 
+        class="d-flex align-items-center text-muted"
         *ngIf="itemTrailInformation.topicName"
         ngbTooltip="TOPIC"
       >
@@ -110,10 +110,11 @@
       *ngIf="formType === 'Choice Matrix'"
     ></app-choice-matrix>
 
+    <!-- *ngIf="formType === 'Rich Text Essay'" -->
     <app-rich-essay
       [formType]="formType"
       [editData]="item"
-      *ngIf="formType === 'Rich Text Essay'"
+      *ngIf="formType === 'Essay'"
       (savedItem)="saved($event)"
     ></app-rich-essay>
 

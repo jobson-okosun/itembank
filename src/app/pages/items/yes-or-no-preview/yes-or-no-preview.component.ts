@@ -24,6 +24,8 @@ export class YesOrNoPreviewComponent implements OnInit {
   @Input() subjectName = '';
   @Input() previewData!: any;
   @Input() itemTrailInfo: any;
+  @Input() formType!: string;
+  @Input() selectedItemType!: string;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
@@ -60,7 +62,7 @@ export class YesOrNoPreviewComponent implements OnInit {
     this.subjectName = this.itemService.subjectName;
     this.assessmentActive = this.itemService.assessmentActive;
     this.recycleComponentActive = this.recycleService.recycleActive;
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
 
     console.log(this.isEditPreview);
     //console.log(this.previewData);
@@ -144,7 +146,7 @@ export class YesOrNoPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-      
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

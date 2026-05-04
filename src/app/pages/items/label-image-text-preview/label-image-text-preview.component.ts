@@ -7,42 +7,44 @@ import {
   AfterViewInit,
   ViewChild,
   ElementRef,
-} from "@angular/core";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { ItemHttpService } from "../item-http.service";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { Router } from "@angular/router";
-import { RecycleService } from "../../recycle/recycle.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import Swal from "sweetalert2";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { PassageService } from "src/app/shared/passage-service/passage.service";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
+} from '@angular/core';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { ItemHttpService } from '../item-http.service';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { Router } from '@angular/router';
+import { RecycleService } from '../../recycle/recycle.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { PassageService } from 'src/app/shared/passage-service/passage.service';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 
 @Component({
-  selector: "app-label-image-text-preview",
-  templateUrl: "./label-image-text-preview.component.html",
-  styleUrls: ["./label-image-text-preview.component.scss"],
+  selector: 'app-label-image-text-preview',
+  templateUrl: './label-image-text-preview.component.html',
+  styleUrls: ['./label-image-text-preview.component.scss'],
 })
 export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
   @Input() previewData!: any;
   @Output() returnPreviewData = new EventEmitter();
-  @ViewChild("previewImage") previewImage!: ElementRef;
+  @ViewChild('previewImage') previewImage!: ElementRef;
   previewImageWidth: any;
   previewImageHeight: any;
   @Output() reload = new EventEmitter();
   @Input() component!: string;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
 
   currentUser: Account;
   assessmentActive: boolean;
   showAnswer: boolean = false;
-  subjectName: string = "";
+  subjectName: string = '';
   subjectId: string = this.itemService.subjectId;
   recycleComponentActive: boolean = this.recycleService.recycleActive;
   isEditPreview: boolean = false;
   processing_delete: boolean = false;
-  selectedItemId: string = "";
+  selectedItemId: string = '';
   modalRef: any;
   hiddenAnswers: Array<string> = [];
   constructor(
@@ -60,8 +62,10 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
     this.subjectName = this.itemService.subjectName;
-    this.isEditPreview = this.router.url.includes("edit-item");
-    this.hiddenAnswers = new Array(this.previewData.scoringOption.answers.length).fill('');
+    this.isEditPreview = this.router.url.includes('edit-item');
+    this.hiddenAnswers = new Array(
+      this.previewData.scoringOption.answers.length
+    ).fill('');
   }
 
   onPreviewImageLoad() {
@@ -72,7 +76,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
-    console.log("Preview Image Dimensions:", imageRect.width, imageRect.height);
+    console.log('Preview Image Dimensions:', imageRect.width, imageRect.height);
 
     // Validate response positions
     this.previewData.responsePositions.forEach((position, index) => {
@@ -96,7 +100,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -113,7 +117,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -130,7 +134,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -141,9 +145,9 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -156,9 +160,9 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -173,7 +177,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -187,9 +191,9 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -199,8 +203,8 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;

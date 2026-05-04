@@ -17,7 +17,7 @@ export const environment = {
   //developmentIP: 'http://192.168.101.141:8081',
   //developmentIP: 'http://192.168.177.141:8081',
   //schedulerIP: 'http://192.168.177.141:3201',
-  //schedulerIP: 'http://35.178.141.73:3201', 
+  //schedulerIP: 'http://35.178.141.73:3201',
   // schedulerIP: "https://7695bc53780.ngrok.app",
   // new
   //schedulerIP: "https://500beb525a2a.ngrok.app",
@@ -42,8 +42,8 @@ export const environment = {
 
   secureStorageId: '_ID_MAP',
   ecureStorageKey: '######_ID_SECURE',
-  showAppAssets: true
-}; 
+  showAppAssets: true,
+};
 
 /*
  * For easier debugging in development mode, you can import the following file

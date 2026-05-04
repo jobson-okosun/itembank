@@ -1,35 +1,37 @@
-import { Router } from "@angular/router";
-import { RichEssayModel } from "../rich-essay/model/rich-essay-model.model";
-import { Component, OnInit, Output, Input, EventEmitter } from "@angular/core";
-import { ItemHttpService } from "../item-http.service";
-import { ItemDetails, ItemUtilitiesService } from "../item-utilities.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { AuthenticationService } from "src/app/authentication/authentication.service";
-import { UserService } from "src/app/shared/user.service";
-import { HttpErrorResponse } from "@angular/common/http";
-import Swal from "sweetalert2";
-import { RecycleService } from "../../recycle/recycle.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { UsageHistory } from "../models/usage-history";
-import { NotifierService } from "angular-notifier";
+import { Router } from '@angular/router';
+import { RichEssayModel } from '../rich-essay/model/rich-essay-model.model';
+import { Component, OnInit, Output, Input, EventEmitter } from '@angular/core';
+import { ItemHttpService } from '../item-http.service';
+import { ItemDetails, ItemUtilitiesService } from '../item-utilities.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { AuthenticationService } from 'src/app/authentication/authentication.service';
+import { UserService } from 'src/app/shared/user.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
+import { RecycleService } from '../../recycle/recycle.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { UsageHistory } from '../models/usage-history';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
-  selector: "app-rich-essay-preview",
-  templateUrl: "./rich-essay-preview.component.html",
-  styleUrls: ["./rich-essay-preview.component.scss"],
+  selector: 'app-rich-essay-preview',
+  templateUrl: './rich-essay-preview.component.html',
+  styleUrls: ['./rich-essay-preview.component.scss'],
 })
 export class RichEssayPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() previewData: any;
   @Input() itemTrailInfo: any;
   @Input() showAnswerToggle: boolean = true;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
   answer: string;
 
-  subjectName: string = "";
+  subjectName: string = '';
 
   subjectId: string;
 
@@ -64,7 +66,7 @@ export class RichEssayPreviewComponent implements OnInit {
     this.subjectName = this.itemService.subjectName;
     this.subjectId = this.itemService.subjectId;
     this.assessmentActive = this.itemService.assessmentActive;
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     // console.log(this.previewData);
     // console.log(this.itemTrailInfo);
     this.answer = this.previewData.scoringOption.answers[0];
@@ -75,7 +77,7 @@ export class RichEssayPreviewComponent implements OnInit {
     if (this.previewData.id) {
       this.returnPreviewData.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -94,7 +96,7 @@ export class RichEssayPreviewComponent implements OnInit {
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -111,7 +113,7 @@ export class RichEssayPreviewComponent implements OnInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -124,7 +126,7 @@ export class RichEssayPreviewComponent implements OnInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -135,9 +137,9 @@ export class RichEssayPreviewComponent implements OnInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -147,8 +149,8 @@ export class RichEssayPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -168,9 +170,9 @@ export class RichEssayPreviewComponent implements OnInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -183,9 +185,9 @@ export class RichEssayPreviewComponent implements OnInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -195,7 +197,7 @@ export class RichEssayPreviewComponent implements OnInit {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -206,7 +208,7 @@ export class RichEssayPreviewComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
   }

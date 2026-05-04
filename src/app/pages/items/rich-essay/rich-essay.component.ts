@@ -40,6 +40,7 @@ export class RichEssayComponent implements OnInit, OnDestroy {
   @Input() formType!: string;
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
+  @Output() stimulus = new EventEmitter<string>();
   @ViewChild("tagRef") tagRef: ItemTagComponent;
 
   breadCrumbItems!: Array<{}>;
@@ -160,6 +161,10 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     } else {
       this.defaultItemProperties.scoringOption.matchingRule = "EXACT_MATCH";
     }
+  }
+
+      onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
   }
 
   option: Object = {

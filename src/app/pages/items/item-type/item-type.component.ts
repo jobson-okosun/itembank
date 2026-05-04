@@ -1,6 +1,7 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { NgbDropdown, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 interface ItemTypeModel {
   type: string;
@@ -18,6 +19,9 @@ export class ItemTypeComponent implements OnInit {
   @Output() sendItemType = new EventEmitter<string>();
   @Output() sendFormType = new EventEmitter<string>();
 
+  @ViewChild('comfirmNavigationModal') comfirmNavigationModal: TemplateRef<any>;
+  @Input() stimulus: string = '';
+
   selectedItemType!: string;
   lastCommittedItemType!: string; // Track the last successfully committed type
   paramsObject: any;
@@ -27,7 +31,7 @@ export class ItemTypeComponent implements OnInit {
     'Fill in the gap',
     'Written',
     'Match & Order',
-    'DRAWING_AND_WRITING'
+    'DRAWING_AND_WRITING',
     /* 'Passage', */
   ];
 
@@ -55,7 +59,7 @@ export class ItemTypeComponent implements OnInit {
     {
       type: 'Choice Matrix',
       imgPath: 'assets/images/Itembank/choice_matrix.png',
-      code: 'CHM'
+      code: 'CHM',
     },
   ];
 
@@ -63,12 +67,12 @@ export class ItemTypeComponent implements OnInit {
     {
       type: 'Cloze with dropdown',
       imgPath: 'assets/images/Itembank/clozedropdown.png',
-      code: 'CLD'
+      code: 'CLD',
     },
     {
       type: 'Cloze with Text',
       imgPath: 'assets/images/Itembank/clozetext.png',
-      code: 'CLT'
+      code: 'CLT',
     },
     {
       type: 'Cloze with Radio Select',
@@ -78,43 +82,63 @@ export class ItemTypeComponent implements OnInit {
     {
       type: 'Label Image with Text',
       imgPath: 'assets/images/Itembank/label_image_text.png',
-      code: 'LBT'
+      code: 'LBT',
     },
     {
       type: 'Label Image with Dropdown',
       imgPath: 'assets/images/Itembank/label_image_dropdown.png',
-      code: 'LBD'
+      code: 'LBD',
     },
     {
       type: 'Label Image with Drag and Drop',
       imgPath: 'assets/images/Itembank/label_image_drag_n_drop.png',
-      code: 'LDD'
+      code: 'LDD',
     },
     /* {type:'Numeric', imgPath:''}, */
   ];
 
   wr: ItemTypeModel[] = [
     {
-      type: 'Rich Text Essay',
+      // type: 'Rich Text Essay',
+      type: 'Essay',
       imgPath: 'assets/images/Itembank/richEssay.png',
-      code: 'ESS'
+      code: 'ESS',
     },
-    { type: 'Short Answer', imgPath: 'assets/images/Itembank/shorttext.png', code: 'SHT' },
+    {
+      type: 'Short Answer',
+      imgPath: 'assets/images/Itembank/shorttext.png',
+      code: 'SHT',
+    },
     /* {type:'Plain Text Essay', imgPath:''},
     {type:'Audio Response', imgPath:''},
     {type:'Video Response', imgPath:''}, */
   ];
 
   cmo: ItemTypeModel[] = [
-    { type: 'Matching', imgPath: 'assets/images/Itembank/association.png', code: 'ASS' },
-    { type: 'Ordering', imgPath: 'assets/images/Itembank/order_list.png', code: 'ORD' },
+    {
+      type: 'Matching',
+      imgPath: 'assets/images/Itembank/association.png',
+      code: 'ASS',
+    },
+    {
+      type: 'Ordering',
+      imgPath: 'assets/images/Itembank/order_list.png',
+      code: 'ORD',
+    },
   ];
 
   drawingAndWriting: ItemTypeModel[] = [
-    { type: 'DRAWING_AND_WRITING', imgPath: 'assets/images/itemTypes/drawing-and-writing.jpg', code: 'DAW'}
-  ]
+    {
+      type: 'DRAWING_AND_WRITING',
+      imgPath: 'assets/images/itemTypes/drawing-and-writing.jpg',
+      code: 'DAW',
+    },
+  ];
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private modal: NgbModal,
+  ) {
     this.activatedRoute.queryParamMap.subscribe((params) => {
       this.paramsObject = { ...params };
       // console.log(this.paramsObject);
@@ -184,13 +208,31 @@ export class ItemTypeComponent implements OnInit {
   }
 
   setItemType(itemType: string) {
-    this.formType = ''
+    this.formType = '';
     this.sendItemType.emit(itemType);
   }
 
   setFormType(formType: string) {
-    this.formType = formType
-    this.sendFormType.emit(formType);
+    this.formType = formType;
+    // this.sendFormType.emit(formType); 
+    //console.log('stimulus in item type component::::', this.stimulus);   
+    if (!!this.stimulus) {
+      this.openComfirmationNavigationModal(this.comfirmNavigationModal);
+    } else {
+      this.sendFormType.emit(formType);
+    }
+    
+  }
+
+  openComfirmationNavigationModal(comfirmNavigationModal: any): void {
+    // console.log('Opening modal: ', comfirmNavigationModal);
+    this.modal.open(comfirmNavigationModal, { centered: true });
+  }
+
+  proceedNavigation(): void {
+    this.modal.dismissAll();
+    this.stimulus = '';
+    this.sendFormType.emit(this.formType);
   }
 
   private hasUnsavedContent(): any {

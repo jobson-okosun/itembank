@@ -23,6 +23,8 @@ export class ClozeDropdownPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() previewData: any;
   @Input() itemTrailInfo!: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
@@ -55,7 +57,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
     private modalService: NgbModal,
     private notifier: NotifierService,
     private itemUtil: ItemUtilitiesService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
   ) {}
 
   ngOnInit(): void {
@@ -68,9 +70,9 @@ export class ClozeDropdownPreviewComponent implements OnInit {
     //this.previewData.stimulus;
     // console.log(this.previewData.stimulus);
     // console.log(this.previewData.scoringOption.answers);
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     // this.getCurrentQuestion();
-    this.renderContent()
+    this.renderContent();
     //this.checkCloze(this.expectedCloze);
     // console.log('cloze dropdown preview', this.previewData);
 
@@ -80,14 +82,14 @@ export class ClozeDropdownPreviewComponent implements OnInit {
   renderContent() {
     if (this.previewData && this.previewData.stimulus) {
       let content = this.previewData.stimulus;
-      
+
       // Process each response placeholder
       const parts = content.split('{{response}}');
       for (let i = 0; i < parts.length - 1; i++) {
         const selectHtml = this.createSelectElement(i);
         parts[i] = parts[i] + selectHtml;
       }
-      
+
       content = parts.join('');
       this.sanitizedContent = this.sanitizer.bypassSecurityTrustHtml(content);
     }
@@ -139,29 +141,26 @@ export class ClozeDropdownPreviewComponent implements OnInit {
     return dropBoxes;
   }
 
-
-
   createSelectElement(index: number): string {
-      const options = this.previewData.possibleResponses[index].responses;
-      const selectedAnswer = this.previewData.scoringOption.answers[index];
-      
-      let selectHtml = '<select class="form-select" style="width:auto; display:inline-block">';
-      
-      if (this.showAnswer) {
-          // When showing answer, only display the correct answer
-          selectHtml += `<option selected>${selectedAnswer}</option>`;
-      } else {
-          // When not showing answer, show all options without selection
-          options.forEach((option: string) => {
-              selectHtml += `<option>${option}</option>`;
-          });
-      }
-      
-      selectHtml += '</select>';
-      return selectHtml;
+    const options = this.previewData.possibleResponses[index].responses;
+    const selectedAnswer = this.previewData.scoringOption.answers[index];
+
+    let selectHtml =
+      '<select class="form-select" style="width:auto; display:inline-block">';
+
+    if (this.showAnswer) {
+      // When showing answer, only display the correct answer
+      selectHtml += `<option selected>${selectedAnswer ? selectedAnswer : 'No Answer'}</option>`;
+    } else {
+      // When not showing answer, show all options without selection
+      options.forEach((option: string) => {
+        selectHtml += `<option>${option}</option>`;
+      });
+    }
+
+    selectHtml += '</select>';
+    return selectHtml;
   }
-
-
 
   // addOptions(clozeRenderArray: Array<any>, extractedOptions: Array<any>) {
   //   for (let i = 0; i < clozeRenderArray.length; i++) {
@@ -194,12 +193,12 @@ export class ClozeDropdownPreviewComponent implements OnInit {
             type: `${this.previewData.type}`,
             id: `${this.previewData.id}`,
           },
-        }
+        },
       );
     } else {
       this.returnPreviewData.emit(this.previewData);
     }
-}
+  }
 
   check() {
     this.showAnswer = !this.showAnswer;
@@ -215,7 +214,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
             type: `${this.previewData.type}`,
             id: `${this.previewData.id}`,
           },
-        }
+        },
       );
     } else {
       this.reload.emit();
@@ -236,7 +235,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
 
   openDeletePassageItemModal(
     deletePassageQuestionConfirmationModal: any,
-    itemId: any
+    itemId: any,
   ) {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(
@@ -244,7 +243,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
       {
         centered: true,
         size: 'md',
-      }
+      },
     );
   }
 
@@ -260,7 +259,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-      
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },
@@ -272,7 +271,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
         });
         this.processing_delete = false;
         this.modalService.dismissAll();
-      }
+      },
     );
   }
 
@@ -306,7 +305,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
             text: `${error.error.message}`,
             icon: 'error',
           });
-        }
+        },
       );
   }
 
@@ -316,16 +315,19 @@ export class ClozeDropdownPreviewComponent implements OnInit {
       centered: true,
       size: 'md',
     });
-    this.itemService.fetchItemUsageCount(itemId).subscribe((value) => {
-      if(value){
-        this.itemUsageHistory = value;
+    this.itemService.fetchItemUsageCount(itemId).subscribe(
+      (value) => {
+        if (value) {
+          this.itemUsageHistory = value;
+          this.loading_usage_history = false;
+        }
+      },
+      (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-      }
-    }, (error: HttpErrorResponse) => {
-      this.loading_usage_history = false;
-      this.notifier.notify('error', error.error.message);
-    })
-    
+        this.notifier.notify('error', error.error.message);
+      },
+    );
+
     /* this.router.navigate([
       '/examalpha/subjects/' +
         this.subject_id +
@@ -335,8 +337,8 @@ export class ClozeDropdownPreviewComponent implements OnInit {
     ]); */
   }
 
-  viewAnswer(){
-    this.showAnswer = !this.showAnswer
+  viewAnswer() {
+    this.showAnswer = !this.showAnswer;
     this.renderContent();
   }
 }

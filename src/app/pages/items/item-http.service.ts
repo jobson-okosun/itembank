@@ -1,50 +1,50 @@
-import { ListPassageTopics } from "./../passages/model/list-passage-topics.model";
-import { NotifierService } from "angular-notifier";
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { BehaviorSubject, Observable } from "rxjs";
-import { SingleChoiceModel } from "./single-response/model/single-response-model.model";
-import { environment } from "../../../environments/environment";
-import { ResourceCreated } from "../../shared/model/resource-created";
-import { ListAllItemsPage } from "./models/list-all-items-page.model";
-import { TrueOrFalseModel } from "./true-or-false/model/true-or-false-model.model";
-import { YesOrNoModel } from "./yes-or-no/model/yes-or-no-model.model";
-import { MultipleResponseModel } from "./multiple-response/model/multiple-response-model.model";
-import { RichEssayModel } from "./rich-essay/model/rich-essay-model.model";
-import { ShortText } from "./create-item/model/short-text.model";
-import { Passage } from "./passage-item/model/passage.model";
-import { SinglePassageModel } from "./passage-item/model/single-passage-model.model";
-import { FilterItems } from "./models/filter-items.model";
-import { NewSubject } from "./models/new-subject.model";
-import { ListAllSubjects } from "./models/list-all-subjects.model";
-import { NewTopic } from "./models/new-topic.model";
-import { SubjectTopicsTree } from "./models/subject-topics-tree.model";
-import { NewSubTopic } from "./models/new-sub-topic.model";
-import { DropdownSubjectList } from "./models/dropdown-subject-list.model";
-import { IndividualItem } from "./models/individual-item.model";
-import { NewAssociationItem } from "./matching/model/new-association-item.model";
-import { AllPassagesResponseModel } from "../passages/model/all-passages-response-model.model";
-import { SinglePassageItems } from "./passage-item/model/single-passage-items.model";
-import { NewClozeItem } from "./cloze/model/new-cloze-item.model";
-import { ClozeDropdown } from "./cloze-dropdown/cloze-dropdown.model";
-import { CopyMoveItems } from "./models/copy-move-items";
-import { OrderingItem } from "./ordering/model/ordering-item";
-import { OrderingModel } from "./ordering/model/ordering-model";
-import { RejectionReason } from "./models/rejection-reason";
-import { AuthorModerationNotification } from "./models/author-moderation-notification";
-import { ItemTypes } from "./models/item-types";
-import { ChoiceMatrix } from "./choice-matrix/model/choice-matrix";
-import { ExistingItemsAndPasaagesInExamBlock } from "./models/existing-items-and-pasaages-in-exam-block";
-import { UsageHistory } from "./models/usage-history";
-import { ItemDetails } from "./item-utilities.service";
-import DOMPurify from "dompurify";
-import { LabelImageDropdown } from "./label-image-dropdown/models/label-image-dropdown";
-import { LabelImageDragDrop } from "./label-image-drag-drop/models/label-image-drag-drop";
-import { RejectItemRequest } from "../assessment/model/reject-item";
-import { DrawAndWritingModel } from "./drawing-and-writing/model/drawing-and-writing..model";
+import { ListPassageTopics } from './../passages/model/list-passage-topics.model';
+import { NotifierService } from 'angular-notifier';
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { SingleChoiceModel } from './single-response/model/single-response-model.model';
+import { environment } from '../../../environments/environment';
+import { ResourceCreated } from '../../shared/model/resource-created';
+import { ListAllItemsPage } from './models/list-all-items-page.model';
+import { TrueOrFalseModel } from './true-or-false/model/true-or-false-model.model';
+import { YesOrNoModel } from './yes-or-no/model/yes-or-no-model.model';
+import { MultipleResponseModel } from './multiple-response/model/multiple-response-model.model';
+import { RichEssayModel } from './rich-essay/model/rich-essay-model.model';
+import { ShortText } from './create-item/model/short-text.model';
+import { Passage } from './passage-item/model/passage.model';
+import { SinglePassageModel } from './passage-item/model/single-passage-model.model';
+import { FilterItems } from './models/filter-items.model';
+import { NewSubject } from './models/new-subject.model';
+import { ListAllSubjects } from './models/list-all-subjects.model';
+import { NewTopic } from './models/new-topic.model';
+import { SubjectTopicsTree } from './models/subject-topics-tree.model';
+import { NewSubTopic } from './models/new-sub-topic.model';
+import { DropdownSubjectList } from './models/dropdown-subject-list.model';
+import { IndividualItem } from './models/individual-item.model';
+import { NewAssociationItem } from './matching/model/new-association-item.model';
+import { AllPassagesResponseModel } from '../passages/model/all-passages-response-model.model';
+import { SinglePassageItems } from './passage-item/model/single-passage-items.model';
+import { NewClozeItem } from './cloze/model/new-cloze-item.model';
+import { ClozeDropdown } from './cloze-dropdown/cloze-dropdown.model';
+import { CopyMoveItems } from './models/copy-move-items';
+import { OrderingItem } from './ordering/model/ordering-item';
+import { OrderingModel } from './ordering/model/ordering-model';
+import { RejectionReason } from './models/rejection-reason';
+import { AuthorModerationNotification } from './models/author-moderation-notification';
+import { ItemTypes } from './models/item-types';
+import { ChoiceMatrix } from './choice-matrix/model/choice-matrix';
+import { ExistingItemsAndPasaagesInExamBlock } from './models/existing-items-and-pasaages-in-exam-block';
+import { UsageHistory } from './models/usage-history';
+import { ItemDetails } from './item-utilities.service';
+import DOMPurify from 'dompurify';
+import { LabelImageDropdown } from './label-image-dropdown/models/label-image-dropdown';
+import { LabelImageDragDrop } from './label-image-drag-drop/models/label-image-drag-drop';
+import { RejectItemRequest } from '../assessment/model/reject-item';
+import { DrawAndWritingModel } from './drawing-and-writing/model/drawing-and-writing..model';
 
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class ItemHttpService {
   assessmentActive: boolean = false;
@@ -57,7 +57,7 @@ export class ItemHttpService {
   subtopicName: string;
   currentSubjectModerationEnabled: boolean = false;
   totalItemsInCurrentSubject: number;
-  duplicateItem: any = new BehaviorSubject("");
+  duplicateItem: any = new BehaviorSubject('');
   itemTrail: ItemDetails;
 
   public duplicateFound$ = this.duplicateItem.asObservable();
@@ -65,35 +65,35 @@ export class ItemHttpService {
   constructor(private http: HttpClient, private notifier: NotifierService) {
     DOMPurify.setConfig({
       ALLOWED_TAGS: [
-        "b",
-        "i",
-        "em",
-        "strong",
-        "p",
-        "div",
-        "span",
-        "ul",
-        "ol",
-        "li",
-        "a",
-        "br",
-        "img",
-        "table",
-        "tbody",
-        "thead",
-        "tr",
-        "th",
-        "td",
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
+        'b',
+        'i',
+        'em',
+        'strong',
+        'p',
+        'div',
+        'span',
+        'ul',
+        'ol',
+        'li',
+        'a',
+        'br',
+        'img',
+        'table',
+        'tbody',
+        'thead',
+        'tr',
+        'th',
+        'td',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
       ],
-      ALLOWED_ATTR: ["href", "src", "alt", "title", "style"], // Allow only safe attributes
-      FORBID_ATTR: ["onclick", "onerror", "onload"], // Block any inline JS
-      FORBID_TAGS: ["script", "iframe"], // Block any script or iframe tags
+      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'style'], // Allow only safe attributes
+      FORBID_ATTR: ['onclick', 'onerror', 'onload'], // Block any inline JS
+      FORBID_TAGS: ['script', 'iframe'], // Block any script or iframe tags
     });
   }
 
@@ -103,19 +103,19 @@ export class ItemHttpService {
 
   validateItem(item: any): boolean {
     // console.log('=>', {item});
-    if (item.stimulus == "") {
-      this.notifier.notify("error", `Please compose a question!`);
+    if (item.stimulus == '') {
+      this.notifier.notify('error', `Please compose a question!`);
       return false;
     }
 
     if (
-      item.stimulus.trim() === "" ||
-      item.stimulus.trim() === "<p></p>" ||
-      item.stimulus.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === ""
+      item.stimulus.trim() === '' ||
+      item.stimulus.trim() === '<p></p>' ||
+      item.stimulus.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === ''
     ) {
       this.notifier.notify(
-        "error",
-        "You can not create a question with only empty space(s)"
+        'error',
+        'You can not create a question with only empty space(s)'
       );
       return false;
     }
@@ -124,12 +124,12 @@ export class ItemHttpService {
       if (
         item.scoringOption.answers.some(
           (answer) =>
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "" ||
-            answer.trim() === "" ||
-            answer.trim() === "<p></p>"
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '' ||
+            answer.trim() === '' ||
+            answer.trim() === '<p></p>'
         )
       ) {
-        this.notifier.notify("error", "Label found without a selected answer");
+        this.notifier.notify('error', 'Label found without a selected answer');
         return false;
       }
     }
@@ -138,13 +138,13 @@ export class ItemHttpService {
       item.options &&
       item.options.some(
         (option) =>
-          option.label.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() ===
-          "" ||
-          item.stimulus.trim() === "" ||
-          item.stimulus.trim() === "<p></p>"
+          option.label.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() ===
+            '' ||
+          item.stimulus.trim() === '' ||
+          item.stimulus.trim() === '<p></p>'
       )
     ) {
-      this.notifier.notify("error", "Found Option with empty space(s)");
+      this.notifier.notify('error', 'Found Option with empty space(s)');
       return false;
     }
 
@@ -162,8 +162,8 @@ export class ItemHttpService {
       item.scoringOption.answers.length !== item.stems.length
     ) {
       this.notifier.notify(
-        "error",
-        "Please ensure you have provided answers to all questions!"
+        'error',
+        'Please ensure you have provided answers to all questions!'
       );
       return false;
     }
@@ -176,10 +176,11 @@ export class ItemHttpService {
       item.itemType !== ItemTypes.DRAW_WRITING &&
       item.itemType !== ItemTypes.CLOZE_RADIO
     ) {
-      for (let i = 0; i < item.options.length; i++) { 
-        if (item.options[i].label == "") {
+      // console.log(item.itemType);
+      for (let i = 0; i < item.options.length; i++) {
+        if (item.options[i].label == '') {
           this.notifier.notify(
-            "error",
+            'error',
             `Please provide a valid response for option ${i + 1}`
           );
           return false;
@@ -197,40 +198,29 @@ export class ItemHttpService {
     if (item.itemType === ItemTypes.ORDER_LIST) {
       if (item.options.length < 2) {
         this.notifier.notify(
-          "error",
+          'error',
           `Order list cannot have less than 2 options!`
         );
         return false;
       }
     }
-
-    if (item.itemType === ItemTypes.CLOZE_RADIO) {
-      const hasEmptyAnswer = item.scoringOption.answers.some(a => !a);
-
-      if (hasEmptyAnswer) {
-        this.notifier.notify(
-          "error",
-          `Radio options must have a valid correct answer`
-        );
-        return false;
-      }
-    }
+    console.log(item + 'negative score');
 
     if (item.itemType === ItemTypes.CLOZE_TEXT) {
-      if (item.options.some((option) => option.label.trim() === "")) {
-        this.notifier.notify("error", `Please provide answer in input box!`);
+      if (item.options.some((option) => option.label.trim() === '')) {
+        this.notifier.notify('error', `Please provide answer in input box!`);
         return false;
       }
 
-      if (item.scoringOption.answers.some((answer) => answer.trim() === "")) {
-        this.notifier.notify("error", `Please provide answer in input box!`);
+      if (item.scoringOption.answers.some((answer) => answer.trim() === '')) {
+        this.notifier.notify('error', `Please provide answer in input box!`);
         return false;
       }
     }
 
     if (item.scoringOption.score < 0) {
       this.notifier.notify(
-        "error",
+        'error',
         `Please ensure the score is not a negative value!`
       );
       return false;
@@ -238,7 +228,7 @@ export class ItemHttpService {
 
     if (!Number.isInteger(item.scoringOption.score)) {
       this.notifier.notify(
-        "error",
+        'error',
         `Please ensure the score is an integer value!`
       );
       return false;
@@ -249,34 +239,34 @@ export class ItemHttpService {
       item.scoringOption.answers.length < 2
     ) {
       this.notifier.notify(
-        "error",
-        "kindly, provide at least two correct responses to the question!"
+        'error',
+        'kindly, provide at least two correct responses to the question!'
       );
       return false;
     }
 
     if (
-      item.scoringOption.score === "" ||
+      item.scoringOption.score === '' ||
       item.scoringOption.score === undefined
     ) {
-      this.notifier.notify("error", `Please ensure the score is not empty!`);
+      this.notifier.notify('error', `Please ensure the score is not empty!`);
       return false;
     }
 
     if (item.itemType === ItemTypes.MCQ) {
       if (item.options.length < 2) {
         this.notifier.notify(
-          "error",
+          'error',
           `Please ensure the options is two or more!`
         );
         return false;
       }
     }
-    // console.log(item.scoringOption.penalty);
-    // console.log(item, "here");
+    console.log(item.scoringOption.penalty);
+    console.log(item, 'here');
     if (item.scoringOption.penalty < 0) {
       this.notifier.notify(
-        "error",
+        'error',
         `Please ensure the penalty is not a negative value!`
       );
       return false;
@@ -284,7 +274,7 @@ export class ItemHttpService {
 
     if (item.scoringOption.minimumScoreIfAttempted < 0) {
       this.notifier.notify(
-        "error",
+        'error',
         `Please ensure the minimum Score on attempt is not a negative value!`
       );
       return false;
@@ -292,7 +282,7 @@ export class ItemHttpService {
 
     if (item.itemType === ItemTypes.SHORT_TEXT && item.maxLength < 0) {
       this.notifier.notify(
-        "error",
+        'error',
         `Please ensure the max length  is not a negative value!`
       );
       return false;
@@ -301,13 +291,13 @@ export class ItemHttpService {
     if (item.ItemType === ItemTypes.SHORT_TEXT) {
       if (
         item.scoringOption.answers[0]
-          .replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "")
-          .trim() == "" ||
-        item.scoringOption.answers[0].trim() === "" ||
-        item.scoringOption.answers[0].trim() === "<p></p>"
+          .replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '')
+          .trim() == '' ||
+        item.scoringOption.answers[0].trim() === '' ||
+        item.scoringOption.answers[0].trim() === '<p></p>'
       ) {
         this.notifier.notify(
-          "error",
+          'error',
           `Please ensure you provide an answer to question!`
         );
         return false;
@@ -326,12 +316,12 @@ export class ItemHttpService {
         item.scoringOption.answers &&
         item.scoringOption.answers.some(
           (answer) =>
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "" ||
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "--"
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '' ||
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '--'
         )
       ) {
         this.notifier.notify(
-          "error",
+          'error',
           `Please ensure you provide an answer to question!`
         );
         return false;
@@ -339,7 +329,7 @@ export class ItemHttpService {
     }
 
     if (!Number.isInteger(item.scoringOption.penalty)) {
-      this.notifier.notify("error", `Please ensure the penalty is an integer!`);
+      this.notifier.notify('error', `Please ensure the penalty is an integer!`);
       return false;
     }
 
@@ -384,10 +374,9 @@ export class ItemHttpService {
     );
   }
 
-  uploadSubjects(
-    payload: any
-  ): Observable<ResourceCreated> {
-    return this.http.post<ResourceCreated>(`${environment.developmentIP}/itembank/admin/subjectsss`,
+  uploadSubjects(payload: any): Observable<ResourceCreated> {
+    return this.http.post<ResourceCreated>(
+      `${environment.developmentIP}/itembank/admin/subjectsss`,
       payload,
       { withCredentials: true }
     );
@@ -588,7 +577,9 @@ export class ItemHttpService {
     );
   }
 
-  createDrawWritingItem(newDrawWritingItem: DrawAndWritingModel): Observable<ResourceCreated> {
+  createDrawWritingItem(
+    newDrawWritingItem: DrawAndWritingModel
+  ): Observable<ResourceCreated> {
     return this.http.post(
       `${environment.developmentIP}/itembank/items/draw_write`,
       newDrawWritingItem,
@@ -596,7 +587,9 @@ export class ItemHttpService {
     );
   }
 
-  editDrawWritingItem(newDrawWritingItem: DrawAndWritingModel): Observable<ResourceCreated> {
+  editDrawWritingItem(
+    newDrawWritingItem: DrawAndWritingModel
+  ): Observable<ResourceCreated> {
     return this.http.put(
       `${environment.developmentIP}/itembank/items/${newDrawWritingItem.itemId}/item/draw-write`,
       newDrawWritingItem,
@@ -765,10 +758,10 @@ export class ItemHttpService {
     } else {
       let queryParams = new HttpParams();
       queryParams = queryParams
-        .append("subjectId", subjectId)
-        .append("topicId", topicId)
-        .append("page", page)
-        .append("size", size);
+        .append('subjectId', subjectId)
+        .append('topicId', topicId)
+        .append('page', page)
+        .append('size', size);
 
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/items/assessment/${assessmentId}/section/${sectionId}`, //?subjectId=${subjectId}&topicId=${topicId}`,

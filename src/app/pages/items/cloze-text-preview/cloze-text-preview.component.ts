@@ -28,6 +28,8 @@ export class ClozeTextPreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() previewData: any;
   @Input() itemTrailInfo: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
   //@Input() assessmentActive: boolean;
   //@Output() hidePreview = new EventEmitter<string>();
   @Output() returnPreviewData = new EventEmitter();
@@ -92,14 +94,16 @@ export class ClozeTextPreviewComponent implements OnInit {
   renderContent() {
     if (this.previewData && this.previewData.stimulus) {
       let content = this.previewData.stimulus;
-      
+
       if (this.showAnswer && this.previewData.scoringOption.answers) {
-        this.previewData.scoringOption.answers.forEach((answer: string, index: number) => {
-          content = content.replace(
-            '{{response}}',
-            `<input type="text" class="form-control-sm d-inline-block mt-0" style="width: auto; margin-left: 5px;" value="${answer}" disabled />`
-          );
-        });
+        this.previewData.scoringOption.answers.forEach(
+          (answer: string, index: number) => {
+            content = content.replace(
+              '{{response}}',
+              `<input type="text" class="form-control-sm d-inline-block mt-0" style="width: auto; margin-left: 5px;" value="${answer}" disabled />`
+            );
+          }
+        );
       } else {
         content = content.replace(
           /\{\{response\}\}/g,
@@ -184,7 +188,6 @@ export class ClozeTextPreviewComponent implements OnInit {
 
   getCurrentQuestion(): any {
     // console.log(this.previewData)
-    
     // let data: string[] = this.previewData.stimulus.split('{{response}}');
     // let totalTextBoxes = this.renderCloze(data);
     // console.log(totalTextBoxes);
@@ -300,7 +303,7 @@ export class ClozeTextPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-      
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

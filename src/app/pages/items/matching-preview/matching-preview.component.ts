@@ -7,37 +7,38 @@ import {
   CdkDragStart,
   moveItemInArray,
   transferArrayItem,
-} from "@angular/cdk/drag-drop";
-import { Option } from "../models/option";
-import { ItemDetails, ItemUtilitiesService } from "../item-utilities.service";
-import { Router } from "@angular/router";
-import { ItemHttpService } from "../item-http.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { RecycleService } from "../../recycle/recycle.service";
-import Swal from "sweetalert2";
-import { HttpErrorResponse } from "@angular/common/http";
-import { UsageHistory } from "../models/usage-history";
-import { NotifierService } from "angular-notifier";
+} from '@angular/cdk/drag-drop';
+import { Option } from '../models/option';
+import { ItemDetails, ItemUtilitiesService } from '../item-utilities.service';
+import { Router } from '@angular/router';
+import { ItemHttpService } from '../item-http.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { RecycleService } from '../../recycle/recycle.service';
+import Swal from 'sweetalert2';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UsageHistory } from '../models/usage-history';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
-  selector: "app-matching-preview",
-  templateUrl: "./matching-preview.component.html",
-  styleUrls: ["./matching-preview.component.scss"],
+  selector: 'app-matching-preview',
+  templateUrl: './matching-preview.component.html',
+  styleUrls: ['./matching-preview.component.scss'],
 })
 export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   @Input() component!: string;
   @Input() formType!: string;
   @Input() previewData!: any;
   @Input() itemTrailInfo!: any;
+  @Input() selectedItemType!: string;
   @Output() return = new EventEmitter();
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
-  option: string = "Options";
-  subjectName: string = "";
+  option: string = 'Options';
+  subjectName: string = '';
   subjectId: string = this.itemService.subjectId;
   selectedItemId: string;
   modalRef: any;
@@ -281,7 +282,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectName + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -302,7 +303,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
     if (this.previewData.id) {
       //this.return.emit();
       this.router.navigate(
-        ["/examalpha/subjects/" + this.subjectId + "/edit-item"],
+        ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
             type: `${this.previewData.type}`,
@@ -323,7 +324,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
     this.selectedItemId = itemId;
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
   }
 
@@ -336,7 +337,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
       deletePassageQuestionConfirmationModal,
       {
         centered: true,
-        size: "md",
+        size: 'md',
       }
     );
   }
@@ -347,9 +348,9 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
       (value) => {
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
-            text: "The item was deleted successfully!",
+            icon: 'success',
+            title: 'Congratulations',
+            text: 'The item was deleted successfully!',
           });
           this.refresh();
         }
@@ -359,8 +360,8 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
       },
       (error: HttpErrorResponse) => {
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
         this.processing_delete = false;
@@ -380,9 +381,9 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
       .subscribe(
         (value) => {
           Swal.fire({
-            title: "Congratulations!",
-            text: "You have successfully deleted the selected question.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'You have successfully deleted the selected question.',
+            icon: 'success',
           });
           /* this.passage.items = this.passage.items.filter(
             (item) => item.id !== this.selectedItemId
@@ -395,9 +396,9 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
         (error: HttpErrorResponse) => {
           this.processing_delete = false;
           Swal.fire({
-            title: "Failed!",
+            title: 'Failed!',
             text: `${error.error.message}`,
-            icon: "error",
+            icon: 'error',
           });
         }
       );
@@ -407,7 +408,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
     this.loading_usage_history = true;
     this.modalService.open(itemUsageModal, {
       centered: true,
-      size: "md",
+      size: 'md',
     });
     this.itemService.fetchItemUsageCount(itemId).subscribe(
       (value) => {
@@ -418,7 +419,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
       },
       (error: HttpErrorResponse) => {
         this.loading_usage_history = false;
-        this.notifier.notify("error", error.error.message);
+        this.notifier.notify('error', error.error.message);
       }
     );
   }

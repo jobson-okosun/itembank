@@ -10,6 +10,7 @@ import { AllPassagesService } from '../../passages/list-passages/all-passages.se
 import { RecycleService } from '../../recycle/recycle.service';
 import { UsageHistory } from '../models/usage-history';
 import { NotifierService } from 'angular-notifier';
+import { DefaultItemProperties } from '../models/default-item-properties';
 
 @Component({
   selector: 'app-short-text-preview',
@@ -21,6 +22,9 @@ export class ShortTextPreviewComponent implements OnInit {
   @Input() formTypePreview!: string;
   @Input() previewData!: any;
   @Input() itemTrailInfo!: any;
+  @Input() selectedItemType!: string;
+  @Input() formType!: string;
+  @Input() isNumericAnswerType: boolean;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
@@ -47,7 +51,7 @@ export class ShortTextPreviewComponent implements OnInit {
   modalRef: any;
   itemUsageHistory: UsageHistory[] = [];
   loading_usage_history: boolean = false;
-  isEditPreview: boolean = false
+  isEditPreview: boolean = false;
 
   constructor(
     private router: Router,
@@ -65,7 +69,7 @@ export class ShortTextPreviewComponent implements OnInit {
     this.assessmentActive = this.itemService.assessmentActive;
     // console.log(this.previewData);
 
-    this.isEditPreview = this.router.url.includes('edit-item')
+    this.isEditPreview = this.router.url.includes('edit-item');
     this.subjectName = this.itemService.subjectName;
     // console.log(this.previewData);
     // console.log(this.itemTrailInfo);
@@ -149,7 +153,7 @@ export class ShortTextPreviewComponent implements OnInit {
           });
           this.refresh();
         }
-       
+
         this.processing_delete = false;
         this.modalService.dismissAll();
       },

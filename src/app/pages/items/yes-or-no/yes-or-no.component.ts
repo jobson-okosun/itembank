@@ -1,5 +1,5 @@
-import { DefaultItemProperties } from "./../models/default-item-properties";
-import { HttpErrorResponse } from "@angular/common/http";
+import { DefaultItemProperties } from './../models/default-item-properties';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   OnInit,
@@ -8,35 +8,35 @@ import {
   EventEmitter,
   ViewChild,
   OnDestroy,
-} from "@angular/core";
+} from '@angular/core';
 
-import { Option } from "../models/option";
-import { YesOrNoModel } from "./model/yes-or-no-model.model";
-import { ItemTypes } from "../models/item-types";
-import { ItemStatusEnum } from "../models/item-status-enum";
-import { ItemHttpService } from "../item-http.service";
-import Swal from "sweetalert2";
-import { ScoringTypeEnum } from "../models/scoring-type-enum";
-import { MatchingRuleEnums } from "../models/matching-rule-enums";
-import { ItemUtilitiesService } from "../item-utilities.service";
-import { Account } from "src/app/authentication/model/account.model";
-import { UserService } from "src/app/shared/user.service";
-import { Location } from "@angular/common";
-import { NotifierService } from "angular-notifier";
-import { ItemsList } from "@ng-select/ng-select/lib/items-list";
-import { RejectionReason } from "../models/rejection-reason";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
-import { SinglePassageModel } from "../passage-item/model/single-passage-model.model";
-import { ItemTagComponent } from "../item-tag/item-tag.component";
-import { ActivatedRoute } from "@angular/router";
+import { Option } from '../models/option';
+import { YesOrNoModel } from './model/yes-or-no-model.model';
+import { ItemTypes } from '../models/item-types';
+import { ItemStatusEnum } from '../models/item-status-enum';
+import { ItemHttpService } from '../item-http.service';
+import Swal from 'sweetalert2';
+import { ScoringTypeEnum } from '../models/scoring-type-enum';
+import { MatchingRuleEnums } from '../models/matching-rule-enums';
+import { ItemUtilitiesService } from '../item-utilities.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { Location } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
+import { ItemsList } from '@ng-select/ng-select/lib/items-list';
+import { RejectionReason } from '../models/rejection-reason';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
+import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import { ItemTagComponent } from '../item-tag/item-tag.component';
+import { ActivatedRoute } from '@angular/router';
 
 declare var tinymce: any;
 declare const MathJax: any;
 @Component({
-  selector: "app-yes-or-no",
-  templateUrl: "./yes-or-no.component.html",
-  styleUrls: ["./yes-or-no.component.scss"],
+  selector: 'app-yes-or-no',
+  templateUrl: './yes-or-no.component.html',
+  styleUrls: ['./yes-or-no.component.scss'],
 })
 export class YesOrNoComponent implements OnInit, OnDestroy {
   //@Input() formType = '';
@@ -45,9 +45,10 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
   @Input() editData!: any;
   @Output() savedItem = new EventEmitter();
   @Output() hidePreviewForParent = new EventEmitter();
+  @Output() stimulus = new EventEmitter<string>();
 
   @ViewChild(ItemTagComponent) childComponent!: ItemTagComponent;
-  @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('tagRef') tagRef: ItemTagComponent;
 
   breadCrumbItems!: Array<{}>;
 
@@ -89,7 +90,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
   itemPassage: SinglePassageModel;
   reloadTags: boolean = false;
   showPassage: boolean = false;
-  passageId: string = "";
+  passageId: string = '';
   passageForPreview: SinglePassageModel;
   processingRejection: boolean = false;
 
@@ -97,16 +98,16 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     height: 200,
     menubar: true,
     branding: false,
-    base_url: "/tinymce",
-    suffix: ".min",
-    plugins: "table quickbars lists autoresize charmap paste",
+    base_url: '/tinymce',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
   };
 
   constructor(
@@ -117,7 +118,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     private notifier: NotifierService,
     private modalService: NgbModal,
     private passageService: AllPassagesService,
-    private ar: ActivatedRoute
+    private ar: ActivatedRoute,
   ) {}
 
   hidePreview(event: any) {
@@ -125,10 +126,10 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
   }
   ngOnInit(): void {
     if (!this.selectedItemType) {
-      this.selectedItemType = "Multiple Choice";
+      this.selectedItemType = 'Multiple Choice';
     }
 
-    this.passageId = this.ar.snapshot.params["passageId"];
+    this.passageId = this.ar.snapshot.params['passageId'];
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
@@ -200,40 +201,44 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     }
   }
 
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
+  }
+
   setup(editor: any) {
     let activeEquation: HTMLElement | null = null;
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: "Edit Equation",
-        size: "normal",
+        title: 'Edit Equation',
+        size: 'normal',
         body: {
-          type: "panel",
+          type: 'panel',
           items: [
             {
-              type: "htmlpanel",
+              type: 'htmlpanel',
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: "cancel", name: "cancel", text: "Cancel" },
-          { type: "submit", name: "update", text: "Update", primary: true },
+          { type: 'cancel', name: 'cancel', text: 'Cancel' },
+          { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById("mathfield") as any;
+          const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute("data-latex", updatedLatex);
+            activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add("math-expression");
+            activeEquation.classList.add('math-expression');
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering updated"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering updated'))
+              .catch((err) => console.error('Math rendering failed:', err));
           }
 
           activeEquation = null;
@@ -242,60 +247,60 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       });
     };
 
-    editor.on("init", () => {
+    editor.on('init', () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener("click", (event: MouseEvent) => {
+      editorBody.addEventListener('click', (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest(".math-expression")) {
+        if (target.closest('.math-expression')) {
           const equationElement = target.closest(
-            ".math-expression"
+            '.math-expression',
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute("data-latex") || "";
+          const latex = equationElement.getAttribute('data-latex') || '';
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton("equation-editor", {
-      text: "Insert Math",
-      icon: "character-count",
+    editor.ui.registry.addButton('equation-editor', {
+      text: 'Insert Math',
+      icon: 'character-count',
       onAction: () => {
         editor.windowManager.open({
-          title: "Insert Equation",
-          size: "normal",
+          title: 'Insert Equation',
+          size: 'normal',
           body: {
-            type: "panel",
+            type: 'panel',
             items: [
               {
-                type: "htmlpanel",
+                type: 'htmlpanel',
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: "cancel", name: "cancel", text: "Cancel" },
-            { type: "submit", name: "insert", text: "Insert", primary: true },
+            { type: 'cancel', name: 'cancel', text: 'Cancel' },
+            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById("mathfield") as any;
+            const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent("&nbsp;");
+            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log("Math rendering complete"))
-              .catch((err) => console.error("Math rendering failed:", err));
+              .then(() => console.log('Math rendering complete'))
+              .catch((err) => console.error('Math rendering failed:', err));
 
             api.close();
           },
@@ -313,12 +318,12 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
     let option: Option = new Option();
     if (this.options.length === 0) {
-      (option.label = "Yes"), (option.value = index + "");
+      ((option.label = 'Yes'), (option.value = index + ''));
     } else {
-      if (this.options[0].label === "Yes") {
-        (option.label = "No"), (option.value = index + "");
+      if (this.options[0].label === 'Yes') {
+        ((option.label = 'No'), (option.value = index + ''));
       } else {
-        (option.label = "Yes"), (option.value = index + "");
+        ((option.label = 'Yes'), (option.value = index + ''));
       }
     }
     return option;
@@ -347,8 +352,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       this.options.push(this.addOption(currentIndex));
     } else {
       Swal.fire({
-        icon: "error",
-        html: "Only a maximum of two options allowed",
+        icon: 'error',
+        html: 'Only a maximum of two options allowed',
       });
     }
   }
@@ -378,14 +383,14 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     item.topicId = this.itemUtil.currentItemTrail.topicId;
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId
       ? this.itemUtil.currentItemTrail.subtopicId
-      : "";
+      : '';
 
     item.images = this.defaultItemProperties.images;
 
     item.itemType = ItemTypes.MCQ;
 
     this.options.forEach((option, index) => {
-      option.value = index + "";
+      option.value = index + '';
       /* if (this.selectedAnswers.has(index)) {
         option.value = index + '';
       } */
@@ -416,7 +421,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     item.itemTagsDTOS = this.tags;
 
     this.selectedAnswers.forEach((value) => {
-      item.scoringOption.answers.push(value + "");
+      item.scoringOption.answers.push(value + '');
     });
 
     return item;
@@ -433,10 +438,18 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     this.publishingItem = true;
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -449,7 +462,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     }
 
     this.publishLoader();
-    this.saveFunction(item, "save");
+    this.saveFunction(item, 'save');
     //this.back();
   }
 
@@ -461,6 +474,14 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     this.publishingItem = true;
 
     if (this.subjectModerationStatus) {
@@ -469,7 +490,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
     this.publishLoader();
-    this.saveFunction(item, "save_and_new");
+    this.saveFunction(item, 'save_and_new');
   }
 
   saveToDraft(itemForm: any) {
@@ -480,12 +501,20 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     }
 
+    if (item.scoringOption.answers.length === 0) {
+      this.notifier.notify(
+        'error',
+        `kindly, provide the correct option to the question!`,
+      );
+      return;
+    }
+
     this.publishingItem = true;
     this.publishLoader();
 
     item.itemStatus = ItemStatusEnum.DRAFT;
 
-    this.saveFunction(item, "draft");
+    this.saveFunction(item, 'draft');
   }
 
   saveItemToPassage(itemForm: any) {
@@ -507,20 +536,20 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
     item.topicId = this.itemUtil.currentItemTrail.topicId;
 
-    this.saveFunction(item, "passage-item");
+    this.saveFunction(item, 'passage-item');
   }
 
   saveFunction(item: any, type?: string) {
     let msg: string;
-    if (type == "save") {
+    if (type == 'save') {
       msg = `A new item has been created successfully`;
-    } else if (type == "draft") {
+    } else if (type == 'draft') {
       msg = `A new item has been saved to draft successfully`;
-    } else if (type == "passage-item") {
+    } else if (type == 'passage-item') {
       msg = `A new item has been added to the passage successfully`;
     }
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatus
     ) {
       msg = `item successfully sent for moderation`;
@@ -533,23 +562,23 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         }
         if (value) {
           Swal.fire({
-            icon: "success",
-            title: "Congratulations",
+            icon: 'success',
+            title: 'Congratulations',
             text: msg,
           });
           this.publishingItem = false;
           this.publishLoader();
         }
 
-        if (type === "save") {
+        if (type === 'save') {
           this.back();
         }
 
-        if (type == "draft") {
+        if (type == 'draft') {
           this.back();
         }
 
-        if (type == "save_and_new" || type !== "") {
+        if (type == 'save_and_new' || type !== '') {
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -573,11 +602,11 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         this.publishLoader();
         Swal.close();
         Swal.fire({
-          icon: "error",
-          title: "Failed!",
+          icon: 'error',
+          title: 'Failed!',
           text: `${error.error.message}`,
         });
-      }
+      },
     );
   }
 
@@ -606,10 +635,10 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     // }
 
     switch (status) {
-      case "save":
+      case 'save':
         if (
-          (!this.currentUser.authorities.includes("MODERATOR") &&
-            !this.currentUser.authorities.includes("ADMIN")) || // Both roles are missing
+          (!this.currentUser.authorities.includes('MODERATOR') &&
+            !this.currentUser.authorities.includes('ADMIN')) || // Both roles are missing
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
         ) {
@@ -620,13 +649,13 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
         break;
 
-      case "draft":
+      case 'draft':
         item.itemStatus = ItemStatusEnum.DRAFT;
         break;
 
-      case "approve":
+      case 'approve':
         item.itemStatus = ItemStatusEnum.PUBLISHED;
-        item.moderation_status = "accepted";
+        item.moderation_status = 'accepted';
         break;
 
       default:
@@ -638,9 +667,9 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         if (value) {
           this.publishingItem = false;
           Swal.fire({
-            title: "Congratulations!",
-            text: "The question was successfully updated.",
-            icon: "success",
+            title: 'Congratulations!',
+            text: 'The question was successfully updated.',
+            icon: 'success',
           });
           this.back();
         }
@@ -648,20 +677,20 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
-        this.notifier.notify("error", `${error.error.message}`);
-      }
+        this.notifier.notify('error', `${error.error.message}`);
+      },
     );
   }
 
   viewPassage(passageModal: any) {
-    this.passageService.fetchSinglePassage("passage_id").subscribe(
+    this.passageService.fetchSinglePassage('passage_id').subscribe(
       (value) => {
         this.itemPassage = value;
         this.showPassageModal(passageModal);
       },
       (error: HttpErrorResponse) => {
         // console.log(error);
-      }
+      },
     );
   }
 
@@ -697,7 +726,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     } else {
       Swal.fire({
-        title: "Saving your question, Please Wait...",
+        title: 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -710,13 +739,13 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
   }
 
   approveQuestion() {
-    this.updateItem("approve");
+    this.updateItem('approve');
   }
 
   openRejectionReasonModal(rejectionReasonModal: any) {
     this.modalService.open(rejectionReasonModal, {
       centered: true,
-      size: "lg",
+      size: 'lg',
     });
   }
 
@@ -735,9 +764,9 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         (value) => {
           if (value) {
             Swal.fire({
-              title: "Congratulations!",
+              title: 'Congratulations!',
               text: `The question was rejected sucessfully.`,
-              icon: "success",
+              icon: 'success',
             });
           }
           //this.notificationService.setNotifications();
@@ -747,8 +776,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.processingRejection = false;
-          this.notifier.notify("error", `${error.error.message}`);
-        }
+          this.notifier.notify('error', `${error.error.message}`);
+        },
       );
   }
 
@@ -772,9 +801,9 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
   openConfirmationModal(content: any) {
     this.modalService.open(content, {
-      ariaLabelledBy: "modal-basic-title",
+      ariaLabelledBy: 'modal-basic-title',
       centered: true,
-      windowClass: "modal-holder",
+      windowClass: 'modal-holder',
     });
   }
 

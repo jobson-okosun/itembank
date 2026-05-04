@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Account } from '../authentication/model/account.model';
 import { Role } from './enum/role';
 import { ItemAnalysis } from '../pages/users/model/item-analysis.model';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { SecureStorageService } from '../services/secure-storage.service';
@@ -20,11 +20,12 @@ export class UserService {
 
   setCurrentUser(account: Account) {
     this.currentUser = account;
-    // console.log(this.currentUser);
   }
 
   getCurrentUser(): Account {
-    return this.currentUser ? this.currentUser : this.getCurrentUserAfterReload();
+    return this.currentUser
+      ? this.currentUser
+      : this.getCurrentUserAfterReload();
   }
 
   getCurrentUserAfterReload(): Account {
