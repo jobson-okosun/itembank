@@ -126,6 +126,7 @@ export class ProctoringComponent implements OnInit {
         next: (value) => {
           this.notifierService.notify('success', `Distributed:${value.distributed} | Undistributed:${value.not_distributed}`)
           this.fetchProctorDashboard()
+          this.fetchAssignedProctors()
           this.modalService.dismissAll()
         },
         error: (err: HttpErrorResponse) => {
