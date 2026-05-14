@@ -479,7 +479,8 @@
                                                                     <div class="card-footer">
                                                                         <div class="d-flex justify-content-between align-items-center gap-3">
                                                                             <div>
-                                                                                <p-paginator [ngClass]="{ 'd-none': !proctorParticipants }"
+                                                                                <p-paginator 
+                                                                                [class.d-none]="!proctorParticipants"
                                                                                 [first]="0" [totalRecords]="proctorParticipants?.total ?? 0" [rowsPerPageOptions]="[50, 100, 150, 200]"
                                                                                 [rows]="50" [pageLinkSize]="5" [showCurrentPageReport]="true" (onPageChange)="onProctorParticipantChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
                                                                             </div>
@@ -525,14 +526,14 @@
                 </div>
             </div>
 
-            <ng-container *ngIf="assignedProctors">
+            <ng-container [class.d-none]="!assignedProctors">
                 <div class="py-2 border-top ">
                     <p-paginator
-                        [rows]="10"
+                        [rows]="50"
                         [totalRecords]="assignedProctors && assignedProctors.total"
                         (onPageChange)="onAssignedTableFilterChange($event)"
                         [first]="1"
-                        [rowsPerPageOptions]="[10, 20, 50]"
+                        [rowsPerPageOptions]="[50,100,150]"
                         [pageLinkSize]="5"
                         [showCurrentPageReport]="true">
                     </p-paginator>
@@ -776,7 +777,7 @@
             <div class="spinner-border text-info fs-18" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
-            <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading infractions...</span>
+            <span class="text-info text-center fs-16 flex-grow-1 ms-2" >Loading settings...</span>
         </div>
     </div>
 

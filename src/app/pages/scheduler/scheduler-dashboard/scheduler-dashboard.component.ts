@@ -90,7 +90,7 @@ export class SchedulerDashboardComponent implements OnInit {
   }
 
   onScheduleExamListPageChange(event: any) {
-    this.pageSize = event.rows; 
+    this.pageSize = event.rows;
     this.pageNo = event.page * event.rows
     // console.log(this.pageNo, this.pageSize)
     // this.loading = true
@@ -177,7 +177,11 @@ export class SchedulerDashboardComponent implements OnInit {
     this.assessmentService.schedulerAssessmentId = assessment.id;
     this.assessmentService.activeAssessmentId = assessment.id;
     this.assessmentService.activeAssessmentDeliveryMethod = assessment.delivery_method;
-  
+
+    localStorage.setItem('deliveryMethod', assessment.delivery_method)
+    localStorage.setItem('assessmentId', assessment.id)
+    localStorage.setItem('assessmentName', assessment.name)
+
   }
 
   confirm() {

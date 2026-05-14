@@ -41,8 +41,11 @@ export class ReportsDashboardComponent implements OnInit {
     this.assessmentService.activeAssessment = assessment.name;
     this.assessmentService.activeAssessmentId = assessment.id;
     this.assessmentService.schedulerAssessmentId = assessment.schId;
-    this.assessmentService.activeAssessmentDeliveryMethod =
-      assessment.deliveryMethod;
+    this.assessmentService.activeAssessmentDeliveryMethod = assessment.deliveryMethod;
+
+    localStorage.setItem('deliveryMethod', assessment.deliveryMethod)
+    localStorage.setItem('assessmentId', assessment.id)
+    localStorage.setItem('assessmentName', assessment.name)
   }
 
   onPageChange(event: any) {

@@ -62,10 +62,9 @@ export class AssessmentCenterComponent implements OnInit{
       this.assessmentId = params["assessmentId"];
     }); */
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
+    
     this.fetchAssessmentCenters(0, 50);
-    this.fetchCenterDashboard(
-      this.itembankAssessmentService.schedulerAssessmentId
-    );
+    this.fetchCenterDashboard(this.itembankAssessmentService.schedulerAssessmentId);
   }
 
   onFileSelected(event: any) {

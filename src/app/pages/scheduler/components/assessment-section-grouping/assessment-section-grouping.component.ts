@@ -48,14 +48,14 @@ export class AssessmentSectionGroupingComponent implements OnInit {
       this.assessmentId = params["assessmentId"];
     }); */
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
-    if (this.assessmentId) {
-      localStorage.setItem('assessmentId', this.assessmentId)
-    } else {
-      const id = localStorage.getItem('assessmentId')
-      if (id) {
-        this.assessmentId = id
-      }
-    }
+    // if (this.assessmentId) {
+    //   localStorage.setItem('assessmentId', this.assessmentId)
+    // } else {
+    //   const id = localStorage.getItem('assessmentId')
+    //   if (id) {
+    //     this.assessmentId = id
+    //   }
+    // }
 
     this.fetchAssessmentSectionGroups(this.assessmentId, 0, 10);
     this.fetchSectionGroupDashboard(this.assessmentId);

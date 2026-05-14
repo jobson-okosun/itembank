@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from "@angular/core";
+import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { AssessmentsService } from "../../assessment/service/assessments.service";
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
 
@@ -7,7 +7,7 @@ import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delive
   templateUrl: "./schedule-page.component.html",
   styleUrls: ["./schedule-page.component.scss"],
 })
-export class SchedulePageComponent implements OnInit, AfterViewInit {
+export class SchedulePageComponent implements OnInit, AfterViewInit, OnDestroy {
   breadCrumbItems!: Array<{}>;
   currentAssessment: string;
   deliveryMethod: string;
@@ -43,14 +43,21 @@ export class SchedulePageComponent implements OnInit, AfterViewInit {
     this.currentAssessment = this.assessmentService.activeAssessment
     this.deliveryMethod = this.assessmentService.activeAssessmentDeliveryMethod
 
-    if (this.deliveryMethod) {
-      localStorage.setItem('deliveryMethod', this.deliveryMethod)
-    } else {
-      const medthod = localStorage.getItem('deliveryMethod')
-      if (medthod) {
-        this.deliveryMethod = medthod
-      }
-    }
+    // if (this.deliveryMethod) {
+    //   localStorage.setItem('deliveryMethod', this.deliveryMethod)
+    // } else {
+    //   const medthod = localStorage.getItem('deliveryMethod')
+    //   if (medthod) {
+    //     this.deliveryMethod = medthod
+    //   }
+    // }
+
+  }
+
+  ngOnDestroy(): void {
+    localStorage.removeItem('deliveryMethod')
+    localStorage.removeItem('assessmentId')
+    localStorage.removeItem('assessmentName')
 
   }
 }

@@ -37,14 +37,14 @@ export class AssessmentBatchComponent implements OnInit {
 
   ngOnInit(): void {
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
-    if (this.assessmentId) {
-      localStorage.setItem('assessmentId', this.assessmentId)
-    } else {
-      const id = localStorage.getItem('assessmentId')
-      if (id) {
-        this.assessmentId = id
-      }
-    }
+    // if (this.assessmentId) {
+    //   localStorage.setItem('assessmentId', this.assessmentId)
+    // } else {
+    //   const id = localStorage.getItem('assessmentId')
+    //   if (id) {
+    //     this.assessmentId = id
+    //   }
+    // }
     
     this.fetchBatches(this.assessmentId);
   }
@@ -53,6 +53,14 @@ export class AssessmentBatchComponent implements OnInit {
     this.modalService.open(content, {
       size: size ? size : "md",
       centered: true,
+    });
+  }
+
+  openStaticModal(content: any, size?: string) {
+    this.modalService.open(content, {
+      size: size ? size : "md",
+      centered: true,
+      backdrop: 'static'
     });
   }
 

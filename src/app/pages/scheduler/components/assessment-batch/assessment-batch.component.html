@@ -40,7 +40,7 @@
       <h5>List of All Batches</h5>
       <button
         class="btn btn-soft-primary waves-effect waves-light btn-label"
-        (click)="openModal(newBatchModal, 'lg')"
+        (click)="openStaticModal(newBatchModal, 'lg')"
       >
         <i class="ri-user-add-line align-bottom text-center label-icon"></i>
         Add Batch
@@ -361,7 +361,7 @@
               Proccessing...
             </button>
 
-            <a class="btn btn-danger" (click)="closeModal()">Close</a>
+            <a class="btn btn-danger" (click)="closeModal();batchEndDate=null;batchStartDate=null">Close</a>
           </div>
         </form>
       </div>

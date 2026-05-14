@@ -26,8 +26,8 @@ export class ProctoringComponent implements OnInit {
   unassignedProctors: ListProctorPage = null
   assignedProctors: ListProctorPage = null
   assignedProctorsQueryParams = {
-    page: 0,
-    limit: 10,
+    page: 1,
+    limit: 50,
   }
   assignedProctorsForm: FormGroup
 
@@ -81,20 +81,20 @@ export class ProctoringComponent implements OnInit {
     this.initForms()
 
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
-    if (this.assessmentId) {
-      localStorage.setItem('assessmentId', this.assessmentId)
-    } else {
-      const id = localStorage.getItem('assessmentId')
-      if (id) {
-        this.assessmentId = id
-      }
-    }
+    // if (this.assessmentId) {
+    //   localStorage.setItem('assessmentId', this.assessmentId)
+    // } else {
+    //   const id = localStorage.getItem('assessmentId')
+    //   if (id) {
+    //     this.assessmentId = id
+    //   }
+    // }
 
-    if (!this.assessmentId) {
-      return
-    }
+    // if (!this.assessmentId) {
+    //   return
+    // }
 
-    this.fetchPageData()
+    // this.fetchPageData()
   }
 
   async fetchPageData() {
@@ -270,6 +270,7 @@ export class ProctoringComponent implements OnInit {
           this.notifierService.notify("success", `Proctor has been assigned`);
           this.processingProctorAssignment = false
           this.proctorBatchesToAssign = null
+          this.modalService.dismissAll()
         },
         error: (err: HttpErrorResponse) => {
           this.processingProctorAssignment = false
