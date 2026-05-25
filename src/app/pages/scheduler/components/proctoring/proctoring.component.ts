@@ -8,6 +8,7 @@ import * as saveAs from "file-saver";
 import { AssignProctorDTO, FilterProctorDTO, IAssessmentBatchDTO, ICenters, IFilterUnAssignedCenterAdmin, Infraction, InfractionAction, InfractionSeverity, InfractionTemplate, IParticipantList, ISuspendOrResumeProctor, ListProctorPage, ProctorActions, ProctorDashboardMetrics, ProctorSettings, UpdateInfractionsDTO } from '../../models/assessments';
 import { finalize } from 'rxjs/operators';
 import { FormControl, FormGroup } from '@angular/forms';
+import { DEFAULT_PROCTOR_GUIDE } from '../../models/default.model';
 
 @Component({
   selector: 'app-proctoring',
@@ -319,6 +320,10 @@ export class ProctoringComponent implements OnInit {
 
           this.proctorSetttings = value
 
+          if(!value.proctor_guide) {
+            this.proctorSetttings.proctor_guide = DEFAULT_PROCTOR_GUIDE
+          }
+
           if (value.proctor_allowed_actions.length) {
             return
           }
@@ -332,8 +337,6 @@ export class ProctoringComponent implements OnInit {
             { action: ProctorActions.SPEAK, enabled: true },
             { action: ProctorActions.WARN, enabled: true },
           ]
-
-          this.proctorSetttings.proctor_guide = ''
         }
       });
   }

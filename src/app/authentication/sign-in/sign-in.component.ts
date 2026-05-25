@@ -64,6 +64,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    localStorage.clear()
     /**
      * Form Validatyion
      */
