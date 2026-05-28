@@ -34,6 +34,7 @@ import { AllPassagesService } from '../../passages/list-passages/all-passages.se
 // import { Editor } from "dist/velzon/tinymce/tinymce";
 import { ItemTagComponent } from '../item-tag/item-tag.component';
 import { environment } from 'src/environments/environment';
+import katex from 'katex';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -120,8 +121,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     // console.log("hello");
     // this.passageId = this.ar.snapshot.params["passageId"];
@@ -215,22 +216,6 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     //console.log(this.itemUtil.passageId);
   }
 
-  option: Object = {
-    height: 200,
-    menubar: true,
-    branding: false,
-    base_url: '/tinymce',
-    suffix: '.min',
-    plugins: 'table quickbars lists autoresize charmap paste',
-    quickbars_insert_toolbars: false,
-    setup: this.setup,
-
-    paste_preprocess: function (pl, o) {
-      // console.log(o.content);
-    },
-    toolbar:
-      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
-  };
 
   setShowPassage(value: boolean) {
     this.showPassage = value;
@@ -272,7 +257,34 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
-            // Update the selected equation
+            // Local KaTeX Rendering
+            const renderedHtml = katex.renderToString(updatedLatex, { throwOnError: false });
+            if (activeEquation.tagName === 'IMG') {
+              // Replace the old IMG element with a new SPAN element
+              const newSpan = document.createElement('span');
+              newSpan.className = 'math-expression';
+              newSpan.setAttribute('data-latex', updatedLatex);
+              newSpan.setAttribute('contenteditable', 'false');
+              newSpan.style.display = 'inline-block';
+              newSpan.style.verticalAlign = 'middle';
+              // newSpan.style.margin = '4px 5px';
+              // newSpan.style.padding = '2px 0';
+              newSpan.innerHTML = renderedHtml;
+              activeEquation.parentNode?.replaceChild(newSpan, activeEquation);
+            } else {
+              // It is already a SPAN element
+              activeEquation.setAttribute('data-latex', updatedLatex);
+              activeEquation.setAttribute('contenteditable', 'false');
+              activeEquation.style.display = 'inline-block';
+              activeEquation.style.verticalAlign = 'middle';
+              // activeEquation.style.margin = '4px 5px';
+              // activeEquation.style.padding = '2px 0';
+              activeEquation.innerHTML = renderedHtml;
+            }
+            editor.setDirty(true);
+
+            // Commented out original Base64/Server rendering code:
+            /*
             activeEquation.setAttribute('data-latex', updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
             activeEquation.classList.add('math-expression');
@@ -297,11 +309,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
               editor.insertContent(content);
               editor.selection.collapse(false);
             });
-
-            // Trigger MathJax to re-render
-            // MathJax.typesetPromise([editor.getBody()])
-            //   .then(() => console.log("Math rendering updated"))
-            //   .catch((err) => console.error("Math rendering failed:", err));
+            */
           }
 
           activeEquation = null;
@@ -333,7 +341,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       text: 'Insert Math',
       icon: 'character-count',
       onAction: () => {
-        (this.convertLatexToBase64,
+        (
+          // this.convertLatexToBase64,
           editor.windowManager.open({
             title: 'Insert Equation',
             size: 'normal',
@@ -370,6 +379,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
               // Ensure cursor placement is outside the equation
               editor.selection.collapse(false);
+
+              // Local KaTeX Rendering
+              const renderedHtml = katex.renderToString(latex, { throwOnError: false });
+              const content = `<span class="math-expression" data-latex="${latex}" contenteditable="false" style="display: inline-block; vertical-align: middle; margin: 4px 5px; padding: 2px 0;">${renderedHtml}</span>&nbsp;`;
+              editor.insertContent(content);
+              editor.selection.collapse(false);
+
+              // Commented out original Base64/Server rendering code:
+              /*
               const response = await fetch(
                 `${environment.developmentIP}/itembank/items/convert_to_latex`,
                 {
@@ -390,10 +408,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
                 editor.insertContent(content);
                 editor.selection.collapse(false);
               });
-
-              // MathJax.typesetPromise([editor.getBody()])
-              //   .then(() => console.log("Math rendering complete"))
-              //   .catch((err) => console.error("Math rendering failed:", err));
+              */
 
               api.close();
             },
@@ -401,6 +416,24 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+
+  option: Object = {
+    menubar: true,
+    branding: false,
+    base_url: '/tinymce',
+    content_css: '/katex/dist/katex.min.css',
+    suffix: '.min',
+    plugins: 'table quickbars lists autoresize charmap paste',
+    quickbars_insert_toolbars: false,
+    setup: this.setup,
+
+    paste_preprocess: function (pl, o) {
+      // console.log(o.content);
+    },
+    toolbar:
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
+  };
 
   convertLatexToBase64 = () => {
     return new Promise((resolve) => {
@@ -651,7 +684,6 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         }
 
         if (action == 'save_and_new' || action !== '') {
-          console.log('hello');
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = true;
@@ -794,10 +826,10 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     e.preventDefault();
     this.router.navigate([
       'examalpha/passages/subjects/' +
-        this.passageService.subjectId +
-        '/passage/' +
-        this.editData.passageId +
-        '/edit-passage',
+      this.passageService.subjectId +
+      '/passage/' +
+      this.editData.passageId +
+      '/edit-passage',
     ]);
   }
 

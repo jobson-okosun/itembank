@@ -37,6 +37,7 @@ import { ItemTagComponent } from '../item-tag/item-tag.component';
 import { ActivatedRoute } from '@angular/router';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
+import katex from 'katex';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -237,7 +238,9 @@ export class ClozeComponent implements OnInit, OnDestroy {
     max_height: 500,
     menubar: true,
     branding: false,
+    statusbar: false,
     base_url: '/tinymce',
+    content_css: '/katex/dist/katex.min.css',
     suffix: '.min',
     plugins: 'image autoresize media table quickbars lists charmap paste',
     file_picker_callback: imageUpload,
@@ -248,6 +251,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
     images_upload_credentials:true,*/
     setup: this.setup,
     draggable_modal: true,
+    extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
     external_plugins: {
       //tiny_mce_wiris: `${window.location.href}/node_modules/@wiris/mathtype-tinymce5/plugin.min.js`,
     },
@@ -284,20 +288,34 @@ export class ClozeComponent implements OnInit, OnDestroy {
           { type: 'cancel', name: 'cancel', text: 'Cancel' },
           { type: 'submit', name: 'update', text: 'Update', primary: true },
         ],
-        onSubmit: (api) => {
+        onSubmit: async (api) => {
           const mathField = document.getElementById('mathfield') as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
-            // Update the selected equation
-            activeEquation.setAttribute('data-latex', updatedLatex);
-            activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add('math-expression');
-
-            // Trigger MathJax to re-render
-            MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log('Math rendering updated'))
-              .catch((err) => console.error('Math rendering failed:', err));
+            // Local KaTeX Rendering
+            const renderedHtml = katex.renderToString(updatedLatex, { throwOnError: false });
+            if (activeEquation.tagName === 'IMG') {
+              // Replace the old IMG element with a new SPAN element
+              const newSpan = document.createElement('span');
+              newSpan.className = 'math-expression';
+              newSpan.setAttribute('data-latex', updatedLatex);  
+              newSpan.setAttribute('contenteditable', 'false');
+              newSpan.style.display = 'inline-block';
+              newSpan.style.verticalAlign = 'middle';
+              newSpan.style.margin = '4px 5px';
+              newSpan.style.padding = '2px 0';
+              newSpan.innerHTML = renderedHtml;
+              activeEquation.parentNode?.replaceChild(newSpan, activeEquation);
+            } else {
+              // It is already a SPAN element
+              activeEquation.setAttribute('data-latex', updatedLatex);
+              activeEquation.setAttribute('contenteditable', 'false');
+              activeEquation.style.display = 'inline-block';
+              activeEquation.style.verticalAlign = 'middle';
+              activeEquation.innerHTML = renderedHtml;
+            }
+            editor.setDirty(true);
           }
 
           activeEquation = null;
@@ -445,21 +463,18 @@ export class ClozeComponent implements OnInit, OnDestroy {
             { type: 'cancel', name: 'cancel', text: 'Cancel' },
             { type: 'submit', name: 'insert', text: 'Insert', primary: true },
           ],
-          onSubmit: (api) => {
+          onSubmit: async (api) => {
             const mathField = document.getElementById('mathfield') as any;
             const latex = mathField.getValue();
-
-            // Create span for the math equation
-            const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
-            editor.insertContent(content);
-            editor.insertContent('&nbsp;');
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
-            MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log('Math rendering complete'))
-              .catch((err) => console.error('Math rendering failed:', err));
+            // Local KaTeX Rendering
+            const renderedHtml = katex.renderToString(latex, { throwOnError: false });
+            const content = `<span class="math-expression" data-latex="${latex}" contenteditable="false" style="display: inline-block; vertical-align: middle; margin: 4px 5px; padding: 2px 0;">${renderedHtml}</span>&nbsp;`;
+            editor.insertContent(content);
+            editor.selection.collapse(false);
 
             api.close();
           },

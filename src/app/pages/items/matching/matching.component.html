@@ -179,37 +179,14 @@
       <div class="mb-3">
         <label>Compose Question</label>
         <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
-          [init]="{
-            branding: false,
-            base_url: '/tinymce',
-            height: 200,
-            suffix: '.min',
-            menubar: true,
-            plugins:
-              'table quickbars lists autoresize charmap paste code eqneditor',
-            paste_preprocess: preProcess,
-            setup: setup,
-            quickbars_insert_toolbars: false,
-            toolbar:
-              'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"></editor>
+          [init]="option"></editor>
       </div>
       <div *ngIf="stems.length > 0 && options.length > 0" class="row">
         <div class="col-xl-6 mb-3">
           <label class="form-label">Stimulus List</label>
           <div ngModelGroup="stimulusList" *ngFor="let stem of stems; let i = index">
             <div class="d-flex gap-1 mb-2">
-              <editor name="stem{{ i }}" class="editor" [(ngModel)]="stem.stem" [inline]="true" [init]="{
-                  base_url: '/tinymce',
-                  height: 200,
-                  menubar: true,
-                  plugins: 'table quickbars lists autoresize paste',
-                  paste_preprocess: preProcess,
-                  quickbars_insert_toolbars: false,
-                  branding: false,
-                  toolbar:
-                    'undo redo | formatselect | subscript superscript | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-                }"></editor>
+              <editor name="stem{{ i }}" class="editor" [(ngModel)]="stem.stem" [inline]="false" [init]="optionSmall"></editor>
               <div>
                 <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
                   <i class="ri-delete-bin-line"></i>
@@ -222,16 +199,7 @@
           <label class="form-label">Options List</label>
           <div ngModelGroup="options" *ngFor="let option of options; let i = index">
             <div class="d-flex gap-1 mb-2">
-              <editor name="label{{ i }}" class="editor" [(ngModel)]="option.label" [inline]="true" [init]="{
-                  height: 200,
-                  menubar: true,
-                  plugins: 'table quickbars lists autoresize paste',
-                  paste_preprocess: preProcess,
-                  quickbars_insert_toolbars: false,
-                  branding: false,
-                  toolbar:
-                    'undo redo | formatselect | subscript superscript | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-                }"></editor>
+              <editor name="label{{ i }}" class="editor" [(ngModel)]="option.label" [inline]="false" [init]="optionSmall"></editor>
               <div>
                 <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
                   <i class="ri-delete-bin-line"></i>

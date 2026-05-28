@@ -182,35 +182,13 @@
       <div class="mb-3">
         <label>Compose Question</label>
         <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
-          [init]="{
-            branding: false,
-            base_url: '/tinymce',
-            height: 200,
-            suffix: '.min',
-            menubar: true,
-            plugins:
-              'table quickbars lists autoresize charmap paste code eqneditor',
-            paste_preprocess: preProcess,
-            setup: setup,
-            quickbars_insert_toolbars: false,
-            toolbar:
-              'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"></editor>
+          [init]="option"></editor>
       </div>
       <div class="mb-3">
         <label class="form-label">Options and Answers</label>
         <div ngModelGroup="options" *ngFor="let option of options; let i = index">
           <div class="d-flex gap-1 mb-2">
-            <editor name="label{{ i }}" class="editor w-100" [(ngModel)]="option.label" [inline]="true" [init]="{
-                height: 200,
-                menubar: true,
-                plugins: 'table quickbars lists autoresize paste',
-                paste_preprocess: preProcess,
-                quickbars_insert_toolbars: false,
-                branding: false,
-                toolbar:
-                  'undo redo | formatselect | subscript superscript | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
-              }"></editor>
+            <editor name="label{{ i }}" class="editor w-100" [(ngModel)]="option.label" [inline]="false" [init]="optionSmall"></editor>
             <div>
               <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteOption(i)">
                 <i class="ri-delete-bin-line"></i>

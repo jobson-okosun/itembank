@@ -187,39 +187,46 @@
           (ngModelChange)="onStimulusChange($event)" [init]="{
             branding: false,
             base_url: '/tinymce',
+            content_css: '/katex/dist/katex.min.css',
             height: 200,
+            statusbar: false,
             suffix: '.min',
             menubar: true,
             plugins:
-              'table quickbars lists autoresize charmap paste code eqneditor',
+              'table quickbars lists autoresize charmap paste code',
             paste_preprocess: preProcess,
             setup: setup,
             quickbars_insert_toolbars: false,
+            extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
             toolbar:
-              'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
+              'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | charmap'
           }"></editor>
       </div>
 
       <div *ngIf="options.length > 0" class="mb-3">
         <label class="form-label">Options and Answers</label>
         <div ngModelGroup="options" *ngFor="let option of options; let i = index">
-          <div class="d-flex gap-1 mb-2">
+          <div class="d-flex gap-1 mb-2" >
             <div class="btn-icon radio-background">
               <input class="form-check-input" id="form-radio-right5" type="radio" name="value"
                 value="{{ option.value }}" (change)="selectedAnswer(i)" [checked]="this.selectedAnswers.has(i)" />
             </div>
-            <editor name="label{{ i }}" class="editor" #editor [(ngModel)]="option.label" [inline]="true" [init]="{
-                height: 200,
+            <editor name="label{{ i }}" class="editor" #editor [(ngModel)]="option.label" [init]="{
+                min_height: 50,
                 menubar: true,
+                placeholder: 'Type here...',
+                statusbar: false,
                 base_url: '/tinymce',
+                content_css: '/katex/dist/katex.min.css',
                 suffix: '.min',
                 plugins: 'table quickbars lists autoresize charmap paste',
                 quickbars_insert_toolbars: false,
                 paste_preprocess: preProcess,
                 branding: false,
                 setup: setup,
+                extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
                 toolbar:
-                  'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink equation-editor | code charmap'
+                  'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent |table quickimage quicklink equation-editor | charmap'
               }"></editor>
             <div>
               <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteOption(i)">

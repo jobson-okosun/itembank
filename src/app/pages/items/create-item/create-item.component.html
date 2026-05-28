@@ -175,20 +175,7 @@
       <div class="mb-3">
         <label>Compose Question</label>
         <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
-          [init]="{
-            branding: false,
-            base_url: '/tinymce',
-            height: 200,
-            suffix: '.min',
-            menubar: true,
-            plugins:
-              'table quickbars lists autoresize charmap paste code eqneditor',
-            paste_preprocess: preProcess,
-            setup: setup,
-            quickbars_insert_toolbars: false,
-            toolbar:
-              'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-          }"></editor>
+          [init]="option"></editor>
       </div>
 
       <div class="d-flex justify-content-end">
