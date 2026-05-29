@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "",
+    "sources": [
+        "list-passages.component.scss"
+    ],
+    "names": [],
+    "file": "list-passages.component.css"
+}

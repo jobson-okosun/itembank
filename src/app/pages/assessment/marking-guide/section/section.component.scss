@@ -1,0 +1,23 @@
+/* dynamic-tabs.component.css */
+.tab-menu {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.tab-menu button {
+  padding: 7px 10px;
+  border: none;
+  background-color: #eee;
+  cursor: pointer;
+  font-size: small;
+  font-weight: 500;
+  border-radius: 5%;
+  border-bottom-left-radius: 0%;
+  border-bottom-right-radius: 0%;
+}
+
+.tab-menu button.active {
+  background-color: #5f9bdb;
+  color: white;
+}

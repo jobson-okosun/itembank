@@ -1,0 +1,62 @@
+<app-breadcrumbs title="EXAM SCHEDULE | {{ currentAssessment }} | {{
+    deliveryMethod
+  }} " [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+
+<ul ngbNav #Pills="ngbNav" [activeId]="1"
+  class="nav nav-pills nav-primary mb-3 navtabs">
+  <li [ngbNavItem]="1">
+    <a ngbNavLink>
+      <span class="d-sm-block">Section Group</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-assessment-section-grouping></app-assessment-section-grouping>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="2">
+    <a ngbNavLink>
+      <span class="d-sm-block">Centers</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-assessment-center></app-assessment-center>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="3">
+    <a ngbNavLink>
+      <span class="d-sm-block">Participants</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-assessment-participants></app-assessment-participants>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="4" *ngIf="!deliveryMethod?.includes('ONLINE')">
+    <a ngbNavLink>
+      <span class="d-sm-block">Center Admin</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-assessment-admin></app-assessment-admin>
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="5">
+    <a ngbNavLink>
+      <span class="d-sm-block">Batches</span>
+    </a>
+    <ng-template ngbNavContent>
+      <!-- batches -->
+
+      <app-assessment-batch></app-assessment-batch>
+      <!-- <app-assessment-participants></app-assessment-participants> -->
+    </ng-template>
+  </li>
+  <li [ngbNavItem]="6" *ngIf="deliveryMethod == deliveryMethods.AUTO_PROCTORING || deliveryMethod == deliveryMethods.LIVE_PROCTORING">
+    <a ngbNavLink>
+      <span class="d-sm-block">Proctor</span>
+    </a>
+    <ng-template ngbNavContent>
+      <app-proctoring></app-proctoring>
+    </ng-template>
+  </li>
+</ul>
+
+<div class="tab-content text-muted">
+  <div [ngbNavOutlet]="Pills"></div>
+</div>

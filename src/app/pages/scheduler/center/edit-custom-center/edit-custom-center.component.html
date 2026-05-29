@@ -1,0 +1,120 @@
+<div class="card">
+    <h5 class="card-header"> Edit Center</h5>
+    <div class="card-body">
+        <form action="javascript:void(0);">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="firstnameInput" class="form-label">Center Name</label>
+                        <input #groupName type="text" class="form-control" id="firstnameInput" placeholder="Enter your Center name">
+                    </div>
+                </div><!--end col-->
+
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="IDInput" class="form-label">Center ID</label>
+                        <input type="number" class="form-control" id="IDInput" >
+                    </div>
+                </div>
+              <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="lastnameInput" class="form-label">Address</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea" placeholder="Enter Center Address" rows="4"></textarea>
+                    </div>
+                </div>
+               
+                <div class="col-lg-6">
+                    <div class="mb-3 pb-2">
+                        <label for="exampleFormControlTextarea" class="form-label">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea" placeholder="Enter your description" rows="4"></textarea>
+                    </div>
+                </div>
+              
+               
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="stateInput" class="form-label">State</label>
+                        <input type="text" class="form-control" id="stateInput" placeholder="State" >
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="countryInput" class="form-label">Country</label>
+                        <input type="text" class="form-control" id="countryInput" placeholder="Country" >
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="capacityInput" class="form-label">Capacity</label>
+                        <input type="number" class="form-control" id="capacityInput" >
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="systemTypeInput" class="form-label">System Type</label>
+                        <select class="form-select mb-3" aria-label=".form-select-lg example">
+                            <!-- <option selected>Open this select menu</option> -->
+                            <option value="thickClient">Thick Client</option>
+                            <option value="standalone">Standalone</option>
+                            <option value="mixed">Mixed</option>
+                            </select>
+                    </div>
+                   
+                </div>
+
+                <!--end col-->
+
+                <!-- <div class="mb-4">
+                    <h5 class="fs-14 mb-1">Center Images</h5>
+                    <p class="text-muted">Add Center Images to Gallery.</p>
+                    <dropzone class="dropzone_sec"></dropzone>
+                   
+                </div> -->
+                
+                
+                <h5 class="card-header mb-3"> Contact Person Information</h5>
+                
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="contactInput" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="contactInput" placeholder="Name">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="phonenumberInput" class="form-label">Contact number</label>
+                        <input type="text" class="form-control" id="phonenumberInput" placeholder="Enter phone number" >
+                    </div>
+                </div>
+                
+               <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label"> Email</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter email">
+                    </div>
+                </div>
+               <div class="col-lg-6">
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label"> Email</label>
+                        <input type="email" class="form-control" id="emailInput" placeholder="Enter email">
+                    </div>
+                </div>
+                
+               
+
+               
+
+
+                <div class="col-lg-12">
+                    <div class="hstack gap-2 justify-content-end">
+                        <button type="submit" class="btn btn-primary" (click)="editCenter()">Save</button>
+                        <button type="button" class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+                    </div>
+                </div><!--end col-->
+            </div><!--end row-->
+          </form>
+    </div>
+    
+</div>

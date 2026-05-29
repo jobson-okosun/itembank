@@ -1,0 +1,229 @@
+<app-breadcrumbs
+  title="Group Table"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<!--  -->
+
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header m-0 p-0 align-items-center d-flex">
+        <h4 class="card-title ms-4 flex-grow-1">List of All Groups</h4>
+        <div class="d-flex justify-content-end gap-2 m-4">
+          <div class="btn-group" ngbDropdown>
+            <button
+              class="btn btn-soft-primary"
+              type="button"
+              id="defaultDropdown"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="true"
+              aria-expanded="false"
+              ngbDropdownToggle
+            ></button>
+            <ul
+              class="dropdown-menu"
+              ngbDropdownMenu
+              aria-labelledby="defaultDropdown"
+            >
+              <li (click)="createGroup()">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-group-line me-1 align-bottom"></i>Create Group</a
+                >
+              </li>
+
+              <li (click)="openImportModal(importModal)">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-file-download-line me-1 align-bottom"></i>Import
+                  Group</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="live-preview">
+          <div class="row">
+            <div class="col-xl-12 table-responsive">
+              <table class="table table-striped mt-1 table-hover">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase" scope="col">Group Name</th>
+                    <th class="text-uppercase" scope="col">
+                      Number Of Paticipants
+                    </th>
+                    <th class="text-uppercase" scope="col">Date Created</th>
+                    <th class="text-uppercase" scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <ng-container *ngFor="let group of groups; let i = index">
+                    <tr (click)="openDetails(group.name)">
+                      <td>
+                        <div
+                          class="d-flex justify-content-start align-items-center"
+                        >
+                          <div class="flex-grow-3 ms-2">
+                            {{ group.name }}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>{{ group.numberOfParticipant }}</td>
+
+                      <td>{{ group.dateCreated }}</td>
+                      <td>
+                        <div class="dropdown" ngbDropdown>
+                          <button
+                            class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            ngbDropdownToggle
+                            (click)="stopPropagation($event)"
+                          >
+                            <i class="ri-more-fill align-middle"></i>
+                          </button>
+                          <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            ngbDropdownMenu
+                            (click)="stopPropagation($event)"
+                          >
+                            <li (click)="openDetails(group.name)">
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i class="ri-eye-line me-2 align-middle"></i
+                                >View group information</a
+                              >
+                            </li>
+                            <li (click)="openGroupNameModal(groupNameModal)">
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i
+                                  class="ri-edit-box-line me-2 align-middle"
+                                ></i
+                                >Edit Group name</a
+                              >
+                            </li>
+                            <li (click)="confirm(i)">
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i
+                                  class="ri-delete-bin-5-line me-2 align-middle"
+                                ></i
+                                >Delete Group</a
+                              >
+                            </li>
+                            <li class="dropdown-divider"></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                    <ng-template #groupNameModal role="document" let-modal>
+                      <div class="card">
+                        <h5 class="card-header">Edit Group Name</h5>
+                        <div class="card-body">
+                          <form action="javascript:void(0);">
+                            <div class="row">
+                              <div class="col-lg-12">
+                                <div class="mb-3">
+                                  <label for="contactInput" class="form-label"
+                                    >Group Name</label
+                                  >
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    id="contactInput"
+                                    value="{{ group.name }}"
+                                  />
+                                </div>
+                              </div>
+
+                              <div class="col-lg-12">
+                                <div class="hstack gap-2 justify-content-end">
+                                  <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    (click)="editGroupName()"
+                                  >
+                                    Save
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-soft-danger"
+                                    (click)="cancel()"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                              <!--end col-->
+                            </div>
+                            <!--end row-->
+                          </form>
+                        </div>
+                      </div>
+                    </ng-template>
+                  </ng-container>
+                </tbody>
+              </table>
+            </div>
+            <!--end col-->
+
+            <ng-template #importModal role="document" let-modal>
+              <div class="card">
+                <h5 class="card-header">Import Group</h5>
+                <div class="card-body">
+                  <form action="javascript:void(0);">
+                    <div class="row">
+                      <div class="mb-4">
+                        <h5 class="fs-14 mb-1">Group File upload</h5>
+                        <p class="text-muted">Add Group File.</p>
+                        <input
+                          class="form-control"
+                          id="group-image-input"
+                          type="file"
+                          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        />
+                      </div>
+
+                      <div class="col-lg-12">
+                        <div class="hstack gap-2 justify-content-end">
+                          <button
+                            type="submit"
+                            class="btn btn-primary"
+                            (click)="addGroup()"
+                          >
+                            Import
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-soft-danger"
+                            (click)="cancel()"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </form>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+          <!--end row-->
+        </div>
+      </div>
+      <!-- end card-body -->
+    </div>
+    <!-- end card -->
+  </div>
+  <!-- end col -->
+</div>

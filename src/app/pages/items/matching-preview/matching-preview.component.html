@@ -1,0 +1,549 @@
+<div class="card">
+  <div class="card-body">
+    <div
+      class="d-flex justify-content-between flex-wrap mb-5"
+      *ngIf="!!selectedItemType && !!formType"
+    >
+      <h3 class="card-title">
+        {{ selectedItemType }} |
+        <span class="text-muted">{{ formType }}</span>
+      </h3>
+    </div>
+
+    <div
+      *ngIf="
+        previewData && previewData.itemPassage && component !== 'passageItem'
+      "
+      class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
+    >
+      <div [innerHTML]="previewData.itemPassage"></div>
+      <hr />
+    </div>
+
+    <div class="row">
+      <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <div [innerHTML]="previewData.stimulus | htmlSanitizer"></div>
+      </div>
+    </div>
+
+
+  <div #wrapper class="position-relative bg-light p-3">
+
+    <!-- SVG lines -->
+    <svg class="position-absolute top-0 start-0 w-100 h-100 pointer-events-none">
+      <line
+        *ngFor="let line of lines"
+        [attr.x1]="line.x1"
+        [attr.y1]="line.y1"
+        [attr.x2]="line.x2"
+        [attr.y2]="line.y2"
+        stroke="black"
+        stroke-width="3"
+        stroke-linecap="round">
+      </line>
+    </svg>
+
+    <div class="row">
+
+      <!-- LEFT: stems -->
+      <div class="col-md-6">
+        <div
+          #leftBox
+          *ngFor="let stem of previewData.stems; let i = index"
+          class="p-3 mb-3 bg-white rounded border"
+          style="position: relative;"
+        >
+          <div [innerHTML]="stem"></div>
+
+          <!-- connector circle -->
+          <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; right: 0;height: 100%;width: max-content;">
+            <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(10px)"></span>
+          </span>
+        </div>
+      </div>
+
+      <!-- RIGHT: drop boxes -->
+      <div class="col-md-6">
+
+        <ng-container *ngIf="!showAnswer">
+          <div
+            #rightBox
+            *ngFor="let item of matched; let i = index"
+            cdkDropList
+            [id]="'right-box-' + i"
+            [cdkDropListData]="matched" 
+            [cdkDropListConnectedTo]="['option-list']" 
+            (cdkDropListDropped)="drop($event)"
+            class="p-3 mb-3 bg-white rounded"
+            style="position: relative;min-height: 70px;"
+            >
+
+              <ng-container *ngIf="item; else emptyBox">
+
+                <div cdkDrag [cdkDragData]="item" class="cursor-move">
+                  <span [innerHTML]="item.label"></span>
+                </div> 
+
+              </ng-container>
+
+              <ng-template #emptyBox>
+                <span class="text-muted p-5">Drop here</span>
+              </ng-template>
+
+              <!-- connector circle -->
+              <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; left: 0;height: 100%;width: max-content;">
+                <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(-10px)"></span>
+              </span>
+
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="showAnswer">
+          <div
+            #rightBox
+            *ngFor="let item of matched; let i = index"
+            class="p-3 mb-3 bg-white rounded"
+            style="position: relative;min-height: 70px;">
+                <div class="cursor-move">
+                  <span [innerHTML]="previewData.options[i].label"></span>
+                </div> 
+
+                <!-- connector circle -->
+                <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; left: 0;height: 100%;width: max-content;">
+                  <span class="rounded-circle border bg-white" style="width:20px;height:20px;transform: translateX(-10px)"></span>
+                </span>
+            </div>
+        </ng-container>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- OPTIONS POOL -->
+  <div class="mt-4 bg-light p-3">
+
+    <h6>Options</h6>
+
+    <div
+      cdkDropList
+      id="option-list"
+      [cdkDropListData]="options"
+      [cdkDropListConnectedTo]="connectedLists"
+      (cdkDropListDropped)="drop($event)"
+      class="d-flex flex-wrap gap-2"
+    >
+
+      <div
+        *ngFor="let opt of options"
+        cdkDrag
+        [cdkDragData]="opt"
+        class="px-3 py-2 bg-white rounded border cursor-move"
+      >
+        <span [innerHTML]="opt.label"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+  
+    <hr />
+
+    <div class="d-flex justify-content-between">
+      <div class="form-check mt-1">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          name="showAnswer"
+          (change)="check()"
+        />
+        <label class="form-check-label">
+          Show Answer
+          <span
+            *ngIf="previewData.scoringOption.answers.length < 1"
+            class="text-danger"
+            >No answer selected</span
+          ></label
+        >
+      </div>
+
+      <div class="d-flex gap-2 float-end flex-wrap">
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            !previewData.passageId &&
+            previewData.id &&
+            component !== 'question_status' &&
+            !isEditPreview
+          "
+          class="btn btn-sm btn-danger"
+          type="button"
+          (click)="
+            openDeleteItemModal(deleteQuestionConfirmationModal, previewData.id)
+          "
+        >
+          <i class="ri-delete-bin-2-fill align-middle fs-14"></i>Delete
+        </button>
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            previewData.id &&
+            previewData.passageId &&
+            component !== 'question_status' &&
+            !isEditPreview
+          "
+          class="btn btn-sm btn-danger"
+          type="button"
+          (click)="
+            openDeletePassageItemModal(
+              deleteQuestionConfirmationModal,
+              previewData.id
+            )
+          "
+        >
+          <i class="ri-delete-bin-5-fill align-middle fs-14"></i>Delete
+        </button>
+        <button
+          *ngIf="
+            !currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            !recycleComponentActive &&
+            component !== 'question_status'
+          "
+          type="button"
+          class="btn btn-primary btn-sm"
+          (click)="edit()"
+        >
+          <i class="ri-edit-fill align-middle fs-14"></i>Edit
+        </button>
+        <button
+          *ngIf="
+            currentUser.authorities.includes('MODERATOR') &&
+            !assessmentActive &&
+            previewData.itemStatus !== 'REJECTED' &&
+            previewData.itemStatus !== 'PUBLISHED'
+          "
+          type="button"
+          class="btn btn-outline-danger btn-sm"
+          (click)="review()"
+        >
+          <!-- <i class="ri-edit-fill align-middle fs-14"></i> -->Review
+        </button>
+        <!-- <button
+          *ngIf="currentUser.authorities.includes('ADMIN')"
+          ngbTooltip="USAGE HISTORY"
+          type="button"
+          class="btn px-2 btn-icon btn-outline-info"
+          (click)="openUsageHistoryModal(itemUsageModal, previewData.id)"
+        >
+          <i class="ri-history-line"></i>
+        </button> -->
+      </div>
+    </div>
+
+    <!-- <div class="row">
+      <div class="col-xl-5 col-md-5">
+        <div
+          #listOne="cdkDropList"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+          class="list-group"
+        >
+          <div
+            *ngFor="let stem of previewData.stems"
+            [innerHTML]="stem"
+            class="list-group-item mt-2"
+          >
+            {{ stem }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-2 col-md-2 my-auto px-2">
+        <ng-container *ngFor="let stem of previewData.stems">
+          <div
+            class="d-flex align-items-center justify-content-between mb-2"
+            style="height: 46px"
+          >
+            <div
+              style="
+                width: 200px;
+                height: 5px;
+                background-color: #000;
+                border-radius: 10px;
+              "
+            ></div>
+          </div>
+        </ng-container>
+      </div>
+
+      <div *ngIf="!showAnswer" class="col-xl-5 col-md-5">
+        <div
+          #listTwo="cdkDropList"
+          class="list-group list-group"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+        >
+          <div
+            class="move list-group-item mb-2 move-cursor"
+            *ngFor="let option of opts"
+            [innerHTML]="option.label"
+            [cdkDragData]="option"
+            cdkDrag
+          >
+            {{ option }}
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showAnswer" class="col-xl-5 col-md-5">
+        <div
+          #listTwo="cdkDropList"
+          class="list-group list-group"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+        >
+          <div
+            class="move list-group-item mb-2 move-cursor"
+            *ngFor="let option of previewData.options"
+            [innerHTML]="option.label"
+            [cdkDragData]="option"
+            cdkDrag
+          >
+            {{ option }}
+          </div>
+        </div>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<ng-template #deleteQuestionConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to delete this Question?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        No, Cancel
+      </button>
+      <button
+        type="button"
+        (click)="deleteItem()"
+        class="btn btn-danger"
+        *ngIf="!processing_delete && !assessmentActive"
+      >
+        Yes, Delete It
+      </button>
+      <ng-template [ngIf]="processing_delete">
+        <button
+          class="btn btn-outline-danger btn-load"
+          [disabled]="processing_delete"
+        >
+          <span class="d-flex align-items-center">
+            <span class="spinner-border flex-shrink-0" role="status">
+              <span class="visually-hidden">Deleting...</span>
+            </span>
+            <span class="flex-grow-1 ms-2"> Deleting... </span>
+          </span>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #deletePassageQuestionConfirmationModal let-modal>
+  <div class="modal-body p-5">
+    <h4 class="mb-4 text-center">Confirm Action Dialog</h4>
+    <div class="row">
+      <p class="text-center text-muted">
+        Are you sure you want to delete this Question?
+      </p>
+    </div>
+    <div class="d-flex justify-content-center gap-2 mt-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-secondary"
+      >
+        No, Cancel
+      </button>
+      <button
+        type="button"
+        (click)="deletePassageItem()"
+        class="btn btn-danger"
+        *ngIf="!processing_delete"
+      >
+        Yes, Delete It
+      </button>
+      <ng-template [ngIf]="processing_delete">
+        <button
+          class="btn btn-outline-danger btn-load"
+          [disabled]="processing_delete"
+        >
+          <span class="d-flex align-items-center">
+            <span class="spinner-border flex-shrink-0" role="status">
+              <span class="visually-hidden">Deleting...</span>
+            </span>
+            <span class="flex-grow-1 ms-2"> Deleting... </span>
+          </span>
+        </button>
+      </ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #itemUsageModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">QUESTION USAGE HISTORY</h3>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.close('Close click')"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div
+    class="modal-body px-5"
+    style="
+      height: 350px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <ng-container
+      *ngIf="
+        !loading_usage_history &&
+        itemUsageHistory &&
+        itemUsageHistory.length > 0
+      "
+    >
+      <div *ngFor="let usage of itemUsageHistory" class="profile-timeline">
+        <!-- <div class="d-flex align-items-center">
+          <div class="flex-shrink-0 avatar-xs">
+            <div class="avatar-title rounded-circle 'bg-success'">
+              <i class="ri-file-line"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h6 class="fs-15 mb-0 fw-semibold">
+              This question was used in {{ usage.assessmentName }} -
+              <span class="fw-normal">{{
+                usage.usedAt | date : 'medium'
+              }}</span>
+            </h6>
+          </div>
+        </div> -->
+        <ngb-accordion
+          #acc="ngbAccordion"
+          activeIds="static-1"
+          [closeOthers]="true"
+        >
+          <ngb-panel id="static-1">
+            <ng-template ngbPanelTitle>
+              <a
+                class="accordion-button p-2 shadow-none"
+                data-bs-toggle="collapse"
+                href="javasccript:void(0;)"
+                aria-expanded="true"
+                aria-controls="collapseOne"
+              >
+                <div class="d-flex align-items-center">
+                  <div class="flex-shrink-0 avatar-xs">
+                    <div class="avatar-title rounded-circle 'bg-success'">
+                      <i class="ri-file-line"></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1 ms-3">
+                    <h6 class="fs-15 mb-0 fw-semibold">
+                      This question was used in {{ usage.assessmentName }}
+                      <!-- <span class="fw-normal">{{
+                            usage.usedAt | date : 'medium'
+                          }}</span> -->
+                    </h6>
+                  </div>
+                </div>
+              </a>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div
+                id="collapseOne"
+                class="accordion-collapse collapse show"
+                aria-labelledby="headingOne"
+                data-bs-parent="#accordionExample"
+              >
+                <div class="accordion-body ms-2 ps-5 pt-0">
+                  <p class="text-muted">
+                    used at {{ usage.usedAt | date : 'medium' }}.
+                  </p>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+    </ng-container>
+
+    <div
+      class="p-2"
+      *ngIf="!loading_usage_history && itemUsageHistory.length < 1"
+    >
+      <div
+        class="d-flex flex-column justify-content-between align-items-center"
+      >
+        <img
+          src="assets/images/blank_pages/empty-state.png"
+          width="200"
+          height="200"
+          class=""
+        />
+        <h4 class="text-secondary fw-bold my-2">
+          This Question has never been used for an exam!
+        </h4>
+      </div>
+    </div>
+
+    <div
+      *ngIf="loading_usage_history"
+      class="d-flex align-items-center justify-content-center"
+      style="height: 60vh"
+    >
+      <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border text-info fs-18" role="status">
+          <span class="visually-hidden">Loading question usage history...</span>
+        </div>
+        <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+          >Loading question usage history...</span
+        >
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        type="button"
+        (click)="modal.close('Close click')"
+        class="btn btn-danger"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>

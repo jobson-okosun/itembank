@@ -1,0 +1,327 @@
+<app-breadcrumbs
+  title="ITEMS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card">
+      <div class="card-header border-bottom-dashed">
+        <div class="row g-4 align-items-center">
+          <div class="col-sm">
+            <div>
+              <h5 class="card-title mb-0">Items List</h5>
+            </div>
+          </div>
+          <!-- <div class="col-sm-auto">
+            <div class="d-flex gap-2 hstack">
+              <div class="flex-shrink-0 d-flex gap-1">
+                <a
+                  routerLink="/itembank/items/new-item"
+                  class="btn btn-soft-primary"
+                  ><i class="ri-add-line align-bottom me-1"></i> New Item</a
+                >
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+      <div class="card-body border-bottom-dashed border-bottom">
+        <form
+          #filterForm="ngForm"
+          (ngSubmit)="!filterForm.invalid && filter(filterForm)"
+        >
+          <div ngModelGroup="filterInformation">
+            <div class="row g-3 mb-2">
+              <div class="col-sm-4">
+                <label for="content">Content</label>
+                <div class="search-box">
+                  <editor
+                    name="stimulus"
+                    class="editor form-control"
+                    [inline]="true"
+                    [init]="{
+                      menubar: true,
+                      base_url: '/tinymce',
+                      branding:false,
+                      suffix: '.min',
+                      toolbar:
+                        'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+                    }"
+                    [(ngModel)]="filterInformation.stimulusSearchText"
+                  ></editor>
+                  <i class="ri-search-line search-icon"></i>
+                </div>
+              </div>
+              <!--end col-->
+
+              <div class="col-sm-4">
+                <label for="title">Title</label>
+                <div class="search-box">
+                  <input
+                    type="text"
+                    name="title"
+                    class="form-control"
+                    placeholder="Search for title"
+                    [(ngModel)]="filterInformation.referenceSearchText"
+                  />
+                  <i class="ri-search-line search-icon"></i>
+                </div>
+              </div>
+              <!--end col-->
+
+              <div class="col-sm-4">
+                <app-item-tag (sendTags)="recieveTags($event)"></app-item-tag>
+              </div>
+              <!-- end col-->
+            </div>
+            <div class="row g-3">
+              <div class="col-sm-3">
+                <div>
+                  <label for="status">Status</label>
+                  <select
+                    class="form-control"
+                    data-plugin="choices"
+                    data-choices
+                    data-choices-search-false
+                    name="status"
+                    [(ngModel)]="filterInformation.status"
+                  >
+                    <option *ngFor="let status of passageStatus">
+                      {{ status }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!--end col-->
+              <div class="col-sm-3">
+                <div>
+                  <label for="passage">Passage</label>
+                  <select
+                    class="form-control"
+                    data-plugin="choices"
+                    data-choices
+                    data-choices-search-false
+                    name="passage"
+                    [(ngModel)]="filterInformation.hasPassage"
+                  >
+                    <option value="true" selected>Yes</option>
+                    <option value="false">No</option>
+                  </select>
+                </div>
+              </div>
+              <!--end col-->
+              <div class="col-sm-3">
+                <div>
+                  <label for="difficulty">Difficulty Level</label>
+                  <select
+                    class="form-control"
+                    data-plugin="choices"
+                    data-choices
+                    data-choices-search-false
+                    name="difficulty"
+                    [(ngModel)]="filterInformation.difficultyLevel"
+                  >
+                    <option *ngFor="let difficulty of difficultyLevel">
+                      {{ difficulty }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!--end col-->
+              <div class="col-sm-3">
+                <div>
+                  <label for="itemType">Item Type</label>
+                  <select
+                    class="form-control"
+                    data-plugin="choices"
+                    data-choices
+                    data-choices-search-false
+                    name="itemType"
+                    [(ngModel)]="filterInformation.itemType"
+                  >
+                    <option *ngFor="let type of itemType">
+                      {{ type }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <!--end col-->
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="col-sm-auto">
+                <button type="submit" class="btn btn-secondary mt-2">
+                  <i class="ri-equalizer-fill"></i>Filter
+                </button>
+              </div>
+              <!--end col-->
+              <div class="d-flex gap-2">
+                <div class="col-sm-auto float-end">
+                  <a
+                    routerLink="/itembank/items/subjects"
+                    class="btn btn-soft-success"
+                    ><i class="ri-list-unordered align-bottom me-1"></i>
+                    Subjects</a
+                  >
+                </div>
+                <div class="col-sm-auto float-end">
+                  <a
+                    routerLink="/itembank/items/new-item"
+                    class="btn btn-soft-primary"
+                    ><i class="ri-add-line align-bottom me-1"></i> New Item</a
+                  >
+                </div>
+              </div>
+            </div>
+            <!--end row-->
+          </div>
+        </form>
+      </div>
+      <div class="card-body">
+        <div class="live-preview">
+          <div class="list-group" *ngIf="itemsPage">
+            <a
+              class="list-group-item"
+              *ngFor="let item of itemsPage.content; let i = index"
+            >
+              <div
+                class="row item-size"
+                [ngClass]="{
+                  'item-size-expand': item.showFullItem === true
+                }"
+              >
+                <div class="col-lg-10 col-sm-auto">
+                  <div
+                    class="d-flex flex-wrap mb-2 align-items-center justify-content-between"
+                  >
+                    <div>
+                      <h5 class="list-title fs-18 mb-1">
+                        {{ item.reference }}
+                      </h5>
+                      <p class="list-text mb-0 fs-12">
+                        Author: {{ item.authorDetails.authorName }}
+                      </p>
+                    </div>
+                    <div class="d-flex gap-2 float-end">
+                      <div class="list-text mb-0 fs-12">
+                        date created: 23-11-2022
+                      </div>
+                      <div class="list-text mb-0 fs-12">
+                        last modified: 23-11-2022
+                      </div>
+                    </div>
+                  </div>
+                  <div *ngIf="item.showFullItem === false">
+                    <span
+                      >Question :
+                      <div class="list-text mb-0" [innerHTML]="item.stimulus">
+                        {{ item.stimulus | slice: 0:50 }}
+                      </div></span
+                    >
+
+                    <div class="d-flex gap-1 mt-3">
+                      <span title="ITEM TYPE" class="d-flex align-items-center">
+                        <i
+                          *ngIf="item.type === 'MCQ' || item.type === 'MRQ'"
+                          class="ri-list-check-2"
+                        ></i>
+                        <i
+                          *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+                          class="ri-article-line"
+                        ></i>
+                        <i
+                          *ngIf="item.type === 'SHORT_TEXT'"
+                          class="ri-edit-line"
+                        ></i>
+                        :
+                        <div class="badge badge-soft-success fs-10">
+                          {{ item.type }}
+                        </div>
+                      </span>
+                      <span
+                        title="ITEM STATUS"
+                        class="d-flex align-items-center"
+                      >
+                        <i
+                          *ngIf="item.itemStatus === 'PUBLISHED'"
+                          class="ri-upload-cloud-2-line"
+                        ></i>
+                        <i
+                          *ngIf="item.itemStatus === 'DRAFT'"
+                          class="ri-draft-line"
+                        ></i>
+                        :
+                        <div class="badge badge-soft-primary fs-10">
+                          {{ item.itemStatus }}
+                        </div>
+                      </span>
+                      <span
+                        title="DIFFICULTY LEVEL"
+                        class="d-flex align-items-center"
+                      >
+                        <i class="ri-line-height"></i>:
+                        <div class="badge badge-soft-danger fs-10">
+                          {{ item.difficultyLevel }}
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div *ngIf="item.showFullItem === true">
+                    <app-preview [previewData]="previewData"></app-preview>
+                  </div>
+                  <div
+                    *ngIf="item.showFullItem === false && editQuestion === true"
+                  >
+                    <app-single-response
+                      *ngIf="item.type === 'MCQ'"
+                    ></app-single-response>
+                    <app-essay-preview
+                      *ngIf="item.type === 'ESSAY_PLAIN_TEXT'"
+                      [previewData]="previewData"
+                    
+                    ></app-essay-preview>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-2 col-sm-auto d-flex flex-column gap-1 mt-1 item-tags-size"
+                >
+                  <div
+                    class="badge badge-soft-primary fs-12"
+                    style="width: fit-content"
+                  >
+                    <i class="bx bxs-purchase-tag fs-12"></i>Tag
+                  </div>
+                  <div
+                    *ngFor="let tag of item.itemTagDTOS; let i = index"
+                    class="fs-12"
+                  >
+                    {{ tag.tagName | slice: 0:50 }}
+                  </div>
+                  <div class="">
+                    <a
+                      *ngIf="!item.showFullItem"
+                      (click)="preview(item, i)"
+                      class="btn btn-sm btn-outline-success"
+                      >preview</a
+                    >
+                    <a
+                      *ngIf="item.showFullItem"
+                      (click)="hidePreview(item, i)"
+                      class="btn btn-sm btn-outline-success"
+                      >hide preview</a
+                    >
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <!-- end card-body -->
+    </div>
+    <!-- end card -->
+  </div>
+  <!-- end col -->
+</div>
+
+<!-- <app-new-item *ngIf="editQuestion === true"></app-new-item> -->

@@ -1,0 +1,41 @@
+<div class="card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between">
+      <h4>Preview {{ previewData.itemType }}</h4>
+      <div class="d-flex flex-wrap">
+        <button
+          type="button"
+          class="btn btn-primary btn-label float-end"
+          (click)="edit()"
+        >
+          <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
+        </button>
+      </div>
+    </div>
+    <hr />
+
+    <div class="row">
+      <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
+        <h4 [innerHTML]="previewData.stimulus">{{ previewData.stimulus }}</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="mb-3">
+        <editor
+          name="stimulus"
+          [(ngModel)]="answer"
+          [init]="{
+            height: 200,
+            branding:false,
+            menubar: true,
+            base_url: '/tinymce',
+           
+            toolbar:
+              'undo redo | formatselect | bold italic underline | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | charmap'
+          }"
+        ></editor>
+      </div>
+    </div>
+  </div>
+</div>

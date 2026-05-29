@@ -1,0 +1,98 @@
+<form
+  *ngIf="itemUtil.previewItem === false"
+  #itemForm="ngForm"
+  (ngSubmit)="savePassage(itemForm)"
+>
+  <div class="card">
+    <div class="card-body">
+      <div class="mb-5">
+        <div class="d-flex flex-wrap gap-2 float-end">
+          <button
+            type="button"
+            class="btn btn-outline-success waves-effect waves-light"
+            (click)="doPreview(itemForm)"
+          >
+            Preview
+          </button>
+
+          <div class="btn-group" role="group" ngbDropdown>
+            <button
+              id="btnGroupDrop1"
+              type="button"
+              class="btn btn-primary dropdown-toggle arrow-none"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              ngbDropdownToggle
+            >
+              Save <i class="mdi mdi-chevron-down"></i>
+            </button>
+            <ul
+              class="dropdown-menu"
+              aria-labelledby="btnGroupDrop1"
+              ngbDropdownMenu
+            >
+              <li>
+                <a class="dropdown-item" (click)="savePassage(itemForm)"
+                  >Save</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" (click)="savePassageAsDraft(itemForm)"
+                  >Save as draft</a
+                >
+              </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  (click)="savePassageAndAddQuestion(itemForm)"
+                  >Save and new</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="autoSizingInputGroup">Title</label>
+        <input
+          type="text"
+          name="reference"
+          class="form-control"
+          placeholder="Title"
+          [(ngModel)]="passage.reference"
+        />
+      </div>
+      <div class="mb-3">
+        <label>Passage</label>
+        <editor
+          name="stimulus"
+          #stimulus="ngModel"
+          [(ngModel)]="passage.stimulus"
+          [init]="{
+            height: 400,
+            menubar: true,
+            base_url: '/tinymce',
+            suffix: '.min',
+            branding:false,
+            toolbar:
+              'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+          }"
+        ></editor>
+      </div>
+
+      <div class="row gy-4">
+        <div class="col-12">
+          <app-item-tag #tagRef (sendTags)="recieveTags($event)"></app-item-tag>
+        </div>
+      </div>
+    </div>
+    <!--end row-->
+  </div>
+  <!-- end card -->
+</form>
+
+<app-passage-preview
+  *ngIf="itemUtil.previewItem === true"
+  (returnPreviewData)="returnData($event)"
+  [previewData]="previewData"
+></app-passage-preview>

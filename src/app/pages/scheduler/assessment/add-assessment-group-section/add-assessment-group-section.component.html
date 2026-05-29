@@ -1,0 +1,483 @@
+<!-- <div class="mx-n4 mt-n4">
+  <div class="profile-wid-bg profile-setting-img">
+    <div class="overlay-content"></div>
+  </div>
+</div> -->
+<app-breadcrumbs
+  title="GROUP SECTIONS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row">
+  <div class="col-12">
+    <!-- <div class="card mt-n5">
+        <div class="card-body p-4">
+          <div class="text-center">
+            <h5 class="fs-16 mb-1">{{ groupName }}</h5>
+            
+          </div>
+        </div>
+      </div> -->
+    <!--end card-->
+
+    <div class="card">
+      <div class="flex-grow-1">
+        <h5 class="card-title mb-0 card-header">
+          Add Assessment Group Sections
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- <div class="d-flex justify-content-start">
+            <button class="btn btn-sm btn-soft-primary mb-3" (click)="goBack()">
+              <i class="ri-arrow-left-s-line align-bottom"></i>
+            </button>
+          </div> -->
+
+        <div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Name:</label>
+                  <input #sectionNameRef class="form-control" type="text" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Section(s):</label>
+                  <ng-select
+                    [items]="Sections"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [(ngModel)]="selectedSections"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="d-flex justify-content-between">
+                <label> Filter Condition</label>      
+
+                <button type="button" class="btn btn-light btn-sm" placement="left" ngbPopover="This is the criteria for fetching candidates from the bank">
+                  <i class="ri-information-line text-primary"></i>
+
+                </button>
+                </div> -->
+
+          <!-- <div class="d-flex gap-2 mb-2 align-content-center align-items-center" *ngFor="let condition of conditions; let i =index;">
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    </select>
+     
+                <span class="fs-6 text-secondary">contains</span>
+    
+                <select class="form-select" aria-label="Default select example">
+                    <option selected>Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    </select>
+                <button class="btn btn-sm btn-soft-danger" (click)="removeCondition(i)"><i class="ri-delete-bin-line align-bottom align-middle"></i></button>
+               
+            </div> -->
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
+        <button
+          class="btn btn-sm btn-primary m-3"
+          (click)="save(sectionNameRef.value)"
+        >
+          Save
+        </button>
+      </div>
+    </div>
+
+    <!--end card-->
+  </div>
+
+  <!-- <div class="col-3">
+        <div class="card">
+            <h5 class="card-title card-header">Filter Condition(s)</h5>
+            <div class="card-body">
+                <div class=" fs-15">
+                  <span class="badge badge-soft-primary">200 level</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                  <span class="badge badge-soft-primary">Accounting</span>
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+  <!--end col-->
+
+  <!-- EDIT GROUPNAME EDIT MODAL -->
+  <ng-template #groupNameModal role="document" let-modal>
+    <div class="card">
+      <h5 class="card-header">Edit Group</h5>
+      <div class="card-body">
+        <form action="javascript:void(0);">
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="contactInput" class="form-label">Group Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="contactInput"
+                  value="group"
+                />
+              </div>
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="editGroupName()"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </form>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- ADD PARTICIPANT -->
+  <ng-template #addParticipantModal role="document" let-modal>
+    <div class="card">
+      <h5 class="card-header">Add Participant</h5>
+      <div class="card-body">
+        <form action="javascript:void(0);">
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label for="firstnameInput" class="form-label"
+                  >Frist Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="firstnameInput"
+                  placeholder="Enter Firstname "
+                />
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-lg-6">
+              <div class="mb-3">
+                <label for="lastnameInput" class="form-label">Last Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="lastnameInput"
+                  placeholder="Enter Lastname"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="phonenumberInput" class="form-label"
+                  >Phone Number</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="phonenumberInput"
+                  placeholder="Enter  phone number"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="phonenumberInput" class="form-label"
+                  >Email Address</label
+                >
+                <input
+                  type="email"
+                  class="form-control"
+                  id="phonenumberInput"
+                  placeholder="Enter Email Address"
+                />
+              </div>
+            </div>
+            <div class="col-lg-12">
+              <div class="mb-3">
+                <label for="departmentInput" class="form-label"
+                  >Department</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="departmentInput"
+                  placeholder="Enter Department"
+                />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <h5 class="fs-14 mb-1">Passport Image</h5>
+              <p class="text-muted">Add Passport Image.</p>
+              <input
+                class="form-control"
+                id="participant-image-input"
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
+              />
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="addParticipant()"
+                >
+                  Add Participant
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </form>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- IMPORT PARTICIPANT MODAL -->
+  <ng-template #importModal role="document" let-modal>
+    <div class="card">
+      <h5 class="card-header">Import Participant</h5>
+      <div class="card-body">
+        <form action="javascript:void(0);">
+          <div class="row">
+            <div class="mb-4">
+              <h5 class="fs-14 mb-1">Participant File upload</h5>
+              <p class="text-muted">Add Participant File.</p>
+              <input
+                class="form-control"
+                id="participant-image-input"
+                type="file"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              />
+            </div>
+
+            <div class="col-lg-12">
+              <div class="hstack gap-2 justify-content-end">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  (click)="addParticipant()"
+                >
+                  Import Participant
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-soft-danger"
+                  (click)="cancel()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+            <!--end col-->
+          </div>
+          <!--end row-->
+        </form>
+      </div>
+    </div>
+  </ng-template>
+
+  <!-- CUSTOM FIELD MODAL -->
+  <!-- <ng-template #customFieldModal role="document" let-modal>
+          <div class="card">
+            <h5 class="card-header">Custom Fields</h5>
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+              <thead class="table-light">
+              <tr>
+              <th scope="col">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck">
+              <label class="form-check-label" for="responsivetableCheck"></label>
+              </div>
+              </th>
+              <th scope="col">#</th>
+              <th scope="col">Date</th>
+              <th scope="col">Status</th>
+              <th scope="col">Customer</th>
+              <th scope="col">Purchased</th>
+              <th scope="col">Revenue</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+              <th scope="row">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck01">
+              <label class="form-check-label" for="responsivetableCheck01"></label>
+              </div>
+              </th>
+              <td><a href="#" class="fw-semibold">#VZ2110</a></td>
+              <td>10 Oct, 14:47</td>
+              <td class="text-success"><i class="ri-checkbox-circle-line fs-17 align-middle"></i> Paid</td>
+              <td>
+              <div class="d-flex gap-2 align-items-center">
+              <div class="flex-shrink-0">
+                <img src="assets/images/users/avatar-3.jpg" alt="" class="avatar-xs rounded-circle" />
+              </div>
+              <div class="flex-grow-1">
+                Jordan Kennedy
+              </div>
+              </div>
+              </td>
+              <td>Mastering the grid</td>
+              <td>$9.98</td>
+              </tr>
+              <tr>
+              <th scope="row">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck02">
+              <label class="form-check-label" for="responsivetableCheck02"></label>
+              </div>
+              </th>
+              <td><a href="#" class="fw-semibold">#VZ2109</a></td>
+              <td>17 Oct, 02:10</td>
+              <td class="text-success"><i class="ri-checkbox-circle-line fs-17 align-middle"></i> Paid</td>
+              <td>
+              <div class="d-flex gap-2 align-items-center">
+              <div class="flex-shrink-0">
+                <img src="assets/images/users/avatar-4.jpg" alt="" class="avatar-xs rounded-circle" />
+              </div>
+              <div class="flex-grow-1">
+                Jackson Graham
+              </div>
+              </div>
+              </td>
+              <td>Splashify</td>
+              <td>$270.60</td>
+              </tr>
+              <tr>
+              <th scope="row">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck03">
+              <label class="form-check-label" for="responsivetableCheck03"></label>
+              </div>
+              </th>
+              <td><a href="#" class="fw-semibold">#VZ2108</a></td>
+              <td>26 Oct, 08:20</td>
+              <td class="text-primary"><i class="ri-refresh-line fs-17 align-middle"></i> Refunded</td>
+              <td>
+              <div class="d-flex gap-2 align-items-center">
+              <div class="flex-shrink-0">
+                <img src="assets/images/users/avatar-5.jpg" alt="" class="avatar-xs rounded-circle" />
+              </div>
+              <div class="flex-grow-1">
+                Lauren Trujillo
+              </div>
+              </div>
+              </td>
+              <td>Wireframing Kit for Figma</td>
+              <td>$145.42</td>
+              </tr>
+              <tr>
+              <th scope="row">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck04">
+              <label class="form-check-label" for="responsivetableCheck04"></label>
+              </div>
+              </th>
+              <td><a href="#" class="fw-semibold">#VZ2107</a></td>
+              <td>02 Nov, 04:52</td>
+              <td class="text-danger"><i class="ri-close-circle-line fs-17 align-middle"></i> Cancel</td>
+              <td>
+              <div class="d-flex gap-2 align-items-center">
+              <div class="flex-shrink-0">
+                <img src="assets/images/users/avatar-6.jpg" alt="" class="avatar-xs rounded-circle" />
+              </div>
+              <div class="flex-grow-1">
+                Curtis Weaver
+              </div>
+              </div>
+              </td>
+              <td>Wireframing Kit for Figma</td>
+              <td>$170.68</td>
+              </tr>
+              <tr>
+              <th scope="row">
+              <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="" id="responsivetableCheck05">
+              <label class="form-check-label" for="responsivetableCheck05"></label>
+              </div>
+              </th>
+              <td><a href="#" class="fw-semibold">#VZ2106</a></td>
+              <td>10 Nov, 07:20</td>
+              <td class="text-success"><i class="ri-checkbox-circle-line fs-17 align-middle"></i> Paid</td>
+              <td>
+              <div class="d-flex gap-2 align-items-center">
+              <div class="flex-shrink-0">
+                <img src="assets/images/users/avatar-1.jpg" alt="" class="avatar-xs rounded-circle" />
+              </div>
+              <div class="flex-grow-1">
+                Jason schuller
+              </div>
+              </div>
+              </td>
+              <td>Splashify</td>
+              <td>$350.87</td>
+              </tr>
+              </tbody>
+              <tfoot class="table-light">
+              <tr>
+              <td colspan="6">Total</td>
+              <td>$947.55</td>
+              </tr>
+              </tfoot>
+              </table>
+              
+              </div>
+             
+          </div>
+        </ng-template> -->
+</div>
