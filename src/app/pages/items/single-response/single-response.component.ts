@@ -812,13 +812,10 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   doPreview(itemForm: any) {
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
-    
 
     if (this.editData) {
-      console.log('DO PREVIEW SINGLE RESPONSE "EDIT": ', this.editData);
       this.previewData = this.editData;
     } else {
-      console.log('DO PREVIEW SINGLE RESPONSE "ITEM": ', item);
       this.previewData = item;
     }
 

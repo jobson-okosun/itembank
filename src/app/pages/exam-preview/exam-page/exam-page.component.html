@@ -9,7 +9,7 @@
 
 <div *ngIf="currentSectionData  && currentCandidateData" style="font-size: {{ fontSize }}">
   <div class="full-height">
-    <div class="d-flex text-secondary justify-content-between">
+    <div class="d-flex text-secondary justify-content-around align-center align-items-center mb-6">
       <div class="d-none d-md-block">
         <div
           class="d-flex justify-content-between mx-2 align-items-center mt-2"
@@ -48,7 +48,8 @@
         </div>
       </div>
 
-      <div class="d-flex assessment-name justify-content-center mt-3">
+      <!-- <div class="d-flex assessment-name justify-content-center mt-3 border border-secondary"> -->
+        <div>
         <p class="m-0 text-black fs-16 fw-bold">
           {{ assessmentName }}
         </p>
@@ -73,8 +74,8 @@
                 </option>
               </select> -->
 
-              <!--            font size settings -->
-              <!-- <div
+              <!-- font size settings -->
+              <div
                 [ngbTooltip]="'Font settings '"
                 triggers="mouseenter:mouseleave"
                 class="d-none d-md-block"
@@ -134,7 +135,7 @@
                     </div>
                   </div>
                 </div>
-              </div> -->
+              </div>
 
 
 
@@ -403,7 +404,7 @@
           </div>
         </div>
         <!-- full screen toggle -->
-        <div
+        <!-- <div
           [ngbTooltip]="'Full screen'"
           triggers="mouseenter:mouseleave"
           class="d-none d-md-block"
@@ -413,7 +414,7 @@
             class="ri-fullscreen-line"
             style="cursor: pointer"
           ></i>
-        </div>
+        </div> -->
         <!-- exam timer -->
         <!-- <div
           [ngbTooltip]="'Exam time'"
@@ -603,7 +604,7 @@
         </button> -->
       </div>
 
-      <div class="mx-3 d-none d-lg-block d-sm-block d-md-block mt-2">
+      <div class="mx-3 d-none d-lg-block d-sm-block d-md-block my-2">
         <div class="row">
           <div class="d-flex align-items-center">
             <div class="col-2">
@@ -625,7 +626,7 @@
                     {{ section.name }}
                   </option>
                 </select>
-                <div
+                <!-- <div
                   class="progress my-2"
                   [ngbTooltip]="
                     'Section progress (' +
@@ -639,7 +640,7 @@
                     role="progressbar"
                     style="width: {{ getAttemptedQuestionPecentage() }}%"
                   ></div>
-                </div>
+                </div> -->
               </div>
             </div>
             <div class="col-8 text-center">
