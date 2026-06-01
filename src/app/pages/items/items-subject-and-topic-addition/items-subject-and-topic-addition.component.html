@@ -1,0 +1,22 @@
+<div class="row gy-4">
+  <div class="col-4">
+    <label for="choices-multiple-default" class="form-label"
+    >Subject</label
+  >
+    <ng-select 
+    [items]="subjects"
+    [multiple]="false"
+    bindLabel="subjectName"
+    name="subject"
+    [ngModel]="selectedSubject"
+    (ngModelChange)="saveItemTrail($event)"></ng-select>
+  </div>
+
+  <div class="col-4">
+    <app-item-topic [label]="'Topic'"></app-item-topic>
+  </div>
+
+  <div class="col-4">
+    <app-item-topic [label]="'Subtopic'"></app-item-topic>
+  </div>
+</div>

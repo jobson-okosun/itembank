@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,MAAM,CAAA;EACJ,KAAK,EAAE,eAAe;CACvB",
+    "sources": [
+        "ordering.component.scss"
+    ],
+    "names": [],
+    "file": "ordering.component.css"
+}

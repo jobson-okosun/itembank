@@ -1,0 +1,630 @@
+<app-breadcrumbs
+  title="CENTER DETAILS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="card card-body">
+  <div class="d-flex justify-content-start">
+    <button class="btn btn-sm btn-soft-primary mb-3" (click)="goBack()">
+      <i class="ri-arrow-left-s-line align-bottom"></i>
+      Go Back
+    </button>
+  </div>
+<div class="card-body card">
+  <div class="step-arrow-nav mt-n3 mx-n3 mb-3">
+    <ul
+      ngbNav
+      #customNav="ngbNav"
+      [activeId]="1"
+      class="nav nav-pills custom-nav nav-justified"
+      role="tablist"
+    >
+      <li [ngbNavItem]="1" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-home-2-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i>
+          <br>
+          Center Information
+        </a>
+        <ng-template ngbNavContent>
+          
+            <div class="mb-3 align-items-center d-flex">
+              <h4 class="card-title mb-0 flex-grow-1 text-primary">
+                Center Information
+              </h4>
+            </div>
+            <!-- end card header -->
+
+            <div class="card card-body">
+              <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                  <tbody>
+                    <tr>
+                      <th scope="row">Center Name</th>
+                      <td>Miracle Center</td>
+                      <td></td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row">System Type</th>
+                      <td>
+                    
+                        Thick Client
+      
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">State</th>
+                      <td>
+                        
+                        Lagos
+                        
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Address</th>
+                      <td>
+                       
+                        Lagos, opposite zitel plaza
+                     
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Capacity</th>
+                      <td>
+                        250
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">GPS Location</th>
+                      <td>
+                        Anywhere Belle Face
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">Center ID</th>
+                      <td>
+                        <div dir="ltr">
+                         
+                          490
+                        </div>
+                      </td>
+                      <td></td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row">Network Test Score</th>
+                      <td>30%</td>
+                      <td></td>
+                    </tr>
+
+                    <tr>
+                      <th scope="row">Center IP Address</th>
+                      <td>192.168.0.121</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!-- end table -->
+              </div>
+              <!-- end table responsive -->
+            </div>
+        
+          <!-- end card-body -->
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-user-2-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i>
+          <br>
+          Contact Person
+        </a>
+        <ng-template ngbNavContent>
+          
+            <div class="mb-3 align-items-center d-flex">
+              <h4 class="card-title mb-0 flex-grow-1 text-primary">
+                Contact Person
+              </h4>
+            </div>
+            <!-- end card header -->
+
+            <!-- <p class="text-muted">This is a description about the center</p> -->
+
+            <div class="card card-body table-responsive">
+              <table class="table align-middle mb-0">
+                <tbody>
+                  <tr>
+                    <th scope="row">Name</th>
+                    <td>John Doe</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Phone Number</th>
+                    <td>< 0908437282</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Email Address</th>
+                    <td>John@gmail.com</td>
+                    <td></td>
+                  </tr>
+
+                  <tr>
+                    <th scope="row">Bank Account number</th>
+                    <td>238023239023 -Fidelity Bank</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- end table -->
+            </div>
+          
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="3" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-bank-card-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i>
+          <br>
+          Installed Browsers
+        </a>
+        <ng-template ngbNavContent>
+          
+            <div class="mb-3 align-items-center d-flex">
+              <h4 class="card-title mb-0 flex-grow-1 text-primary">
+                Installed Browsers
+              </h4>
+            </div>
+            <!-- end card header -->
+
+            <div class="card card-body">
+              <ul>
+                <li>Chrome</li>
+                <li>Firefox</li>
+                <li>Microsoft Edge</li>
+                <li>Brave</li>
+              </ul>
+              <!-- end table -->
+            </div>
+          
+          <!-- end card -->
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="4" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-function-fill fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i>
+         <br>
+          Installed Applications
+        </a>
+        <ng-template ngbNavContent>
+          
+            <div class="align-items-center d-flex">
+              <h4 class="card-title mb-3 flex-grow-1 text-primary">
+                Installed Applications
+              </h4>
+            </div>
+
+            <div class="card card-body">
+              <ul>
+                <li>VS Code</li>
+                <li>Firefox</li>
+                <li>Microsoft Edge</li>
+                <li>Brave</li>
+                <li>Word</li>
+                <li>Any Desk</li>
+                <li>Git Bash</li>
+              </ul>
+            </div>
+         
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="5" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-computer-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i
+          >
+         <br> Computer Systems
+        </a>
+        <ng-template ngbNavContent>
+          
+            <div class="align-items-center d-flex">
+              <h4 class="card-title mb-3 flex-grow-1 text-primary">
+                Computer Systems
+              </h4>
+            </div>
+
+            <div class="card card-body table-responsive">
+              <table class="table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th scope="col">System Name</th>
+                    <th scope="col">Operating System(OS)</th>
+                    <th scope="col">System Type</th>
+                    <th scope="col">CPU Architecture</th>
+                    <th scope="col">CPU Type</th>
+                    <th scope="col">CPU Speed</th>
+                    <th scope="col">RAM Size</th>
+                    <th scope="col">HDD Size</th>
+                    <th scope="col">Network Card</th>
+                    <th scope="col">Network Speed</th>
+                    <th scope="col">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>HP Pavilion</td>
+                    <td>Ubuntu</td>
+                    <td>Fat Client</td>
+                    <td>ABC Architecture</td>
+                    <td>Intel Core I5</td>
+                    <td>2.5Ghz</td>
+                    <td>6gb</td>
+                    <td>250gb</td>
+                    <td>Beta card</td>
+                    <td>50%</td>
+                    <td>
+                      <span class="badge bg-danger"> Backup</span>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td>HP Pavilion</td>
+                    <td>Ubuntu</td>
+                    <td>Fat Client</td>
+                    <td>ABC Architecture</td>
+                    <td>Intel Core I5</td>
+                    <td>2.5Ghz</td>
+                    <td>6gb</td>
+                    <td>250gb</td>
+                    <td>Beta card</td>
+                    <td>50%</td>
+                    <td>
+                      <span class="badge bg-primary"> Main</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <!-- end table -->
+            </div>
+          
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="6" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-wifi-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i
+          >
+          <br>
+          Network Test Score
+        </a>
+        <ng-template ngbNavContent>
+          
+           
+                <div class="align-items-center d-flex">
+                  <h4 class="card-title mb-3 flex-grow-1 text-primary">
+                    Network Test Score
+                  </h4>
+                </div>
+                <!-- end card header -->
+
+                <div class="card card-body">
+                  <p class="text-muted"></p>
+                  <div class="d-flex align-items-center pb-2">
+                    <div class="flex-shrink-0 me-2">
+                      <div class="avatar-xs">
+                        <div
+                          class="avatar-title bg-light rounded-circle text-muted fs-16"
+                        >
+                          <i class="ri-wifi-line"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <div
+                        class="progress animated-progess custom-progress progress-label"
+                      >
+                        <div
+                          class="progress-bar bg-primary"
+                          role="progressbar"
+                          style="width: 15%"
+                          aria-valuenow="15"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        >
+                          <div class="label">15%</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+           
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="7" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-checkbox-circle-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i
+          >
+          <br>
+          Assessment History
+        </a>
+        <ng-template ngbNavContent>
+         
+            
+                <div class="d-flex align-items-center">
+                    <h5 class="card-title mb-3 flex-grow-1 text-primary">
+                       Assesment History
+                    </h5>
+                </div>
+           
+            <div class="row">
+                <div class="col-lg-12">
+                    <!-- <div class="card"> -->
+                        
+                        <div class="card">
+                            <div>
+                                <div class="table-responsive table-card ">
+                                  <div class="card-body table-responsive">
+                                    <p-table
+                                    [value]="assessments"
+                                    [tableStyle]="{ }"
+                                    styleClass="p-datatable-gridlines"
+                                    #dt1
+                                    dataKey="id"
+                                    [tableStyle]="{'min-width': '50rem'}"
+                                    >
+                                    <ng-template pTemplate="header">
+                                      <tr>
+                                        <th pSortableColumn="name">
+                                          <div class="flex justify-content-between align-items-center">
+                                            NAME
+                                            <p-sortIcon field="name"></p-sortIcon>
+                                            <p-columnFilter
+                                              type="text"
+                                              field="name"
+                                              display="menu"
+                                              class="ml-auto"
+                                            ></p-columnFilter>
+                                          </div>
+                                        </th>
+                                        <th pSortableColumn="deliveryMethod">
+                                          <div class="flex justify-content-between align-items-center">
+                                            MODE
+                                            <p-sortIcon field="deliveryMethod"></p-sortIcon>
+                                            <p-columnFilter
+                                              type="text"
+                                              field="deliveryMethod"
+                                              display="menu"
+                                              class="ml-auto"
+                                            ></p-columnFilter>
+                                          </div>
+                                        </th>
+                                        <th pSortableColumn="totalItems">
+                                          <div class="flex justify-content-between align-items-center">
+                                            ITEMS
+                                            <p-sortIcon field="totalItems"></p-sortIcon>
+                                            <p-columnFilter
+                                              type="text"
+                                              field="totalItems"
+                                              display="menu"
+                                              class="ml-auto"
+                                            ></p-columnFilter>
+                                          </div>
+                                        </th>
+                                    
+                                        <th pSortableColumn="totalSections">
+                                          <div class="flex justify-content-between align-items-center">
+                                            SECTIONS
+                                            <p-sortIcon field="totalSections"></p-sortIcon>
+                                            <p-columnFilter
+                                              type="text"
+                                              field="totalSections"
+                                              display="menu"
+                                              class="ml-auto"
+                                            ></p-columnFilter>
+                                          </div>
+                                        </th>
+                                        <th pSortableColumn="duration">
+                                          <div class="flex justify-content-between align-items-center">
+                                            DURATION
+                                            <p-sortIcon field="duration"></p-sortIcon>
+                                            <p-columnFilter
+                                              type="text"
+                                              field="duration"
+                                              display="menu"
+                                              class="ml-auto"
+                                            ></p-columnFilter>
+                                          </div>
+                                        </th>
+                                    
+                                        <th pSortableColumn="numberOfParticipants">
+                                            <div class="flex justify-content-between align-items-center">
+                                              PARTICIPANTS
+                                              <p-sortIcon field="numberOfParticipants"></p-sortIcon>
+                                              <p-columnFilter
+                                                type="text"
+                                                field="numberOfParticipants"
+                                                display="menu"
+                                                class="ml-auto"
+                                              ></p-columnFilter>
+                                            </div>
+                                          </th>
+                                    
+                                          <th pSortableColumn="center">
+                                            <div class="flex justify-content-between align-items-center">
+                                              CENTERS
+                                              <p-sortIcon field="center"></p-sortIcon>
+                                              <p-columnFilter
+                                                type="text"
+                                                field="center"
+                                                display="menu"
+                                                class="ml-auto"
+                                              ></p-columnFilter>
+                                            </div>
+                                          </th>
+                                    
+                                          <th pSortableColumn="dateCreated">
+                                            <div class="flex justify-content-between align-items-center">
+                                              CREATED AT
+                                              <p-sortIcon field="dateCreated"></p-sortIcon>
+                                              <p-columnFilter
+                                                type="text"
+                                                field="dateCreated"
+                                                display="menu"
+                                                class="ml-auto"
+                                              ></p-columnFilter>
+                                            </div>
+                                          </th>
+                                    
+                                          <th pSortableColumn="dateCreated">
+                                            <div class="flex justify-content-between align-items-center">
+                                              EXAM DATE
+                                              <p-sortIcon field="dateCreated"></p-sortIcon>
+                                              <p-columnFilter
+                                                type="text"
+                                                field="dateCreated"
+                                                display="menu"
+                                                class="ml-auto"
+                                              ></p-columnFilter>
+                                            </div>
+                                          </th>
+                                         
+                                    
+                                      </tr>
+                                    </ng-template>
+                                    
+                                    <ng-template pTemplate="body" let-assessment>
+                                      <tr>
+                                        <td>
+                                          <div
+                                            class="d-flex justify-content-start align-items-center"
+                                          >
+                                            <div class="flex-grow-3 ms-2">
+                                              {{ assessment.name }}
+                                            </div>
+                                          </div>
+                                        </td>
+                                    
+                                        
+                                        <td>{{ assessment.deliveryMethod }}</td>
+                                        <td>{{ assessment.totalItems }}</td>
+                                        <td>{{ assessment.totalSections }}</td>
+                                        <td>{{ assessment.duration }}</td>
+                                        <td>{{ assessment.numberOfParticipants }}</td>
+                                        <td>{{ assessment.center }}</td>
+                                        <td>{{ assessment.dateCreated }}</td>
+                                        <td>{{ assessment.dateCreated }}</td>
+                                        
+                                       
+                                          
+                                          
+                                        
+                                        
+                                       
+                                        
+                                        
+                                      </tr>
+                                    
+                                      
+                                    </ng-template>
+                                    </p-table> 
+                                </div>
+                                </div>
+                              
+                            </div>
+                        </div>
+                    <!-- </div> -->
+                </div>
+                <!--end col-->
+            </div>
+         
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="8" class="nav-item">
+        <a
+          ngbNavLink
+          class="nav-link fs-15 p-3"
+          data-bs-toggle="tab"
+          role="tab"
+        >
+          <i
+            class="ri-server-line fs-16 p-2 bg-soft-primary text-primary rounded-circle align-middle me-2"
+          ></i
+          >
+          <br>
+          Thin Client Servers
+        </a>
+        <ng-template ngbNavContent>
+          
+           
+                <div class="align-items-center d-flex">
+                  <h4 class="card-title mb-3 flex-grow-1 text-primary">Thin Client Servers</h4>
+                </div>
+                <!-- end card header -->
+
+              content
+             
+              <!-- end card -->
+            
+        </ng-template>
+      </li>
+    </ul>
+
+    <div class="card-body p-4">
+      <div class="tab-content">
+        <div [ngbNavOutlet]="customNav"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+

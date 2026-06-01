@@ -1,0 +1,72 @@
+<div class="px-3">
+  <div class="card card-body" style="height: 62vh">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 mt-2">
+        <div class="text-primary d-flex justify-content-between">
+          <span class="fw-bold py-lg-2">
+            Question {{ currentQuestionNumber + 1 }}
+          </span>
+          <app-revisit-button
+            [questionNumber]="currentQuestionNumber"
+          ></app-revisit-button>
+        </div>
+        <span
+          class="mt-3"
+          [innerHtml]="getCurrentQuestion().passage_stimulus"
+        ></span>
+        <span
+          class="fw-normal lh-2 content-box"
+          [innerHtml]="getCurrentQuestion().stimulus"
+        ></span>
+      </div>
+
+      <ngx-simplebar style="height: 40vh; overflow-x: hidden">
+        <div class="row d-flex align-items-stretch mt-3">
+          <!-- Stems List -->
+          <div
+            class="col-lg-5 col-md-4 col-sm-4 col-4 d-flex flex-column match-height"
+          >
+            <div id="listOne" class="list-group scrollable-container">
+              <div
+                *ngFor="let stem of getCurrentQuestion().stems"
+                class="list-group-item flex-grow-1 p-2 overflow-scrollable"
+                [innerHTML]="stem"
+              ></div>
+            </div>
+          </div>
+
+          <!-- Separator Column -->
+          <div
+            class="col-lg-2 col-md-1 col-sm-1 col-1 d-flex flex-column align-items-center justify-content-between separator-container"
+          >
+            <div
+              *ngFor="let option of getCurrentQuestion().options"
+              class="separator-line"
+            ></div>
+          </div>
+
+          <!-- Options List -->
+          <div
+            class="col-lg-5 col-md-4 col-sm-4 col-4 d-flex flex-column match-height"
+          >
+            <div id="listTwo" class="list-group scrollable-container">
+              <div
+                class="move list-group-item flex-grow-1 p-2 move-cursor overflow-scrollable"
+                *ngFor="let option of getCurrentQuestion().options"
+                [innerHTML]="option.label"
+                draggable="true"
+                (dragstart)="onDragStart($event, option)"
+                (dragover)="onDragOver($event)"
+                (drop)="onDrop($event, option)"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </ngx-simplebar>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Ensure columns stretch properly */
+</style>

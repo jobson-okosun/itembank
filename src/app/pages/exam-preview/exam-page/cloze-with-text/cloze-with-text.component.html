@@ -1,0 +1,45 @@
+<div class="px-3">
+
+
+  <div class="card card-body question-card" style="height: 62vh">
+    <div class="">
+      <div class="text-primary d-flex justify-content-between">
+        <span class="fw-bold py-lg-2"> Question {{ currentQuestionNumber + 1 }}</span>
+        <app-revisit-button
+          [questionNumber]="currentQuestionNumber"
+        ></app-revisit-button>
+      </div>
+  
+      <ngx-simplebar style="height: 420px;overflow-x: hidden;">
+        <div class="row pt-3 pb-3">
+          <div class="col-lg-12 col-md-12 col-sm-12 align-items-center">
+            <span class="mt-3" [innerHtml]="this.getCurrentQuestion().passage_stimulus">
+              <!-- {{ }} -->
+            </span>
+            <span
+              class="fw-normal"
+              *ngFor="let item of clozeRenderArray; let i = index"
+            >
+              <span
+                [innerHtml]="
+                  item.text.replaceAll('<p>', '').replaceAll('</p>', '')
+                "
+              ></span>
+              <input
+                *ngIf="item.textBox == true"
+                class="mb-2 text-secondary"
+                type="text"
+                style="border: none; border-bottom: 1px dashed rgb(173, 173, 173)"
+                #boxRef
+                [ngModel]="getCurrentQuestion().responses[i]"
+                (keyup)="captureResponses(i, boxRef.value)"
+              />
+            </span>
+          </div>
+        </div>
+      </ngx-simplebar>
+    </div>
+  </div>
+
+</div>
+

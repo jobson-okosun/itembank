@@ -1,0 +1,3111 @@
+<!-- <app-breadcrumbs title="ASSESSMENT DETAILS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs> -->
+
+<div class="row mt-2">
+  <div class="col-lg-12">
+    <div class="card mt-n4 mx-n4 mb-n5 border-0">
+      <div class="" style="background: #d5edff">
+        <div class="card-body pb-4 mb-5" *ngIf="assessmentDetails">
+          <div class="row">
+            <div class="col-md">
+              <div class="row align-items-center">
+                <div class="col-md-auto">
+                  <div class="avatar-sm mb-md-0 mb-4">
+                    <div class="avatar-title bg-primary rounded-circle">
+                      {{
+                        assessmentDetails.name.charAt(0) +
+                          assessmentDetails.name.charAt(1)
+                      }}
+                    </div>
+                  </div>
+                </div>
+                <!--end col-->
+                <div class="col-md">
+                  <h5 class="fw-semibold" id="ticket-title">
+                    {{ assessmentDetails.name }}
+                  </h5>
+                  <div class="hstack gap-3 flex-wrap">
+                    <div class="text-muted">
+                      <i class="ri-group-line align-bottom me-1"></i
+                      ><span> {{ assessmentDetails.participants }}</span>
+                    </div>
+                    <div class="vr"></div>
+                    <div class="text-muted">
+                      <i class="ri-time-line align-bottom me-1"></i
+                      ><span> {{ assessmentDetails.duration }}</span>
+                    </div>
+                    <div class="vr"></div>
+                    <!-- <div class="text-muted"><i class="ri-time-line align-bottom me-1"></i><span> 60min</span></div>
+                                    <div class="vr"></div> -->
+                    <div class="text-muted">
+                      Start Date :
+                      <span class="fw-medium" id="create-date">{{
+                        assessmentDetails.startDate
+                      }}</span>
+                    </div>
+                    <div class="vr"></div>
+                    <div class="text-muted">
+                      End Date :
+                      <span class="fw-medium" id="due-date">{{
+                        assessmentDetails.endDate
+                      }}</span>
+                    </div>
+                    <!-- <div class="vr"></div>
+                    <div class="text-muted">
+                      Registration Link: https://unilag-reg.com
+                      <i class="ri-file-copy-2-line align-bottom"></i>
+                    </div> -->
+                    <!-- <div class="badge rounded-pill bg-success fs-12" id="ticket-priority">High</div> -->
+                  </div>
+
+                  <div class="row mt-2">
+                    <div class="hstack gap-3 flex-wrap">
+                      <!-- <div class="text-muted"><i class=" ri-group-line align-bottom me-1"></i><span>2,500</span></div>
+                                    <div class="vr"></div>
+                                    <div class="text-muted">Create Date : <span class="fw-medium " id="create-date">20 Dec, 2021</span></div>
+                                    <div class="vr"></div>
+                                    <div class="text-muted">Due Date : <span class="fw-medium" id="due-date">29 Dec, 2021</span></div>
+                                    <div class="vr"></div> -->
+                      <div class="text-muted">
+                        Method:
+                        <span class="badge rounded-pill bg-success fs-12">{{
+                          assessmentDetails.deliveryMethod
+                        }}</span>
+                      </div>
+                      <div class="vr"></div>
+                      <!-- <div class="text-muted">Sections: <span class="fw-medium" >4</span></div> -->
+                      <a
+                        (click)="openSectionsModal(sectionsModal)"
+                        href="javascript:void(0);"
+                        >Sections: {{ assessmentDetails.sections }}</a
+                      >
+                    </div>
+
+                    <div class="row"></div>
+                  </div>
+                </div>
+                <!--end col-->
+              </div>
+              <!--end row-->
+            </div>
+            <!--end col-->
+            <!-- <div class="col-md-auto mt-md-0 mt-4">
+                          <div class="hstack gap-1 flex-wrap" ngbDropdown>
+                              <button type="button" class="btn avatar-xs mt-n1 p-0 favourite-btn active">
+                                  <span class="avatar-title bg-transparent fs-15">
+                                      <i class="ri-star-fill"></i>
+                                  </span>
+                              </button>
+                              <button type="button" class="btn py-0 fs-16 text-body arrow-none" id="settingDropdown" data-bs-toggle="dropdown" ngbDropdownToggle>
+                                  <i class="ri-share-line"></i>
+                              </button>
+                              <ul class="dropdown-menu" aria-labelledby="settingDropdown" ngbDropdownMenu>
+                                  <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-eye-fill align-bottom me-2 text-muted"></i> View</a></li>
+                                  <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-share-forward-fill align-bottom me-2 text-muted"></i> Share with</a></li>
+                                  <li><a class="dropdown-item" href="javascript:void(0);"><i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete</a></li>
+                                </ul>
+                              <button type="button" class="btn py-0 fs-16 text-body">
+                                  <i class="ri-flag-line"></i>
+                              </button>
+                          </div>
+                      </div>end col -->
+
+            <!-- <button
+              type="button"
+              class="btn py-0 fs-16 text-body arrow-none"
+              data-bs-placement="top"
+              data-bs-toggle="tooltip"
+              ngbTooltip="Tooltip on top"
+              title="Participant"
+            >
+              <i class="ri-share-line"></i>
+            </button> -->
+          </div>
+          <!--end row-->
+        </div>
+        <!-- end card body -->
+      </div>
+    </div>
+    <!-- end card -->
+  </div>
+  <!-- end col -->
+</div>
+<!-- end row -->
+<div class="d-flex justify-content-end mb-3">
+  <!-- <h5 class="text-muted mb-3">Assessment Details</h5> -->
+  <div class="btn-group d-flex" ngbDropdown>
+    <button
+      class="btn btn-soft-primary dropdown-toggle"
+      type="button"
+      id="defaultDropdown"
+      data-bs-toggle="dropdown"
+      data-bs-auto-close="true"
+      aria-expanded="false"
+      ngbDropdownToggle
+    >
+      Advance Option
+    </button>
+    <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="defaultDropdown">
+      <li (click)="openModal(assessmentSettingsModal)">
+        <a class="dropdown-item" href="javascript:void(0);">
+          <i class="ri-folder-settings-line align-bottom text-center"></i>
+          Exam Settings</a
+        >
+      </li>
+
+      <li (click)="openModal(sectionSettingsModal)">
+        <a class="dropdown-item" href="javascript:void(0);">
+          <i class="ri-list-settings-line align-bottom"></i> Section Settings</a
+        >
+      </li>
+
+      <!-- <li><a class="dropdown-item" href="javascript:void(0);">Menu item</a></li> -->
+    </ul>
+  </div>
+</div>
+
+<div class="d-flex">
+  <div class="col-lg-3 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+      *ngIf="assessmentSectionGroups"
+    >
+      <h5>Groups:</h5>
+      <h4>{{ assessmentSectionGroups.total }}</h4>
+    </div>
+  </div>
+  <div class="col-lg-3 col-sm-12 col-md-6 card p-3" *ngIf="centers">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+      *ngIf="centers"
+    >
+      <h5>Centers:</h5>
+      <h4>{{ centers.total }}</h4>
+    </div>
+  </div>
+  <div class="col-lg-3 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+      *ngIf="data"
+    >
+      <h5>Participants:</h5>
+      <h4>{{ data.total }}</h4>
+    </div>
+  </div>
+  <div class="col-lg-3 col-sm-12 col-md-6 card p-3">
+    <div
+      class="d-flex flex-row gap-2 justify-content-center align-items-center"
+      *ngIf="data"
+    >
+      <h5>Active Admins:</h5>
+      <h4>{{ assessmentDetails.totalActiveAdmins }}</h4>
+    </div>
+  </div>
+</div>
+
+<!-- Accordion -->
+<div class="mb-4">
+  <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
+    <!-- SECTION GROUP -->
+    <ngb-panel id="static-1">
+      <ng-template ngbPanelTitle class="accordion-header">
+        <h2 class="accordion-header" id="gen-ques-headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#gen-ques-collapseOne"
+            aria-expanded="false"
+            aria-controls="gen-ques-collapseOne"
+          >
+            SECTION GROUP({{ assessmentSectionGroups.total }})
+          </button>
+        </h2>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="d-flex justify-content-end gap-3 mb-2">
+          <button
+            class="btn btn-primary"
+            (click)="openSectionsModal(addSectionGroup)"
+          >
+            Add Group Section
+          </button>
+
+          <div class="hstack flex-wrap gap-2">
+            <button
+              type="button"
+              class="btn btn-light btn-sm"
+              placement="left"
+              ngbPopover="Group Section allows you to group participants of an assesssment into different sections"
+            >
+              <i class="ri-information-line text-primary"></i>
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <div class="card-body">
+            <div class="row">
+              <div class="mt-1">
+                <p-table
+                  [value]="assessmentSectionGroups.sectionGroups"
+                  styleClass="p-datatable-gridlines"
+                  #dt1
+                  dataKey="id"
+                  [tableStyle]="{ 'min-width': '100%' }"
+                >
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pResizableColumn pSortableColumn="name">
+                        <div
+                          class="flex justify-content-between align-items-center"
+                        >
+                          NAME
+                          <p-sortIcon field="name"></p-sortIcon>
+                          <p-columnFilter
+                            type="text"
+                            field="name"
+                            display="menu"
+                            class="ml-auto"
+                          ></p-columnFilter>
+                        </div>
+                      </th>
+                      <th
+                        pResizableColumn
+                        pSortableColumn="numberOfParticipant"
+                      >
+                        <div
+                          class="flex justify-content-between align-items-center"
+                        >
+                          PARTICIPANTS
+                          <p-sortIcon field="numberOfParticipant"></p-sortIcon>
+                          <!-- <p-columnFilter
+                      type="text"
+                      field="numberOfParticipant"
+                      display="menu"
+                      class="ml-auto"
+                    ></p-columnFilter> -->
+                        </div>
+                      </th>
+                      <th pResizableColumn pSortableColumn="sections">
+                        <div
+                          class="flex justify-content-between align-items-center"
+                        >
+                          SECTIONS
+                          <!-- <p-sortIcon field="programName"></p-sortIcon>
+                    <p-columnFilter
+                      type="text"
+                      field="sections"
+                      display="menu"
+                      class="ml-auto"
+                    ></p-columnFilter> -->
+                        </div>
+                      </th>
+
+                      <th>
+                        <div
+                          class="flex justify-content-between align-items-center"
+                        >
+                          ACTIONS
+                        </div>
+                      </th>
+                    </tr>
+                  </ng-template>
+                  >
+                  <ng-template pTemplate="body" let-sectionGroup>
+                    <tr>
+                      <td>
+                        <div
+                          class="d-flex justify-content-start align-items-center"
+                        >
+                          <div class="flex-grow-3 ms-2">
+                            {{ sectionGroup.groupName }}
+                          </div>
+                        </div>
+                      </td>
+
+                      <td>{{ sectionGroup.participants }}</td>
+                      <td>
+                        <div *ngFor="let section of sectionGroup.sections">
+                          <span class="badge badge-soft-primary">{{
+                            section.name
+                          }}</span>
+                        </div>
+                      </td>
+
+                      <!-- <td>
+                        <div *ngFor="let parameter of group.parameters">
+                          <span class="badge badge-soft-primary">{{
+                            parameter.field + ":" + " " + parameter.value
+                          }}</span>
+                        </div>
+                      </td> -->
+
+                      <td>
+                        <div class="dropdown" ngbDropdown>
+                          <button
+                            class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            ngbDropdownToggle
+                            (click)="stopPropagation($event)"
+                          >
+                            <i class="ri-more-fill align-middle"></i>
+                          </button>
+                          <ul
+                            class="dropdown-menu dropdown-menu-end"
+                            ngbDropdownMenu
+                            (click)="stopPropagation($event)"
+                          >
+                            <li (click)="viewGroupParticipant(sectionGroup.id)">
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i class="ri-eye-line me-2 align-middle"></i
+                                >View Group Participants</a
+                              >
+                            </li>
+                            <li
+                              (click)="
+                                editAssessmentGroupSections(sectionGroup.id)
+                              "
+                            >
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i
+                                  class="ri-edit-box-line me-2 align-middle"
+                                ></i
+                                >Edit Group</a
+                              >
+                            </li>
+                            <li>
+                              <a
+                                class="dropdown-item"
+                                href="javascript:void(0);"
+                                ><i
+                                  class="ri-delete-bin-5-line me-2 align-middle"
+                                ></i
+                                >Delete Group</a
+                              >
+                            </li>
+                            <li class="dropdown-divider"></li>
+                          </ul>
+                        </div>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+              <!--end col-->
+            </div>
+            <!--end row-->
+          </div>
+        </div>
+      </ng-template>
+    </ngb-panel>
+
+    <!-- CENTERS -->
+    <ngb-panel id="static-2">
+      <!-- CENTERS -->
+      <ng-template ngbPanelTitle class="accordion-header">
+        <h2 class="accordion-header" id="gen-ques-headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#gen-ques-collapseOne"
+            aria-expanded="false"
+            aria-controls="gen-ques-collapseOne"
+          >
+            CENTERS({{ centers.total }})
+          </button>
+        </h2>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="d-flex justify-content-end gap-3 mb-2">
+          <div class="btn-group d-flex" ngbDropdown>
+            <button
+              class="btn btn-soft-primary dropdown-toggle"
+              type="button"
+              id="defaultDropdown"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="true"
+              aria-expanded="false"
+              ngbDropdownToggle
+            >
+              Advance Option
+            </button>
+            <ul
+              class="dropdown-menu"
+              ngbDropdownMenu
+              aria-labelledby="defaultDropdown"
+            >
+              <li (click)="openAddCenterModal(addCenterModal)">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-user-add-line align-bottom text-center"></i>
+                  Add Center</a
+                >
+              </li>
+
+              <li (click)="openModal(importCenterModal)">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-file-download-line align-bottom"></i> Import
+                  Centers</a
+                >
+              </li>
+            </ul>
+          </div>
+          <div class="hstack flex-wrap gap-2">
+            <button
+              type="button"
+              class="btn btn-light btn-sm"
+              placement="left"
+              ngbPopover="This are all the centers taking this assessment"
+            >
+              <i class="ri-information-line text-primary"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="" *ngIf="centers != null">
+          <div class="live-preview">
+            <div class="row">
+              <div class="table-responsive">
+                <ngx-simplebar style="height: 50vh">
+                  <div class="card-body" style="height: 50vh">
+                    <div class="row">
+                      <div class="mt-1">
+                        <p-table
+                          [value]="centers.centers"
+                          [tableStyle]="{}"
+                          styleClass="p-datatable-gridlines"
+                          #dt1
+                          dataKey="id"
+                        >
+                          <ng-template pTemplate="header">
+                            <tr>
+                              <th pSortableColumn="name">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  NAME
+                                  <p-sortIcon field="name"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="name"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <th pSortableColumn="id">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  CENTER ID
+                                  <p-sortIcon field="id"></p-sortIcon>
+                                  <!-- <p-columnFilter
+                              type="text"
+                              field="id"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter> -->
+                                </div>
+                              </th>
+                              <th pSortableColumn="location">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  ADDRESS
+                                  <p-sortIcon field="location"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="location"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="capacity">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  PARTICIPANTS
+                                  <p-sortIcon field="capacity"></p-sortIcon>
+                                  <!-- <p-columnFilter
+                              type="text"
+                              field="capacity"
+                              display="menu"
+                              class="ml-auto"
+                            ></p-columnFilter> -->
+                                </div>
+                              </th>
+                              <!-- <th pSortableColumn="parameters">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  CONDITIONS
+                                </div>
+                              </th> -->
+                              <th pSortableColumn="examinerName">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  ACTIONS
+                                </div>
+                              </th>
+                            </tr>
+                          </ng-template>
+                          >
+                          <ng-template pTemplate="body" let-center>
+                            <tr>
+                              <td>
+                                <div
+                                  class="d-flex justify-content-start align-items-center"
+                                >
+                                  <div class="flex-grow-3 ms-2">
+                                    {{ center.centerName }}
+                                  </div>
+                                </div>
+                              </td>
+                              <td>
+                                <div
+                                  class="d-flex justify-content-start align-items-center"
+                                >
+                                  <div class="flex-grow-3 ms-2">
+                                    {{ center.centerId }}
+                                  </div>
+                                </div>
+                              </td>
+                              <td>{{ center.address }}</td>
+
+                              <td>{{ center.participants }}</td>
+                              <!-- <td> 
+                          <div *ngFor="let section of c.sections">
+                            <span style="margin-right: 1px;" class=" badge badge-soft-primary">{{section}}</span> 
+          
+                          </div>
+                         
+                          
+                        </td> -->
+
+                              <!-- <td>
+                                <div *ngFor="let filter of center.filters">
+                                  <span class="badge badge-soft-success">
+                                    {{ filter.fieldName }}
+                                    <span class="badge bg-success">
+                                      {{ filter.operatorType }}
+                                    </span>
+                                    <span> {{ filter.fieldValue }}</span>
+                                  </span>
+                                </div>
+                              </td> -->
+
+                              <td>
+                                <div class="dropdown" ngbDropdown>
+                                  <button
+                                    class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    ngbDropdownToggle
+                                    (click)="stopPropagation($event)"
+                                  >
+                                    <i class="ri-more-fill align-middle"></i>
+                                  </button>
+                                  <ul
+                                    class="dropdown-menu dropdown-menu-end"
+                                    ngbDropdownMenu
+                                    (click)="stopPropagation($event)"
+                                  >
+                                    <li (click)="viewCenterDetails(center.id)">
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-eye-line me-2 align-middle"
+                                        ></i
+                                        >View center details</a
+                                      >
+                                    </li>
+                                    <li
+                                      (click)="editAssessmentCenter(center.id)"
+                                    >
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-edit-box-line me-2 align-middle"
+                                        ></i
+                                        >Edit Center</a
+                                      >
+                                    </li>
+                                    <li>
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-delete-bin-5-line me-2 align-middle"
+                                        ></i
+                                        >Delete Center</a
+                                      >
+                                    </li>
+                                    <li class="dropdown-divider"></li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-template>
+                        </p-table>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </div>
+                </ngx-simplebar>
+              </div>
+              <!--end col-->
+            </div>
+            <!--end row-->
+          </div>
+          <p-paginator
+            [totalRecords]="centers.total"
+            (onPageChange)="onCenterPageChange($event)"
+            [first]="1"
+            [rowsPerPageOptions]="[5, 10, 15]"
+            [rows]="5"
+            [pageLinkSize]="5"
+            [showCurrentPageReport]="true"
+          >
+          </p-paginator>
+        </div>
+      </ng-template>
+    </ngb-panel>
+
+    <!-- PARTICIPANTS -->
+    <ngb-panel id="static-3">
+      <!-- PARTICIPANTS -->
+      <ng-template ngbPanelTitle class="accordion-header">
+        <h2 class="accordion-header" id="gen-ques-headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#gen-ques-collapseOne"
+            aria-expanded="false"
+            aria-controls="gen-ques-collapseOne"
+          >
+            PARTICIPANTS({{ data.total }})
+          </button>
+        </h2>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <ng-container *ngIf="data && tableContents && tableHeaders">
+          <div class="d-flex justify-content-end gap-3 mb-2">
+            <div class="btn-group d-flex" ngbDropdown>
+              <button
+                class="btn btn-soft-primary dropdown-toggle"
+                type="button"
+                id="defaultDropdown"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="true"
+                aria-expanded="false"
+                ngbDropdownToggle
+              >
+                Advance Option
+              </button>
+              <ul
+                class="dropdown-menu"
+                ngbDropdownMenu
+                aria-labelledby="defaultDropdown"
+              >
+                <li (click)="openParticipantModal(addParticipantModal)">
+                  <a class="dropdown-item" href="javascript:void(0);">
+                    <i class="ri-user-add-line align-bottom text-center"></i>
+                    Add Participant</a
+                  >
+                </li>
+
+                <li (click)="openModal(importParticipantModal)">
+                  <a class="dropdown-item" href="javascript:void(0);">
+                    <i class="ri-file-download-line align-bottom"></i> Import
+                    Participants</a
+                  >
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="javascript:void(0);"
+                    (click)="goToRegFieldSettingsPage()"
+                  >
+                    <i class="ri-list-settings-line align-bottom"></i>
+                    Registration Field Settings
+                  </a>
+                </li>
+
+                <!-- <li><a class="dropdown-item" href="javascript:void(0);">Menu item</a></li> -->
+              </ul>
+            </div>
+            <div class="hstack flex-wrap gap-2">
+              <button
+                type="button"
+                class="btn btn-light btn-sm"
+                placement="left"
+                ngbPopover="This are all the centers taking this assessment"
+              >
+                <i class="ri-information-line text-primary"></i>
+              </button>
+            </div>
+          </div>
+          <div class="">
+            <div class="live-preview">
+              <div class="row">
+                <div class="table-responsive">
+                  <div class="d-flex justify-content-between card-body">
+                    <div class="input-group w-50">
+                      <select
+                        [(ngModel)]="searchParticipantPayload.searchField"
+                        class="form-select form-select-sm"
+                        name="searchField"
+                      >
+                        <option selected disabled>Search by</option>
+                        <option
+                          *ngFor="let searchableField of searchableFields"
+                          value="{{ searchableField }}"
+                        >
+                          {{ searchableField }}
+                        </option>
+                      </select>
+
+                      <input
+                        [(ngModel)]="searchParticipantPayload.searchValue"
+                        type="text"
+                        class="form-control"
+                        placeholder="Search value.."
+                        name="searchValue"
+                      />
+                      <button
+                        class="btn btn-sm btn-success"
+                        (click)="searchParticipant()"
+                        [disabled]="
+                          searchParticipantPayload.searchValue === '' ||
+                          searchParticipantPayload.searchField === undefined
+                        "
+                      >
+                        Search
+                      </button>
+
+                      <button
+                        class="btn btn-sm btn-primary"
+                        [disabled]="
+                          searchParticipantPayload.searchValue === '' ||
+                          searchParticipantPayload.searchField === undefined
+                        "
+                        (click)="clearSearch()"
+                        
+                      >
+                        Clear Search
+                      </button>
+                    </div>
+
+                    <!-- <div>
+                      <button class="btn btn-primary btn-sm">Move selected</button>
+                    </div> -->
+                  </div>
+                  <ngx-simplebar style="height: 50vh">
+                    <div class="card-body" style="min-height: 50vh">
+                      <div class="row">
+                        <div class="mt-1">
+                          <p-table
+                            [value]="tableContents"
+                            styleClass="p-datatable-gridlines"
+                            #dt1
+                            dataKey="id"
+                            [tableStyle]="{ 'min-width': '75rem' }"
+                          >
+                            <ng-template pTemplate="header">
+                              <tr>
+                                <th
+                                  pSortableColumn="fields"
+                                  *ngFor="let key of headerKeys"
+                                >
+                                  <div
+                                    class="flex align-items-center"
+                                    style="min-width: 12rem"
+                                    [ngStyle]="{
+                                      'min-width':
+                                        tableHeaders[key] === 'CENTERID' ||
+                                        tableHeaders[key] === 'GROUP'
+                                          ? '8rem'
+                                          : '12rem'
+                                    }"
+                                  >
+                                    {{ tableHeaders[key] }}
+                                    <p-sortIcon field="{{ '' }}"></p-sortIcon>
+                                    <p-columnFilter
+                                      type="text"
+                                      field="{{ '' }}"
+                                      display="menu"
+                                      class="ml-auto"
+                                    ></p-columnFilter>
+                                  </div>
+                                </th>
+
+                                <th>
+                                  <div
+                                    class="flex justify-content-between align-items-center"
+                                  >
+                                    SUSPENDED
+                                  </div>
+                                </th>
+                                <th>
+                                  <div
+                                    class="flex justify-content-between align-items-center"
+                                  >
+                                    ACTIONS
+                                  </div>
+                                </th>
+                              </tr>
+                            </ng-template>
+
+                            <ng-template pTemplate="body" let-tableContents>
+                              <tr>
+                                <td *ngFor="let header of headersToMap">
+                                  <div
+                                    class="d-flex justify-content-start align-items-center"
+                                  >
+                                    <div class="flex-grow-3 ms-2">
+                                      <span
+                                        class="badge badge-sm bg-primary"
+                                        *ngIf="
+                                          tableContents.groupName === null &&
+                                          header === 'GROUP'
+                                        "
+                                        >Unpublished</span
+                                      >
+                                      <span
+                                        class="badge badge-sm bg-primary"
+                                        *ngIf="
+                                          tableContents.groupName !== null &&
+                                          header === 'GROUP'
+                                        "
+                                        >{{ tableContents.groupName }}</span
+                                      >
+                                      <span
+                                        class="badge badge-sm bg-primary"
+                                        *ngIf="
+                                          tableContents.centerId === null &&
+                                          header === 'CENTERID'
+                                        "
+                                        >Unpublished</span
+                                      >
+                                      <span
+                                        class="badge badge-sm bg-primary"
+                                        *ngIf="
+                                          tableContents.centerId !== null &&
+                                          header === 'CENTERID'
+                                        "
+                                        >{{ tableContents.centerId }}</span
+                                      >
+                                      {{ tableContents.fields[header] }}
+                                    </div>
+                                  </div>
+                                </td>
+
+                                <td>
+                                  <span
+                                    [ngClass]="
+                                      tableContents.suspended === true
+                                        ? 'badge badge-soft-danger badge-border'
+                                        : 'badge badge-soft-success badge-border'
+                                    "
+                                  >
+                                    {{ tableContents.suspended }}</span
+                                  >
+                                </td>
+
+                                <td>
+                                  <div class="dropdown" ngbDropdown>
+                                    <button
+                                      class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                                      type="button"
+                                      data-bs-toggle="dropdown"
+                                      aria-expanded="false"
+                                      ngbDropdownToggle
+                                      (click)="stopPropagation($event)"
+                                    >
+                                      <i class="ri-more-fill align-middle"></i>
+                                    </button>
+                                    <ul
+                                      class="dropdown-menu dropdown-menu-end"
+                                      ngbDropdownMenu
+                                      (click)="stopPropagation($event)"
+                                    >
+                                      <li
+                                        *ngIf="
+                                          tableContents.suspended === false
+                                        "
+                                        (click)="
+                                          suspendOrResumeParticipant(
+                                            tableContents.id,
+                                            true
+                                          )
+                                        "
+                                      >
+                                        <a
+                                          class="dropdown-item"
+                                          href="javascript:void(0)"
+                                          data-bs-toggle="modal"
+                                        >
+                                          <i
+                                            class="ri-pause-circle-line align-bottom me-2 text-muted"
+                                          ></i>
+                                          Suspend
+                                        </a>
+                                      </li>
+                                      <li
+                                        *ngIf="tableContents.suspended === true"
+                                        (click)="
+                                          suspendOrResumeParticipant(
+                                            tableContents.id,
+                                            false
+                                          )
+                                        "
+                                      >
+                                        <a
+                                          class="dropdown-item"
+                                          href="javascript:void(0)"
+                                          data-bs-toggle="modal"
+                                        >
+                                          <i
+                                            class="ri-play-circle-line align-bottom me-2 text-muted"
+                                          ></i>
+                                          Resume
+                                        </a>
+                                      </li>
+
+                                      <li class="dropdown-divider"></li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            </ng-template>
+                          </p-table>
+                        </div>
+
+                        <!--end col-->
+                      </div>
+                      <!--end row-->
+                    </div>
+                  </ngx-simplebar>
+                </div>
+
+                <p-paginator
+                  (onPageChange)="onPageChange($event)"
+                  [first]="1"
+                  [totalRecords]="data.total"
+                  [rowsPerPageOptions]="[5, 10, 15]"
+                  [rows]="5"
+                  [pageLinkSize]="5"
+                  [showCurrentPageReport]="true"
+                ></p-paginator>
+                <!--end col-->
+              </div>
+              <!--end row-->
+            </div>
+          </div>
+        </ng-container>
+      </ng-template>
+    </ngb-panel>
+    <!-- Admin -->
+    <ngb-panel id="static-4">
+      <!-- ADMIN -->
+      <ng-template ngbPanelTitle class="accordion-header">
+        <h2 class="accordion-header" id="gen-ques-headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#gen-ques-collapseOne"
+            aria-expanded="false"
+            aria-controls="gen-ques-collapseOne"
+          >
+            ADMINISTRATORS({{ centerAdmins.total }})
+          </button>
+        </h2>
+      </ng-template>
+      <ng-template ngbPanelContent>
+        <div class="d-flex justify-content-end gap-3 mb-2">
+          <div class="btn-group d-flex" ngbDropdown>
+            <button
+              class="btn btn-soft-primary dropdown-toggle"
+              type="button"
+              id="defaultDropdown"
+              data-bs-toggle="dropdown"
+              data-bs-auto-close="true"
+              aria-expanded="false"
+              ngbDropdownToggle
+            >
+              Advance Option
+            </button>
+            <ul
+              class="dropdown-menu"
+              ngbDropdownMenu
+              aria-labelledby="defaultDropdown"
+            >
+              <li (click)="openParticipantModal(addAdministratorModal)">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-user-add-line align-bottom text-center"></i>
+                  Add Administrator</a
+                >
+              </li>
+
+              <li (click)="openModal(importAdministratorModal)">
+                <a class="dropdown-item" href="javascript:void(0);">
+                  <i class="ri-file-download-line align-bottom"></i> Import
+                  Adminstrators</a
+                >
+              </li>
+
+              <!-- <li><a class="dropdown-item" href="javascript:void(0);">Menu item</a></li> -->
+            </ul>
+          </div>
+          <div class="hstack flex-wrap gap-2">
+            <button
+              type="button"
+              class="btn btn-light btn-sm"
+              placement="left"
+              ngbPopover="This are all the centers taking this assessment"
+            >
+              <i class="ri-information-line text-primary"></i>
+            </button>
+          </div>
+        </div>
+        <div class="">
+          <div class="live-preview">
+            <div class="row">
+              <div class="table-responsive">
+                <ngx-simplebar style="height: 50vh">
+                  <div class="card-body" style="height: 50vh">
+                    <div class="row">
+                      <div class="mt-1">
+                        <p-table
+                          [value]="centerAdmins.centerAdmins"
+                          [tableStyle]="{}"
+                          styleClass="p-datatable-gridlines"
+                          #dt1
+                          dataKey="id"
+                        >
+                          <ng-template pTemplate="header">
+                            <tr>
+                              <th pSortableColumn="firstName">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  NAME
+                                  <p-sortIcon field="firstName"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="firstName"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <!-- <th pSortableColumn="lastName">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  LASTNAME
+                                  <p-sortIcon field="lastName"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="lastName"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th> -->
+                              <th pSortableColumn="email">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  EMAIL
+                                  <p-sortIcon field="email"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="email"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="phoneNumber">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  PHONE
+                                  <p-sortIcon field="phoneNumber"></p-sortIcon>
+                                  <!-- <p-columnFilter
+                            type="text"
+                            field="capacity"
+                            display="menu"
+                            class="ml-auto"
+                          ></p-columnFilter> -->
+                                </div>
+                              </th>
+                              <th pSortableColumn="address">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  ADDRESS
+                                  <p-sortIcon field="address"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="address"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <th pSortableColumn="state">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  STATE
+                                  <p-sortIcon field="state"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="state"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <th pSortableColumn="id">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  CENTER ID
+                                  <p-sortIcon field="id"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="22"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <th pSortableColumn="status">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  STATUS
+                                  <p-sortIcon field="status"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="status"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+
+                              <th pSortableColumn="suspended">
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  SUSPENDED
+                                  <p-sortIcon field="suspended"></p-sortIcon>
+                                  <p-columnFilter
+                                    type="text"
+                                    field="suspended"
+                                    display="menu"
+                                    class="ml-auto"
+                                  ></p-columnFilter>
+                                </div>
+                              </th>
+                              <th>
+                                <div
+                                  class="flex justify-content-between align-items-center"
+                                >
+                                  ACTIONS
+                                </div>
+                              </th>
+                            </tr>
+                          </ng-template>
+                          >
+                          <ng-template
+                            pTemplate="body"
+                            let-administrator
+                            let-rowIndex="rowIndex"
+                          >
+                            <tr>
+                              <td>
+                                <div
+                                  class="d-flex justify-content-start align-items-center"
+                                >
+                                  <div class="flex-grow-3 ms-2">
+                                    {{ administrator.name }}
+                                  </div>
+                                </div>
+                              </td>
+                              <!-- <td>
+                                <div
+                                  class="d-flex justify-content-start align-items-center"
+                                >
+                                  <div class="flex-grow-3 ms-2">
+                                    {{ administrator.lastName }}
+                                  </div>
+                                </div>
+                              </td> -->
+                              <td>{{ administrator.email }}</td>
+
+                              <td>{{ administrator.phone }}</td>
+                              <!-- <td> 
+                        <div *ngFor="let section of c.sections">
+                          <span style="margin-right: 1px;" class=" badge badge-soft-primary">{{section}}</span> 
+        
+                        </div>
+                       
+                        
+                      </td> -->
+
+                              <td>
+                                {{ administrator.address }}
+                              </td>
+                              <td>
+                                {{ administrator.state }}
+                              </td>
+                              <td>
+                                {{ administrator.centerIdString }}
+                              </td>
+
+                              <td>
+                                <div class="form-check form-switch">
+                                  <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    role="switch"
+                                    id="flexSwitchCheckChecked"
+                                    [checked]="administrator.enabled"
+                                    disabled
+                                  />
+                                  <label
+                                    class="form-check-label"
+                                    for="flexSwitchCheckChecked"
+                                  ></label>
+                                </div>
+                                <!-- <span class="badge badge-soft-primary">{{ administrator.status }}</span>  -->
+                              </td>
+
+                              <td>
+                                <span
+                                  class="badge badge-soft-success badge-border"
+                                  >{{ administrator.suspended }}</span
+                                >
+                              </td>
+                              <td>
+                                <div class="dropdown" ngbDropdown>
+                                  <button
+                                    class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    ngbDropdownToggle
+                                    (click)="stopPropagation($event)"
+                                  >
+                                    <i class="ri-more-fill align-middle"></i>
+                                  </button>
+                                  <ul
+                                    class="dropdown-menu dropdown-menu-end"
+                                    ngbDropdownMenu
+                                    (click)="stopPropagation($event)"
+                                  >
+                                    <!-- <li>
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-swap-line me-2 align-middle"
+                                        ></i
+                                        >Change center</a
+                                      >
+                                    </li> -->
+
+                                    <li
+                                      *ngIf="administrator.suspended === false"
+                                      (click)="
+                                        suspendOrResumeAdmin(
+                                          administrator.id,
+                                          true
+                                        )
+                                      "
+                                    >
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-pause-circle-line me-2 align-middle"
+                                        ></i
+                                        >Suspend</a
+                                      >
+                                    </li>
+
+                                    <li
+                                      *ngIf="administrator.suspended === true"
+                                      (click)="
+                                        suspendOrResumeAdmin(
+                                          administrator.id,
+                                          false
+                                        )
+                                      "
+                                    >
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-play-circle-line me-2 align-middle"
+                                        ></i
+                                        >Resume</a
+                                      >
+                                    </li>
+
+                                    <li
+                                      (click)="
+                                        openEditAdminModal(
+                                          editAdministratorModal,
+                                          rowIndex
+                                        )
+                                      "
+                                    >
+                                      <a
+                                        class="dropdown-item"
+                                        href="javascript:void(0);"
+                                        ><i
+                                          class="ri-edit-2-line me-2 align-middle"
+                                        ></i
+                                        >Edit
+                                      </a>
+                                    </li>
+                                    <li class="dropdown-divider"></li>
+                                  </ul>
+                                </div>
+                              </td>
+                            </tr>
+                          </ng-template>
+                        </p-table>
+                      </div>
+                      <!--end col-->
+                    </div>
+                    <!--end row-->
+                  </div>
+                </ngx-simplebar>
+              </div>
+              <!--end col-->
+            </div>
+            <!--end row-->
+          </div>
+        </div>
+        <p-paginator
+          [rows]="5"
+          [totalRecords]="centerAdmins.total"
+          (onPageChange)="onCenterAdminPageChange($event)"
+          [first]="1"
+          [rowsPerPageOptions]="[5, 10, 15]"
+          [pageLinkSize]="5"
+          [showCurrentPageReport]="true"
+        >
+        </p-paginator>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+</div>
+
+<!-- modals -->
+<ng-template #newGroupModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Create new Group</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label for="contactInput" class="form-label">Group Name</label>
+              <input type="text" class="form-control" id="contactInput" />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Section(s)</label>
+                  <ng-select
+                    [items]="Sections"
+                    [multiple]="true"
+                    bindLabel="name"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12 col-md-6">
+            <div class="mb-3">
+              <label for="contactInput" class="form-label"
+                >Fetch Participant From</label
+              >
+              <ng-select [items]="Default" [multiple]="true" bindLabel="name">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="hstack gap-2 justify-content-end">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              type="button"
+              class="btn btn-soft-danger"
+              (click)="cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #addCenterModal role="document" let-modal>
+  <div class="modal-body">
+    <div class="flex-grow-1">
+      <h5 class="card-title mb-0 card-header">Add Assessment Center</h5>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <span class="text-danger">*</span>
+                <label class="form-label">Center Name:</label>
+                <input #centerNameRef class="form-control" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <span class="text-danger">*</span>
+                <label class="form-label">Center ID:</label>
+                <input #centerIdRef class="form-control" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Center Address:</label>
+                <textarea
+                  #centerAddressRef
+                  class="form-control"
+                  type="text"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Center Capacity:</label>
+                <input #centerCapacityRef class="form-control" type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Center State:</label>
+                <input #centerStateRef class="form-control" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Map Location:</label>
+                <input #centerMapLocationRef class="form-control" type="text" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Contact Person Phone number:</label>
+                <input
+                  #contactPersonPhoneRef
+                  class="form-control"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="mb-3">
+            <div class="col-lg-12 col-md-6">
+              <div class="mb-3">
+                <label class="form-label">Contact Person email :</label>
+                <input
+                  #contactPersonEmailRef
+                  class="form-control"
+                  type="email"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-soft-danger" (click)="cancel()">Cancel</button>
+      <button
+        class="btn btn-primary"
+        (click)="
+          addNewAssessmentCenter(
+            centerNameRef.value,
+            centerIdRef.value,
+            centerAddressRef.value,
+            centerCapacityRef.value,
+            centerStateRef.value,
+            centerMapLocationRef.value,
+            contactPersonPhoneRef.value,
+            contactPersonEmailRef.value
+          )
+        "
+      >
+        Add Assessment Center
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editGroupModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Edit Group</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label for="contactInput" class="form-label">Group Name</label>
+              <input type="text" class="form-control" id="contactInput" />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">Section</label>
+              <input type="number" class="form-control" />
+            </div>
+          </div>
+
+          <div class="col-lg-12 col-md-6">
+            <div class="mb-3">
+              <label for="contactInput" class="form-label">Fetch From</label>
+              <ng-select [items]="Default" [multiple]="true" bindLabel="name">
+              </ng-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-12">
+          <div class="hstack gap-2 justify-content-end">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button
+              type="button"
+              class="btn btn-soft-danger"
+              (click)="cancel()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #importParticipantModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Participants</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="processingTemplateDownload == true"
+        (click)="downloadRegFieldTemplate()"
+      >
+        <span>
+          <!-- Border spinner -->
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Participants File upload</h5>
+            <p class="text-muted">Add Participants File.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="importParticipants()"
+                [disabled]="processingImport == true"
+              >
+                <span *ngIf="processingImport == false"> Import</span>
+                <span *ngIf="processingImport == true"> Importing...</span>
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn btn-soft-danger"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #importCenterModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Centers</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="processingTemplateDownload == true"
+        (click)="downloadTemplateForCenterUpload()"
+      >
+        <span>
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Centers File upload</h5>
+            <p class="text-muted">Add Centers File.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="importCenters()"
+                [disabled]="processingImport == true"
+              >
+                <span *ngIf="processingImport == false"> Import</span>
+                <span *ngIf="processingImport == true"> Importing...</span>
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn btn-soft-danger"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #importParticipantModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Participants</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        [disabled]="processingTemplateDownload == true"
+        (click)="downloadRegFieldTemplate()"
+      >
+        <span>
+          <!-- Border spinner -->
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Participants File upload</h5>
+            <p class="text-muted">Add Participants File.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="importParticipants()"
+                [disabled]="processingImport == true"
+              >
+                <span *ngIf="processingImport == false"> Import</span>
+                <span *ngIf="processingImport == true"> Importing...</span>
+              </button>
+              <button
+                type="button"
+                (click)="cancel()"
+                class="btn btn-soft-danger"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #importAdministratorModal role="document" let-modal>
+  <div class="card">
+    <div class="d-flex justify-content-between card-header">
+      <h5>Import Administrators</h5>
+      <button
+        class="btn btn-sm btn-outline-primary"
+        (click)="downloadTemplateForAdminUpload()"
+        [disabled]="processingTemplateDownload == true"
+      >
+        <!-- Download Template <i class="ri-download-cloud-2-line align-bottom"></i> -->
+
+        <span>
+          <!-- Border spinner -->
+          <div
+            *ngIf="processingTemplateDownload == true"
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="sr-only">Downloading...</span>
+          </div>
+        </span>
+        <span *ngIf="processingTemplateDownload == false"
+          >Download Template
+          <i class="ri-download-cloud-2-line align-bottom"></i
+        ></span>
+      </button>
+    </div>
+
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Admin File upload</h5>
+            <p class="text-muted">Add Admin File.</p>
+            <input
+              class="form-control"
+              id="group-image-input"
+              type="file"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="uploadAdmins()"
+              >
+                Import
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #addParticipantModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Add Participant</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-6" *ngFor="let regField of registrationFields">
+            <div class="mb-3">
+              <label class="form-label">{{ regField.name }}</label>
+              <span *ngIf="regField.mandatory" class="text-danger">*</span>
+
+              <!-- TEXT TYPE CONTAINER -->
+              <ng-container *ngIf="regField.type_ === 'TEXTBOX'">
+                <input
+                  type="text"
+                  class="form-control"
+                  [placeholder]="regField.name"
+                  #inputValueRef
+                  (keyup)="captureFormValue(regField.id, inputValueRef.value)"
+                />
+              </ng-container>
+
+              <!-- SELECT TYPE CONTAINER -->
+              <ng-container *ngIf="regField.type_ === 'SELECT'">
+                <select
+                  class="form-select mb-3"
+                  #selectedValueRef
+                  (change)="
+                    captureFormValue(regField.id, selectedValueRef.value)
+                  "
+                >
+                  <option selected disabled>Select Option</option>
+                  <option *ngFor="let option of regField.values">
+                    {{ option }}
+                  </option>
+                </select>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Center</label>
+              <select
+                [(ngModel)]="selectedCentedId"
+                class="form-select mb-3"
+                name="center"
+              >
+                <option selected disabled>Select center</option>
+                <option
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Group</label>
+
+              <select
+                [(ngModel)]="selectedSectionGroupToAddParticipant"
+                class="form-select mb-3"
+                name="section"
+              >
+                <option selected disabled>Select Section Group</option>
+
+                <option
+                  *ngFor="let section of assessmentSectionGroups.sectionGroups"
+                  value="{{ section.id }}"
+                >
+                  {{ section.groupName }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- <div class="col-lg-6">
+            <div class="mb-3">
+              <label for="lastnameInput" class="form-label">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastnameInput"
+                placeholder="Enter Lastname"
+              />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label  class="form-label"
+                >Phone Number</label
+              >
+              <input
+                type="text"
+                class="form-control"
+               
+                placeholder="Enter  phone number"
+              />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label  class="form-label"
+                >Email Address</label
+              >
+              <input
+                type="email"
+                class="form-control"
+               
+                placeholder="Enter Email Address"
+              />
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label  class="form-label">Department</label>
+              <input
+                type="text"
+                class="form-control"
+               
+                placeholder="Enter Department"
+              />
+            </div>
+          </div> -->
+
+          <div class="mb-4">
+            <h5 class="fs-14 mb-1">Passport Image</h5>
+            <p class="text-muted">Add Passport Image.</p>
+            <input
+              class="form-control"
+              id="participant-image-input"
+              type="file"
+              accept="image/png, image/gif, image/jpeg"
+            />
+          </div>
+
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="addParticipant()"
+              >
+                Add Participant
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #addAdministratorModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Add Administrator</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input
+                #firstNameRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  first name"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Last name</label>
+              <input
+                #lastNameRef
+                type="email"
+                class="form-control"
+                placeholder="Enter Last name"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                #emailRef
+                type="email"
+                class="form-control"
+                placeholder="Enter email"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input
+                #phoneRef
+                type="text"
+                class="form-control"
+                placeholder="Enter phone number"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input
+                #addressRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  address"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">State</label>
+              <input
+                #stateRef
+                type="text"
+                class="form-control"
+                placeholder="Enter  state"
+              />
+            </div>
+          </div>
+          <!-- <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">center ID</label>
+              <input
+                #centerIdRef
+                type="text"
+                class="form-control"
+                placeholder="Enter center id"
+              />
+            </div>
+          </div> -->
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">center</label>
+
+              <select #centerIdRef class="form-select">
+                <option selected disabled>Select center</option>
+                <option
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="
+                  addAdministrator(
+                    firstNameRef.value,
+                    lastNameRef.value,
+                    emailRef.value,
+                    phoneRef.value,
+                    addressRef.value,
+                    stateRef.value,
+                    centerIdRef.value
+                  )
+                "
+              >
+                Add Administrator
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #editAdministratorModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Edit Administrator</h5>
+    <div class="card-body">
+      <form action="javascript:void(0);">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter  first name"
+                [(ngModel)]="centerAdminDataToEdit.firstName"
+                name="firstName"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Last name</label>
+              <input
+                class="form-control"
+                placeholder="Enter Last name"
+                [(ngModel)]="centerAdminDataToEdit.lastName"
+                name="lastName"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input
+                name="email"
+                type="email"
+                class="form-control"
+                placeholder="Enter email"
+                [(ngModel)]="centerAdminDataToEdit.email"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Phone</label>
+              <input
+                name="phone"
+                type="text"
+                class="form-control"
+                placeholder="Enter phone number"
+                [(ngModel)]="centerAdminDataToEdit.phone"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">Address</label>
+              <input
+                name="address"
+                type="text"
+                class="form-control"
+                placeholder="Enter  address"
+                [(ngModel)]="centerAdminDataToEdit.address"
+              />
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">State</label>
+              <input
+                name="state"
+                type="text"
+                class="form-control"
+                placeholder="Enter  state"
+                [(ngModel)]="centerAdminDataToEdit.state"
+              />
+            </div>
+          </div>
+          <!-- <div class="col-lg-6">
+            <div class="mb-3">
+              <label class="form-label">center ID</label>
+              <input
+                #centerIdRef
+                type="text"
+                class="form-control"
+                placeholder="Enter center id"
+              />
+            </div>
+          </div> -->
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <label class="form-label">center</label>
+
+              <select disabled #centerIdRef class="form-select">
+                <option disabled>Select center</option>
+                <option
+                  [selected]="
+                    centerAdminDataToEdit.centerId === center.centerId
+                  "
+                  *ngFor="let center of allCenters"
+                  value="{{ center.id }}"
+                >
+                  {{ center.centerName }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="hstack gap-2 justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                (click)="editCenterAdmin(centerAdminDataToEdit.id)"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                class="btn btn-soft-danger"
+                (click)="cancel()"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+          <!--end col-->
+        </div>
+        <!--end row-->
+      </form>
+    </div>
+  </div>
+</ng-template>
+<ng-template #sectionsModal role="document" let-modal>
+  <div class="card">
+    <h5 class="card-header">Sections</h5>
+    <div class="card-body">
+      <div class="">
+        <ngb-accordion #acc="ngbAccordion" [closeOthers]="true">
+          <ngb-panel id="static-1">
+            <ng-template ngbPanelTitle class="accordion-header">
+              <h2 class="accordion-header" id="gen-ques-headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#gen-ques-collapseOne"
+                  aria-expanded="false"
+                  aria-controls="gen-ques-collapseOne"
+                >
+                  Section 1
+                </button>
+              </h2>
+            </ng-template>
+            <ng-template ngbPanelContent> 20 Questions </ng-template>
+          </ngb-panel>
+          <ngb-panel id="static-2">
+            <ng-template ngbPanelTitle class="accordion-header">
+              <h2 class="accordion-header" id="gen-ques-headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#gen-ques-collapseOne"
+                  aria-expanded="false"
+                  aria-controls="gen-ques-collapseOne"
+                >
+                  Section 2
+                </button>
+              </h2>
+            </ng-template>
+            <ng-template ngbPanelContent> 30 Questions </ng-template>
+          </ngb-panel>
+          <ngb-panel id="static-3">
+            <ng-template ngbPanelTitle class="accordion-header">
+              <h2 class="accordion-header" id="gen-ques-headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#gen-ques-collapseOne"
+                  aria-expanded="false"
+                  aria-controls="gen-ques-collapseOne"
+                >
+                  Section 3
+                </button>
+              </h2>
+            </ng-template>
+            <ng-template ngbPanelContent> 30 Questions </ng-template>
+          </ngb-panel>
+          <ngb-panel id="static-4">
+            <ng-template ngbPanelTitle class="accordion-header">
+              <h2 class="accordion-header" id="gen-ques-headingOne">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#gen-ques-collapseOne"
+                  aria-expanded="false"
+                  aria-controls="gen-ques-collapseOne"
+                >
+                  Section 4
+                </button>
+              </h2>
+            </ng-template>
+            <ng-template ngbPanelContent> 30 Questions </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #assessmentSettingsModal role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Exam Settings</h5>
+    <button
+      type="button"
+      class="close"
+      data-dismiss="modal"
+      aria-label="Close"
+      (click)="cancel()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div
+    class="modal-body"
+    style="
+      height: 400px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <div class="px-3">
+      <form
+        #assessmentSettingsForm="ngForm"
+        (ngSubmit)="saveAssessmentSettings(assessmentSettingsForm)"
+      >
+        <div>
+          <p class="text-muted">ASSESSMENT DETAILS</p>
+          <div>
+            <div class="mt-4">
+              <label for="subjectName" class="label">Assessment Name</label>
+              <input
+                type="text"
+                name="name"
+                class="form-control mb-3"
+                placeholder="Name of Assessment"
+                required
+                [(ngModel)]="assessmentSettings.name"
+              />
+            </div>
+
+            <div class="row mt-3">
+              <div class="col-6">
+                <label for="subjectName" class="label">Delivery Method</label>
+                <select
+                  name="delivery"
+                  class="form-select mb-3"
+                  [(ngModel)]="assessmentSettings.deliveryMethod"
+                >
+                  <option
+                    *ngFor="let method of deliveryMethods"
+                    value="{{ method }}"
+                  >
+                    {{ method }}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-6">
+                <label for="subjectName" class="label"
+                  >Assessment Duration</label
+                >
+                <input
+                  type="number"
+                  min="0"
+                  name="duration"
+                  class="form-control mb-3"
+                  placeholder="Assessment duration"
+                  required
+                  [(ngModel)]="assessmentSettings.durationMinutes"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <label class="form-label">Assessment Start Date</label>
+              <input
+                class="form-control flatpickr-input"
+                type="text"
+                mwlFlatpickr
+                [altInput]="true"
+                [enableTime]="true"
+                [convertModelValue]="true"
+                [dateFormat]="'Y-m-d H:i'"
+                name="startDate"
+                [(ngModel)]="assessmentSettings.startDate"
+              />
+            </div>
+
+            <div class="col-6">
+              <label class="form-label">Assessment End Date</label>
+              <input
+                class="form-control flatpickr-input"
+                type="text"
+                mwlFlatpickr
+                [altInput]="true"
+                [enableTime]="true"
+                [convertModelValue]="true"
+                [dateFormat]="'Y-m-d H:i'"
+                name="endDate"
+                [(ngModel)]="assessmentSettings.endDate"
+              />
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="my-3">
+          <p class="text-muted">ASSESSMENT INSTRUCTIONS</p>
+          <div>
+            <div class="mt-4">
+              <label for="subjectName" class="label"
+                >Start Assessment Instruction</label
+              >
+              <editor
+                name="instruction"
+                initialValue="Give instructions to the candidate at the start of the start of the examination..."
+                [init]="{
+                  height: 200,
+                  menubar: true,
+                  base_url: '/tinymce',
+                  suffix: '.min',
+                  plugins: 'table quickbars lists autoresize',
+                  quickbars_insert_toolbars: false,
+                  branding: false,
+                  toolbar:
+                    'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+                }"
+                [(ngModel)]="assessmentSettings.startExamInstruction"
+              ></editor>
+            </div>
+
+            <div class="mt-4">
+              <label for="subjectName" class="label"
+                >End Assessment Instruction</label
+              >
+              <editor
+                name="instruction"
+                initialValue="Give instructions to the candidate at the end of the examination..."
+                [init]="{
+                  height: 200,
+                  menubar: true,
+                  base_url: '/tinymce',
+                  suffix: '.min',
+                  plugins: 'table quickbars lists autoresize',
+                  quickbars_insert_toolbars: false,
+                  branding: false,
+                  toolbar:
+                    'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+                }"
+                [(ngModel)]="assessmentSettings.endExamInstruction"
+              ></editor>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div class="my-3">
+          <p class="text-muted">EXAM SETTINGS</p>
+          <!-- <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                #assessmentDuration
+                [checked]="assessmentSettings.durationMinutes"
+              />
+              <label class="form-check-label" for="duration">
+                Assessment Duration
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  min="0"
+                  placeholder="60"
+                  class="form-control"
+                  name="duration"
+                  [(ngModel)]="assessmentSettings.durationMinutes"
+                  [disabled]="!assessmentDuration.checked"
+                />
+              </div>
+              minutes.
+            </div>
+          </div> -->
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                #instructionReadingTime
+                [checked]="assessmentSettings.instructionReadTimeSec"
+              />
+              <label class="form-check-label" for="instructionReadingTime">
+                Instruction reading time.
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  placeholder="3"
+                  name="instructionReadingTime"
+                  [(ngModel)]="assessmentSettings.instructionReadTimeSec"
+                  [disabled]="!instructionReadingTime.checked"
+                />
+              </div>
+              minutes.
+            </div>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="warnReadTimeEnding"
+                #endOfInstructionReadingTime
+                [checked]="assessmentSettings.warnEndOfReadingTimeSec"
+              />
+              <label class="form-check-label" for="warnReadTimeEnding">
+                Warn when approaching the end of reading time?
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control col-xl-2"
+                  placeholder="3"
+                  name="readTimeWaringInSeconds"
+                  [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec"
+                  [disabled]="!endOfInstructionReadingTime.checked"
+                />
+              </div>
+              minutes.
+            </div>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="formCheck1"
+                #autoSave
+                [checked]="assessmentSettings.autoSaveSec"
+              />
+              <label class="form-check-label" for="autoSaveIntervalSeconds">
+                Autosave every
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  placeholder="30"
+                  name="autoSaveIntervalSeconds"
+                  [(ngModel)]="assessmentSettings.autoSaveSec"
+                  [disabled]="!autoSave.checked"
+                />
+              </div>
+              seconds.
+            </div>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="triggerInactivityWarning"
+                [checked]="assessmentSettings.inactivityWaringSec"
+                #inactivityWarningSec
+              />
+              <label class="form-check-label" for="triggerInactivityWarning">
+                Trigger inactivity warning when inactive for
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control"
+                  placeholder="3"
+                  name="triggerInactivityWarningSeconds"
+                  [(ngModel)]="assessmentSettings.inactivityWaringSec"
+                  [disabled]="!inactivityWarningSec.checked"
+                />
+              </div>
+              minutes.
+            </div>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" #extraTime />
+              <label class="form-check-label"> Enable compensatory time </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="240"
+                  name="additionalTime"
+                />
+              </div>
+              minutes.
+            </div>
+          </div>
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="warnCandidateOfUnattemptedQuestions"
+              [(ngModel)]="assessmentSettings.warnUnattemptedQuestions"
+            />
+            <label
+              class="form-check-label"
+              for="warnCandidateOfUnattemptedQuestions"
+            >
+              Warn candidates of unattempted questions?
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="allFilters"
+              [(ngModel)]="assessmentSettings.warnUnattemptedQuestions"
+            />
+            <label class="form-check-label" for="allowFilters">
+              Allow filters?
+            </label>
+          </div>
+          <div class="form-check mt-3">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="displayConfirmationWindowOnSubmission"
+              [(ngModel)]="assessmentSettings.endExamConfirmation"
+            />
+            <label
+              class="form-check-label"
+              for="displayConfirmationWindowOnSubmission"
+            >
+              Display confirmation window on submission?
+            </label>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                name="percentageCheck"
+                #percentageSubmissionCheck
+                [checked]="assessmentSettings.allowEndExamAfterXQuestions"
+              />
+              <label class="form-check-label" for="percentageCheck">
+                Allow submission only when
+              </label>
+              <div class="col-xl-2 col-md-2 col-sm-2">
+                <input
+                  type="number"
+                  class="form-control col-xl-1"
+                  placeholder="100"
+                  name="percentageSubmissionCheck"
+                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions"
+                  [disabled]="!percentageSubmissionCheck.checked"
+                />
+              </div>
+              questions have been attempted.
+            </div>
+          </div>
+          <div class="form-check">
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <input class="form-check-input" type="checkbox" id="formCheck1" />
+              <label class="form-check-label" for="formCheck1">
+                Font size
+              </label>
+              <div class="col-2">
+                <select
+                  class="form-control"
+                  data-plugin="choices"
+                  data-choices
+                  data-choices-search-false
+                  name="fontSize"
+                  [(ngModel)]="assessmentSettings.fontSize"
+                >
+                  <option *ngFor="let fontSize of fontSizes">
+                    {{ fontSize }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="form-check mt-2">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="displayAllSections"
+              [(ngModel)]="assessmentSettings.displayAllSectionsAtOnce"
+              [checked]="assessmentSettings.displayAllSectionsAtOnce"
+            />
+            <label class="form-check-label" for="displayResult">
+              Display all sections at once?
+            </label>
+          </div>
+          <div class="form-check mt-2">
+            <label class="form-check-label" for="displayResult">
+              Preserve section order?
+            </label>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="preserveSectionOrder"
+              [(ngModel)]="assessmentSettings.preserveSectionOrder"
+              [checked]="assessmentSettings.preserveSectionOrder"
+            />
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #sectionSettingsModal let-modal>
+  <div class="p-5 modal-body">
+    <h4 class="text-center card-title mb-4">Section settings</h4>
+
+    <form
+      #sectionSettingForm="ngForm"
+      (ngSubmit)="saveSectionSettings(sectionSettingForm)"
+    >
+      <div>
+        <div class="row mb-2">
+          <div class="col-6">
+            <label class="form-label" for="name"> Section Name </label>
+            <!-- <ng-select
+              [items]="assessment.sectionDetails"
+              [multiple]="false"
+              name="sectionName"
+              bindLabel="name"
+              bindValue="name"
+              [(ngModel)]="editSection.name"
+              (ngModelChange)="changeSelectedSection($event)"
+              (change)="changeSelectedSection($event)"
+            ></ng-select> -->
+            <input
+              class="form-control"
+              name="sectionName"
+              placeholder="Section Name"
+              [(ngModel)]="sectionSettings.name"
+            />
+          </div>
+          <div class="col-6">
+            <label for="choices-multiple-default" class="form-label"
+              >Subject Name</label
+            >
+            <input
+              class="form-control"
+              type="text"
+              name="subjectName"
+              placeholder="Subject Name"
+              [(ngModel)]="sectionSettings.subjectId"
+              disabled
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="instruction"
+            >Section Instruction</label
+          >
+          <div>
+            <editor
+              name="instruction"
+              initialValue="Give a description of the assessment or instructions..."
+              [init]="{
+                height: 200,
+                menubar: true,
+                base_url: '/tinymce',
+                suffix: '.min',
+                plugins: 'table quickbars lists autoresize',
+                quickbars_insert_toolbars: false,
+                branding: false,
+                toolbar:
+                  'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+              }"
+              [(ngModel)]="sectionSettings.sectionInstruction"
+            ></editor>
+          </div>
+        </div>
+
+        <!-- <div class="form-check"> -->
+        <div class="mb-2">
+          <!-- <input
+              class="form-check-input"
+              type="checkbox"
+              #durationInMinutes
+            /> -->
+          <label class="form-label" for="durationInMinutes">
+            Section Duration in minutes. (This is possible, only when one
+            section is being displayed at a time).
+          </label>
+          <div class="">
+            <input
+              type="number"
+              placeholder="60"
+              class="form-control"
+              name="durationInMinutes"
+              [(ngModel)]="sectionSettings.durationInMinutes"
+            />
+          </div>
+        </div>
+        <!-- </div> -->
+        <!-- <div class="form-check">
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <input
+              class="form-check-input"
+              type="checkbox"
+              name="averageDifficulty"
+              #averageDifficultyLevel
+            />
+            <label class="form-check-label" for="averageDifficulty">
+              Average difficulty level (0-1)
+            </label>
+            <div class="col-xl-1">
+              <input
+                type="number"
+                placeholder="from 0 to 1"
+                max="1"
+                min="0"
+                class="form-control"
+                name="averageDifficultyLevel"
+                [(ngModel)]="
+                  selectedSection.sectionSettings.averageDifficultyLevel
+                "
+                [disabled]="!averageDifficultyLevel.checked"
+              />
+            </div>
+          </div>
+        </div> -->
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="shuffleItems"
+            [(ngModel)]="sectionSettings.shuffleItems"
+          />
+          <label class="form-check-label" for="shuffleItems">
+            Shuffle questions
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="shuffleOptions"
+            [(ngModel)]="sectionSettings.shuffleOptions"
+          />
+          <label class="form-check-label" for="shuffleOptions">
+            Shuffle options
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="shuffleBlocks"
+            [(ngModel)]="sectionSettings.shuffleBlocks"
+          />
+          <label class="form-check-label" for="shuffleBlocks">
+            Shuffle blocks
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="allowCalculator"
+            [(ngModel)]="sectionSettings.allowCalculator"
+          />
+          <label class="form-check-label" for="allowCalculator">
+            Allow calculator
+          </label>
+        </div>
+        <div class="form-check mb-2">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            name="preventNavigationToAttemptedItems"
+            [(ngModel)]="sectionSettings.preventNavigationToAttemptedItems"
+          />
+          <label
+            class="form-check-label"
+            for="preventNavigationToAttemptedItems"
+          >
+            Prevent navigation to attempted questions
+          </label>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-4">
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="modal.close('Close click')"
+        >
+          <i class="ri-close-line align-middle fs-16 me-2"></i>Close
+        </button>
+        <button type="submit" class="btn btn-success">
+          <i class="ri-save-line align-middle fs-16 me-2"></i>Save
+        </button>
+      </div>
+    </form>
+  </div>
+</ng-template>
+
+<ng-template #addSectionGroup let-modal>
+  <div class="col-12">
+    <div class="card">
+      <div class="flex-grow-1">
+        <h5 class="card-title mb-0 card-header">
+          Add Assessment Group Sections
+        </h5>
+      </div>
+      <div class="card-body">
+        <!-- <div class="d-flex justify-content-start">
+            <button class="btn btn-sm btn-soft-primary mb-3" (click)="goBack()">
+              <i class="ri-arrow-left-s-line align-bottom"></i>
+            </button>
+          </div> -->
+
+        <div>
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Name:</label>
+                  <input #sectionNameRef class="form-control" type="text" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-12">
+            <div class="mb-3">
+              <div class="col-lg-12 col-md-6">
+                <div class="mb-3">
+                  <label class="form-label">Section(s):</label>
+                  <ng-select
+                    [items]="Sections"
+                    [multiple]="true"
+                    bindLabel="name"
+                    [(ngModel)]="selectedSections"
+                  >
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="d-flex gap-3 mb-2 justify-content-end mx-2">
+      <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
+      <button
+        class="btn btn-primary"
+        (click)="saveSectionGroup(sectionNameRef.value)"
+      >
+        Save
+      </button>
+
+      <button class="btn btn-danger" (click)="cancel()">Close</button>
+    </div>
+
+    <!--end card-->
+  </div>
+</ng-template>

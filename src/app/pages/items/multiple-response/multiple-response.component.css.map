@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,iBAAiB,CAAC,eAAe,CAAC;EAChC,OAAO,EAAE,kBACX;CAAC",
+    "sources": [
+        "multiple-response.component.scss"
+    ],
+    "names": [],
+    "file": "multiple-response.component.css"
+}

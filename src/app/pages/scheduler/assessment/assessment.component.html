@@ -1,0 +1,228 @@
+<app-breadcrumbs
+  title="ASSESSMENTS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div class="row" *ngIf="assessments">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header border-bottom-dashed">
+        <div class="d-flex align-items-center">
+          <h5 class="card-title mb-0 flex-grow-1">
+            List of all Assessments({{
+              assessments && assessments.content.length
+            }})
+          </h5>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <div class="card-body" style="min-height: 50vh">
+          <p-table
+            [value]="assessments.content"
+            styleClass="p-datatable-gridlines"
+            #dt1
+            dataKey="id"
+            [tableStyle]="{ 'min-width': '50rem' }"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th pSortableColumn="name">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 7rem"
+                  >
+                    NAME
+                    <p-sortIcon field="name"></p-sortIcon>
+                    <p-columnFilter
+                      type="text"
+                      field="name"
+                      display="menu"
+                      class="ml-auto"
+                    ></p-columnFilter>
+                  </div>
+                </th>
+                <th pSortableColumn="deliveryMethod">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 7rem"
+                  >
+                    MODE
+                    <p-sortIcon field="deliveryMethod"></p-sortIcon>
+                    <p-columnFilter
+                      type="text"
+                      field="deliveryMethod"
+                      display="menu"
+                      class="ml-auto"
+                    ></p-columnFilter>
+                  </div>
+                </th>
+                <th pSortableColumn="totalItems">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 3rem"
+                  >
+                    ITEMS
+                    <!-- <p-sortIcon field="totalItems"></p-sortIcon>
+                        <p-columnFilter
+                          type="text"
+                          field="totalItems"
+                          display="menu"
+                          class="ml-auto"
+                        ></p-columnFilter> -->
+                  </div>
+                </th>
+
+                <th pSortableColumn="totalSections">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 7rem"
+                  >
+                    SECTIONS
+                    <p-sortIcon field="totalSections"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="duration">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 7rem"
+                  >
+                    DURATION
+                    <p-sortIcon field="duration"></p-sortIcon>
+                  </div>
+                </th>
+
+                <th pSortableColumn="numberOfParticipants">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 8.6rem"
+                  >
+                    PARTICIPANTS
+                    <p-sortIcon field="numberOfParticipants"></p-sortIcon>
+                    <!-- <p-columnFilter
+                            type="text"
+                            field="numberOfParticipants"
+                            display="menu"
+                            class="ml-auto"
+                          ></p-columnFilter> -->
+                  </div>
+                </th>
+
+                <th pSortableColumn="center">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: fit-content"
+                  >
+                    CENTERS
+                    <!-- <p-sortIcon field="center"></p-sortIcon>
+                          <p-columnFilter
+                            type="text"
+                            field="center"
+                            display="menu"
+                            class="ml-auto"
+                          ></p-columnFilter> -->
+                  </div>
+                </th>
+
+                <th pSortableColumn="dateCreated">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="min-width: 8rem"
+                  >
+                    CREATED AT
+                    <p-sortIcon field="dateCreated"></p-sortIcon>
+                  </div>
+                </th>
+
+                <!-- <th pSortableColumn="dateCreated">
+                  <div
+                    class="flex justify-content-between align-items-center"
+                    style="max-width: 8rem"
+                  >
+                    EXAM DATE
+                    <p-sortIcon field="dateCreated"></p-sortIcon>
+                   
+                  </div>
+                </th> -->
+                <th pSortableColumn="institution">
+                  <div class="flex justify-content-between align-items-center">
+                    ACTION
+                  </div>
+                </th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-assessment>
+              <tr>
+                <td>
+                  <div class="d-flex justify-content-start align-items-center">
+                    <div class="flex-grow-3 ms-2">
+                      {{ assessment.name }}
+                    </div>
+                  </div>
+                </td>
+
+                <td>{{ assessment.deliveryMethod }}</td>
+                <td>{{ assessment.items }}</td>
+                <td>{{ assessment.sections }}</td>
+                <td>{{ assessment.duration }}</td>
+                <td>{{ assessment.participants }}</td>
+                <td>{{ assessment.centers }}</td>
+                <td>{{ assessment.createdDate | date }}</td>
+                <!-- <td>{{ assessment.startDate }}</td> -->
+
+                <td>
+                  <div class="dropdown" ngbDropdown>
+                    <button
+                      class="btn btn-soft-primary btn-sm dropdown arrow-none"
+                      type="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      ngbDropdownToggle
+                      (click)="stopPropagation($event)"
+                    >
+                      <i class="ri-more-fill align-middle"></i>
+                    </button>
+                    <ul
+                      class="dropdown-menu dropdown-menu-end"
+                      ngbDropdownMenu
+                      (click)="stopPropagation($event)"
+                    >
+                      <li (click)="viewDetails(assessment.id)">
+                        <a
+                          class="dropdown-item"
+                          href="javascript:void(0)"
+                          data-bs-toggle="modal"
+                        >
+                          <i
+                            class="ri-eye-fill align-bottom me-2 text-muted"
+                          ></i>
+                          View
+                        </a>
+                      </li>
+
+                      <li class="dropdown-divider"></li>
+                    </ul>
+                  </div>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <p-paginator
+        [totalRecords]="assessments.content.length"
+        (onPageChange)="onPageChange($event)"
+        [first]="1"
+        [rowsPerPageOptions]="[5, 10, 15]"
+        [rows]="5"
+        [pageLinkSize]="5"
+        [showCurrentPageReport]="true"
+      >
+      </p-paginator>
+    </div>
+  </div>
+
+  <!--end col-->
+</div>
+<!--end row-->

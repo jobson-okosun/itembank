@@ -1,0 +1,32 @@
+  .custom-context-menu {
+    position: fixed;
+    background-color: white;
+    z-index: 1000;
+    opacity: 0; 
+    transition: opacity 300ms ease-in;
+    border-color: rgb(205, 201, 201) !important;
+    width: 250px;
+    max-width: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  }
+
+  .custom-context-menu.show {
+    opacity: 1;
+  }
+
+  .content-option {
+    padding: 8px 12px;
+    border: 1px solid rgb(227, 224, 224);
+    border-style: dashed;
+    cursor: pointer;
+    transition: all 200ms ease-in;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .content-option:hover {
+    background-color: #f0f0f0;
+  }

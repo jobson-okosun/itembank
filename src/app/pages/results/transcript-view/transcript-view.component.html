@@ -1,0 +1,218 @@
+<app-breadcrumbs
+  title="{{ assessmentName }} | RESULT | TRANSCRIPT"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div>
+  <div class="card card-animate">
+    <div class="card-header">
+      <div class="d-flex justify-content-between">
+        <h3 class="modal-title">Transcript</h3>
+        <div>
+          <select class="form-select">
+            <option value="" selected disabled>Filter By Subject</option>
+            <option value="English">English</option>
+            <option value="Biology">Biology</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card-body" [ngClass]="{ row: questionView }">
+      <div [ngClass]="{ 'col-lg-6': questionView, 'col-lg-12': !questionView }">
+        <p-table
+          #dt
+          [value]="subjectData.participants"
+          dataKey="id"
+          [rowHover]="true"
+          [rows]="20"
+          responsiveLayout="scroll"
+          styleClass="p-datatable-gridlines"
+          [scrollable]="true"
+          [showCurrentPageReport]="true"
+          [rowsPerPageOptions]="[20, 30, 50]"
+          responsiveLayout="scroll"
+          [paginator]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pFrozenColumn pSortableColumn="name" style="min-width: 180px">
+                Fullname<p-sortIcon field="name"></p-sortIcon>
+                <p-columnFilter
+                  type="text"
+                  field="name"
+                  display="menu"
+                ></p-columnFilter>
+              </th>
+              <th pFrozenColumn style="min-width: 120px">Subject</th>
+              <th
+                pFrozenColumn
+                pSortableColumn="markScored"
+                style="max-width: 120px"
+              >
+                Mark(s)<p-sortIcon field="markScored"></p-sortIcon>
+              </th>
+              <ng-template [ngIf]="!questionView">
+                <ng-container
+                  *ngFor="
+                    let question of subjectData.questionsAnalysis;
+                    let i = index
+                  "
+                >
+                  <th
+                    style="min-width: 100px; cursor: pointer"
+                    (click)="showDetails()"
+                  >
+                    <div>
+                      <span
+                        >Q{{ question.questionNo }} - {{ question.type }}</span
+                      ><br />
+                      <div
+                        class="d-flex gap-2 align-items-end justify-content-center mt-5 mb-2"
+                      >
+                        <div
+                          class="bar"
+                          *ngFor="
+                            let option of [].constructor(question.optionsCount);
+                            let j = index
+                          "
+                          [ngStyle]="{
+                            'background-color':
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                                ? 'green'
+                                : 'red',
+                            height: j * 12 + 'px'
+                          }"
+                          class="mb-2"
+                        >
+                          <span
+                            *ngIf="
+                              j === 0 &&
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                            "
+                            >A</span
+                          ><span
+                            *ngIf="
+                              j === 1 &&
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                            "
+                            >B</span
+                          ><span
+                            *ngIf="
+                              j === 2 &&
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                            "
+                            >C</span
+                          ><span
+                            *ngIf="
+                              j === 3 &&
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                            "
+                            >D</span
+                          ><span
+                            *ngIf="
+                              j === 4 &&
+                              subjectData.questionsAnalysis[i]
+                                .correctAnswerIndex === j
+                            "
+                            >E</span
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </th>
+                </ng-container>
+              </ng-template>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-participant>
+            <tr>
+              <td pFrozenColumn style="min-width: 180px">
+                {{ participant.name | titlecase }}
+              </td>
+              <td pFrozenColumn style="min-width: 120px">
+                {{ participant.subject | titlecase }}
+              </td>
+              <td pFrozenColumn style="max-width: 120px">
+                {{ participant.markScored }}
+              </td>
+              <ng-template [ngIf]="!questionView">
+                <ng-container *ngFor="let question of questions; let j = index">
+                  <td
+                    [ngClass]="{
+                      'bg-success':
+                        question.scoringOptions.answers[0] ===
+                        participant.responses[j],
+                      'bg-danger':
+                        question.scoringOptions.answers[0] !==
+                        participant.responses[j],
+                      'bg-primary': participant.responses[j].length === 0
+                    }"
+                    style="min-width: 100px; color: '#FFF'"
+                  >
+                    <div class="d-flex justify-content-between">
+                      <div>
+                        <span *ngIf="participant.responses[j] === '0'">A</span
+                        ><span *ngIf="participant.responses[j] === '1'">B</span>
+                        <span *ngIf="participant.responses[j] === '2'">C</span>
+                        <span *ngIf="participant.responses[j] === '3'">D</span>
+                        <span *ngIf="participant.responses[j] === ''">...</span>
+                      </div>
+                      <span
+                        ><i
+                          *ngIf="
+                            question.scoringOptions.answers[0] ===
+                            participant.responses[j]
+                          "
+                          class="ri-checkbox-cirle-fill text-success"
+                        ></i
+                      ></span>
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-template>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <ng-template [ngIf]="questionView">
+        <div class="col-6 border p-2">
+          <div class="d-flex">
+            <button
+              class="btn"
+              style="background-color: #cccccc"
+              (click)="hideDetails()"
+            >
+              All questions
+            </button>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-4">
+            <span class="fs-18"><b>Question (MCQ):</b> Score 2</span>
+            <div class="d-flex gap-2">
+              <button
+                class="btn d-flex align-items-center gap-2"
+                style="background-color: #cccccc"
+                (click)="hideDetails()"
+              >
+                <i class="ri-arrow-left-s-line"></i>Prev
+              </button>
+              <button
+                class="btn d-flex align-items-center gap-2"
+                style="background-color: #cccccc"
+                (click)="hideDetails()"
+              >
+                Next<i class="ri-arrow-right-s-line"></i>
+              </button>
+            </div>
+          </div>
+          <hr />
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

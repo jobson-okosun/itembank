@@ -1,0 +1,440 @@
+<app-breadcrumbs
+  title="EXAM REPORT "
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="!assessments"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Exams...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="assessments" class="card card-body">
+  <div class="d-flex justify-content-between mb-2">
+    <h5 class="card-title mb-2 flex-grow-1">
+      List of all Exams({{ assessments.content.length }})
+    </h5>
+    <!-- <div class="d-flex gap-2">
+      <a routerLink="" class="btn btn-soft-success"
+        ><i class="ri-pages-line align-bottom me-1"></i>Exam Templates</a
+      >
+      <a
+        (click)="openNewAssessmentModal(newAssessmentModal)"
+        class="btn btn-soft-primary"
+        ><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a
+      >
+    </div> -->
+  </div>
+
+  <div *ngIf="assessments" class="row">
+    <ng-container *ngFor="let assessment of assessments.content">
+      <div class="col-sm-12 col-lg-6">
+        <div class="card card-body">
+          <div class="d-flex mb-0 align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-3">
+                <div class="avatar-title bg-primary text-light rounded-3">
+                  {{ assessment.name.charAt(0) | uppercase }}
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  <a
+                    href="javascript:void(0);"
+                    class="text-body d-block"
+                    (click)="setCurrentAssessment(assessment)"
+                    routerLink="examalpha/reports/{{
+                      assessment.id
+                    }}/results"
+                    >{{ assessment.name }}</a
+                  >
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: lighter"
+                >
+                  {{ assessment.createdDate | date : "medium" }}
+                </p>
+              </div>
+            </div>
+
+            <div class="d-flex gap-4 justify-content-end">
+              <!-- assessment status -->
+              <div>
+                <span
+                  class="text-capitalize rounded-2 fs-12"
+                  [ngClass]="{
+                    ' p-1 py-0 px-1  ': assessment.status === 'PUBLISHED',
+                    ' p-1 py-0 ': assessment.status === 'DRAFT'
+                  }"
+                  ><i
+                    *ngIf="assessment.status === 'DRAFT'"
+                    class="ri-draft-line align-bottom"
+                  ></i>
+                  <i
+                    *ngIf="assessment.status === 'PUBLISHED'"
+                    class="ri-checkbox-circle-line align-bottom text-white"
+                  ></i>
+                </span>
+                <span class="fs-12">Status:</span>
+                <span
+                  class="text-capitalize fs-12"
+                  [ngClass]="{
+                    'text-success': assessment.status === 'PUBLISHED',
+                    'text-warning': assessment.status === 'DRAFT'
+                  }"
+                >
+                  {{ assessment.status }}</span
+                >
+              </div>
+
+              <div class="dropdown" ngbDropdown>
+                <a
+                  class="text-muted arrow-none"
+                  id="dropdownMenuLink1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                  ><i
+                    class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                    style="cursor: pointer"
+                  ></i
+                ></a>
+                <ul
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="dropdownMenuLink1"
+                  ngbDropdownMenu
+                >
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      (click)="setCurrentAssessment(assessment)"
+                      routerLink="/examalpha/schedule/{{
+                        assessment.id
+                      }}/exam-schedule"
+                      ><i class="bx bxs-edit align-bottom me-2 text-muted"></i>
+                      Manage Schedule</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="border-top mb-3 mt-3"></div>
+          <!-- new implementation -->
+          <div class="row">
+            <!-- <div class="col-lg-12 col-sm-12 mb-3 mb-sm-0">
+              <div class="d-flex align-items-center">
+                <div class="avatar-xs flex-shrink-0 me-2">
+                  <div
+                    class="avatar-title border text-light bg-white rounded-3"
+                  >
+                    <i
+                      class="align-center ri-play-circle-line text-success"
+                    ></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                    Start Date
+                  </h5>
+                  <p
+                    class="text-secondary p-0 m-0"
+                    style="font-size: 12px; font-weight: normal"
+                  >
+                    {{ assessment.startDateTime | date : "medium" }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-sm-12 mb-3 mb-sm-0">
+              <div class="d-flex align-items-center">
+                <div class="avatar-xs flex-shrink-0 me-2">
+                  <div
+                    class="avatar-title border text-light bg-white rounded-3"
+                  >
+                    <i class="align-center ri-stop-circle-line text-danger"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">End Date</h5>
+                  <p
+                    class="text-secondary p-0 m-0"
+                    style="font-size: 12px; font-weight: normal"
+                  >
+                    {{ assessment.endDateTime | date : "medium" }}
+                  </p>
+                </div>
+              </div>
+            </div> -->
+            <div class="col-lg-12 col-sm-12 mb-2">
+              <div class="d-flex align-items-center">
+                <div class="avatar-xs flex-shrink-0 me-2">
+                  <div
+                    class="avatar-title border text-light bg-white rounded-3"
+                  >
+                    <i class="align-center ri-book-3-line text-secondary"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                    Total subjects
+                  </h5>
+                  <p
+                    class="text-secondary p-0 m-0"
+                    style="font-size: 12px; font-weight: normal"
+                  >
+                    {{ assessment.totalSections }}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-12 col-sm-12 mb-2">
+              <div class="d-flex align-items-center">
+                <div class="avatar-xs flex-shrink-0 me-2">
+                  <div
+                    class="avatar-title border text-light bg-white rounded-3"
+                  >
+                    <i
+                      class="align-center las la-hourglass align-center text-secondary"
+                    ></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">Duration</h5>
+                  <p
+                    class="text-secondary p-0 m-0"
+                    style="font-size: 12px; font-weight: normal"
+                  >
+                    {{ assessment.duration }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-3 col-sm-12 mb-2">
+              <div class="d-flex align-items-center">
+                <div class="avatar-xs flex-shrink-0 me-2">
+                  <div
+                    class="avatar-title border text-light bg-white rounded-3"
+                  >
+                    <i
+                      class="align-center ri-send-plane-2-line text-secondary"
+                    ></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                    Delivery method
+                  </h5>
+                  <p
+                    class="text-secondary p-0 m-0"
+                    style="font-size: 12px; font-weight: normal"
+                  >
+                    {{ assessment.deliveryMethod }}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row gap-2 my-2">
+            <div
+              class="col-lg-3 col-sm-4 p-0"
+              *ngIf="assessment.totalCenterAdmins"
+              style="width: 20%"
+            >
+              <div class="fs-12 px-1">
+                <span class="border rounded-2 px-1">
+                  <i
+                    class="ri-check-double-line text-success p-2 align-middle"
+                  ></i>
+                  <span>Admins: {{ assessment.totalCenterAdmins }}</span>
+                </span>
+              </div>
+            </div>
+            <div
+              class="col-lg-3 col-sm-4 p-0"
+              *ngIf="assessment.totalSectionsGroup"
+              style="width: 20%"
+            >
+              <div class="fs-12">
+                <span class="border rounded-2 px-1">
+                  <i
+                    class="ri-check-double-line text-success p-2 align-middle"
+                  ></i>
+                  <span>Sections: {{ assessment.totalSectionsGroup }}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="col-lg-3 col-sm-12 mb-3 mb-sm-0">
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-2">
+                <div class="avatar-title border text-light bg-white rounded-3">
+                  <i class="align-center ri-home-2-line text-secondary"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  Total centers
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: normal"
+                >
+                  {{ assessment.totalCenters }}
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-lg-3 col-sm-12 mb-3 mb-sm-0">
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-2">
+                <div class="avatar-title border text-light bg-white rounded-3">
+                  <i class="align-center ri-align-center text-secondary"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  Total Section groups
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: normal"
+                >
+                  {{ assessment.totalSectionsGroup }}
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-lg-3 col-sm-12 mb-3 mb-sm-0">
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-2">
+                <div class="avatar-title border text-light bg-white rounded-3">
+                  <i class="align-center ri-group-line text-secondary"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  Total Participants
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: normal"
+                >
+                  {{ assessment.totalParticipants }}
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <!-- <div class="col-lg-3 col-sm-12 mb-3 mb-sm-0">
+            <div class="d-flex align-items-center">
+              <div class="avatar-xs flex-shrink-0 me-2">
+                <div class="avatar-title border text-light bg-white rounded-3">
+                  <i
+                    class="align-center ri-shield-user-line text-secondary"
+                  ></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                  Total active admins
+                </h5>
+                <p
+                  class="text-secondary p-0 m-0"
+                  style="font-size: 12px; font-weight: normal"
+                >
+                  {{ assessment.totalActiveAdmins }}
+                </p>
+              </div>
+            </div>
+          </div> -->
+          <div class="border-top mb-3"></div>
+
+          <div class="row">
+            <div class="d-flex justify-content-between">
+              <div class="">
+                <div class="d-flex align-items-center">
+                  <div class="avatar-xs flex-shrink-0 me-2">
+                    <div
+                      class="avatar-title border text-light bg-white rounded-3"
+                    >
+                      <i
+                        class="align-center ri-play-circle-line text-success"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                      Start Date
+                    </h5>
+                    <p
+                      class="text-secondary p-0 m-0"
+                      style="font-size: 12px; font-weight: normal"
+                    >
+                      {{ assessment.startDateTime | date : "medium" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="">
+                <div class="d-flex align-items-center">
+                  <div class="avatar-xs flex-shrink-0 me-2">
+                    <div
+                      class="avatar-title border text-light bg-white rounded-3"
+                    >
+                      <i
+                        class="align-center ri-stop-circle-line text-danger"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h5 class="fs-13 mb-0 text-truncate flex-grow-1">
+                      End Date
+                    </h5>
+                    <p
+                      class="text-secondary p-0 m-0"
+                      style="font-size: 12px; font-weight: normal"
+                    >
+                      {{ assessment.endDateTime | date : "medium" }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end card-body-->
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div *ngIf="assessments">
+  <p-paginator
+    [totalRecords]="assessments.totalElements"
+    (onPageChange)="onPageChange($event)"
+    [first]="1"
+    [rowsPerPageOptions]="[20, 30, 50]"
+    [rows]="5"
+    [showCurrentPageReport]="true"
+  >
+  </p-paginator>
+</div>
+
+<!-- <app-rightsidebar
+  [currentView]="'Assessments'"
+  (settingsButtonClicked)="onSettingsButtonClicked()"
+></app-rightsidebar> -->

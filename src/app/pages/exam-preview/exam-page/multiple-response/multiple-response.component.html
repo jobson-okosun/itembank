@@ -1,0 +1,128 @@
+<ngx-simplebar>
+  <!-- style="overflow-y: scroll; height: 420px" -->
+  <div class="px-3">
+    <div class="d-flex row">
+      <div class="col-lg-6">
+        <div class="card card-body question-card" style="height: 62vh">
+          <div class="text-primary d-flex justify-content-between">
+            <span class="fw-bold py-lg-2"
+              >Question {{ currentQuestionNumber + 1 }}</span
+            >
+            <!-- <app-revisit-button
+              [questionNumber]="currentQuestionNumber"
+            ></app-revisit-button> -->
+          </div>
+          <ngx-simplebar  style="height: 45vh; overflow-x: hidden;">
+            <span
+              class="mt-3"
+              [innerHtml]="this.getCurrentQuestion().passage_stimulus"
+            >
+              <!-- {{ }} -->
+            </span>
+            <span
+              class="mt-3"
+              [innerHtml]="getCurrentQuestion().stimulus"
+            ></span>
+          </ngx-simplebar>
+          <div class="d-flex justify-content-end">
+            <app-calculator></app-calculator>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="card" style="height: 62vh">
+          <div class="">
+            <!-- <div class="d-flex justify-content-between">
+              <h5 class="card-title mb-4 text-start">Answer</h5>
+              <app-reset-button></app-reset-button>
+            </div> -->
+
+            <div class="mb-3">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="mt-1">
+                    <div class="card-header border-bottom-dashed p-2">
+                      <div class="d-flex justify-content-between">
+                        <h5 class="card-title mb-0 text-start text-primary">
+                          Answer
+                        </h5>
+                        <!-- <app-reset-button></app-reset-button> -->
+                        <app-revisit-button
+                        [questionNumber]="currentQuestionNumber"
+                      ></app-revisit-button>
+                      </div>
+                    </div>
+                    <ngx-simplebar style="height: 48vh; overflow-x: hidden;">
+                      <div class="mb-3">
+                        <div class="row">
+                          <div class="col-lg-12">
+                            <div
+                              class="card-body px-1"
+                              style="overflow-y: auto; max-height: 80vh"
+                            >
+                              <ng-container
+                                *ngFor="
+                                  let option of getCurrentQuestion().options;
+                                  let i = index
+                                "
+                              >
+                                <div
+                                  style="
+                                    padding: 0.4rem !important;
+                                    margin-bottom: 0.4rem !important;
+                                  "
+                                  class="d-flex card border-2 border-light mx-3 card-animate"
+                                  (click)="optionClicked(option.value)"
+                                >
+                                  <div class="d-flex">
+                                    <span class="mx-2 fw-semibold">
+                                      {{ alphabetList[i].toLowerCase() }}
+                                    </span>
+
+                                    <div
+                                      class="form-check form-check-primary mb-1"
+                                    >
+                                      <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        id="formCheck11"
+                                        [checked]="
+                                          this.getCurrentQuestion().responses.includes(
+                                            this.option.value
+                                          )
+                                        "
+                                        (change)="
+                                          optionSelected(option.value, $event)
+                                        "
+                                        name="q"
+                                      />
+                                      <span
+                                        class="form-check-label align-bottom"
+                                        style="cursor: pointer"
+                                        for="formCheck11"
+                                        [innerHTML]="option.label"
+                                        (change)="
+                                          optionSelected(option.value, $event)
+                                        "
+                                      >
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </ng-container>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </ngx-simplebar>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ngx-simplebar>

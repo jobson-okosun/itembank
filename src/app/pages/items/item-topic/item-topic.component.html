@@ -1,0 +1,38 @@
+<div *ngIf="label === 'Subject'" class="mb-3">
+  <label for="choices-multiple-default" class="form-label"
+    >{{ label }}</label
+  >
+  <ng-select
+    class="custom"
+    [items]="subjects"
+    [multiple]="multiple"
+    bindLabel="subjectName"
+    name="subjects"
+    dropdownPosition="top"
+    [(ngModel)]="Subjects"
+    (ngModelChange)="sendSelectedSubjects(Subjects)"
+  >
+    <ng-template ng-optgroup-tmp let-item="item">
+      {{ item[0].tagName | uppercase }}
+    </ng-template>
+  </ng-select>
+</div>
+
+<div *ngIf="label === 'Topic'" class="mb-3">
+  <label for="choices-multiple-default" class="form-label"
+    >{{ label }}</label
+  >
+  <ng-select
+    [items]="subjects"
+    [multiple]="true"
+    bindLabel="name"
+    name="subjects"
+    dropdownPosition="bottom"
+    [(ngModel)]="Topics"
+    (ngModelChange)="sendSelectedTopics(Topics)"
+  >
+    <ng-template ng-optgroup-tmp let-item="item">
+      {{ item[0].tagName | uppercase }}
+    </ng-template>
+  </ng-select>
+</div>

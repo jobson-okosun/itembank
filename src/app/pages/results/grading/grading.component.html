@@ -1,0 +1,743 @@
+<div *ngIf="loadingDashboardResources" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+  </div>
+</div>
+
+<ng-container *ngIf="!loadingDashboardResources">
+  <app-breadcrumbs *ngIf="assessmentSummary"
+    title=""
+    [breadcrumbItems]="breadCrumbItems"
+  ></app-breadcrumbs>
+
+  <!-- Assessment Summary -->
+  <div class="card p-3">
+    <!-- title -->
+    <div class="row align-items-end">
+      <div class="col-lg-6">
+          <h3 class="modal-title" *ngIf="assessmentSummary">{{ assessmentSummary.exam_name | uppercase }}</h3>
+          <div class="d-flex text-secondary fs-12" style="cursor: pointer">
+            Exam Delivery:&nbsp;
+            <span class="fs-12">ON_PREMISE_WITH SECURE_BROWSER</span>
+          </div>
+      </div>
+      <div class="col-lg-6 px-3">
+        <div class="d-flex align-items-center justify-content-end">
+            <div class="d-flex gap-5 fs-12 text-secondary justify-content-end" style="cursor: pointer">
+              <div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="d-inline-block rounded-circle bg-success" style="width: 10px; height: 10px"></span>
+                  <div class="fw-bold text-black small">Start Time</div>
+                </div>
+                <span class="text-secondary" *ngIf="assessmentSummary">{{assessmentSummary.start_date | date : "MMMM d, y 'at' h:mm a" }}</span>
+              </div>
+              <div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="d-inline-block rounded-circle bg-danger" style="width: 10px; height: 10px"></span>
+                  <div class="fw-bold text-black small">End Time</div>
+                </div>
+                <span class="text-secondary" *ngIf="assessmentSummary"> {{ assessmentSummary.end_date | date : "MMMM d, y 'at' h:mm a" }}</span>
+              </div>
+              <div class="dropdown" ngbDropdown>
+                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+                  ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                    style="cursor: pointer"></i></a>
+                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                  <div class="px-3 py-2 small text-black">
+                    Filter Assessment
+                  </div>
+                  <div class="dropdown-divider"></div>
+
+                  <form [formGroup]="assessmentFilterForm" class="px-3 py-1">
+                    <div class="mb-2">
+                      <label for="center" class="small">Center</label>
+                      <select formControlName="center_id" class="form-control control-input">
+                        <option value="">--Select center --</option>
+                        <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                          {{ item.center_id }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-2">
+                      <label for="batch" class="small">Batch</label>
+                      <select formControlName="batch_id" class="form-control control-input">
+                        <option value="">-- Select batch --</option>
+                        <option *ngFor="let item of assessmentSummary?.batches" [value]="item.id">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                  </form>
+
+                  <div class="dropdown-divider"></div>
+                  <div class="px-3 d-flex gap-1">
+                    <button type="button" (click)="applyAssementFilter()" class="btn btn-primary w-100">
+                      Apply
+                    </button>
+                    <button type="button" (click)="clearFilter('assessment')" class="btn btn-secondary w-100">
+                    Clear
+                  </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards section-->
+    <div class="row mt-4">
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="px-2 py-1 avatar-title bg-soft-secondary rounded-2 fs-4">
+                <i class="ri-group-fill text-secondary"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Participants<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_participants }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="px-2 py-1 avatar-title bg-soft-primary rounded-2 fs-4">
+                <i class="ri-timer-fill text-primary"></i>
+              </span>
+            </div>
+            <div class="d-flex align-items-center flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Started<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_started }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-success rounded-2 fs-4">
+                <i class="bx bxs-send text-success"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Submitted<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_completed }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
+                <i class="ri-pause-circle-fill text-danger"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Suspended<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_suspended }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-warning rounded-2 fs-4">
+                <i class="bx bxs-user-x text-warning"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Absentees<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_absent }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-success rounded-2 fs-4">
+                <i class="ri-timer-fill text-success"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                compensatory time<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_comp_time_added }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-danger rounded-2 fs-4">
+                <i class="ri-stop-circle-fill text-danger"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Timed out<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_timed_out }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-secondary rounded-2 fs-4">
+                <i class="ri-exchange-fill text-warning"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                System swaps<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_computer_swapped }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-sm-12">
+        <div class="card">
+          <div class="d-flex p-2 align-items-center">
+            <div class="me-3 flex-shrink-0">
+              <span class="p-2 avatar-title bg-soft-primary rounded-2 fs-4">
+                <i class="bx bx-revision text-primary"></i>
+              </span>
+            </div>
+            <div class="flex-grow-1 overflow-hidden">
+              <span class="fs-14">
+                Re logins<br /><span class="fs-14 fw-bold" *ngIf="assessmentSummary">
+                  {{ assessmentSummary.total_relogin }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- charts -->
+  <div>
+    <!-- Title -->
+    <div class="d-flex align-items-center gap-2 mt-3">
+      <h4 class="modal-title">Overall Performance (All Subjects)</h4>
+    </div>
+
+    <!-- charts -->
+    <div class="d-flex flex-column flex-lg-row gap-3 py-4">
+      <!-- analysis -->
+      <div class="col-lg-6 p-3 rounded border">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="fw-bold text-black">Score Analysis</span>
+          <div class="dropdown" ngbDropdown>
+            <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+              ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                style="cursor: pointer"></i></a>
+            <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+              <div class="px-3 py-2 small text-black">
+                Filter Score Analysis
+              </div>
+              <div class="dropdown-divider"></div>
+
+              <form [formGroup]="scoreAnalysisFilterForm" class="px-3 py-1">
+                <div class="mb-2">
+                  <label for="center" class="small">Center</label>
+                  <select formControlName="center_id" class="form-control control-input">
+                    <option value="">--Select center --</option>
+                    <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                      {{ item.center_id }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label for="batch" class="small">Section*</label>
+                  <select formControlName="section_id" class="form-control control-input">
+                    <option value="">--Select section --</option>
+                    <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </form>
+
+              <div class="dropdown-divider"></div>
+              <div class="px-3 px-3 d-flex gap-1">
+                <button type="button" (click)="applyScoreAnalysisFilter()" class="btn btn-primary w-100">Apply</button>
+                <button type="button" (click)="clearFilter('scoreanalysis')" class="btn btn-secondary w-100">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <!-- <div class="d-flex justify-content-center align-items-center">
+              <img src="assets/images/avg-circle.png" alt="" />
+          </div> -->
+          <div class="row col-lg-10 mx-auto">
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ numberToPrecision(scoreAnalysis.avg_raw_score) }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">AVG. Raw Score</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-primary border-primary border border-2 rounded-circle fw-bold text-primary">
+                    {{ numberToPrecision(scoreAnalysis.avg_scaled_score) }}%
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">AVG. Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ scoreAnalysis.max_raw_score }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Max Raw Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ scoreAnalysis.min_raw_score }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Min Raw Score</h6>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-primary border-primary border border-2 rounded-circle fw-bold text-primary">
+                    {{ scoreAnalysis.max_scaled_score }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Max Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ scoreAnalysis.min_scaled_score }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Min Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-primary border-primary border border-2 rounded-circle fw-bold text-primary">
+                    {{ scoreAnalysis.median_raw_score }}
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Midian Raw Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ numberToPrecision(scoreAnalysis.median_scaled_score) }}%
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Midian Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-primary border-primary border border-2 rounded-circle fw-bold text-primary">
+                    {{ numberToPrecision(scoreAnalysis.upper_quartile_scaled_score) }}%
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Upper Quartile Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+            
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ numberToPrecision(scoreAnalysis.lower_quartile_scaled_score) }}%
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Lower Quartile Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-6">
+              <div class="p-2 d-flex align-items-center">
+                <div class="avatar-sm me-3">
+                  <span class="avatar-title small bg-soft-success border-success border border-2 rounded-circle fw-bold text-success">
+                    {{ numberToPrecision(scoreAnalysis.std_dev_scaled_score) }}%
+                  </span>
+                </div>
+                <div>
+                  <!-- <h5 class="m-0">{{ scoreAnalysis.avg_raw_score }}</h5> -->
+                  <h6 class="m-0">Standard Deviation Scaled Score</h6>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <!-- score distribution -->
+      <div class="col-lg-6 border rounded p-3">
+        <div class="d-flex justify-content-between">
+          <span class="fw-bold text-black">Score Distribution</span>
+          <div class="dropdown" ngbDropdown>
+            <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+              ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
+                style="cursor: pointer"></i></a>
+            <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+              <div class="px-3 py-2 small text-black">
+                Filter Score distribution
+              </div>
+              <div class="dropdown-divider"></div>
+
+              <form [formGroup]="scoreDistributionFilterForm" class="px-3 py-1">
+                <div class="mb-2">
+                  <label for="center" class="small">Center</label>
+                  <select formControlName="center_id" class="form-control control-input">
+                    <option value="">--Select center --</option>
+                    <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                      {{ item.center_id }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-2">
+                  <label for="batch" class="small">Section*</label>
+                  <select formControlName="section_id" class="form-control control-input">
+                    <option value="">--Select section --</option>
+                    <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+              </form>
+
+              <div class="dropdown-divider"></div>
+              <div class="px-3 px-3 d-flex gap-1">
+                <button type="button" (click)="applyDistributionFilter()" class="btn btn-primary w-100">Apply</button>
+                <button type="button" (click)="clearFilter('distribution')" class="btn btn-secondary w-100">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <apx-chart *ngIf="scoreDistribution" [series]="scoreDistributionChart.series"
+            [chart]="scoreDistributionChart.chart" [markers]="scoreDistributionChart.markers"
+            [dataLabels]="scoreDistributionChart.dataLabels" [stroke]="scoreDistributionChart.stroke"
+            [colors]="scoreDistributionChart.colors" [title]="scoreDistributionChart.title"
+            [xaxis]="scoreDistributionChart.xaxis" [yaxis]="scoreDistributionChart.yaxis"></apx-chart>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- Participants -->
+  <div>
+    <!-- Title -->
+    <div class="d-flex justify-content-between gap-2 py-3">
+      <h4 class="modal-title">Participants List</h4>
+      <div class="dropdown" ngbDropdown placement="left">
+        <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+          ngbDropdownToggle>
+          <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+        </a>
+        <div ngbDropdownMenu style="min-width: 400px; overflow: hidden; z-index: 99999" class="border shadow-sm">
+          <div class="px-3 py-2 small text-black">Filter Participants</div>
+          <div class="dropdown-divider"></div>
+
+          <form [formGroup]="participantsListFilterForm" class="px-3 py-1">
+            <div class="mb-2">
+              <label for="batch" class="small">Section*</label>
+              <select formControlName="section_id" class="form-control control-input">
+                <option value="">--Select section --</option>
+                <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+          </form>
+
+          <div class="dropdown-divider"></div>
+          <div class="px-3 d-flex gap-1">
+            <button type="button" (click)="applyParticipantListFilter()" class="btn btn-primary w-100">
+              Apply
+            </button>
+            <button type="button" (click)="clearFilter('participant')" class="btn btn-secondary w-100">
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- table -->
+    <div *ngIf="isLoadingParticipants" class="d-flex flex-column align-items-center justify-content-center gap-2 p-5">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+    </div>
+
+    <div>
+      <div *ngIf="participantList && !isLoadingParticipants">
+        <p-table  #dt [value]="participants" dataKpy="id" responsiveLayout="scroll">
+          <ng-template pTemplate="header">
+            <tr class="small">
+              <th pFrozenColumn pSortableColumn="name" style="min-width: 300px" class="small">
+                Information<p-sortIcon field="name"></p-sortIcon>
+                <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
+              </th>
+              <th pFrozenColumn style="min-width: 200px">Score</th>
+              <th pFrozenColumn style="min-width: 200px">Sections</th>
+              <th>Duration&nbsp;</th>
+              <th style="min-width: 100px">Actions</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-participant>
+            <tr class="smaller">
+              <td pFrozenColumn style="min-width: 300px">
+                <div class="d-flex flex-column">
+                  <div class="text-black">{{ participant.name | titlecase }}</div>
+                  <div  style="font-size: 11px">{{ participant.loginField }}: {{ participant.loginFieldVaue}} </div>
+                  <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-2">
+                    <!-- participant tags-->
+                     <div *ngIf="participant.status" class="rounded border smaller tag" style="padding: 1px 4px">
+                        <!-- tag title -->
+                        <div class="text-uppercase text-black" style="font-size: 10px">STATUS</div>
+                        <!-- tag value -->
+                        <div class="mt-1 d-flex align-items-center justify-content-center">
+                          <span class="badge rounded-pill" style="text-transform: capitalize" [ngClass]="{
+                            'badge-soft-danger':
+                              participant.status.toUpperCase() === 'NOT_STARTED',
+                            'badge-soft-warning':
+                              participant.status.toUpperCase() === 'STARTED',
+                            'badge-soft-success':
+                              participant.status.toUpperCase() === 'ENDED'
+                          }">{{ participant.status.split('_').join(' ') }}</span>
+                        </div>
+                     </div>
+                     <div *ngIf="participant.center" class="rounded border smaller tag" style="padding: 1px 4px">
+                        <div class="text-uppercase text-black" style="font-size: 10px">Center</div>
+                        <div>{{ participant.center }}</div>
+                     </div>
+                     <div  *ngIf="participant.batchName" class="rounded border smaller tag" style="padding: 1px 4px">
+                        <div class="text-uppercase text-black" style="font-size: 10px">batch</div>
+                        <div>{{ participant.batchName }}</div>
+                     </div>
+                    <div  *ngIf="participant.attempted !== null" class="rounded border smaller tag" style="padding: 1px 4px">
+                        <div class="text-uppercase text-black" style="font-size: 10px">T. Attempts</div>
+                        <div class="text-center">{{ participant.attempted }}</div>
+                     </div>
+                  </div>
+                </div>
+              </td>
+              <td pFrozenColumn style="min-width: 200px">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-2">
+                      <div *ngIf="participant.score" class="rounded border smaller tag" style="padding: 1px 4px">
+                          <div class="text-uppercase text-black" style="font-size: 10px">raw score</div>
+                          <div class="text-center">{{ participant.score }}</div>
+                      </div>
+                      <div *ngIf="participant.scaledScore" class="rounded border smaller tag" style="padding: 1px 4px">
+                          <div class="text-uppercase text-black" style="font-size: 10px">scaled score</div>
+                          <div class="text-center">{{ participant.scaledScore }}</div>
+                      </div>
+                    </div>
+                  </div>
+              </td>
+              <td pFrozenColumn style="min-width: 200px">
+                  <div>
+                    <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-2">
+                      <div triggers="mouseenter:mouseleave" [ngbPopover]="SectionPopOver" popoverTitle="Section: {{ section.section_name }}"  *ngFor="let section of participant.sectionItems" class="rounded border smaller tag" style="padding: 1px 4px">
+                          <!-- tag title -->
+                          <div class="text-black" style="font-size: 10px"> {{ section.section_name }} </div>
+                          <!-- tag value -->
+                           <div class="text-center" style="font-size: 10px">Attempted: {{ section.total_attempted }}</div>
+
+                          <!-- section details -->
+                          <ng-template #SectionPopOver>
+                            <div class="p-1 smaller">
+                              <div class="d-flex justify-between gap-2">
+                                <span>Section&nbsp;Name: </span>
+                                <span><b>{{ section.section_name.trim().replaceAll(' ', '&nbsp;') }}</b> </span>
+                              </div>
+                              <div class="d-flex justify-between gap-2 mt-1">
+                                <span>Total&nbsp;Questions: </span>
+                                <span><b>{{ section.total_items }}</b> </span>
+                              </div>
+                              <div class="d-flex justify-between gap-2 mt-1">
+                                <span>Attempted: </span>
+                                <span><b>{{ section.total_attempted }}</b> </span>
+                              </div>
+                              <div class="d-flex justify-between gap-2 mt-1">
+                                <span>Section&nbsp;Score: </span>
+                                <span><b>{{ section.score }}</b> </span>
+                              </div>
+                              <div class="d-flex justify-between gap-2 mt-1">
+                                <span>Section&nbsp;Scaled&nbsp;Score: </span>
+                                <span><b>{{ section.scaled_score }}%</b> </span>
+                              </div>
+                            </div>
+                          </ng-template>
+                      </div>
+                    </div>
+                  </div>
+              </td>
+              <td>
+                <span triggers="mouseenter:mouseleave" class="badge badge-soft-primary fs-12" style="cursor: pointer"
+                  [ngbPopover]="timerPopOver" popoverTitle="Start to Finish">
+                  {{ participant.duration }}
+                </span>
+                <ng-template #timerPopOver>
+                  <div class="d-flex justify-content-between">
+                    <span class="badge badge-soft-success fs-10">{{
+                      participant.startTime
+                      }}</span>
+                    <span class="badge badge-soft-danger fs-10">{{
+                      participant.endTime
+                      }}</span>
+                  </div>
+                </ng-template>
+              </td>
+              <td>
+                <div class="dropdown" ngbDropdown>
+                  <button class="btn btn-soft-primary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown"
+                    aria-expanded="false" ngbDropdownToggle>
+                    <i class="ri-more-fill"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <li>
+                    <a
+                      class="dropdown-item" (click)="goToGrading(participant)">
+                      <!-- <i class="ri-eye-fill align-bottom me-2 text-muted"></i> -->
+                      Grade
+                    </a>
+
+                    </li>
+                    <!-- <li *ngIf="participant.markedStatus === 'completed'">
+                      <button
+                      
+                      
+                        class="dropdown-item"
+                        routerLink="/examalpha/reports/{{
+                          assessmentId
+                        }}/grading/grader"
+                        ><i class="ri-eye-fill align-bottom me-2 text-muted"></i>
+                        view grade
+                      </button>
+                    </li>
+                    <li *ngIf="participant.markedStatus !== 'completed'">
+                      <a
+                        class="dropdown-item"
+                        routerLink="/examalpha/exams/{{ assessmentId }}/grading/{{
+                          participantId
+                        }}/grade"
+                        ><i
+                          class="ri-checkbox-circle-fill align-bottom me-2 text-muted"
+                        ></i>
+                        grade participant
+                      </a>
+                    </li> -->
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <p-paginator [ngClass]="{ 'd-none': !participantList }" (onPageChange)="onParticipantPageChange($event)"
+          [first]="0" [totalRecords]="participantList && participantList.total" [rowsPerPageOptions]="[10, 50, 100, 200]"
+          [rows]="10" [pageLinkSize]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"></p-paginator>
+    </div>
+  </div>
+</ng-container>

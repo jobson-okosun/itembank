@@ -1,0 +1,71 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="text-primary d-flex justify-content-between">
+        <span class="fw-bold py-lg-2">
+          Question {{ currentQuestionNumber + 1 }}
+        </span>
+        <app-revisit-button
+          [questionNumber]="currentQuestionNumber"
+        ></app-revisit-button>
+      </div>
+
+      <ngx-simplebar style="height: 320px; overflow-x: hidden">
+        <div class="row pt-3 pb-3">
+          <div class="col-lg-12 col-md-12 col-sm-12 align-items-center">
+            <span
+              class="mt-3"
+              [innerHtml]="this.getCurrentQuestion().passage_stimulus"
+            ></span>
+            <span
+              class="mt-3"
+              [innerHtml]="this.getCurrentQuestion().stimulus"
+            ></span>
+            <div class="preview-container">
+              <img
+                #previewImage
+                [src]="getCurrentQuestion().image_data[0].url"
+                class="preview-image"
+                alt="Preview Image"
+              />
+
+              <div
+                *ngFor="
+                  let position of getCurrentQuestion().response_positions;
+                  let i = index
+                "
+                class="preview-label"
+                [style.left.%]="position.x"
+                [style.top.%]="position.y"
+              >
+                <div class="pointer"></div>
+                <!-- <div> -->
+                <select
+                  class="form-select form-select-sm"
+                  name=""
+                  id=""
+                  style="width: 100px"
+                >
+                  <option
+                    *ngFor="
+                      let response of getCurrentQuestion().possible_responses[i]
+                        .responses
+                    "
+                    [selected]="
+                      getCurrentQuestion().responses[i] &&
+                      getCurrentQuestion().responses[i] ===
+                        response.trim()
+                    "
+                  >
+                    {{ response }}
+                  </option>
+                </select>
+                <!-- </div> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </ngx-simplebar>
+    </div>
+  </div>
+</div>

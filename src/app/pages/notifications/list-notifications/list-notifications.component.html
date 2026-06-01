@@ -1,0 +1,226 @@
+<app-breadcrumbs
+  title="NOTIFICATIONS"
+  [breadcrumbItems]="breadCrumbItems"
+></app-breadcrumbs>
+
+<div
+  *ngIf="loading"
+  class="d-flex align-items-center justify-content-center"
+  style="height: 60vh"
+>
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading Notifications...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
+      >Loading Notifications...</span
+    >
+  </div>
+</div>
+
+<div *ngIf="!loading" class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h5 class="card-title">
+      Accepted Questions({{ notifications.totalElements }})
+    </h5>
+    <!-- <div *ngIf="notifications.content.length > 0">
+      <select
+        #filterBy
+        class="form-select"
+        (change)="setFilter(filterBy.value)"
+      >
+        <option value="" selected disabled>Filter By</option>
+        <option value="ACCEPTED" [selected]="filterOption === 'ACCEPTED'">
+          ACCEPTED
+        </option>
+        <option value="REJECTED" [selected]="filterOption === 'REJECTED'">
+          REJECTED
+        </option>
+      </select>
+    </div> -->
+  </div>
+  <div class="card-body">
+    <div *ngFor="let notification of notifications.content" class="row">
+      <div class="card card-animate p-3">
+        <div class="d-flex align-items-center">
+          <div class="flex-grow-1 overflow-hidden">
+            <div class="d-flex flex-column" style="cursor: pointer">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <p class="text-muted">Author: {{ notification.author }}</p>
+                  <div class="d-flex gap-2 fs-12">
+                    <span class="badge bg-primary"
+                      >Subject:{{
+                        notification.subjectName.toUpperCase()
+                      }}</span
+                    >
+                    <span class="badge bg-warning"
+                      >Topic: {{ notification.topicName.toUpperCase() }}</span
+                    >
+                    <span
+                      *ngIf="notification.subtopicName"
+                      class="badge bg-secondary"
+                      >Subtopic:
+                      {{ notification.subtopicName.toUpperCase() }}</span
+                    >
+                  </div>
+                </div>
+                <p class="text-muted fs-12">
+                  Moderator: {{ notification.moderator }}
+                </p>
+              </div>
+              <div *ngIf="notification.rejectReason" class="my-2">
+                <span class="form-label">REASON: </span>
+                <span
+                  class="text-muted"
+                  [innerHTML]="notification.rejectReason"
+                ></span>
+              </div>
+              <div
+                class="d-flex justify-content-between fs-11 fw-medium text-uppercase text-muted"
+              >
+                <span class="mt-2"
+                  >{{ notification.status + ' on' }}:
+                  <i class="mdi mdi-clock-outline mr-2"></i>
+                  {{ notification.messageTime | date : 'medium' }}</span
+                >
+
+                <div class="d-flex gap-2">
+                  <span
+                    *ngIf="notification.status == 'ACCEPTED'"
+                    class="badge badge-soft-success fs-12"
+                    >{{ notification.status | uppercase }}</span
+                  >
+                  <span
+                    class="badge badge-soft-danger fs-12"
+                    *ngIf="notification.status == 'REJECTED'"
+                  >
+                    {{ notification.status | uppercase }}</span
+                  >
+                  <button
+                    class="btn btn-sm btn-outline-primary"
+                    (click)="previewItem(notification)"
+                  >
+                    <i class="ri-edit-fill me-2 align-middle"></i>View
+                    Question
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- <div class="flex-shrink-0 ms-2">
+            <div class="d-flex gap-1">
+              <div class="dropdown" ngbDropdown>
+                <button
+                  class="btn btn-icon btn-primary btn-sm fs-18 dropdown arrow-none"
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                  ngbDropdownToggle
+                >
+                  <i class="ri-more-fill"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                  <li>
+                    <a class="dropdown-item"
+                      ><i
+                        class="ri-pencil-fill align-bottom me-2 text-muted"
+                      ></i>
+                      Rename</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer">
+    <div *ngIf="notifications.content.length > 0" class="mt-2 text-center">
+      <p-paginator
+        [totalRecords]="notifications.totalElements"
+        #paginator
+        (onPageChange)="onPageChange($event)"
+        [first]="1"
+        [rowsPerPageOptions]="[20, 30, 50]"
+        [rows]="25"
+        [showCurrentPageReport]="true"
+      >
+      </p-paginator>
+    </div>
+  </div>
+</div>
+
+<ng-template #previewItemModal let-modal>
+  <div class="modal-header px-5">
+    <h3 class="modal-title">Question Preview</h3>
+    <div>
+      <button
+        type="button"
+        class="close"
+        data-dismiss="modal"
+        aria-label="Close"
+        (click)="modal.close('Close click')"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  </div>
+  <div
+    class="p-5 modal-body"
+    style="
+      height: 450px;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+      overflow-y: auto;
+    "
+  >
+    <div class="card-body">
+      <div *ngIf="item">
+        <app-preview
+          *ngIf="item.type === 'MCQ'"
+          [previewData]="item"
+        ></app-preview>
+        <app-matching-preview
+          *ngIf="item.type === 'ASSOCIATION'"
+          [previewData]="item"
+        ></app-matching-preview>
+        <app-ordering-preview
+          *ngIf="item.type === 'ORDER_LIST'"
+          [previewData]="item"
+        ></app-ordering-preview>
+        <app-rich-essay-preview
+          *ngIf="item.type === 'ESSAY_RICH_TEXT'"
+          [previewData]="item"
+        ></app-rich-essay-preview>
+        <app-multiple-response-preview
+          *ngIf="item.type === 'MRQ'"
+          [previewData]="item"
+        ></app-multiple-response-preview>
+        <app-short-text-preview
+          *ngIf="item.type === 'SHORT_TEXT'"
+          [previewData]="item"
+        ></app-short-text-preview>
+        <app-yes-or-no-preview
+          *ngIf="item.type === 'YES_NO'"
+          [previewData]="item"
+        ></app-yes-or-no-preview>
+        <app-true-or-false-preview
+          *ngIf="item.type === 'TRUE_FALSE'"
+          [previewData]="item"
+        ></app-true-or-false-preview>
+        <app-cloze-dropdown-preview
+          *ngIf="item.type === 'CLOZE_DROPDOWN'"
+          [previewData]="item"
+        ></app-cloze-dropdown-preview>
+        <app-cloze-text-preview
+          *ngIf="item.type === 'CLOZE_TEXT'"
+          [previewData]="item"
+        ></app-cloze-text-preview>
+      </div>
+    </div>
+  </div>
+</ng-template>

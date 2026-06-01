@@ -1,0 +1,112 @@
+.pointer {
+  cursor: pointer;
+}
+
+.pass {
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background-color: green;
+}
+
+.pass:hover {
+  opacity: .5;
+}
+
+.fail {
+  text-align: center;
+  color: #FFF;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+  background-color: red;
+}
+
+.fail:hover {
+  opacity: .5;
+}
+
+.section-bar {
+  cursor: pointer;
+  width: 170px;
+  // height: 30px; 
+  color: #fff;
+}
+
+.success-bar {
+  background-color: green;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  font-size: small;
+}
+
+.success-bar:hover {
+  opacity: .5;
+}
+
+.failed-bar {
+  background-color: red;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  font-size: small;
+}
+
+.failed-bar:hover {
+  opacity: .5;
+}
+
+.vr {
+  width: 1px;
+  height: 35px;
+}
+
+.card-image {
+  width: 50px;
+  height: 50px;
+}
+
+.input-error {
+  font-size: smaller;
+  text-transform: capitalize;
+  font-style: italic;
+  color: tomato;
+}
+
+.disable-click {
+  // pointer-events: none;
+  background-color: #f0efef;
+  cursor: not-allowed;
+}
+
+.question-panel {
+  height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 5px;
+}
+
+.border-gray {
+   border: 1px solid #d1d5dc
+}
+
+.item-label * {
+  padding: 0;
+  margin: 0
+}
+
+.smaller {
+  font-size: 13px;
+}
+
+.tag {
+    transition: all .5s;
+}
+
+.tag:hover {
+  border-color: #5c76a7 !important;
+  cursor: pointer;
+}
