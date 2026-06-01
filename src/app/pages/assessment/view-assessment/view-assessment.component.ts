@@ -200,7 +200,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(this.assessmentService.activeAssessment);
+    // console.log(this.assessmentService.activeAssessment);
 
     this.totalPassages = 0;
     this.itemService.assessmentActive = true;
@@ -354,7 +354,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
         this.assessment = value;
 
-        console.log(value, 'assessment');
+        // console.log(value, 'assessment');
 
         // console.log(this.assessment);
       },
