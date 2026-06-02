@@ -27,6 +27,8 @@ export class ItemTagComponent implements OnInit {
   @Input() status: string;
   @Input() disabled: boolean;
   @Output() sendTags = new EventEmitter();
+  @Input() resetTagsArray: boolean = false;
+
 
   tags$: Observable<any>;
 
@@ -42,10 +44,10 @@ export class ItemTagComponent implements OnInit {
   constructor(
     private userService: UsersService,
     private itemUtilityService: ItemUtilitiesService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    if(this.recievedTag){
+    if (this.recievedTag) {
       this.Tag = this.recievedTag
     }
     this.itemUtilityService.selectedTags$.pipe(take(1)).subscribe((tags) => {
@@ -54,6 +56,12 @@ export class ItemTagComponent implements OnInit {
       }
     });
     this.loadTags();
+
+    if (this.resetTagsArray) {
+      console.log("RESETTING TAGS ARRAY");
+      this.Tag = [];
+      this.sendTags.emit(this.Tag);
+    }
   }
 
   showSelect(event) {
@@ -101,6 +109,7 @@ export class ItemTagComponent implements OnInit {
   }
 
   clearTags(): void {
+    console.log("USER CLEARED TAGS");
     this.Tag = [];
     this.sendTags.emit(this.Tag);
     this.itemUtilityService.setSelectedTags(this.Tag);

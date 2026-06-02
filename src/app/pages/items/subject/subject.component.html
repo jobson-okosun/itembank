@@ -411,10 +411,10 @@
                 </h5>
               </div>
 
-              <div class="d-flex gap-2">
+              <div class="d-flex gap-2 align-items-center">
                 <div *ngIf="_currentBlock.blockType == 'SINGLE_QUESTIONS'">
                   {{ totalFilterSelections }}/{{ _currentBlock.totalQuestions }}
-                  question(s) added to block
+                  Question(s) added to block
                 </div>
                 <div *ngIf="_currentBlock.blockType == 'PASSAGES'">
                   {{ totalFilterSelections }}/{{ _currentBlock.totalQuestions }}
@@ -424,7 +424,7 @@
                   <button *ngIf="_currentBlock.blockType === 'SINGLE_QUESTIONS'" type="button" (click)="
                       openNewRandomSelectionFilterModal(randomFilterOptions)
                     " class="btn btn-primary">
-                    <i class="ri-add-fill align-bottom me-1"></i>Add Criteria
+                    <i class="ri-add-fill align-bottom me-1"></i>Add Filter
                   </button>
 
                   <button *ngIf="_currentBlock.blockType === 'PASSAGES'" type="button" (click)="
@@ -432,7 +432,7 @@
                         randomPassageFilterOptions
                       )
                     " class="btn btn-primary">
-                    <i class="ri-add-fill align-bottom me-1"></i>Add Criteria
+                    <i class="ri-add-fill align-bottom me-1"></i>Add Filter
                   </button>
                 </ng-container>
               </div>
@@ -1142,14 +1142,14 @@
               <div *ngIf="
                   assessmentFilters.length == 0 &&
                   _currentBlock.blockType === 'SINGLE_QUESTIONS'
-                " class="d-flex flex-column justify-content-between align-items-center">
+                " class="d-flex flex-column justify-content-between align-items-center gap-3">
                 <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                 <h4 class="text-secondary fw-bold">
-                  No Question(s) Criteria Added!
+                  No Question(s) Filter Added!
                 </h4>
                 <a (click)="
                     openNewRandomSelectionFilterModal(randomFilterOptions)
-                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Criteria</a>
+                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Filter</a>
               </div>
             </div>
 
@@ -1185,16 +1185,16 @@
               <div *ngIf="
                   assessmentFilters.length == 0 &&
                   _currentBlock.blockType === 'PASSAGES'
-                " class="d-flex flex-column justify-content-between align-items-center">
+                " class="d-flex flex-column justify-content-between align-items-center gap-3">
                 <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                 <h4 class="text-secondary fw-bold">
-                  No Passage(s) Criteria Added!
+                  No Passage(s) Filter Added!
                 </h4>
                 <a (click)="
                     openNewPassageSelectionFilterModal(
                       randomPassageFilterOptions
                     )
-                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Criteria</a>
+                  " class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add Filter</a>
               </div>
             </div>
 
@@ -1575,9 +1575,9 @@
 
     <ng-template #randomFilterOptions [showModal] let-modal>
       <div class="modal-header">
-        <h3 class="modal-title">NEW BLOCK CRITERIA</h3>
+        <h3 class="modal-title">NEW BLOCK FILTER</h3>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-          (click)="modal.close('Close click'); removeAllTopics()">
+          (click)="modal.close('Close click'); removeAllTopics();">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -1611,11 +1611,11 @@
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog"></app-item-tag>
           </div>
 
           <div class="row py-1">
-            <!-- Total number of questions specification field-->
+            <!-- Total number of questions specification field -->
             <div class="col-6">
               <label for="totalQuestions">Total Questions <span class="text-danger">*</span></label>
               <input type="number" [max]="_currentBlock.totalQuestions" min="1" class="form-control"
@@ -1668,11 +1668,10 @@
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="
               modal.close('Close click');
               assessmentFilterForm.reset();
-              removeAllTopics()
-            ">
+              removeAllTopics();">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
-          <button type="button" *ngIf="!submitted" (click)="
+          <button [disabled]="!assessmentFilter.topicId" type="button" *ngIf="!submitted" (click)="
               submitAssessmentFilter(assessmentFilterForm, scoreRef.value)
             " class="btn btn-primary">
             <i class="ri-save-line me-2 align-middle"></i>Save
@@ -1693,7 +1692,7 @@
 
     <ng-template #randomPassageFilterOptions [showModal] let-modal>
       <div class="modal-header">
-        <h3 class="modal-title">PASSAGE CRITERIA</h3>
+        <h3 class="modal-title">PASSAGE FILTER</h3>
       </div>
       <div class="px-5 modal-body">
         <form #assessmentPassageFilterForm (ngSubmit)="
@@ -1750,7 +1749,7 @@
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)" [status]="'Optional'"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [status]="'Optional'"></app-item-tag>
           </div>
         </form>
       </div>

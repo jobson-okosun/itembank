@@ -68,6 +68,8 @@ export class SubjectComponent implements OnInit, OnChanges {
   // Subscriptions variables
   deleteSubTopicSubscription!: Subscription;
 
+  resetTagsInputFieldOnOpenFilterDialog: boolean = false;
+
   _errorMsg: string;
 
   breadCrumbItems!: Array<{}>;
@@ -1194,6 +1196,11 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.assessmentFilter.totalQuestions -= this.totalFilterSelections;
 
     console.log(this.assessmentFilter.totalQuestions);
+
+    // RESETING ON FILTER FORM OPENS
+    this.resetTagsInputFieldOnOpenFilterDialog = true;
+    this.assessmentFilter.tagIds = [];
+    this.assessmentPassageFilter.tagIds = [];
   }
 
   removeAllTopics() {
@@ -1211,6 +1218,11 @@ export class SubjectComponent implements OnInit, OnChanges {
       this._currentBlock.totalQuestions;
     this.assessmentPassageFilter.totalPassages -= this.totalFilterSelections;
     // console.log(this.modalReference);
+
+    // RESETING ON FILTER FORM OPENS
+    this.resetTagsInputFieldOnOpenFilterDialog = true;
+    this.assessmentFilter.tagIds = [];
+    this.assessmentPassageFilter.tagIds = [];
   }
 
   recieveTag($event: any) {
@@ -2281,7 +2293,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.submitted = false;
       return;
     }
-    //console.log(this.assessmentFilter);
+    console.log('FILTER RECORD: ', this.assessmentFilter);
+
     this.assessmentService
       .newAssessmentFilter(
         this.assessmentFilter,

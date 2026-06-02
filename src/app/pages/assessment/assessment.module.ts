@@ -41,6 +41,7 @@ import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
 import { AssessmentSectionsComponent } from './marking-guide/assessment-sections/assessment-sections.component';
 import { SectionComponent } from './marking-guide/section/section.component';
 import {TabMenuModule} from 'primeng/tabmenu';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 // import { AssessmentPreviewComponent } from './assessment-preview/assessment-preview.component';
 
 @NgModule({
@@ -77,7 +78,8 @@ import {TabMenuModule} from 'primeng/tabmenu';
     NgbModule,
     PaginatorModule,
     SharedModule,
-    TabMenuModule
+    TabMenuModule,
+    DragDropModule
   ],
   providers: [],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
