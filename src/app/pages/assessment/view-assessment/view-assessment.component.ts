@@ -1202,6 +1202,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           },
         );
     } else {
+
+      this.submitted = false;
+
       return this.notifier.notify(
         'error',
         `You have selected only ${this.selectedItems.length}/${this.selectedBlock.totalQuestions} questions!`,

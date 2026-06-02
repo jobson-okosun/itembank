@@ -976,8 +976,6 @@
           </div>
         </div>
 
-        <!-- TESTING GIT COMMIT -->
-        <!-- <div class="form-check"> -->
         <div class="mb-2">
           <label class="form-label" for="durationInMinutes">
             Section Duration in minutes.
@@ -1197,7 +1195,7 @@
       style="cursor: move;">
       <h3 class="modal-title">NEW QUESTION BLOCK</h3>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-        (click)="modal.close('Close click'); newBlockForm.reset()">
+        (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true;">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -1284,7 +1282,7 @@
 
       <div class="my-3">
         <div class="form-check">
-          <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems" checked [(ngModel)]="newBlock.shuffleItems">
+          <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems" [(ngModel)]="newBlock.shuffleItems">
           <label class="form-check-label" for="shuffle_items">Shuffle items?</label>
         </div>
       </div>
@@ -1294,7 +1292,7 @@
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
       <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-        (click)="modal.close('Close click'); newBlockForm.reset()">
+        (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true;">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
       <button [disabled]="!newBlock.selectionType || submitted" type="button" (click)="saveBlock()"
@@ -1458,8 +1456,9 @@
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button> -->
       <ng-template [ngIf]="!submitted">
+        <!-- [disabled]="selectedItems.length < selectedBlock.totalQuestions" -->
         <button *ngIf="selectedBlock.selectionType === 'MANUAL'" (click)="saveManualSelectedItemsToBlock()"
-          [disabled]="selectedItems.length < selectedBlock.totalQuestions" class="btn btn-primary">
+           [disabled]="selectedItems.length < selectedBlock.totalQuestions" class="btn btn-primary">
           <i class="ri-save-line align-middle fs-16 me-2"></i>Save
         </button>
       </ng-template>
