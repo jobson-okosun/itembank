@@ -585,7 +585,12 @@ export class SubjectComponent implements OnInit, OnChanges {
         )
         .subscribe((value) => {
           this.passageTopics = value;
-          console.log(this.passageTopics);
+          // console.log(this.passageTopics);
+          // Auto-select the first topic by default by calling saveTopicSelection with the first topic
+          if (this.passageTopics && this.passageTopics && this.passageTopics.length > 0) {
+            const firstTopic = this.passageTopics[0];
+            this.saveTopicSelection(firstTopic);
+          }
         });
     }
 
@@ -798,32 +803,20 @@ export class SubjectComponent implements OnInit, OnChanges {
               return;
             }
 
-            // console.log(this.itemUtil.currentItemTrail, "current tril");
-            // const foundTopic = this.subject.topics.find((topic)=> topic.topicId === this.itemUtil.currentItemTrail.topicId)
-            // console.log(foundTopic, "found")
-            this.fetchItems(this.subject.topics[0]);
-            this.clickedTopic = this.subject.topics[0];
-            if (this.itemUtil.currentItemTrail) {
-              const foundTopic = this.subject.topics.find(
-                (topic) =>
-                  topic.topicId === this.itemUtil.currentItemTrail.topicId,
+            const savedTrail = this.itemUtil.getSavedItemTrail();
+            let selectedTopic = this.subject.topics[0];
+            if (savedTrail && savedTrail.topicId) {
+              const matchedTopic = this.subject.topics.find(
+                (t) => t.topicId === savedTrail.topicId
               );
-              this.fetchItems(foundTopic);
-              this.clickedTopic = foundTopic;
-              // console.log(foundTopic, "found");
+              if (matchedTopic) {
+                selectedTopic = matchedTopic;
+              }
             }
 
-            // console.log(this.clickedTopic);
-            let itemTrail = {
-              subjectId: this.itemService.subjectId,
-              subjectName: this.subjectName,
-              topicId: this.subject.topics[0].topicId,
-              topicName: this.subject.topics[0].topicName,
-            };
-
-            this.itemProps = itemTrail;
-            this.itemUtil.currentItemTrail = itemTrail;
-            this.itemUtil.saveCurrentItemTrail();
+            this.fetchItems(selectedTopic);
+            this.clickedTopic = selectedTopic;
+            this.saveTopicSelection(selectedTopic);
             this.loading_topics = false;
             //console.log(this.subject);
           },
@@ -1012,7 +1005,12 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.fetchTopicTreeModerator();
     }
 
-    // Add a trail
+    // Add a trail if subject has actually changed to prevent resetting stored topic selection
+    const existingTrail = this.itemUtil.getSavedItemTrail();
+    if (existingTrail && existingTrail.subjectId === foundSubject.subjectId) {
+      return;
+    }
+
     const itemTrail = {
       subjectId: foundSubject.subjectId,
       subjectName: foundSubject.name,
@@ -1033,13 +1031,25 @@ export class SubjectComponent implements OnInit, OnChanges {
           if (value) {
             this.subject = value;
 
-            this.fetchItems(this.subject.topics[0]);
-            this.clickedTopic = this.subject.topics[0];
+            const savedTrail = this.itemUtil.getSavedItemTrail();
+            let selectedTopic = this.subject.topics[0];
+            if (savedTrail && savedTrail.topicId) {
+              const matchedTopic = this.subject.topics.find(
+                (t) => t.topicId === savedTrail.topicId
+              );
+              if (matchedTopic) {
+                selectedTopic = matchedTopic;
+              }
+            }
+
+            this.fetchItems(selectedTopic);
+            this.clickedTopic = selectedTopic;
+
             let itemTrail = {
               subjectId: this.itemService.subjectId,
               subjectName: this.subjectName,
-              topicId: this.subject.topics[0].topicId,
-              topicName: this.subject.topics[0].topicName,
+              topicId: selectedTopic.topicId,
+              topicName: selectedTopic.topicName,
             };
 
             this.itemProps = itemTrail;
@@ -1067,13 +1077,25 @@ export class SubjectComponent implements OnInit, OnChanges {
           if (value) {
             this.subject = value;
 
-            this.fetchItems(this.subject.topics[0]);
-            this.clickedTopic = this.subject.topics[0];
+            const savedTrail = this.itemUtil.getSavedItemTrail();
+            let selectedTopic = this.subject.topics[0];
+            if (savedTrail && savedTrail.topicId) {
+              const matchedTopic = this.subject.topics.find(
+                (t) => t.topicId === savedTrail.topicId
+              );
+              if (matchedTopic) {
+                selectedTopic = matchedTopic;
+              }
+            }
+
+            this.fetchItems(selectedTopic);
+            this.clickedTopic = selectedTopic;
+
             let itemTrail = {
               subjectId: this.itemService.subjectId,
               subjectName: this.subjectName,
-              topicId: this.subject.topics[0].topicId,
-              topicName: this.subject.topics[0].topicName,
+              topicId: selectedTopic.topicId,
+              topicName: selectedTopic.topicName,
             };
 
             this.itemProps = itemTrail;
@@ -1106,14 +1128,25 @@ export class SubjectComponent implements OnInit, OnChanges {
             // console.log("hrllo here");
             return;
           }
-          this.fetchItems(this.subject.topics[0]);
-          this.clickedTopic = this.subject.topics[0];
-          // console.log(this.clickedTopic);
+          const savedTrail = this.itemUtil.getSavedItemTrail();
+          let selectedTopic = this.subject.topics[0];
+          if (savedTrail && savedTrail.topicId) {
+            const matchedTopic = this.subject.topics.find(
+              (t) => t.topicId === savedTrail.topicId
+            );
+            if (matchedTopic) {
+              selectedTopic = matchedTopic;
+            }
+          }
+
+          this.fetchItems(selectedTopic);
+          this.clickedTopic = selectedTopic;
+
           let itemTrail = {
             subjectId: this.itemService.subjectId,
             subjectName: this.subjectName,
-            topicId: this.subject.topics[0].topicId,
-            topicName: this.subject.topics[0].topicName,
+            topicId: selectedTopic.topicId,
+            topicName: selectedTopic.topicName,
           };
 
           this.itemProps = itemTrail;
@@ -1367,7 +1400,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // this.assessmentPassageFilter.subtopicName = $event.subtopicName;
   }
 
-  addNewFilterToBlock() {}
+  addNewFilterToBlock() { }
 
   addQuestionToAssessment(assessmentItem: any) {
     if (this.assessmentItems.length === this._noOfItems) {
@@ -1457,6 +1490,25 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     this.itemProps = itemTrail;
     this.itemUtil.currentItemTrail = itemTrail;
+    this.itemUtil.saveCurrentItemTrail();
+  }
+
+  saveTopicSelection(topic: any, subtopicId?: string, subtopicName: string = '') {
+    // Build itemTrail containing subjectId, subjectName, topicId, topicName, subtopicId, and subtopicName
+    let itemTrail = {
+      subjectId: this.itemService.subjectId,
+      subjectName: this.subjectName,
+      topicId: topic.topicId,
+      topicName: topic.topicName,
+      subtopicId: subtopicId,
+      subtopicName: subtopicName,
+    };
+
+    // Assign itemTrail to this.itemProps and this.itemUtil.currentItemTrail
+    this.itemProps = itemTrail;
+    this.itemUtil.currentItemTrail = itemTrail;
+
+    // Call this.itemUtil.saveCurrentItemTrail()
     this.itemUtil.saveCurrentItemTrail();
   }
 
@@ -2025,7 +2077,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.subjectService
       .renameTopic(topic, this.itemService.subjectId, this.currentTopic.topicId)
       .subscribe(
-        (value) => {
+        async (value) => {
           this.currentExistingTopic = this.currentTopic.topicName;
           Swal.fire({
             icon: 'success',
@@ -2472,5 +2524,13 @@ export class SubjectComponent implements OnInit, OnChanges {
     } else {
       this.assessmentFilter.difficultyLevel = parseInt(selectedDiffLevel);
     }
+  }
+
+  isNumeric(data: any) {
+    if(typeof data === 'number') {
+      return true;
+    }
+    
+    return false;
   }
 }

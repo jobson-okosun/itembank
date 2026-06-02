@@ -32,7 +32,6 @@ import { TemplatesService } from "../../templates/service/templates.service";
 import { TemplatesPage } from "../../templates/model/templates-page.model";
 import { ImportTemplate } from "../model/import-template";
 import { Publish } from "../model/publish";
-import { SubjectComponent } from "../../items/subject/subject.component";
 
 interface Card {
   title: string;
@@ -51,6 +50,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   editSection: AssessmentSections = new AssessmentSections();
   editBlock: BlockDetails = new BlockDetails();
   submitted: boolean = false;
+    assessmentSettings: AssessmentSettings = new AssessmentSettings();
   startExamInstruction: string = `
   <ol>
   <li>
@@ -63,7 +63,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   </li>
   <li>
     The duration of the examination is
-    <strong> 120 minutes</strong> and you can attempt the
+    <strong> ${ this.assessmentSettings.instructionReadTimeSec } minutes</strong> and you can attempt the
     questions in any order you wish.
   </li>
   <li>
@@ -100,7 +100,6 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   endExamInstruction: string = `
   You have completed your examination, kindly leave the hall quietly.`;
   assessment: SingleAssessment;
-  assessmentSettings: AssessmentSettings = new AssessmentSettings();
   assessmentInstruction: AssessmentInstruction = new AssessmentInstruction();
   newSection: NewAssessmentSection = new NewAssessmentSection();
   sectionSettings: SectionSettings = new SectionSettings();
@@ -499,7 +498,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   openNewBlockModal(newBlockModal: any, section: any) {
     this.newBlock.name = 'BLOCK ' + (section.blockCount + 1);
     this.newBlock.totalQuestions;
-    console.log(section, 'section');
+    this.newBlock.blockType = BlockTypesEnum.SINGLE_QUESTIONS
+    // console.log(section, 'section');
     this.modalService.open(newBlockModal, { centered: true, size: 'md' });
   }
 
@@ -1010,7 +1010,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.incompleteSections++;
         // console.log(this.incompleteSections);
       }
-      console.log(section, 'section');
+      // console.log(section, 'section');
       if (section.totalSelectedQuestions !== section.totalQuestions) {
         this.notifier.notify(
           'error',

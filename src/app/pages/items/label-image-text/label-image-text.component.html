@@ -6,7 +6,7 @@
           {{ selectedItemType }} |
           <span class="text-muted">{{ formType }}</span>
         </h3>
-        <div class="d-flex flex-wrap gap-2 float-end">
+        <div [class.flex-grow-1]="!selectedItemType || !formType" class="d-flex flex-wrap gap-2 float-end justify-content-end">
           <div>
             <div class="badge badge-soft-info btn-sm" *ngIf="passageWorkFlow === true">
               passage question

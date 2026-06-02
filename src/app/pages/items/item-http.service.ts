@@ -427,7 +427,7 @@ export class ItemHttpService {
 
   createClozeRadioItem(item: ClozeDropdown): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
-      `${environment.developmentIP}/itembank/items/cloze-dropdown`,
+      `${environment.developmentIP}/itembank/items/cloze-radio`,
       item,
       { withCredentials: true }
     );

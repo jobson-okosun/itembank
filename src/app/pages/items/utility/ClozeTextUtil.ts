@@ -225,6 +225,13 @@ export function openClozeOptionsModal(container: HTMLElement, groupName: string)
   confirmBtn.className = 'btn btn-primary btn-sm';
   confirmBtn.innerText = 'Confirm';
   confirmBtn.addEventListener('click', () => {
+    // If all options are deleted, remove the entire cloze radio block container from the editor
+    if (existingOptions.length === 0) {
+      container.remove();
+      modal.remove();
+      return;
+    }
+
     const checkedId = optionsWrapper.querySelector<HTMLInputElement>('input[type="radio"]:checked')?.id;
 
     // Clear options but keep wrapper alive

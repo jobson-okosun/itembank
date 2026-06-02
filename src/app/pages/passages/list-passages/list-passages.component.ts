@@ -125,7 +125,7 @@ export class ListPassagesComponent implements OnInit {
 
   ngOnInit(): void {
     this.subjectId = this.activatedRoute.snapshot.params['subjectId'];
-    console.log('PASSAGE ID: ', this.subjectId);
+    // console.log('PASSAGE ID: ', this.subjectId);
     this.breadCrumbItems = [{ label: 'passages', active: true }];
     this.assessmentActive = this.itemService.assessmentActive;
     // console.log(this.assessmentActive)
@@ -189,24 +189,7 @@ export class ListPassagesComponent implements OnInit {
                   this.loading_passages = false;
                   this.loadingAllSubjects = false;
 
-                  if (this.passageTopics.length > 0) {
-                    this.selectedTopic = this.passageTopics[0];
-                    let itemTrail = {
-                      subjectId: this.subjectId,
-                      topicId: this.selectedTopic.topicId,
-                      subtopicId: '',
-                      subjectName: this.subjectName,
-                      topicName: this.selectedTopic.topicName,
-                      subtopicName: '',
-                    };
-                    this.getPassages(this.passageTopics[0]);
-                    this.selectedTopic = this.passageTopics[0];
-                    this.setItemTrail(this.passageTopics[0]);
-                  } else {
-                    this.loading_passages = false;
-                  }
-
-                  //console.log(this.passageTopics);
+                  this.autoSelectTopicFromTrail();
                 },
                 (error: HttpErrorResponse) => {
                   this.loading_topics_tree = false;
@@ -227,24 +210,7 @@ export class ListPassagesComponent implements OnInit {
                   this.loading_passages = false;
                   this.loadingAllSubjects = false;
 
-                  if (this.passageTopics.length > 0) {
-                    this.selectedTopic = this.passageTopics[0];
-                    let itemTrail = {
-                      subjectId: this.subjectId,
-                      topicId: this.selectedTopic.topicId,
-                      subtopicId: '',
-                      subjectName: this.subjectName,
-                      topicName: this.selectedTopic.topicName,
-                      subtopicName: '',
-                    };
-                    this.getPassages(this.passageTopics[0]);
-                    this.selectedTopic = this.passageTopics[0];
-                    this.setItemTrail(this.passageTopics[0]);
-                  } else {
-                    this.loading_passages = false;
-                  }
-
-                  //console.log(this.passageTopics);
+                  this.autoSelectTopicFromTrail();
                 },
                 (error: HttpErrorResponse) => {
                   this.loading_topics_tree = false;
@@ -265,22 +231,7 @@ export class ListPassagesComponent implements OnInit {
                   this.loading_passages = false;
                   this.loadingAllSubjects = false;
 
-                  if (this.passageTopics.length > 0) {
-                    this.selectedTopic = this.passageTopics[0];
-                    let itemTrail = {
-                      subjectId: this.subjectId,
-                      topicId: this.selectedTopic.topicId,
-                      subtopicId: '',
-                      subjectName: this.subjectName,
-                      topicName: this.selectedTopic.topicName,
-                      subtopicName: '',
-                    };
-                    this.getPassages(this.passageTopics[0]);
-                    this.selectedTopic = this.passageTopics[0];
-                    this.setItemTrail(this.passageTopics[0]);
-                  } else {
-                    this.loading_passages = false;
-                  }
+                  this.autoSelectTopicFromTrail();
 
                   //console.log(this.passageTopics);
                 },
@@ -309,22 +260,7 @@ export class ListPassagesComponent implements OnInit {
             this.passageTopics = value;
             this.loading_topics_tree = false;
             this.loading = false;
-            if (this.passageTopics.length > 0) {
-              this.selectedTopic = this.passageTopics[0];
-              /* let itemTrail = {
-                subjectId: this.subjectId,
-                topicId: this.selectedTopic.topicId,
-                subtopicId: '',
-                subjectName: this.subjectName,
-                topicName: this.selectedTopic.name,
-                subtopicName: ''
-              }; */
-              //this.itemUtil.currentItemTrail = itemTrail;
-              this.getAssessmentPassages(this.passageTopics[0]);
-              console.log('hello, get assessmenrt passages');
-            } else {
-              this.loading_passages = false;
-            }
+            this.autoSelectTopicFromTrail();
           },
           (error: HttpErrorResponse) => {
             this.loading_topics_tree = false;
@@ -373,6 +309,19 @@ export class ListPassagesComponent implements OnInit {
       (subject) => subject.subjectId === subjectId,
     ).name;
 
+    const existingTrail = this.itemUtil.getSavedItemTrail();
+    if (!existingTrail || existingTrail.subjectId !== subjectId) {
+      const itemTrail = {
+        subjectId: subjectId,
+        subjectName: this.subjectName,
+        topicId: null,
+        topicName: null,
+        subtopicId: null,
+        subtopicName: null,
+      };
+      this.itemUtil.saveCurrentItemTrail(itemTrail);
+    }
+
     if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService
         .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
@@ -387,22 +336,7 @@ export class ListPassagesComponent implements OnInit {
             this.passageTopics = value;
             this.loading_topics_tree = false;
 
-            if (this.passageTopics.length > 0) {
-              this.selectedTopic = this.passageTopics[0];
-              let itemTrail = {
-                subjectId: this.subjectId,
-                topicId: this.selectedTopic.topicId,
-                subtopicId: '',
-                subjectName: this.subjectName,
-                topicName: this.selectedTopic.topicName,
-                subtopicName: '',
-              };
-              this.getPassages(this.passageTopics[0]);
-              this.selectedTopic = this.passageTopics[0];
-              this.setItemTrail(this.passageTopics[0]);
-            } else {
-              this.loading_passages = false;
-            }
+            this.autoSelectTopicFromTrail();
 
             //console.log(this.passageTopics);
           },
@@ -422,22 +356,7 @@ export class ListPassagesComponent implements OnInit {
             this.passageTopics = value;
             this.loading_topics_tree = false;
 
-            if (this.passageTopics.length > 0) {
-              this.selectedTopic = this.passageTopics[0];
-              let itemTrail = {
-                subjectId: this.subjectId,
-                topicId: this.selectedTopic.topicId,
-                subtopicId: '',
-                subjectName: this.subjectName,
-                topicName: this.selectedTopic.topicName,
-                subtopicName: '',
-              };
-              this.getPassages(this.passageTopics[0]);
-              this.selectedTopic = this.passageTopics[0];
-              this.setItemTrail(this.passageTopics[0]);
-            } else {
-              this.loading_passages = false;
-            }
+            this.autoSelectTopicFromTrail();
 
             //console.log(this.passageTopics);
           },
@@ -457,22 +376,7 @@ export class ListPassagesComponent implements OnInit {
             this.passageTopics = value;
             this.loading_topics_tree = false;
 
-            if (this.passageTopics.length > 0) {
-              this.selectedTopic = this.passageTopics[0];
-              let itemTrail = {
-                subjectId: this.subjectId,
-                topicId: this.selectedTopic.topicId,
-                subtopicId: '',
-                subjectName: this.subjectName,
-                topicName: this.selectedTopic.topicName,
-                subtopicName: '',
-              };
-              this.getPassages(this.passageTopics[0]);
-              this.selectedTopic = this.passageTopics[0];
-              this.setItemTrail(this.passageTopics[0]);
-            } else {
-              this.loading_passages = false;
-            }
+            this.autoSelectTopicFromTrail();
 
             //console.log(this.passageTopics);
           },
@@ -616,6 +520,32 @@ export class ListPassagesComponent implements OnInit {
     };
     this.itemUtil.currentItemTrail = itemTrail;
     this.itemUtil.saveCurrentItemTrail();
+  }
+
+  autoSelectTopicFromTrail() {
+    if (!this.passageTopics || this.passageTopics.length === 0) {
+      this.loading_passages = false;
+      return;
+    }
+
+    const savedTrail = this.itemUtil.getSavedItemTrail();
+    let selectedTopic = this.passageTopics[0];
+    if (savedTrail && savedTrail.topicId) {
+      const matchedTopic = this.passageTopics.find(
+        (t) => t.topicId === savedTrail.topicId
+      );
+      if (matchedTopic) {
+        selectedTopic = matchedTopic;
+      }
+    }
+
+    this.selectedTopic = selectedTopic;
+    if (this.assessmentActive) {
+      this.getAssessmentPassages(selectedTopic);
+    } else {
+      this.getPassages(selectedTopic);
+      this.setItemTrail(selectedTopic);
+    }
   }
 
   setTreeItemIndex(topic: any, index: number) {
@@ -878,7 +808,7 @@ export class ListPassagesComponent implements OnInit {
 
         this.passageService.subjectId = this.subjectId;
 
-        console.log('all sub', this.allSubjects);
+        // console.log('all sub', this.allSubjects);
 
         this.fetchTopicTree(this.passageService.subjectId);
 
@@ -906,7 +836,7 @@ export class ListPassagesComponent implements OnInit {
 
         this.passageService.subjectId = this.subjectId;
 
-        console.log('all sub', this.allSubjects);
+        // console.log('all sub', this.allSubjects);
 
         this.fetchTopicTree(this.passageService.subjectId);
 
@@ -933,22 +863,7 @@ export class ListPassagesComponent implements OnInit {
           this.loading_topics_tree = false;
           this.loading_passages = false;
 
-          if (this.passageTopics.length > 0) {
-            this.selectedTopic = this.passageTopics[0];
-            let itemTrail = {
-              subjectId: this.subjectId,
-              topicId: this.selectedTopic.topicId,
-              subtopicId: '',
-              subjectName: this.subjectName,
-              topicName: this.selectedTopic.topicName,
-              subtopicName: '',
-            };
-            this.getPassages(this.passageTopics[0]);
-            this.selectedTopic = this.passageTopics[0];
-            this.setItemTrail(this.passageTopics[0]);
-          } else {
-            this.loading_passages = false;
-          }
+          this.autoSelectTopicFromTrail();
 
           //console.log(this.passageTopics);
         },
@@ -968,22 +883,7 @@ export class ListPassagesComponent implements OnInit {
           this.loading_topics_tree = false;
           this.loading_passages = false;
 
-          if (this.passageTopics.length > 0) {
-            this.selectedTopic = this.passageTopics[0];
-            let itemTrail = {
-              subjectId: this.subjectId,
-              topicId: this.selectedTopic.topicId,
-              subtopicId: '',
-              subjectName: this.subjectName,
-              topicName: this.selectedTopic.topicName,
-              subtopicName: '',
-            };
-            this.getPassages(this.passageTopics[0]);
-            this.selectedTopic = this.passageTopics[0];
-            this.setItemTrail(this.passageTopics[0]);
-          } else {
-            this.loading_passages = false;
-          }
+          this.autoSelectTopicFromTrail();
 
           //console.log(this.passageTopics);
         },
@@ -1003,22 +903,7 @@ export class ListPassagesComponent implements OnInit {
           this.loading_topics_tree = false;
           this.loading_passages = false;
 
-          if (this.passageTopics.length > 0) {
-            this.selectedTopic = this.passageTopics[0];
-            let itemTrail = {
-              subjectId: this.subjectId,
-              topicId: this.selectedTopic.topicId,
-              subtopicId: '',
-              subjectName: this.subjectName,
-              topicName: this.selectedTopic.topicName,
-              subtopicName: '',
-            };
-            this.getPassages(this.passageTopics[0]);
-            this.selectedTopic = this.passageTopics[0];
-            this.setItemTrail(this.passageTopics[0]);
-          } else {
-            this.loading_passages = false;
-          }
+          this.autoSelectTopicFromTrail();
 
           //console.log(this.passageTopics);
         },

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MathfieldElement } from 'mathlive';
 import { AssessmentsService } from './pages/assessment/service/assessments.service';
+import { ItemUtilitiesService } from './pages/items/item-utilities.service';
 export const mfe = new MathfieldElement();
 
 @Component({
@@ -11,7 +12,11 @@ export const mfe = new MathfieldElement();
 export class AppComponent {
   title = 'Exam Alpha';
 
-  constructor(private itembankAssessmentService: AssessmentsService, private assessmentService: AssessmentsService) {}
+  constructor(
+    private itembankAssessmentService: AssessmentsService, 
+    private assessmentService: AssessmentsService,
+    private itemUtil: ItemUtilitiesService,
+  ) {}
 
   ngOnInit() {
     if (!this.itembankAssessmentService.schedulerAssessmentId) {
@@ -28,6 +33,13 @@ export class AppComponent {
       const assessmentName = localStorage.getItem('assessmentName')
       if (assessmentName) {
         this.assessmentService.activeAssessment = assessmentName
+      }
+    }
+
+    if (!this.itemUtil.currentItemTrail) {
+      const trail = localStorage.getItem('item-trail')
+      if (trail) {
+        this.itemUtil.currentItemTrail = JSON.parse(trail)
       }
     }
   }

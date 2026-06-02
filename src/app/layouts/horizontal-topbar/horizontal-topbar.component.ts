@@ -260,4 +260,13 @@ export class HorizontalTopbarComponent implements OnInit {
       );
     }
   }
+
+  onMenuClick(link: string) {
+    if (
+      link.startsWith('/examalpha/subjects')
+      || link.startsWith('/examalpha/passages')
+    ) {
+      localStorage.removeItem('item-trail');
+    }
+  }
 }

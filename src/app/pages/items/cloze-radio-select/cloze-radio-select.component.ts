@@ -583,6 +583,36 @@ export class ClozeRadioSelectComponent implements OnInit {
     return item;
   }
 
+  validateClozeRadioContainers(editor: any): boolean {
+    const doc = editor.getDoc();
+    const containers: NodeListOf<HTMLElement> = doc.querySelectorAll(".cloze-radio-container");
+
+    for (let i = 0; i < containers.length; i++) {
+      const container = containers[i];
+      const optionNodes = container.querySelectorAll<HTMLElement>(".option");
+
+      if (optionNodes.length === 0) {
+        this.notifier.notify("error", `Radio block ${i + 1} does not contain any options. Please add options or remove the block.`);
+        return false;
+      }
+
+      let selectedCount = 0;
+      optionNodes.forEach(opt => {
+        const radio = opt.querySelector<HTMLInputElement>('input[type="radio"]');
+        if (radio?.checked) {
+          selectedCount++;
+        }
+      });
+
+      if (selectedCount === 0) {
+        this.notifier.notify("error", `Please select a correct answer for Radio block ${i + 1}.`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   buildClozeRadioPayload(editor: any) {
     const doc = editor.getDoc();
     const containers: NodeListOf<HTMLElement> = doc.querySelectorAll(".cloze-radio-container");
@@ -645,6 +675,8 @@ export class ClozeRadioSelectComponent implements OnInit {
     const editor = tinymce.get("abc");
     if (!editor) return;
 
+    if (!this.validateClozeRadioContainers(editor)) return;
+
     const payload = this.buildClozeRadioPayload(editor);
 
     item.scoringOption.answers = payload.answers;
@@ -674,6 +706,8 @@ export class ClozeRadioSelectComponent implements OnInit {
     const editor = tinymce.get("abc");
     if (!editor) return;
 
+    if (!this.validateClozeRadioContainers(editor)) return;
+
     const payload = this.buildClozeRadioPayload(editor);
 
     item.scoringOption.answers = payload.answers;
@@ -692,6 +726,8 @@ export class ClozeRadioSelectComponent implements OnInit {
 
     const editor = tinymce.get("abc");
     if (!editor) return;
+
+    if (!this.validateClozeRadioContainers(editor)) return;
 
     const payload = this.buildClozeRadioPayload(editor);
 
@@ -718,10 +754,13 @@ export class ClozeRadioSelectComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
+    console.log(this.itemUtil.currentItemTrail)
     const item = this.buildItem(itemForm);
 
     const editor = tinymce.get("abc");
     if (!editor) return;
+
+    if (!this.validateClozeRadioContainers(editor)) return;
 
     const payload = this.buildClozeRadioPayload(editor);
 
@@ -860,6 +899,8 @@ export class ClozeRadioSelectComponent implements OnInit {
 
     const editor = tinymce.get("abc");
     if (!editor) return;
+
+    if (!this.validateClozeRadioContainers(editor)) return;
 
     const payload = this.buildClozeRadioPayload(editor);
 

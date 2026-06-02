@@ -110,6 +110,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     this.currentUser = this.userService.getCurrentUser();
+    this.subjectName = this.itemService.subjectName;
 
     this.options = this.shuffleOptions([...this.previewData.options]);
 
@@ -278,7 +279,9 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   }
 
   edit() {
+    console.log(this.previewData)
     this.itemUtil.previewItem = false;
+    
     if (this.previewData.id) {
       this.returnPreviewData.emit(this.previewData);
       this.router.navigate(

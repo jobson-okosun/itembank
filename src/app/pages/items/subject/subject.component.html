@@ -52,7 +52,7 @@
 
           <div>
             <button (click)="openNewTopicModal(newTopicModal)" type="button"
-              class="btn btn-primary btn-label waves-effect right waves-light w-100">
+              class="btn btn-primary btn-label waves-effect right waves-light w-100"> 
               <i title="NEW TOPIC" *ngIf="
                   currentUser.authorities.includes('ADMIN') && !_currentBlock
                 " class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
@@ -786,7 +786,7 @@
                         (reload)="reload($event)"></app-rich-essay-preview>
                       <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-multiple-response-preview>
-                      <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
+                      <app-short-text-preview [isNumericAnswerType]="isNumeric(previewData.scoringOption.answers[0])" *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-short-text-preview>
                       <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" [subjectName]="subjectName"
@@ -842,7 +842,7 @@
                 </p> -->
               </div>
 
-              <div class="p-2" *ngIf="!loading_items && subject.topics.length < 1">
+              <div class="p-2" *ngIf="!loading_items && subject?.topics?.length < 1">
                 <div class="d-flex flex-column justify-content-between align-items-center">
                   <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold">No Topic(s) Found!</h4>

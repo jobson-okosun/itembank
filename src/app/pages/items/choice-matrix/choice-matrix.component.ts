@@ -493,7 +493,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         return true;
       });
 
-    if (isAnswerArrElementExistingInOptionArrElement) {
+    if (!isAnswerArrElementExistingInOptionArrElement) {
       this.notifier.notify(
         'error',
         `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`
@@ -577,7 +577,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         return true;
       });
 
-    if (isAnswerArrElementExistingInOptionArrElement) {
+    if (!isAnswerArrElementExistingInOptionArrElement) {
       this.notifier.notify(
         'error',
         `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`
@@ -657,7 +657,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         return true;
       });
 
-    if (isAnswerArrElementExistingInOptionArrElement) {
+    if (!isAnswerArrElementExistingInOptionArrElement) {
       this.notifier.notify(
         'error',
         `Wrong answer selected for Stimulus[${missingAnswerElementIndex + 1}]!`

@@ -124,7 +124,13 @@
                   *ngFor="let topic of passageTopics; let i = index"
                 >
                   <div
-                    class="list-wrap"
+                    class="list-wrap dropdown"
+                    style="padding:8px"
+                    [ngClass]="{
+                      'bg-soft-primary': selectedTopic
+                        ? selectedTopic.topicId === topic.topicId
+                        : false
+                    }"
                     #topicDrop="ngbDropdown"
                     class="dropdown"
                     ngbDropdown
@@ -143,7 +149,7 @@
                       }}{{ topic.topicName.length > 25 ? "..." : "" }}</a
                     ><span
                       ngbTooltip="TOTAL PASSAGES"
-                      class="position-absolute top-50 start-100 translate-middle badge rounded-pill bg-primary"
+                      class="position-absolute top-50 end-0 translate-middle badge rounded-pill bg-primary"
                       >{{ topic.totalPassages }}</span
                     >
                   </div>

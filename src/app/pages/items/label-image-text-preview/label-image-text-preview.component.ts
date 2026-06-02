@@ -83,7 +83,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
       console.log(`Label ${index}:`, position.x, position.y);
     });
 
-    console.log(this.previewData);
+    // console.log(this.previewData);
   }
 
   backToEdit() {
