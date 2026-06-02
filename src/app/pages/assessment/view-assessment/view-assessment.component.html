@@ -976,6 +976,7 @@
           </div>
         </div>
 
+        <!-- TESTING GIT COMMIT -->
         <!-- <div class="form-check"> -->
         <div class="mb-2">
           <label class="form-label" for="durationInMinutes">
@@ -1189,13 +1190,18 @@
 </ng-template>
 
 <ng-template #newBlockModal let-modal>
-  <div class="modal-header">
-    <h3 class="modal-title">NEW QUESTION BLOCK</h3>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-      (click)="modal.close('Close click'); newBlockForm.reset()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
+
+ <div cdkDrag cdkDragRootElement=".modal-content">
+
+    <div class="d-flex modal-header justify-content-between items-center" cdkDragHandle
+      style="cursor: move;">
+      <h3 class="modal-title">NEW QUESTION BLOCK</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+        (click)="modal.close('Close click'); newBlockForm.reset()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  
   <div class="px-5 modal-body">
     <form #newBlockForm="ngForm" (ngSubmit)="saveBlock(newBlockForm)" novalidate>
       <div class="row mb-2">
@@ -1278,8 +1284,8 @@
 
       <div class="my-3">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="shuffleItems" checked  [(ngModel)]="newBlock.shuffleItems">
-          <label class="form-check-label">Shuffle items?</label>
+          <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems" checked [(ngModel)]="newBlock.shuffleItems">
+          <label class="form-check-label" for="shuffle_items">Shuffle items?</label>
         </div>
       </div>
 
@@ -1306,6 +1312,8 @@
         </button>
       </ng-template>
     </div>
+  </div>
+
   </div>
 </ng-template>
 
@@ -1895,6 +1903,7 @@
               <h4 class="text-secondary fw-bold">No Passage(s) Found!</h4>
             </div>
           </div>
+
         </div>
       </div>
     </div>

@@ -834,18 +834,19 @@
               *ngIf="
                 !loading_passages && !filterState && passages && passages.content.length < 1
               "
-              class="d-flex flex-column justify-content-between align-items-center"
+              class="d-flex flex-column justify-content-between align-items-center py-5 my-2"
             >
-              <img
+              <!-- <img
                 src="assets/images/blank_pages/empty-state.png"
                 width="200"
                 height="200"
                 class=""
-              />
-              <h4 class="text-secondary fw-bold">No Passage(s) Found!</h4>
-              <a (click)="gotoNewPassage()" class="btn btn-outline-primary"
+              /> -->
+              <!-- <h4 class="text-secondary fw-bold">No Passage(s) Found!</h4> -->
+               <h4 class="text-secondary fw-bold fst-italic">No Passage(s) Found!</h4>
+              <!-- <a (click)="gotoNewPassage()" class="btn btn-outline-primary"
                 ><i class="ri-add-line me-2"></i>New Passage</a
-              >
+              > -->
             </div>
 
             <ng-container
