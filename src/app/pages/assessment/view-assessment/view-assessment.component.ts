@@ -355,6 +355,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
         this.assessment = value;
 
+        console.log('ASSESSMENT DETAILS: ', this.assessment);
+
         // console.log(value, 'assessment');
 
         // console.log(this.assessment);
@@ -611,7 +613,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
             this.submitted = false;
             this.modalService.dismissAll();
             this.editSection = new AssessmentSections();
+
             this.getAssessment();
+            this.getTotalItemsAndScores();
           }
         },
         (error: HttpErrorResponse) => {
@@ -1375,6 +1379,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.itemService.assessmentActive = false;
+    this.assessmentService.clearItem('activeAssessmentDeliveryMethod');
+    this.assessmentService.clearItem('activeAssessment');
   }
 
   openPublishExamConfirmationModal(publishAssessmentConfirmationModal: any) {

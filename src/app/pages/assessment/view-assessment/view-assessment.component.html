@@ -10,11 +10,22 @@
   </div>
 </div>
 
-<div *ngIf="!loading && assessment" class="row">
-  <div *ngFor="let card of cards" class="col-lg-3 col-sm-12 col-md-6 card p-3">
+<!-- <div *ngIf="!loading && assessment" class="row g-2">
+  <div *ngFor="let card of cards" class="col-lg-3 col-sm-12 col-md-6 card p-3 g-2 border border-primary">
     <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
       <h4>{{ card.title }}</h4>
       <h3>{{ card.count }}</h3>
+    </div>
+  </div>
+</div> -->
+
+<div *ngIf="!loading && assessment" class="row g-3">
+  <div *ngFor="let card of cards" class="col-lg-3 col-md-6 col-sm-12">
+    <div class="card p-3">
+      <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
+        <h4 class="mb-0">{{ card.title }}</h4>
+        <h3 class="mb-0">{{ card.count }}</h3>
+      </div>
     </div>
   </div>
 </div>
@@ -1063,7 +1074,7 @@
     <form #newSectionForm="ngForm" (ngSubmit)="saveSection(newSectionForm)" novalidate>
       <div class="row mb-2">
         <div class="">
-          <label for="choices-multiple-default" class="form-label">Subject <span class="text-danger">*</span></label>
+          <label for="choices-multiple-default" class="form-label">Subject<span class="text-danger">*</span></label>
 
           <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
             data-bs-toggle="popover" [ngbPopover]="sectionInfoPopOver" triggers="mouseenter:mouseleave"
@@ -1491,7 +1502,7 @@
       overflow-x: hidden;
       overflow-y: auto;
     ">
-    <app-list-passages [_subjectId]="itemService.subjectId" [_assessmentId]="assessmentId"
+    <app-list-passages [_subjectId]="itemService.subjectId" [_currentTab]="currentTab" [_assessmentId]="assessmentId"
       [_sectionId]="selectedSection.sectionId" [_subjectName]="itemService.subjectName" [_currentBlock]="selectedBlock"
       [_existingPassageIds]="existingPassageIds" [_loadingExistingPassageIds]="loadingExistingPassageIds"
       (sendSelectedPassages)="recievePassageIds($event)"></app-list-passages>
