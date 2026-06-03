@@ -1,0 +1,70 @@
+<div class="card border border-light rounded-3 p-3">
+  <div class="fs-6 fw-bold">Question: {{ currentQuestionIndex }}</div>
+
+  <div *ngIf="currentQuestion.item.passageStimulus"
+    class="mt-2 text-black border-bottom pb-2"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.passageStimulus"
+  ></div>
+
+  <div
+    class="mt-2 text-black"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.stimulus"
+  ></div>
+
+  <div class="d-flex flex-column my-4 gap-3">
+    <!-- Candidate Answer Section -->
+    <div>
+      <span class="fs-6 fw-bold text-muted">Candidate Response:</span>
+      <div 
+        class="card border m-0 mt-1" 
+        style="padding: 10px"
+        [ngClass]="{
+          'border-success': isAnswerCorrect(),
+          'border-danger': !isAnswerCorrect() && currentQuestion.item_score.graded_response?.[0],
+          'border-gray': !currentQuestion.item_score.graded_response?.[0]
+        }"
+      >
+        <div class="mb-1 d-flex gap-1" *ngIf="currentQuestion.item_score.graded_response?.[0]">
+          <span class="badge rounded-pill bg-secondary" style="font-size: 0.7em">Selected</span>
+          <span *ngIf="isAnswerCorrect()" class="badge rounded-pill bg-success" style="font-size: 0.7em">Correct</span>
+          <span *ngIf="!isAnswerCorrect()" class="badge rounded-pill bg-danger" style="font-size: 0.7em">Incorrect</span>
+        </div>
+        <div class="p-0 item-label" style="font-size: 1.0rem;">
+          {{ currentQuestion.item_score.graded_response?.[0] || 'No response submitted' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Correct Answer Section (if incorrect) -->
+    <div *ngIf="!isAnswerCorrect()">
+      <span class="fs-6 fw-bold text-success">Correct Answer:</span>
+      <div class="card border border-success m-0 mt-1" style="padding: 10px">
+        <div class="mb-1 d-flex gap-1">
+          <span class="badge rounded-pill bg-success" style="font-size: 0.7em">Correct Answer</span>
+        </div>
+        <div class="p-0 item-label" style="font-size: 1.0rem;">
+          {{ currentQuestion.item.scoringOption.answers?.[0] || 'N/A' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- score -->
+  <div class="fs-6 fw-bold">Scoring: </div>
+  <div class="d-flex flex-row align-items-center flex-wrap gap-2 my-2" style="font-size: 0.895em">
+    <div>
+      Question Score: <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
+    </div>
+    <div>
+      Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
+    </div>
+    <div>
+      Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
+    </div>
+    <div>
+      Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
+    </div>
+  </div>
+</div>

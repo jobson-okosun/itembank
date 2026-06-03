@@ -39,6 +39,12 @@ import { TrueOrFalseComponent } from './transcript/question-types/true-or-false/
 import { OrderingComponent } from './transcript/question-types/ordering/ordering.component';
 import { MatchingComponent } from './transcript/question-types/matching/matching.component';
 import { MrqComponent } from './transcript/question-types/mrq/mrq.component';
+import { ShortTextComponent } from './transcript/question-types/short-text/short-text.component';
+import { EssayComponent } from './transcript/question-types/essay/essay.component';
+import { ChoiceMatrixComponent } from './transcript/question-types/choice-matrix/choice-matrix.component';
+import { ClozeTextImageComponent } from './transcript/question-types/cloze-text-image/cloze-text-image.component';
+import { ClozeDropdownImageComponent } from './transcript/question-types/cloze-dropdown-image/cloze-dropdown-image.component';
+import { ImageDragDropComponent } from './transcript/question-types/image-drag-drop/image-drag-drop.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +65,13 @@ import { MrqComponent } from './transcript/question-types/mrq/mrq.component';
     TrueOrFalseComponent,
     OrderingComponent,
     MatchingComponent,
-    MrqComponent   
+    MrqComponent,
+    ShortTextComponent,
+    EssayComponent,
+    ChoiceMatrixComponent,
+    ClozeTextImageComponent,
+    ClozeDropdownImageComponent,
+    ImageDragDropComponent
   ],
   imports: [
     CommonModule,

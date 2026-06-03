@@ -19,8 +19,8 @@ import { finalize } from "rxjs/operators";
 export class AssessmentBatchComponent implements OnInit {
   batches: Array<IAssessmentBatchDTO>;
   assessmentId: string = "";
-  batchStartDate: string = "";
-  batchEndDate: string = "";
+  batchStartDate: Date | string = '';
+  batchEndDate: Date | string = '';
   proccessingAddBatch: boolean = false;
   proccessingDeleteBatch: boolean = false;
   processingBatchEdit: boolean;
@@ -81,17 +81,32 @@ export class AssessmentBatchComponent implements OnInit {
 
   createBatch(newBatch: NgForm) {
     this.proccessingAddBatch = true;
+
+    let startDate = typeof this.batchStartDate === 'string' ? this.batchStartDate : this.batchStartDate.toISOString();
+    startDate = !startDate.endsWith('Z') ? startDate + 'Z' : startDate;
+
+    let endDate = typeof this.batchEndDate === 'string' ? this.batchEndDate : this.batchEndDate.toISOString();
+    endDate = !endDate.endsWith('Z') ? endDate + 'Z' : endDate;
+
     let paylaod: INewAssessmentBatchDTO = {
-      end_date_time:  new Date(this.batchEndDate)
-        .toISOString()
-        .split("Z")
-        .join(""),
+      // end_date_time:  new Date(this.batchEndDate)
+      //   .toISOString()
+      //   .split("Z")
+      //   .join(""),
+      // name: newBatch.form.value.batchName.trim(),
+      // start_date_time: new Date(this.batchStartDate)
+      //   .toISOString()
+      //   .split("Z")
+      //   .join(""),
+
+
+      end_date_time: endDate,
       name: newBatch.form.value.batchName.trim(),
-      start_date_time: new Date(this.batchStartDate)
-        .toISOString()
-        .split("Z")
-        .join(""),
+      start_date_time: startDate,
     };
+
+    // console.log(paylaod)
+    // return
 
     this.schedulerService
       .createBatch(paylaod, this.assessmentId)

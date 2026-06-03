@@ -1,0 +1,79 @@
+<div class="card border border-light rounded-3 p-3">
+  <div class="fs-6 fw-bold">Question: {{ currentQuestionIndex }}</div>
+
+  <div *ngIf="currentQuestion.item.passageStimulus"
+    class="mt-2 text-black border-bottom pb-2"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.passageStimulus"
+  ></div>
+
+  <div
+    class="mt-2 text-black mb-3"
+    style="font-size: 1.1rem"
+    [innerHTML]="currentQuestion.item.stimulus"
+  ></div>
+
+  <div class="preview-container mb-4 position-relative border" [style.height.px]="currentQuestion.item.images[0]?.height || 400" [style.max-width.px]="currentQuestion.item.images[0]?.width || 600">
+    <img 
+      [src]="currentQuestion.item.images[0]?.url" 
+      class="preview-image" 
+      alt="Cloze Dropdown Image"
+      [style.width.px]="currentQuestion.item.images[0]?.width || 600"
+      [style.height.px]="currentQuestion.item.images[0]?.height || 400"
+    />
+
+    <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+      <div style="position: relative; width: 100%; height: 100%;">
+        <div 
+          *ngFor="let position of currentQuestion.item.responsePositions; let i = index" 
+          class="preview-label d-flex align-items-center" 
+          [style.left.%]="position.x" 
+          [style.top.%]="position.y"
+        >
+          <div class="pointer"></div>
+          
+          <div class="d-flex flex-column align-items-start" style="z-index: 10;">
+            <!-- Candidate answer box -->
+            <select 
+              class="form-select form-select-sm bg-white" 
+              disabled
+              [ngClass]="{
+                'border-success text-success': isAnswerCorrect(i),
+                'border-danger text-danger': !isAnswerCorrect(i)
+              }"
+              style="width: 140px;"
+            >
+              <option selected>{{ currentQuestion.item_score.graded_response?.[i] || 'No Selection' }}</option>
+            </select>
+            
+            <!-- Correct answer info if incorrect -->
+            <div 
+              *ngIf="!isAnswerCorrect(i)" 
+              class="badge bg-success mt-1 text-wrap" 
+              style="font-size: 0.75em; width: 140px; text-align: left;"
+            >
+              Correct: {{ currentQuestion.item.scoringOption.answers[i] || 'N/A' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- score -->
+  <div class="fs-6 fw-bold">Scoring: </div>
+  <div class="d-flex flex-row align-items-center flex-wrap gap-2 my-2" style="font-size: 0.895em">
+    <div>
+      Question Score: <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
+    </div>
+    <div>
+      Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
+    </div>
+    <div>
+      Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
+    </div>
+    <div>
+      Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
+    </div>
+  </div>
+</div>

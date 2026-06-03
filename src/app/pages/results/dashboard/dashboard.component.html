@@ -730,6 +730,11 @@
               <mcq  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></mcq>
             </ng-container>
 
+            <!-- mrq -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.MRQ">
+              <app-mrq  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-mrq>
+            </ng-container>
+
             <!-- close select -->
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN">
               <app-close-dropdown  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-close-dropdown>
@@ -740,29 +745,59 @@
               <app-cloze-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text>
             </ng-container>
 
-            <!-- close radio -->
-            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
-              <app-cloze-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text>
+            <!-- short text -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.SHORT_TEXT">
+              <app-short-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-short-text>
+            </ng-container>
+
+            <!-- essay plain text -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.ESSAY_PLAIN_TEXT">
+              <app-essay  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-essay>
+            </ng-container>
+
+            <!-- essay rich text -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.ESSAY_RICH_TEXT">
+              <app-essay  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-essay>
+            </ng-container>
+
+            <!-- choice matrix -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CHOICE_MATRIX">
+              <app-choice-matrix  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-choice-matrix>
             </ng-container>
 
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
               <app-cloze-radio  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-radio>
             </ng-container>
 
-            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.YES_NO">
               <app-yes-or-no  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-yes-or-no>
             </ng-container>
 
-            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.TRUE_FALSE">
               <app-true-or-false  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-true-or-false>
             </ng-container>
 
-            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.ORDER_LIST">
               <app-ordering  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-ordering>
             </ng-container>
 
-            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO">
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.ASSOCIATION">
               <app-matching  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-matching>
+            </ng-container>
+
+            <!-- cloze text image -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE">
+              <app-cloze-text-image  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text-image>
+            </ng-container>
+
+            <!-- cloze dropdown image -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE">
+              <app-cloze-dropdown-image  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-dropdown-image>
+            </ng-container>
+
+            <!-- image drag and drop -->
+            <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP">
+              <app-image-drag-drop  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-image-drag-drop>
             </ng-container>
 
 
@@ -773,11 +808,26 @@
               <!-- mcq -->
               <mcq  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.MCQ" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></mcq>
 
-              <!-- close passage -->
+              <!-- mrq -->
+              <app-mrq  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.MRQ" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-mrq>
+
+              <!-- close dropdown -->
               <app-close-dropdown  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-close-dropdown>
 
               <!-- close passage -->
               <app-cloze-text  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-text>
+
+              <!-- short text -->
+              <app-short-text  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.SHORT_TEXT" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-short-text>
+
+              <!-- essay plain text -->
+              <app-essay  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ESSAY_PLAIN_TEXT" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-essay>
+
+              <!-- essay rich text -->
+              <app-essay  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ESSAY_RICH_TEXT" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-essay>
+
+              <!-- choice matrix -->
+              <app-choice-matrix  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CHOICE_MATRIX" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-choice-matrix>
 
               <!-- close radio -->
               <app-cloze-radio  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-radio>
@@ -789,6 +839,15 @@
               <app-ordering  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ORDER_LIST" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-ordering>
               
               <app-matching *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ASSOCIATION" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-matching>
+
+              <!-- cloze text image -->
+              <app-cloze-text-image *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-text-image>
+
+              <!-- cloze dropdown image -->
+              <app-cloze-dropdown-image *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-dropdown-image>
+
+              <!-- image drag and drop -->
+              <app-image-drag-drop *ngIf="item.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-image-drag-drop>
             
             </ng-container>
           </ng-template>

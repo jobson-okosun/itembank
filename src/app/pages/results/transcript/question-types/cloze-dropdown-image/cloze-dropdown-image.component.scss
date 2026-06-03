@@ -1,0 +1,32 @@
+.preview-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.preview-label {
+  position: absolute;
+  transform: translate(-10px, -50%);
+}
+
+.pointer {
+  width: 31px;
+  height: 20px;
+  background-image: url(/assets/images/svg/left-arrow.svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+select.form-select-sm {
+  width: 140px;
+  height: 32px;
+}
