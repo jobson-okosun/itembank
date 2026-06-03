@@ -78,12 +78,12 @@
                           (shown)="showTopicDetails(topic)"
                         >
                           <ng-template ngbPanelTitle> -->
-                      <a class="accordion-button p-2 shadow-none" [ngClass]="{
+                      <a class="accordion-button p-2 shadow-none border border-primary" [ngClass]="{
                           'accordion-button':
                             clickedTopic?.topicId === topic?.topicId
                         }" data-bs-toggle="collapse" (click)="showTopicDetails(topic)" aria-expanded="true"
                         aria-controls="collapseOne">
-                        <div class="list-wrap" #topicDrop="ngbDropdown" class="dropdown" ngbDropdown>
+                        <div class="list-wrap border border-primary" #topicDrop="ngbDropdown" class="dropdown" ngbDropdown>
                           <a [ngStyle]="{ cursor: 'pointer' }" class="fw-small fs-11 text-primary dropdown arrow-none"
                             data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle
                             ngbTooltip="{{ topic.topicName.toUpperCase() }}" placement="bottom"><i

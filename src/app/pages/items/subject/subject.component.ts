@@ -589,6 +589,8 @@ export class SubjectComponent implements OnInit, OnChanges {
         )
         .subscribe((value) => {
           this.passageTopics = value;
+
+          console.log('PASSAGE TOPICS', this.passageTopics);
           // console.log(this.passageTopics);
           // Auto-select the first topic by default by calling saveTopicSelection with the first topic
           if (this.passageTopics && this.passageTopics && this.passageTopics.length > 0) {
@@ -610,6 +612,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.manuallySelectedItemsAndPassages = value;
+            console.log('MANUALLY SELECTED ITEMS AND PASSAGES', this.manuallySelectedItemsAndPassages);
           },
           (error: HttpErrorResponse) => {
             this.notifier.notify('error', error.error.message);
@@ -647,6 +650,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.itemsPage = value;
+            console.log('FETCH ALL ITEMS: ', this.itemsPage);
             this.itemsPage.content.forEach(
               (item) => (item.showFullItem = false),
             );
@@ -683,6 +687,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.itemsPage = value;
+            console.log('FETCH ASSESSMENT ITEMS: ', this.itemsPage);
             this.itemsPage.content.forEach(
               (item) => (item.showFullItem = false),
             );
@@ -797,6 +802,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           (value) => {
             this.subject = value;
             this.subjectId = this.itemService.subjectId;
+            console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
             // console.log(value);
 
             if (!this.subject.topics[0]) {
@@ -836,7 +842,14 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   fetchSubjectDetails() {
     if (this.currentUser.authorities.includes('ADMIN')) {
-      this.handleAdminActions();
+      console.log('ADMIN BLOCK SUBJECT FETCHING DETAILS');
+      
+      /****
+       * The below code is intentionally commented out to prevent redundant API calls since fetchSubjectTopicsTreeAdmin 
+       * already fetches all subjects and their details. If in the future, there's a need to fetch only subject details 
+       * without the topics tree for admin, this code can be uncommented and used.
+       */
+      // this.handleAdminActions();
     }
     // else if (this.currentUser.authorities.includes("EXAMINER")) {
     //   this.handleExaminerActions();
@@ -1123,6 +1136,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       .subscribe(
         (value) => {
           this.subject = value;
+          console.log('USER TOPIC TREE', this.subject);
           // console.log(value);
 
           if (!this.subject.topics[0]) {
@@ -1307,6 +1321,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.subject = value;
+            console.log('RELOAD TOPIC TREE', this.subject);
             /* this.subject.topics.unshift({ topicName: 'ALL-TOPIC(S)', topicId: '00000000-0000-0000-0000-000000000000', totalItems: 0 }) */
             this.fetchItems(
               this.clickedTopic ? this.clickedTopic : this.subject.topics[0],
@@ -2275,6 +2290,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         (value) => {
           this.copyDestinationTopicTree = value;
           console.log(this.copyDestinationTopicTree);
+          console.log('GET TOPICS TREE TO COPY ITEM WORKED', this.copyDestinationTopicTree);
         },
         (error: HttpErrorResponse) => {
           //console.log(error);
@@ -2291,7 +2307,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       .subscribe(
         (value) => {
           this.moveDestinationTopicTree = value;
-          // console.log(this.moveDestinationTopicTree);
+          console.log('FETCH SUBJECT TOPICS TREE ADMIN', this.moveDestinationTopicTree);
         },
         (error: HttpErrorResponse) => {
           //console.log(error);

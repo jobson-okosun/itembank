@@ -561,7 +561,7 @@
               <div class="col-6">
                 <label for="subjectName" class="label">Exam Duration</label>
                 <input type="number" min="0" name="duration" class="form-control mb-3" placeholder="Exam duration"
-                  required [(ngModel)]="assessmentSettings.durationMinutes" (keydown)="onKeyDown($event)" />
+                  required [(ngModel)]="assessmentSettings.durationMinutes" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
             </div>
           </div>
@@ -639,7 +639,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" max="120" class="form-control" placeholder="3" name="instructionReadingTime"
-                  [(ngModel)]="assessmentSettings.instructionReadTimeSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.instructionReadTimeSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -662,7 +662,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control col-xl-2" placeholder="3"
-                  name="readTimeWaringInSeconds" [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec" (keydown)="onKeyDown($event)" />
+                  name="readTimeWaringInSeconds" [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -675,7 +675,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control" placeholder="30" name="autoSaveIntervalSeconds"
-                  [(ngModel)]="assessmentSettings.autoSaveSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.autoSaveSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -696,7 +696,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control" placeholder="3" name="triggerInactivityWarningSeconds"
-                  [(ngModel)]="assessmentSettings.inactivityWaringSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.inactivityWaringSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               Minutes.
             </div>
@@ -715,7 +715,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" class="form-control" placeholder="240" name="additionalTime"
-                  [(ngModel)]="assessmentSettings.compensatoryTimeMins" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.compensatoryTimeMins" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               minutes.
             </div>
@@ -752,7 +752,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" class="form-control col-xl-1" placeholder="100" name="percentageSubmissionCheck"
-                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               of total exam duration has been spent.
             </div>
@@ -832,7 +832,7 @@
           <div *ngIf="assessmentSettings.allowRetake" class="col-xl-2 col-md-2 col-sm-2">
             <label>Retake count</label>
             <input type="number" class="form-control" placeholder="4" name="retakeCount"
-              [(ngModel)]="assessmentSettings.retakeCount" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="assessmentSettings.retakeCount" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
           </div>
 
           <div class="form-check mt-2">
@@ -849,7 +849,7 @@
           <div *ngIf="assessmentSettings.instantResult" class="col-xl-2 col-md-2 col-sm-2">
             <label>Pass mark</label>
             <input type="number" class="form-control" placeholder="240" name="passMark"
-              [(ngModel)]="assessmentSettings.passMark" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="assessmentSettings.passMark" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
           </div>
 
           <div class="form-check  mt-2">
@@ -857,7 +857,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="examGracePeriod">Examiner cannot start exam after</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="examGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.examGracePeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="examGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.examGracePeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
@@ -868,7 +868,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="candidateGracePeriod">Candidate cannot login after</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="candidateGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.candidateGracePeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="candidateGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.candidateGracePeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
@@ -879,7 +879,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="earliest_exam_end_period">Examiners earliest end exam time</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="earliest_exam_end_period" [value]="0"  [(ngModel)]="assessmentSettings.earliestExamEndPeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="earliest_exam_end_period" [value]="0"  [(ngModel)]="assessmentSettings.earliestExamEndPeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
