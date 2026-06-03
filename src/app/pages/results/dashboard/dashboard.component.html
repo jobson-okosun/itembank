@@ -782,13 +782,13 @@
               <!-- close radio -->
               <app-cloze-radio  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-radio>
               
-              <app-yes-or-no  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-yes-or-no>
+              <app-yes-or-no  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.YES_NO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-yes-or-no>
               
-              <app-true-or-false  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-true-or-false>
+              <app-true-or-false  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.TRUE_FALSE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-true-or-false>
               
-              <app-ordering  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-ordering>
+              <app-ordering  *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ORDER_LIST" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-ordering>
               
-              <app-matching *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-matching>
+              <app-matching *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ASSOCIATION" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-matching>
             
             </ng-container>
           </ng-template>

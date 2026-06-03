@@ -60,6 +60,7 @@ export interface AssessmentListItemDTO {
   total_center_admins: number;
   total_participants: number;
   created_at: string;
+  total_sections: number
 }
 
 export interface AssessmentListPage {
