@@ -1588,7 +1588,7 @@
           <div class="py-2">
             <label for="subTopicName">Topic <span class="text-danger">*</span></label>
             <ng-select [items]="subject.topics" bindLabel="topicName" class="custom" name="topicName"
-              dropdownPosition="bottom" (change)="pickTopic($event)">
+              dropdownPosition="bottom" (change)="pickTopic($event)" [clearable]="false">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
               </ng-template>
@@ -1611,7 +1611,7 @@
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [selectedTopicForFiltering]="selectedTopicForFiltering"></app-item-tag>
           </div>
 
           <div class="row py-1">
@@ -1658,7 +1658,7 @@
             <div class="col-12">
               <label for="content">Content</label>
               <input type="text" class="form-control" name="content" placeholder="ANY"
-                [(ngModel)]="assessmentFilter.content" ngModel />
+                [(ngModel)]="assessmentFilter.content" ngModel [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000' " />
             </div>
           </div>
         </form>
@@ -1730,7 +1730,7 @@
             <div class="col-12 mb-2">
               <label for="content">Content (Optional)</label>
               <input type="text" class="form-control" name="content" placeholder="Content of the passage....."
-                [(ngModel)]="assessmentPassageFilter.content" ngModel />
+                [(ngModel)]="assessmentPassageFilter.content" ngModel [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000'" />
             </div>
 
             <!-- Total number of passages specification field-->
@@ -1749,7 +1749,7 @@
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [status]="'Optional'"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [selectedTopicForFiltering]="selectedTopicForFiltering" [status]="'Optional'"></app-item-tag>
           </div>
         </form>
       </div>

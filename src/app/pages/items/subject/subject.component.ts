@@ -70,6 +70,8 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   resetTagsInputFieldOnOpenFilterDialog: boolean = false;
 
+  selectedTopicForFiltering: string | null = null;
+
   _errorMsg: string;
 
   breadCrumbItems!: Array<{}>;
@@ -1234,6 +1236,9 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.resetTagsInputFieldOnOpenFilterDialog = true;
     this.assessmentFilter.tagIds = [];
     this.assessmentPassageFilter.tagIds = [];
+
+    this.selectedTopicForFiltering = null;
+
   }
 
   removeAllTopics() {
@@ -1256,6 +1261,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.resetTagsInputFieldOnOpenFilterDialog = true;
     this.assessmentFilter.tagIds = [];
     this.assessmentPassageFilter.tagIds = [];
+
+    this.selectedTopicForFiltering = null;
   }
 
   recieveTag($event: any) {
@@ -1274,6 +1281,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.assessmentSelectedTopic = event;
     console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
+    this.selectedTopicForFiltering = event.topicId;
     this.assessmentFilter.topicId = event.topicId;
     this.assessmentFilter.topicName = event.topicName;
     // console.log(this.assessmentFilter);
@@ -1283,6 +1291,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.assessmentSelectedTopic = event;
     console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
+    this.selectedTopicForFiltering = event.topicId;
     this.assessmentPassageFilter.topicId = event.topicId;
     this.assessmentPassageFilter.topicName = event.topicName;
   }
@@ -1769,6 +1778,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.loading_items = true;
     this.buildFilter();
     //this.showFilter = !this.showFilter;
+
+    console.log('FILTER INFORMATION: ', this.filterInformation);
 
     if (this.assessmentActive) {
       this.itemService
@@ -2345,6 +2356,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.submitted = false;
       return;
     }
+
+    // this.submitted = false;
     console.log('FILTER RECORD: ', this.assessmentFilter);
 
     this.assessmentService

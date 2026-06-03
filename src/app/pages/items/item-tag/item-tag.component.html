@@ -5,7 +5,7 @@
   <ng-select
     [items]="tags$ | async"
     [multiple]="true"
-    [disabled]="disabled"
+    [disabled]="disabled || selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000'"
     [minTermLength]="minLengthTerm"
     [trackByFn]="trackByFn"
     bindLabel="tagName"

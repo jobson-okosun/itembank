@@ -175,9 +175,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     private templateService: TemplatesService,
   ) {
     this.assessmentId = this.ar.snapshot.params['assessmentId'];
-    this.currentAssessment = this.assessmentService.activeAssessment;
+    this.currentAssessment = this.assessmentService.activeAssessment ?? this.assessmentService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
-      this.assessmentService.activeAssessmentDeliveryMethod;
+      this.assessmentService.activeAssessmentDeliveryMethod ?? this.assessmentService.getItem('activeAssessmentDeliveryMethod');
+      console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
+      console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
   }
 
   setTotalQuestionsPerStudent(blockTotalQuestions: any) {
