@@ -60,6 +60,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   @Input() _assessmentId: string;
   @Input() _existingItemIds: string[] = [];
   @Input() _loadingExistingItemIds: boolean = false;
+  @Input() _currentTab: string;
   @Output() back = new EventEmitter();
   @Output() addItemToAssessment = new EventEmitter();
   @Output() removeItemFromAssessment = new EventEmitter();
@@ -702,7 +703,10 @@ export class SubjectComponent implements OnInit, OnChanges {
     }
 
     /** Start Fetching topic tree logic */
-    this.fetchSubjectDetails();
+    if(this._currentTab !== 'EXAMS') {
+      this.fetchSubjectDetails();
+    }
+    // this.fetchSubjectDetails();
 
     // persit current page state
     // console.log(this.itemService.subjectId, "sub id here");
@@ -843,13 +847,8 @@ export class SubjectComponent implements OnInit, OnChanges {
   fetchSubjectDetails() {
     if (this.currentUser.authorities.includes('ADMIN')) {
       console.log('ADMIN BLOCK SUBJECT FETCHING DETAILS');
-      
-      /****
-       * The below code is intentionally commented out to prevent redundant API calls since fetchSubjectTopicsTreeAdmin 
-       * already fetches all subjects and their details. If in the future, there's a need to fetch only subject details 
-       * without the topics tree for admin, this code can be uncommented and used.
-       */
-      // this.handleAdminActions();
+
+      this.handleAdminActions();
     }
     // else if (this.currentUser.authorities.includes("EXAMINER")) {
     //   this.handleExaminerActions();
