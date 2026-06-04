@@ -483,7 +483,7 @@
                   <div>
                     <label for="status">Score</label>
                     <input type="number" class="form-control" placeholder="0" name="score"
-                      [(ngModel)]="filterQuestionsScore" />
+                      [(ngModel)]="filterQuestionsScore" (wheel)="$event.preventDefault()" />
                   </div>
                 </div>
                 <!--end col-->
@@ -1619,7 +1619,7 @@
             <div class="col-6">
               <label for="totalQuestions">Total Questions <span class="text-danger">*</span></label>
               <input type="number" [max]="_currentBlock.totalQuestions" min="1" class="form-control"
-                name="totalQuestions" placeholder="1-100" [(ngModel)]="assessmentFilter.totalQuestions" ngModel />
+                name="totalQuestions" placeholder="1-100" [(ngModel)]="assessmentFilter.totalQuestions" ngModel (wheel)="$event.preventDefault()" />
             </div>
 
             <!-- Question type selection field-->
@@ -1637,7 +1637,7 @@
             <!-- score-->
             <div class="col-6">
               <label for="totalQuestions"> Score</label>
-              <input #scoreRef type="number" min="0" class="form-control" name="score" placeholder="ANY" ngModel />
+              <input #scoreRef type="number" min="0" class="form-control" name="score" placeholder="ANY" ngModel (wheel)="$event.preventDefault()"/>
             </div>
 
             <!-- Difficulty Level-->
@@ -1737,14 +1737,14 @@
             <div class="col-6">
               <label for="totalQuestions">No of Passages <span class="text-danger">*</span></label>
               <input type="number" min="0" class="form-control" name="totalPassages" placeholder="1-100"
-                [(ngModel)]="assessmentPassageFilter.totalPassages" ngModel />
+                [(ngModel)]="assessmentPassageFilter.totalPassages" ngModel (wheel)="$event.preventDefault()"  />
             </div>
 
             <div class="col-6">
               <label for="totalQuestions">No of Questions in passage<span class="text-danger">*</span></label>
               <input type="number" min="0" class="form-control" name="totalQuestionsInPassage"
                 placeholder="{{ _currentBlock.totalQuestionsInPassage }}"
-                [value]="_currentBlock.totalQuestionsInPassage" ngModel disabled />
+                [value]="_currentBlock.totalQuestionsInPassage" ngModel disabled (wheel)="$event.preventDefault()"  />
             </div>
           </div>
 

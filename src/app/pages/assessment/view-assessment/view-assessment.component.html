@@ -1245,7 +1245,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-2">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
-              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
 
@@ -1256,7 +1256,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
-              [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
 
@@ -1271,7 +1271,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
-              [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
       </div>
