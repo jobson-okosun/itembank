@@ -52,7 +52,7 @@
 
           <div>
             <button (click)="openNewTopicModal(newTopicModal)" type="button"
-              class="btn btn-primary btn-label waves-effect right waves-light w-100"> 
+              class="btn btn-primary btn-label waves-effect right waves-light w-100">
               <i title="NEW TOPIC" *ngIf="
                   currentUser.authorities.includes('ADMIN') && !_currentBlock
                 " class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
@@ -624,39 +624,41 @@
                     </div>
 
                     <!-- PREVIEW AND DELETE, USAAGE HISTORY BUTTONS-->
-                    <div class="col-lg-2 col-sm-12 d-flex flex-column gap-1 mt-1 item-tags-size px-2">
-                      <div class="d-flex gap-2">
+                    <div class="col-lg-2 col-sm-12 d-flex flex-column gap-1 mt-1 item-tags-size">
+                      <div class="d-flex flex-row gap-2 border border-primary px-2">
                         <a *ngIf="item.showFullItem === false" (click)="preview(item, i)"
-                          class="btn btn-outline-success btn-sm"><span
+                          class="btn btn-outline-success btn-sm d-flex align-items-center justify-items-center"><span
                             *ngIf="!item.showingPreviewLoader">Preview</span><i *ngIf="item.showingPreviewLoader"
                             _ngcontent-urx-c230="" class="mdi mdi-loading mdi-spin fs-20 align-middle me-2"></i></a>
                         <a *ngIf="item.showFullItem === true" (click)="hidePreview(item, i)"
-                          class="btn btn-outline-success btn-sm">hide</a>
+                          class="btn btn-outline-success btn-sm d-flex align-items-center justify-items-center">hide</a>
+
                         <button *ngIf="currentUser.authorities.includes('ADMIN')" ngbTooltip="USAGE HISTORY"
                           type="button" class="btn px-2 btn-icon btn-outline-info"
                           (click)="routeToUsageHistoryPage(item.itemId)">
                           <i class="ri-history-line"></i>
                         </button>
+
                         <!-- <button
-                          *ngIf="
-                            !_currentBlock &&
-                            currentUser.authorities.includes('ADMIN')
-                          "
-                          type="button"
-                          class="btn btn-outline-danger"
-                          (click)="
-                            openDeleteQuestionConfirmationModal(
-                              deleteQuestionConfirmationModal,
-                              item
-                            )
-                          "
-                        >
-                          <i
-                            ngbTooltip="DELETE ITEM"
-                            placement="bottom"
-                            class="ri-delete-bin-line"
-                          ></i>
-                        </button> -->
+                                *ngIf="
+                                  !_currentBlock &&
+                                  currentUser.authorities.includes('ADMIN')
+                                "
+                                type="button"
+                                class="btn btn-outline-danger"
+                                (click)="
+                                  openDeleteQuestionConfirmationModal(
+                                    deleteQuestionConfirmationModal,
+                                    item
+                                  )
+                                "
+                              >
+                                <i
+                                  ngbTooltip="DELETE ITEM"
+                                  placement="bottom"
+                                  class="ri-delete-bin-line"
+                                ></i>
+                              </button> -->
                       </div>
                     </div>
                   </div>
@@ -786,8 +788,9 @@
                         (reload)="reload($event)"></app-rich-essay-preview>
                       <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-multiple-response-preview>
-                      <app-short-text-preview [isNumericAnswerType]="isNumeric(previewData.scoringOption.answers[0])" *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-short-text-preview>
+                      <app-short-text-preview [isNumericAnswerType]="isNumeric(previewData.scoringOption.answers[0])"
+                        *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData" [itemTrailInfo]="itemProps"
+                        (reload)="reload($event)"></app-short-text-preview>
                       <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps" [subjectName]="subjectName"
                         (reload)="reload($event)"></app-yes-or-no-preview>
@@ -812,11 +815,12 @@
                         [itemTrailInfo]="itemProps" (reload)="reload($event)">
                       </app-label-image-text-preview>
 
-                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-drawing-and-writing-preview>
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps"
+                        (reload)="reload($event)"></app-drawing-and-writing-preview>
 
-                        <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-cloze-radio-select-preview >
+                      <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps" (reload)="reload($event)"></app-cloze-radio-select-preview>
                     </div>
                   </div>
                 </a>
@@ -830,7 +834,8 @@
                   <h4 class="text-secondary fw-bold my-2">
                     No Question(s) Found!
                   </h4>
-                  <a *ngIf="_currentTab !== 'EXAMS'" (click)="sendData()" class="btn btn-outline-primary"><i class="ri-add-line me-2"></i>Add
+                  <a *ngIf="_currentTab !== 'EXAMS'" (click)="sendData()" class="btn btn-outline-primary"><i
+                      class="ri-add-line me-2"></i>Add
                     Question</a>
                 </div>
 
@@ -1073,10 +1078,10 @@
                         [itemTrailInfo]="itemProps"></app-cloze-text-preview>
                       <app-choice-matrix-preview *ngIf="item.type === 'CHOICE_MATRIX'" [previewData]="previewData"
                         [itemTrailInfo]="itemProps"></app-choice-matrix-preview>
-                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
-                        <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
-                        [itemTrailInfo]="itemProps"></app-cloze-radio-select-preview >
+                      <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'"
+                        [previewData]="previewData" [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
+                      <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZE_RADIO'" [previewData]="previewData"
+                        [itemTrailInfo]="itemProps"></app-cloze-radio-select-preview>
                     </div>
                   </div>
                 </a>
@@ -1611,7 +1616,8 @@
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [selectedTopicForFiltering]="selectedTopicForFiltering"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog"
+              [selectedTopicForFiltering]="selectedTopicForFiltering"></app-item-tag>
           </div>
 
           <div class="row py-1">
@@ -1619,7 +1625,8 @@
             <div class="col-6">
               <label for="totalQuestions">Total Questions <span class="text-danger">*</span></label>
               <input type="number" [max]="_currentBlock.totalQuestions" min="1" class="form-control"
-                name="totalQuestions" placeholder="1-100" [(ngModel)]="assessmentFilter.totalQuestions" ngModel (wheel)="$event.preventDefault()" />
+                name="totalQuestions" placeholder="1-100" [(ngModel)]="assessmentFilter.totalQuestions" ngModel
+                (wheel)="$event.preventDefault()" />
             </div>
 
             <!-- Question type selection field-->
@@ -1637,7 +1644,8 @@
             <!-- score-->
             <div class="col-6">
               <label for="totalQuestions"> Score</label>
-              <input #scoreRef type="number" min="0" class="form-control" name="score" placeholder="ANY" ngModel (wheel)="$event.preventDefault()"/>
+              <input #scoreRef type="number" min="0" class="form-control" name="score" placeholder="ANY" ngModel
+                (wheel)="$event.preventDefault()" />
             </div>
 
             <!-- Difficulty Level-->
@@ -1658,7 +1666,8 @@
             <div class="col-12">
               <label for="content">Content</label>
               <input type="text" class="form-control" name="content" placeholder="ANY"
-                [(ngModel)]="assessmentFilter.content" ngModel [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000' " />
+                [(ngModel)]="assessmentFilter.content" ngModel
+                [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000' " />
             </div>
           </div>
         </form>
@@ -1730,26 +1739,28 @@
             <div class="col-12 mb-2">
               <label for="content">Content (Optional)</label>
               <input type="text" class="form-control" name="content" placeholder="Content of the passage....."
-                [(ngModel)]="assessmentPassageFilter.content" ngModel [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000'" />
+                [(ngModel)]="assessmentPassageFilter.content" ngModel
+                [disabled]="selectedTopicForFiltering === '00000000-0000-0000-0000-000000000000'" />
             </div>
 
             <!-- Total number of passages specification field-->
             <div class="col-6">
               <label for="totalQuestions">No of Passages <span class="text-danger">*</span></label>
               <input type="number" min="0" class="form-control" name="totalPassages" placeholder="1-100"
-                [(ngModel)]="assessmentPassageFilter.totalPassages" ngModel (wheel)="$event.preventDefault()"  />
+                [(ngModel)]="assessmentPassageFilter.totalPassages" ngModel (wheel)="$event.preventDefault()" />
             </div>
 
             <div class="col-6">
               <label for="totalQuestions">No of Questions in passage<span class="text-danger">*</span></label>
               <input type="number" min="0" class="form-control" name="totalQuestionsInPassage"
                 placeholder="{{ _currentBlock.totalQuestionsInPassage }}"
-                [value]="_currentBlock.totalQuestionsInPassage" ngModel disabled (wheel)="$event.preventDefault()"  />
+                [value]="_currentBlock.totalQuestionsInPassage" ngModel disabled (wheel)="$event.preventDefault()" />
             </div>
           </div>
 
           <div class="py-2">
-            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog" [selectedTopicForFiltering]="selectedTopicForFiltering" [status]="'Optional'"></app-item-tag>
+            <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="resetTagsInputFieldOnOpenFilterDialog"
+              [selectedTopicForFiltering]="selectedTopicForFiltering" [status]="'Optional'"></app-item-tag>
           </div>
         </form>
       </div>
