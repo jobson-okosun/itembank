@@ -10,11 +10,22 @@
   </div>
 </div>
 
-<div *ngIf="!loading && assessment" class="row">
-  <div *ngFor="let card of cards" class="col-lg-3 col-sm-12 col-md-6 card p-3">
+<!-- <div *ngIf="!loading && assessment" class="row g-2">
+  <div *ngFor="let card of cards" class="col-lg-3 col-sm-12 col-md-6 card p-3 g-2 border border-primary">
     <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
       <h4>{{ card.title }}</h4>
       <h3>{{ card.count }}</h3>
+    </div>
+  </div>
+</div> -->
+
+<div *ngIf="!loading && assessment" class="row g-3">
+  <div *ngFor="let card of cards" class="col-lg-3 col-md-6 col-sm-12">
+    <div class="card p-3">
+      <div class="d-flex flex-row gap-2 justify-content-center align-items-center">
+        <h4 class="mb-0">{{ card.title }}</h4>
+        <h3 class="mb-0">{{ card.count }}</h3>
+      </div>
     </div>
   </div>
 </div>
@@ -550,7 +561,7 @@
               <div class="col-6">
                 <label for="subjectName" class="label">Exam Duration</label>
                 <input type="number" min="0" name="duration" class="form-control mb-3" placeholder="Exam duration"
-                  required [(ngModel)]="assessmentSettings.durationMinutes" (keydown)="onKeyDown($event)" />
+                  required [(ngModel)]="assessmentSettings.durationMinutes" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
             </div>
           </div>
@@ -634,7 +645,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" max="120" class="form-control" placeholder="3" name="instructionReadingTime"
-                  [(ngModel)]="assessmentSettings.instructionReadTimeSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.instructionReadTimeSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -657,7 +668,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control col-xl-2" placeholder="3"
-                  name="readTimeWaringInSeconds" [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec" (keydown)="onKeyDown($event)" />
+                  name="readTimeWaringInSeconds" [(ngModel)]="assessmentSettings.warnEndOfReadingTimeSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -670,7 +681,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control" placeholder="30" name="autoSaveIntervalSeconds"
-                  [(ngModel)]="assessmentSettings.autoSaveSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.autoSaveSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               seconds.
             </div>
@@ -691,7 +702,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" min="0" class="form-control" placeholder="3" name="triggerInactivityWarningSeconds"
-                  [(ngModel)]="assessmentSettings.inactivityWaringSec" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.inactivityWaringSec" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               Minutes.
             </div>
@@ -710,7 +721,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" class="form-control" placeholder="240" name="additionalTime"
-                  [(ngModel)]="assessmentSettings.compensatoryTimeMins" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.compensatoryTimeMins" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               minutes.
             </div>
@@ -747,7 +758,7 @@
               </label>
               <div class="col-xl-2 col-md-2 col-sm-2">
                 <input type="number" class="form-control col-xl-1" placeholder="100" name="percentageSubmissionCheck"
-                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" (keydown)="onKeyDown($event)" />
+                  [(ngModel)]="assessmentSettings.allowEndExamAfterXQuestions" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
               </div>
               of total exam duration has been spent.
             </div>
@@ -827,7 +838,7 @@
           <div *ngIf="assessmentSettings.allowRetake" class="col-xl-2 col-md-2 col-sm-2">
             <label>Retake count</label>
             <input type="number" class="form-control" placeholder="4" name="retakeCount"
-              [(ngModel)]="assessmentSettings.retakeCount" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="assessmentSettings.retakeCount" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
           </div>
 
           <div class="form-check mt-2">
@@ -844,7 +855,7 @@
           <div *ngIf="assessmentSettings.instantResult" class="col-xl-2 col-md-2 col-sm-2">
             <label>Pass mark</label>
             <input type="number" class="form-control" placeholder="240" name="passMark"
-              [(ngModel)]="assessmentSettings.passMark" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="assessmentSettings.passMark" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
           </div>
 
           <div class="form-check  mt-2">
@@ -852,7 +863,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="examGracePeriod">Examiner cannot start exam after</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="examGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.examGracePeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="examGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.examGracePeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
@@ -863,7 +874,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="candidateGracePeriod">Candidate cannot login after</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="candidateGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.candidateGracePeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="candidateGracePeriod" [value]="0"  [(ngModel)]="assessmentSettings.candidateGracePeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
@@ -874,7 +885,7 @@
               <input class="form-check-input" type="checkbox" id="formCheck1" checked disabled />
               <label class="form-check-label" for="earliest_exam_end_period">Examiners earliest end exam time</label>
               <div class="col-xl-2 col-md-2 col-sm-2">
-                <input type="number" min="0" class="form-control" placeholder="0" name="earliest_exam_end_period" [value]="0"  [(ngModel)]="assessmentSettings.earliestExamEndPeriod" />
+                <input type="number" min="0" class="form-control" placeholder="0" name="earliest_exam_end_period" [value]="0"  [(ngModel)]="assessmentSettings.earliestExamEndPeriod" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
               </div>
               Minutes.
             </div>
@@ -982,8 +993,6 @@
           </div>
         </div>
 
-        <!-- TESTING GIT COMMIT -->
-        <!-- <div class="form-check"> -->
         <div class="mb-2">
           <label class="form-label" for="durationInMinutes">
             Section Duration in minutes.
@@ -1071,7 +1080,7 @@
     <form #newSectionForm="ngForm" (ngSubmit)="saveSection(newSectionForm)" novalidate>
       <div class="row mb-2">
         <div class="">
-          <label for="choices-multiple-default" class="form-label">Section <span class="text-danger">*</span></label>
+          <label for="choices-multiple-default" class="form-label">Subject<span class="text-danger">*</span></label>
 
           <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
             data-bs-toggle="popover" [ngbPopover]="sectionInfoPopOver" triggers="mouseenter:mouseleave"
@@ -1203,7 +1212,7 @@
       style="cursor: move;">
       <h3 class="modal-title">NEW QUESTION BLOCK</h3>
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"
-        (click)="modal.close('Close click'); newBlockForm.reset()">
+        (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true;">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -1242,7 +1251,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-2">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
-              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
 
@@ -1253,7 +1262,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
-              [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
 
@@ -1268,7 +1277,7 @@
           </label>
           <div class="col-xl-3 col-md-2 col-sm-3">
             <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
-              [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)" />
+              [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()"/>
           </div>
         </div>
       </div>
@@ -1290,7 +1299,7 @@
 
       <div class="my-3">
         <div class="form-check">
-          <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems" checked [(ngModel)]="newBlock.shuffleItems">
+          <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems" [(ngModel)]="newBlock.shuffleItems">
           <label class="form-check-label" for="shuffle_items">Shuffle items?</label>
         </div>
       </div>
@@ -1300,7 +1309,7 @@
   <div class="card-footer">
     <div class="d-flex justify-content-end gap-2">
       <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-        (click)="modal.close('Close click'); newBlockForm.reset()">
+        (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true;">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
       <button [disabled]="!newBlock.selectionType || submitted" type="button" (click)="saveBlock()"
@@ -1445,7 +1454,7 @@
       overflow-x: hidden;
       overflow-y: auto;
     ">
-    <app-subject #subjectComponent [_noOfItems]="selectedBlock.totalQuestions" [_currentBlock]="selectedBlock"
+    <app-subject #subjectComponent [_noOfItems]="selectedBlock.totalQuestions" [_currentTab]="currentTab" [_currentBlock]="selectedBlock"
       [_subjectId]="itemService.subjectId" [_subjectName]="itemService.subjectName" [_assessmentId]="assessmentId"
       [_sectionId]="selectedSection.sectionId" [_existingItemIds]="existingItemIds"
       [_loadingExistingItems]="loadingExistingItemIds" (addItemToAssessment)="saveItemsToAssessment($event)"
@@ -1464,8 +1473,9 @@
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button> -->
       <ng-template [ngIf]="!submitted">
+        <!-- [disabled]="selectedItems.length < selectedBlock.totalQuestions" -->
         <button *ngIf="selectedBlock.selectionType === 'MANUAL'" (click)="saveManualSelectedItemsToBlock()"
-          [disabled]="selectedItems.length < selectedBlock.totalQuestions" class="btn btn-primary">
+           [disabled]="selectedItems.length < selectedBlock.totalQuestions" class="btn btn-primary">
           <i class="ri-save-line align-middle fs-16 me-2"></i>Save
         </button>
       </ng-template>
@@ -1498,7 +1508,7 @@
       overflow-x: hidden;
       overflow-y: auto;
     ">
-    <app-list-passages [_subjectId]="itemService.subjectId" [_assessmentId]="assessmentId"
+    <app-list-passages [_subjectId]="itemService.subjectId" [_currentTab]="currentTab" [_assessmentId]="assessmentId"
       [_sectionId]="selectedSection.sectionId" [_subjectName]="itemService.subjectName" [_currentBlock]="selectedBlock"
       [_existingPassageIds]="existingPassageIds" [_loadingExistingPassageIds]="loadingExistingPassageIds"
       (sendSelectedPassages)="recievePassageIds($event)"></app-list-passages>

@@ -6,7 +6,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class ScrollspyDirective {
 
-  @Input() public spiedTags : string[] = [];;
+  @Input() public spiedTags: string[] = [];;
   @Output() public sectionChange = new EventEmitter<string>();
   private currentSection: string | undefined;
 
@@ -35,6 +35,23 @@ export class ScrollspyDirective {
     if (currentSection !== this.currentSection) {
       this.currentSection = currentSection;
       this.sectionChange.emit(this.currentSection);
+    }
+  }
+}
+
+@Directive({
+  selector: 'input[type="number"]'
+})
+export class DisableScrollWheelDirective {
+
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent): void {
+    const element = event.target as HTMLElement;
+
+    // Check if the input is currently focused
+    if (document.activeElement === element) {
+      // Force the input to lose focus, stopping the scroll change
+      element.blur();
     }
   }
 }

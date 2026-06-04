@@ -28,6 +28,7 @@ export class ItemTagComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() sendTags = new EventEmitter();
   @Input() resetTagsArray: boolean = false;
+  @Input() selectedTopicForFiltering: string | null = null;
 
 
   tags$: Observable<any>;

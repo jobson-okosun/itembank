@@ -37,6 +37,7 @@ export class ListPassagesComponent implements OnInit {
   @Input() _currentBlock!: BlockDetails;
   @Input() _subjectName!: string;
   @Input() _existingPassageIds: string[] = [];
+  @Input() _currentTab: string;
   @Input() _loadingExistingPassageIds: boolean = false;
   @Output() sendSelectedPassages = new EventEmitter();
 

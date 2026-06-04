@@ -147,6 +147,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   warnEndOfReadingTimeChecked: boolean = false;
   instructionReadTimeChecked: boolean = false;
   examTypes = Object.values(ExamType)
+  previousInstructionReadTimeSec: number = 0;
+  previousWarnEndOfReadingTimeSec: number = 0;
 
   DELIVERY_METHOD_LABEL: string[] = [
     'LIVE PROCTORING',
@@ -175,9 +177,11 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     private templateService: TemplatesService,
   ) {
     this.assessmentId = this.ar.snapshot.params['assessmentId'];
-    this.currentAssessment = this.assessmentService.activeAssessment;
+    this.currentAssessment = this.assessmentService.activeAssessment ?? this.assessmentService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
-      this.assessmentService.activeAssessmentDeliveryMethod;
+      this.assessmentService.activeAssessmentDeliveryMethod ?? this.assessmentService.getItem('activeAssessmentDeliveryMethod');
+      console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
+      console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
   }
 
   setTotalQuestionsPerStudent(blockTotalQuestions: any) {
@@ -212,6 +216,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .subscribe(
         (value) => {
           this.assessmentSettings = value;
+          console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
           this.assessmentSettings.startExamInstruction = this.assessmentSettings
             .startExamInstruction
             ? this.assessmentSettings.startExamInstruction
@@ -352,6 +357,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         });
 
         this.assessment = value;
+
+        console.log('ASSESSMENT DETAILS: ', this.assessment);
 
         // console.log(value, 'assessment');
 
@@ -569,15 +576,28 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   onWarnEndOfReadingTimeChange(event: any) {
     this.warnEndOfReadingTimeChecked = event.target.checked;
     if (!event.target.checked) {
+      this.previousWarnEndOfReadingTimeSec = this.assessmentSettings.warnEndOfReadingTimeSec;
       this.assessmentSettings.warnEndOfReadingTimeSec = 0;
+    }
+    else {
+      this.assessmentSettings.warnEndOfReadingTimeSec = this.previousWarnEndOfReadingTimeSec;
     }
   }
 
   onInstructionReadingTimeSecChange(event: any) {
     // console.log(event.target.checked);
+    // this.instructionReadTimeChecked = event.target.checked;
+    // if (!event.target.checked) {
+    //   this.assessmentSettings.instructionReadTimeSec = 120;
+    // }
+
     this.instructionReadTimeChecked = event.target.checked;
     if (!event.target.checked) {
-      this.assessmentSettings.instructionReadTimeSec = 120;
+      this.previousInstructionReadTimeSec = this.assessmentSettings.instructionReadTimeSec;
+      this.assessmentSettings.instructionReadTimeSec = 0;
+    }
+    else {
+      this.assessmentSettings.instructionReadTimeSec = this.previousInstructionReadTimeSec;
     }
   }
 
@@ -609,7 +629,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
             this.submitted = false;
             this.modalService.dismissAll();
             this.editSection = new AssessmentSections();
+
             this.getAssessment();
+            this.getTotalItemsAndScores();
           }
         },
         (error: HttpErrorResponse) => {
@@ -936,6 +958,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       }
     }
 
+    console.log('instructionReadTimeChecked: ', this.instructionReadTimeChecked);
+    console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
+
     // console.log(this.instructionReadTimeChecked, "instructionReadTimeChecked");
     if (this.instructionReadTimeChecked) {
       // console.log(this.assessmentSettings.instructionReadTimeSec, "inredtime");
@@ -972,6 +997,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     // console.log(this.assessmentSettings, "assessment seetings");
 
     this.submitted = true;
+    console.log('Saving assessment settings...', this.assessmentSettings);
     this.assessmentService
       .saveAssessmentSettings(this.assessmentSettings, this.assessmentId)
       .subscribe(
@@ -1202,6 +1228,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           },
         );
     } else {
+
+      this.submitted = false;
+
       return this.notifier.notify(
         'error',
         `You have selected only ${this.selectedItems.length}/${this.selectedBlock.totalQuestions} questions!`,
@@ -1370,6 +1399,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.itemService.assessmentActive = false;
+    this.assessmentService.clearItem('activeAssessmentDeliveryMethod');
+    this.assessmentService.clearItem('activeAssessment');
   }
 
   openPublishExamConfirmationModal(publishAssessmentConfirmationModal: any) {

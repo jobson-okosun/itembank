@@ -183,10 +183,12 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   setCurrentAssessment(assessment: SingleAssessment) {
     this.assessmentService.activeAssessment = assessment.name;
+    this.assessmentService.setItem('activeAssessment', assessment.name);
     this.assessmentService.activeAssessmentId = assessment.id;
     this.assessmentService.schedulerAssessmentId = assessment.schId;
     this.assessmentService.activeAssessmentDeliveryMethod =
       assessment.deliveryMethod;
+      this.assessmentService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
   }
 
   confirm() {
