@@ -53,7 +53,7 @@ export class HorizontalTopbarComponent implements OnInit {
     sidemenus.forEach((element) => {
       // Check if user has permission for parent menu item
       const hasParentPermission = element.role?.some((role) =>
-        this.currentUser.authorities.includes(role)
+        this.currentUser?.authorities?.includes(role)
       );
 
       if (hasParentPermission && !this.menuItems.includes(element)) {

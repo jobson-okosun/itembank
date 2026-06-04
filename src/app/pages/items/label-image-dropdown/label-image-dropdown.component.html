@@ -356,7 +356,7 @@
           <div class="d-flex flex-column gap-2 card" style="max-height: 400px">
             <div>
               <button class="mx-2 my-2 btn btn-md btn-primary shadow-sm"
-                (click)="openImageUploadModal(imageUploadModal)">
+                (click)="openImageUploadModal(offlineImageUploadModal)">
                 <i class="me-2 align-middle" [ngClass]="{
                     'ri-add-line': !image.url,
                     'ri-edit-line': image.url
@@ -977,6 +977,54 @@
   </div>
 </ng-template>
 
+<ng-template #offlineImageUploadModal let-modal>
+  <div class="modal-header border-0 pb-0">
+    <h3 class="modal-title fw-bold">Upload Image</h3>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.close()"
+    ></button>
+  </div>
+
+  <div
+    class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+    style="min-height: 350px; max-height: 480px; overflow-y: auto;"
+  >
+    <!-- Local Drag & Drop Area -->
+    <div
+      class="custom-dropzone w-100 d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded-3 p-5"
+      style="cursor: pointer; min-height: 200px; transition: all 0.2s;"
+      [style.borderColor]="isDragOver ? '#0b5ed7' : '#bbd0f0'"
+      [style.backgroundColor]="isDragOver ? '#e9f0ff' : '#f8f9fa'"
+      (click)="offlineFileInput.click()"
+      (dragover)="onOfflineDragOver($event)"
+      (dragleave)="onOfflineDragLeave($event)"
+      (drop)="onOfflineFileDrop($event)"
+    >
+      <i class="ri-upload-cloud-2-line text-primary mb-3" style="font-size: 48px;"></i>
+      <span class="fs-15 fw-medium text-dark mb-1">Drag & drop image here or click to upload</span>
+      <span class="text-muted fs-12">Supported formats: JPG, PNG | Max size: 100KB</span>
+      <input
+        #offlineFileInput
+        type="file"
+        accept="image/*"
+        style="display: none"
+        (change)="onOfflineFileSelected($event)"
+      />
+    </div>
+  </div>
+
+  <div class="modal-footer border-0 pt-3 d-flex justify-content-end gap-2">
+    <button class="btn btn-outline-secondary" (click)="modal.close()">
+      Cancel
+    </button>
+    <button (click)="offlineFileInput.click()" class="btn btn-primary">
+      Browse File
+    </button>
+  </div>
+</ng-template>
 
 <ng-template #rejectionModal let-modal>
   <div class="modal-body p-5">

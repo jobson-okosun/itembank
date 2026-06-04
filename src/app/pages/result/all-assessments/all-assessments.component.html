@@ -19,7 +19,7 @@
 </div>
 
 
-<div *ngIf="!loading && assessments.content.length > 0" class="row">
+<div *ngIf="!loading && assessments?.content?.length > 0" class="row">
   <ng-container *ngFor="let assessment of assessments.content">
     <div class="col-sm-12 col-lg-6">
       <div class="card">

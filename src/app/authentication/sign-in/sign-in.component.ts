@@ -64,7 +64,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    localStorage.clear()
+    // localStorage.clear()
     /**
      * Form Validatyion
      */
@@ -91,7 +91,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
     // Access elements as an array
     const inputsArray = this.otpInputs.toArray();
-    console.log('Total OTP inputs:', inputsArray.length);
+    // console.log('Total OTP inputs:', inputsArray.length);
   }
 
   // convenience getter for easy access to form fields

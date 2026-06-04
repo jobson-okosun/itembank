@@ -40,16 +40,117 @@
 
     <!-- Question -->
     <ng-container *ngFor="let item of transcriptData; let i = index">
+        <!-- MCQ -->
         <mcq 
             *ngIf="item.item_score?.item_type === transcriptQuestionTypes.MCQ"
             [currentQuestion]="item"
             [currentQuestionIndex]="i + 1"
         ></mcq>
+
+        <!-- CLOZE_DROPDOWN -->
         <app-close-dropdown 
             *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN"
             [currentQuestion]="item"
             [currentQuestionIndex]="i + 1"
         ></app-close-dropdown>
+
+        <!-- CLOZE_TEXT -->
+        <app-cloze-text 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-cloze-text>
+
+        <!-- CLOZE_RADIO -->
+        <app-cloze-radio 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_RADIO"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-cloze-radio>
+
+        <!-- TRUE_FALSE -->
+        <app-true-or-false 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.TRUE_FALSE"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-true-or-false>
+
+        <!-- YES_NO -->
+        <app-yes-or-no 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.YES_NO"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-yes-or-no>
+
+        <!-- ASSOCIATION -->
+        <app-matching 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ASSOCIATION"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-matching>
+
+        <!-- ORDER_LIST -->
+        <app-ordering 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ORDER_LIST"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-ordering>
+
+        <!-- MRQ -->
+        <app-mrq 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.MRQ"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-mrq>
+
+        <!-- SHORT_TEXT -->
+        <app-short-text 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.SHORT_TEXT"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-short-text>
+
+        <!-- ESSAY_PLAIN_TEXT -->
+        <app-essay 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ESSAY_PLAIN_TEXT"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-essay>
+
+        <!-- ESSAY_RICH_TEXT -->
+        <app-essay 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ESSAY_RICH_TEXT"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-essay>
+
+        <!-- CHOICE_MATRIX -->
+        <app-choice-matrix 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CHOICE_MATRIX"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-choice-matrix>
+
+        <!-- CLOZE_TEXT_IMAGE -->
+        <app-label-image-with-text 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-label-image-with-text>
+
+        <!-- CLOZE_DROPDOWN_IMAGE -->
+        <app-label-image-with-dropdown 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-label-image-with-dropdown>
+
+        <!-- IMAGE_DRAG_AND_DROP -->
+        <app-label-image-drag-and-drop 
+            *ngIf="item.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP"
+            [currentQuestion]="item"
+            [currentQuestionIndex]="i + 1"
+        ></app-label-image-drag-and-drop>
     </ng-container>
 </div>
 

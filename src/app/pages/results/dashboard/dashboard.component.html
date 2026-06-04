@@ -787,17 +787,17 @@
 
             <!-- cloze text image -->
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE">
-              <app-cloze-text-image  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-text-image>
+              <app-label-image-with-text  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-label-image-with-text>
             </ng-container>
 
             <!-- cloze dropdown image -->
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE">
-              <app-cloze-dropdown-image  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-cloze-dropdown-image>
+              <app-label-image-with-dropdown  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-label-image-with-dropdown>
             </ng-container>
 
             <!-- image drag and drop -->
             <ng-container *ngIf="currentQuestion?.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP">
-              <app-image-drag-drop  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-image-drag-drop>
+              <app-label-image-drag-and-drop  [currentQuestion]="currentQuestion" [currentQuestionIndex]="currentQuestionIndex + 1"></app-label-image-drag-and-drop>
             </ng-container>
 
 
@@ -841,13 +841,13 @@
               <app-matching *ngIf="item.item_score?.item_type === transcriptQuestionTypes.ASSOCIATION" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-matching>
 
               <!-- cloze text image -->
-              <app-cloze-text-image *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-text-image>
+              <app-label-image-with-text *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_TEXT_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-label-image-with-text>
 
               <!-- cloze dropdown image -->
-              <app-cloze-dropdown-image *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-cloze-dropdown-image>
+              <app-label-image-with-dropdown *ngIf="item.item_score?.item_type === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-label-image-with-dropdown>
 
               <!-- image drag and drop -->
-              <app-image-drag-drop *ngIf="item.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-image-drag-drop>
+              <app-label-image-drag-and-drop *ngIf="item.item_score?.item_type === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP" [currentQuestion]="item" [currentQuestionIndex]="i + 1"></app-label-image-drag-and-drop>
             
             </ng-container>
           </ng-template>

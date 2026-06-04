@@ -9,6 +9,7 @@ import { LayoutComponent } from "./layouts/layout.component";
 // import { AuthGuard } from "./core/guards/auth.guard";
 import { ClozeDropdownComponent } from "./pages/items/cloze-dropdown/cloze-dropdown.component";
 import { TranscriptPreviewComponent } from "./pages/transcript-preview/transcript-preview/transcript-preview.component";
+import { AuthGuard } from "./core/guards/auth.guard";
 // import { SchedulerDashboardComponent } from "./pages/scheduler/scheduler-dashboard/scheduler-dashboard.component";
 
 // import { ItemsPreviewAndPrintingTestComponent } from "./items-preview-and-printing-test/items-preview-and-printing-test/items-preview-and-printing-test.component";
@@ -34,7 +35,7 @@ const routes: Routes = [
     component: LayoutComponent,
     loadChildren: () =>
       import("./pages/pages.module").then((m) => m.PagesModule),
-    //canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
   },
 
 

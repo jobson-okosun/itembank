@@ -22,6 +22,7 @@ import {
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotifierService } from 'angular-notifier';
+import { JSONP } from 'mock/questions';
 
 @Component({
   selector: 'app-dashboard',
@@ -315,6 +316,7 @@ export class DashboardComponent implements OnInit {
       )
       .subscribe(
         (res) => {
+          // res = JSONP as any
           this.transcriptQuestions = res;
           this.currentQuestion = res[0];
           this.currentQuestionIndex = 0;

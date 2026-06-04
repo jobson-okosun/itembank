@@ -320,6 +320,7 @@
 
           <div class="d-flex gap-3 mb-2 justify-content-end mx-2">
             <!-- <button class="btn btn-soft-primary btn-sm m-3" (click)="addConditions()">Add condition</button> -->
+            <a class="btn btn-danger" (click)="cancel()">Close</a>
             <button
               *ngIf="!proccessingAddSectionGroup"
               [disabled]="!addGroupSectionForm.valid || sectionNameRef.value.trim() === '' || checkIfSectionNameExist(sectionNameRef)"
@@ -342,9 +343,7 @@
               </button>
             </ng-template>
 
-         
-
-            <a class="btn btn-danger" (click)="cancel()">Close</a>
+        
           </div>
         </form>
       </div>

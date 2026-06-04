@@ -42,9 +42,10 @@ import { MrqComponent } from './transcript/question-types/mrq/mrq.component';
 import { ShortTextComponent } from './transcript/question-types/short-text/short-text.component';
 import { EssayComponent } from './transcript/question-types/essay/essay.component';
 import { ChoiceMatrixComponent } from './transcript/question-types/choice-matrix/choice-matrix.component';
-import { ClozeTextImageComponent } from './transcript/question-types/cloze-text-image/cloze-text-image.component';
-import { ClozeDropdownImageComponent } from './transcript/question-types/cloze-dropdown-image/cloze-dropdown-image.component';
-import { ImageDragDropComponent } from './transcript/question-types/image-drag-drop/image-drag-drop.component';
+import { LabelImageDragAndDropComponent } from './transcript/question-types/label-image-drag-and-drop/label-image-drag-and-drop.component';
+import { LabelImageWithTextComponent } from './transcript/question-types/label-image-with-text/label-image-with-text.component';
+import { LabelImageWithDropdownComponent } from './transcript/question-types/label-image-with-dropdown/label-image-with-dropdown.component';
+import { ItemsModule } from "../items/items.module";
 
 @NgModule({
   declarations: [
@@ -69,9 +70,9 @@ import { ImageDragDropComponent } from './transcript/question-types/image-drag-d
     ShortTextComponent,
     EssayComponent,
     ChoiceMatrixComponent,
-    ClozeTextImageComponent,
-    ClozeDropdownImageComponent,
-    ImageDragDropComponent
+    LabelImageDragAndDropComponent,
+    LabelImageWithTextComponent,
+    LabelImageWithDropdownComponent
   ],
   imports: [
     CommonModule,
@@ -94,7 +95,8 @@ import { ImageDragDropComponent } from './transcript/question-types/image-drag-d
     NgbModule,
     NgbProgressbarModule,
     PaginatorModule,
-  ],
+    ItemsModule
+],
   exports: [],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: "tinymce/tinymce.min.js" },

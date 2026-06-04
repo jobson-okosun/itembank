@@ -27,7 +27,7 @@
   </div>
 </div>
 
-<div *ngIf="!loading && assessments.content.length > 0" class="row">
+<div *ngIf="!loading && assessments?.content?.length > 0" class="row">
   <ng-container *ngFor="let assessment of assessments.content">
     <div class="col-sm-12 col-lg-6">
       <div class="card">
@@ -37,7 +37,7 @@
               href="javascript:void(0);"
               (click)="setCurrentAssessment(assessment)"
               routerLink="/examalpha/exams/{{ assessment.id }}/exam-schedule">{{
-              assessment.name }}</a>
+              assessment?.name?.toUpperCase() }}</a>
           </h5>
           <div class="dropdown" ngbDropdown>
             <a

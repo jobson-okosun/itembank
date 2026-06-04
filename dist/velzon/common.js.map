@@ -1,0 +1,1 @@
+{"version":3,"file":"common.js","mappings":";;;;;;;;;;;;;AAAO,MAAM,iBAAiB;CAO7B","sources":["./src/app/pages/users/model/change-user-details.model.ts"],"sourcesContent":["export class ChangeUserDetails {\r\n  firstName: string;\r\n  lastName: string;\r\n  email: string;\r\n  role: string;\r\n  phone: string;\r\n  id: string;\r\n}\r\n"],"names":[],"sourceRoot":"webpack:///"}

@@ -97,6 +97,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   publishingItem: boolean = false;
   subjectModerationStatus: boolean = false;
   isDragging: boolean = false;
+  isDragOver = false;
   currentLabelIndex: number;
   offsetX: number;
   offsetY: number;
@@ -513,6 +514,71 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.file = event.target.files[0];
     //console.log(event.target.files);
     // console.log(this.image);
+  }
+
+  onOfflineDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onOfflineDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onOfflineFileDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.processOfflineFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  onOfflineFileSelected(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      this.processOfflineFile(event.target.files[0]);
+    }
+  }
+
+  processOfflineFile(file: File) {
+    if (file.size > 100 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 100KB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const dataURL = e.target.result;
+      const img = new window.Image();
+      img.onload = () => {
+        this.image = new Images();
+        this.image.width = img.width;
+        this.image.height = img.height;
+        this.image.url = dataURL;
+        this.defaultItemProperties.images.push(this.image);
+        this.createOption();
+
+        this.modalService.dismissAll();
+        this.modalService.dismissAll();
+
+        setTimeout(() => {
+          const element = document.getElementById("labels");
+          element?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "nearest"
+          });
+        }, 1000);
+      };
+      img.src = dataURL;
+    };
+    reader.onerror = () => {
+      this.notifierService.notify('error', 'An error occurred during file upload. Please try again.');
+    };
+    reader.readAsDataURL(file);
   }
 
   recieveTags(tags: any) {

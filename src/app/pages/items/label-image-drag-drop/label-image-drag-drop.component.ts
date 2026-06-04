@@ -122,6 +122,7 @@ export class LabelImageDragDropComponent
   file: File;
   responseContainers: any[] = [];
   publishingItem: boolean = false;
+  isDragOver = false;
 
   passageId: string = '';
   showPassage: boolean = false;
@@ -223,8 +224,8 @@ export class LabelImageDragDropComponent
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
@@ -576,13 +577,13 @@ export class LabelImageDragDropComponent
   }
 
   onUploadSuccess(event: any) {
-    console.log(event, 'drag drop');
+    // console.log(event, 'drag drop');
     this.image = new Images();
     this.image.width = event[0].width;
     this.image.height = event[0].height;
     this.image.url = event[0].dataURL;
     this.defaultItemProperties.images.push(this.image);
-    console.log(this.defaultItemProperties.images[0]);
+    // console.log(this.defaultItemProperties.images[0]);
 
     this.cdRef.detectChanges();
     this.modalService.dismissAll();
@@ -606,6 +607,70 @@ export class LabelImageDragDropComponent
     this.file = event.target.files[0];
     //console.log(event.target.files);
     // console.log(this.image);
+  }
+
+  onOfflineDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onOfflineDragLeave(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onOfflineFileDrop(event: DragEvent) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    if (event.dataTransfer && event.dataTransfer.files.length > 0) {
+      this.processOfflineFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  onOfflineFileSelected(event: any) {
+    if (event.target.files && event.target.files.length > 0) {
+      this.processOfflineFile(event.target.files[0]);
+    }
+  }
+
+  processOfflineFile(file: File) {
+    if (file.size > 100 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 100KB');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const dataURL = e.target.result;
+      const img = new window.Image();
+      img.onload = () => {
+        this.image = new Images();
+        this.image.width = img.width;
+        this.image.height = img.height;
+        this.image.url = dataURL;
+        this.defaultItemProperties.images.push(this.image);
+
+        this.cdRef.detectChanges();
+        this.modalService.dismissAll();
+
+        setTimeout(() => {
+          const element = document.getElementById("labels");
+          element?.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+            inline: "nearest"
+          });
+        }, 1000);
+      };
+      img.src = dataURL;
+    };
+    reader.onerror = () => {
+      this.notifierService.notify('error', 'An error occurred during file upload. Please try again.');
+    };
+    reader.readAsDataURL(file);
   }
 
   recieveTags(tags: any) {
@@ -815,7 +880,7 @@ export class LabelImageDragDropComponent
           this.tagRef.Tag = [];
           this.tagRef.ngOnInit();
           this.tagRef.sendTag([]);
-          this.distractors = [{ value: '' }];
+          this.distractors = [];
           this.ngOnInit();
         }
       },
@@ -1060,7 +1125,7 @@ export class LabelImageDragDropComponent
   }
 
   distractors = [
-    { value: "Zero" },
+    // { value: "Zero" },
     // { value: "One" }
   ];
 
@@ -1087,9 +1152,9 @@ export class LabelImageDragDropComponent
       this.distractors = this.distractors.filter(
         (item) => item !== this.draggedItem,
       ); // Remove from list
-      console.log(
-        `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`,
-      );
+      // console.log(
+      //   `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`,
+      // );
       this.notifierService.notify(
         'success',
         `Item "${this.draggedItem}" dropped on label ${targetLabel.id}`,

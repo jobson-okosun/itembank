@@ -101,6 +101,11 @@ export class TopbarComponent implements OnInit {
       this.currentUser.authority === 'AUTHOR' ||
       this.currentUser.authorities.includes('MODERATOR')
     ) { */
+
+    if(!this.currentUser) {
+      return
+    }
+
     this.itemService
       .fetchAuthorModerationNotifications(this.currentUser.id)
       .subscribe(

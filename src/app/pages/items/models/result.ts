@@ -168,10 +168,10 @@ export class TranscriptListParams {
 }
 
 export class TranscriptParticipantsScoreList {
-    total: number
-    content: any[]
-    page: number
-    size: number
+  total: number
+  content: any[]
+  page: number
+  size: number
 }
 
 export class CandidateItemScore {
@@ -208,11 +208,11 @@ export class ItemPublishDTO {
 export class ParticipantSectionTranscript {
   item_score: CandidateItemScore;
   item: questionItem;
-  graded?: boolean 
+  graded?: boolean
 }
 
-export interface Annotation { 
-  page: number, 
+export interface Annotation {
+  page: number,
   grading: ContextMenuGradingForm
 }
 
@@ -243,40 +243,41 @@ export enum PassFailStatus {
 }
 
 export enum questionItemType {
-    MCQ = 'MCQ',
-    MRQ = 'MRQ',
-    ESSAY_PLAIN_TEXT = 'ESSAY_PLAIN_TEXT',
-    ESSAY_RICH_TEXT = 'ESSAY_RICH_TEXT',
-    CLOZE_TEXT = 'CLOZE_TEXT',
-    CLOZE_DROPDOWN = 'CLOZE_DROPDOWN',
-    SHORT_TEXT = 'SHORT_TEXT',
-    TRUE_FALSE = 'TRUE_FALSE',
-    YES_NO = 'YES_NO',
-    ASSOCIATION = 'ASSOCIATION',
-    CHOICE_MATRIX = 'CHOICE_MATRIX',
-    ORDER_LIST = 'ORDER_LIST',
-    CLOZE_TEXT_IMAGE = 'CLOZE_TEXT_IMAGE',
-    CLOZE_DROPDOWN_IMAGE = 'CLOZE_DROPDOWN_IMAGE',
-    IMAGE_DRAG_AND_DROP = 'IMAGE_DRAG_AND_DROP',
+  MCQ = 'MCQ',
+  MRQ = 'MRQ',
+  ESSAY_PLAIN_TEXT = 'ESSAY_PLAIN_TEXT',
+  ESSAY_RICH_TEXT = 'ESSAY_RICH_TEXT',
+  CLOZE_TEXT = 'CLOZE_TEXT',
+  CLOZE_DROPDOWN = 'CLOZE_DROPDOWN',
+  CLOZE_RADIO = 'CLOZE_RADIO',
+  SHORT_TEXT = 'SHORT_TEXT',
+  TRUE_FALSE = 'TRUE_FALSE',
+  YES_NO = 'YES_NO',
+  ASSOCIATION = 'ASSOCIATION',
+  CHOICE_MATRIX = 'CHOICE_MATRIX',
+  ORDER_LIST = 'ORDER_LIST',
+  CLOZE_TEXT_IMAGE = 'CLOZE_TEXT_IMAGE',
+  CLOZE_DROPDOWN_IMAGE = 'CLOZE_DROPDOWN_IMAGE',
+  IMAGE_DRAG_AND_DROP = 'IMAGE_DRAG_AND_DROP',
 }
 
 export const QUESTION_TYPES = {
-    MCQ: 'MCQ',
-    MRQ: 'MRQ',
-    ESSAY_PLAIN_TEXT: 'ESSAY_PLAIN_TEXT',
-    ESSAY_RICH_TEXT: 'ESSAY_RICH_TEXT',
-    CLOZE_TEXT: 'CLOZE_TEXT',
-    CLOZE_RADIO: 'CLOZE_RADIO',
-    CLOZE_DROPDOWN: 'CLOZE_DROPDOWN',
-    SHORT_TEXT: 'SHORT_TEXT',
-    TRUE_FALSE: 'TRUE_FALSE',
-    YES_NO: 'YES_NO',
-    ASSOCIATION: 'ASSOCIATION',
-    CHOICE_MATRIX: 'CHOICE_MATRIX',
-    ORDER_LIST: 'ORDER_LIST',
-    CLOZE_TEXT_IMAGE: 'CLOZE_TEXT_IMAGE',
-    CLOZE_DROPDOWN_IMAGE: 'CLOZE_DROPDOWN_IMAGE',
-    IMAGE_DRAG_AND_DROP: 'IMAGE_DRAG_AND_DROP',
+  MCQ: 'MCQ',
+  MRQ: 'MRQ',
+  ESSAY_PLAIN_TEXT: 'ESSAY_PLAIN_TEXT',
+  ESSAY_RICH_TEXT: 'ESSAY_RICH_TEXT',
+  CLOZE_TEXT: 'CLOZE_TEXT',
+  CLOZE_RADIO: 'CLOZE_RADIO',
+  CLOZE_DROPDOWN: 'CLOZE_DROPDOWN',
+  SHORT_TEXT: 'SHORT_TEXT',
+  TRUE_FALSE: 'TRUE_FALSE',
+  YES_NO: 'YES_NO',
+  ASSOCIATION: 'ASSOCIATION',
+  CHOICE_MATRIX: 'CHOICE_MATRIX',
+  ORDER_LIST: 'ORDER_LIST',
+  CLOZE_TEXT_IMAGE: 'CLOZE_TEXT_IMAGE',
+  CLOZE_DROPDOWN_IMAGE: 'CLOZE_DROPDOWN_IMAGE',
+  IMAGE_DRAG_AND_DROP: 'IMAGE_DRAG_AND_DROP',
 }
 
 export class Section_Score_Response {
