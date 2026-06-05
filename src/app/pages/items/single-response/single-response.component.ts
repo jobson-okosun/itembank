@@ -229,7 +229,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   }
 
   click() {
-    console.log('clikced');
+    // console.log('clikced');
   }
 
   setup(editor: any) {
@@ -449,7 +449,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   // Close Mathlive modal
   closeMathModal(content: any) {
     this.modalService.dismissAll(this.eqEditorModal);
-    console.log(content);
+    // console.log(content);
   }
   addOption(index: number): Option {
     let option: Option = new Option();
@@ -493,7 +493,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
   recieveTag(tag: any) {
     this.tags = tag;
-    console.log(tag);
+    // console.log(tag);
   }
 
   buildItem(form?: any): SingleChoiceModel {

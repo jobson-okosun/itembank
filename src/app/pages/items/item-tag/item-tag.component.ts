@@ -59,7 +59,7 @@ export class ItemTagComponent implements OnInit {
     this.loadTags();
 
     if (this.resetTagsArray) {
-      console.log("RESETTING TAGS ARRAY");
+      // console.log("RESETTING TAGS ARRAY");
       this.Tag = [];
       this.sendTags.emit(this.Tag);
     }
@@ -110,7 +110,7 @@ export class ItemTagComponent implements OnInit {
   }
 
   clearTags(): void {
-    console.log("USER CLEARED TAGS");
+    // console.log("USER CLEARED TAGS");
     this.Tag = [];
     this.sendTags.emit(this.Tag);
     this.itemUtilityService.setSelectedTags(this.Tag);

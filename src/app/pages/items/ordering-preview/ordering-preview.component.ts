@@ -127,7 +127,7 @@ export class OrderingPreviewComponent implements OnInit {
       options[i] = options[j];
       options[j] = temp;
     }
-    console.log('shuffled ordering options:::::', options);
+    // console.log('shuffled ordering options:::::', options);
     return options;
   }
 

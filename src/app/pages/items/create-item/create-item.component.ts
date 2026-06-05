@@ -134,7 +134,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log(this.passageForPreview);
+          // console.log(this.passageForPreview);
         },
       });
     }
@@ -387,7 +387,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    console.log(this.subjectModerationStatus);
+    // console.log(this.subjectModerationStatus);
     if (
       this.currentUser.authorities.includes("AUTHOR") &&
       this.subjectModerationStatus
@@ -396,7 +396,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     }
     if (this.subjectModerationStatus) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-      console.log("i am here");
+      // console.log("i am here");
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
@@ -540,7 +540,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   }
 
   updateItem(itemForm?: any, status?: string) {
-    console.log(status);
+    // console.log(status);
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -565,7 +565,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
 
     switch (status) {
       case "save":
-        console.log(this.subjectModerationStatus, "mod status");
+        // console.log(this.subjectModerationStatus, "mod status");
         if (
           (!this.currentUser.authorities.includes("MODERATOR") &&
             !this.currentUser.authorities.includes("ADMIN")) || // Both roles are missing

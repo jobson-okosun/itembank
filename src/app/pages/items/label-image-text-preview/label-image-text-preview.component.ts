@@ -76,11 +76,11 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     const imageRect = this.previewImage.nativeElement.getBoundingClientRect();
-    console.log('Preview Image Dimensions:', imageRect.width, imageRect.height);
+    // console.log('Preview Image Dimensions:', imageRect.width, imageRect.height);
 
     // Validate response positions
     this.previewData.responsePositions.forEach((position, index) => {
-      console.log(`Label ${index}:`, position.x, position.y);
+      // console.log(`Label ${index}:`, position.x, position.y);
     });
 
     // console.log(this.previewData);

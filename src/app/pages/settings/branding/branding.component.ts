@@ -47,7 +47,7 @@ export class BrandingComponent implements OnInit {
         this.logoFileInput.nativeElement.value = '';
         this.selectedLogoFilePreview = null;
         this.selectedLogoFile = null;
-        console.log('Selected logo file:', file);
+        // console.log('Selected logo file:', file);
         return;
       }
 
@@ -57,7 +57,7 @@ export class BrandingComponent implements OnInit {
         this.logoFileInput.nativeElement.value = '';
         this.selectedLogoFilePreview = null;
         this.selectedLogoFile = null;
-        console.log('Selected logo file:', file);
+        // console.log('Selected logo file:', file);
         return;
       }
 
@@ -123,7 +123,7 @@ export class BrandingComponent implements OnInit {
         this.iconFileInput.nativeElement.value = '';
         this.selectedIconFilePreview = null;
         this.selectedIconFile = null;
-        console.log('Selected icon file:', file);
+        // console.log('Selected icon file:', file);
         return;
       }
 
@@ -133,7 +133,7 @@ export class BrandingComponent implements OnInit {
         this.iconFileInput.nativeElement.value = '';
         this.selectedIconFilePreview = null;
         this.selectedIconFile = null;
-        console.log('Selected icon file:', file);
+        // console.log('Selected icon file:', file);
         return;
       }
 
@@ -199,7 +199,7 @@ export class BrandingComponent implements OnInit {
         this.faviconFileInput.nativeElement.value = '';
         this.selectedFaviconFilePreview = null;
         this.selectedFaviconFile = null;
-        console.log('Selected favicon file:', file);
+        // console.log('Selected favicon file:', file);
         return;
       }
 
@@ -209,7 +209,7 @@ export class BrandingComponent implements OnInit {
         this.faviconFileInput.nativeElement.value = '';
         this.selectedFaviconFilePreview = null;
         this.selectedFaviconFile = null;
-        console.log('Selected favicon file:', file);
+        // console.log('Selected favicon file:', file);
         return;
       }
 
@@ -263,14 +263,14 @@ export class BrandingComponent implements OnInit {
   }
 
   sendLogoFile(): void {
-    console.log(this.selectedLogoFile);
+    // console.log(this.selectedLogoFile);
   }
 
   sendIconFile(): void {
-    console.log(this.selectedIconFile);
+    // console.log(this.selectedIconFile);
   }
 
   sendFavIconFile(): void {
-    console.log(this.selectedFaviconFile);
+    // console.log(this.selectedFaviconFile);
   }
 }

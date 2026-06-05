@@ -32,7 +32,7 @@ export class ItemOfflineComponent implements OnInit {
         "<select style='width: 200px; height: 30px; border-radius: 3px'></select>"
       );
 
-      console.log(this.editData.stimulus)
+      // console.log(this.editData.stimulus)
 
     // ("Original Stimulus with <select></select> options.");
     this.editData.possibleResponses = [
@@ -270,7 +270,7 @@ export class ItemOfflineComponent implements OnInit {
             selectElement.selectedIndex = 0;
           });
 
-        console.log(tinymce.activeEditor);
+        // console.log(tinymce.activeEditor);
       });
       /* selectBoxes.forEach((selectBox, i) => {
           let options: HTMLOptionElement[] = [];

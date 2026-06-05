@@ -180,8 +180,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.currentAssessment = this.assessmentService.activeAssessment ?? this.assessmentService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
       this.assessmentService.activeAssessmentDeliveryMethod ?? this.assessmentService.getItem('activeAssessmentDeliveryMethod');
-      console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
-      console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
+      // console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
+      // console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
   }
 
   setTotalQuestionsPerStudent(blockTotalQuestions: any) {
@@ -216,7 +216,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .subscribe(
         (value) => {
           this.assessmentSettings = value;
-          console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
+          // console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
           this.assessmentSettings.startExamInstruction = this.assessmentSettings
             .startExamInstruction
             ? this.assessmentSettings.startExamInstruction
@@ -358,7 +358,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
         this.assessment = value;
 
-        console.log('ASSESSMENT DETAILS: ', this.assessment);
+        // console.log('ASSESSMENT DETAILS: ', this.assessment);
 
         // console.log(value, 'assessment');
 
@@ -958,8 +958,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log('instructionReadTimeChecked: ', this.instructionReadTimeChecked);
-    console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
+    // console.log('instructionReadTimeChecked: ', this.instructionReadTimeChecked);
+    // console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
 
     // console.log(this.instructionReadTimeChecked, "instructionReadTimeChecked");
     if (this.instructionReadTimeChecked) {
@@ -997,7 +997,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     // console.log(this.assessmentSettings, "assessment seetings");
 
     this.submitted = true;
-    console.log('Saving assessment settings...', this.assessmentSettings);
+    // console.log('Saving assessment settings...', this.assessmentSettings);
     this.assessmentService
       .saveAssessmentSettings(this.assessmentSettings, this.assessmentId)
       .subscribe(
@@ -1042,9 +1042,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           'error',
           `The total expected questions and total found questions are not equal per section`,
         );
-        console.log(
-          `totalslected and ${section.totalSelectedQuestions} section total found ${section.totalQuestions} are not equal`,
-        );
+        // console.log(
+        //   `totalslected and ${section.totalSelectedQuestions} section total found ${section.totalQuestions} are not equal`,
+        // );
 
         return;
       } else if (
@@ -1055,15 +1055,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           'error',
           `The total expected question per candidate and total found questions  per candidate are  not equal per sections`,
         );
-        console.log(
-          `total question percandiate ${section.totalQuestionsPerCandidate} is not equal to totalfound for percandidate in section ${section.totalCandidateSelectedQuestions}`,
-        );
+        // console.log(
+        //   `total question percandiate ${section.totalQuestionsPerCandidate} is not equal to totalfound for percandidate in section ${section.totalCandidateSelectedQuestions}`,
+        // );
         return;
       }
       // console.log(section.totalCandidateSelectedQuestions);
     });
 
-    console.log(this.incompleteSections, 'incompleteSection');
+    // console.log(this.incompleteSections, 'incompleteSection');
     if (assessmentStatus === 'PUBLISHED' || this.incompleteSections > 0) {
       return false;
     }

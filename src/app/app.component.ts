@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { MathfieldElement } from 'mathlive';
 import { AssessmentsService } from './pages/assessment/service/assessments.service';
 import { ItemUtilitiesService } from './pages/items/item-utilities.service';
+import { ItemHttpService } from './pages/items/item-http.service';
 export const mfe = new MathfieldElement();
 
 @Component({
@@ -16,6 +17,7 @@ export class AppComponent {
     private itembankAssessmentService: AssessmentsService, 
     private assessmentService: AssessmentsService,
     private itemUtil: ItemUtilitiesService,
+    private itemService: ItemHttpService,
   ) {}
 
   ngOnInit() {
@@ -40,6 +42,13 @@ export class AppComponent {
       const trail = localStorage.getItem('item-trail')
       if (trail) {
         this.itemUtil.currentItemTrail = JSON.parse(trail)
+      }
+    }
+
+    if (!this.itemService.currentSubjectModerationEnabled) {
+      const moderationEnabled = localStorage.getItem('currentSubjectModerationEnabled')
+      if (moderationEnabled) {
+        this.itemService.currentSubjectModerationEnabled = moderationEnabled === 'true'
       }
     }
   }

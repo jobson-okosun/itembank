@@ -213,7 +213,7 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
         },
         error: (err: HttpErrorResponse) => {
           this.isSubmittingAccountSetting = false;
-          console.log(err);
+          // console.log(err);
           this.notifierService.notify(
             'error',
             err.error.message ?? 'Sorry! Unable to perform update'

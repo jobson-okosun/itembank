@@ -152,7 +152,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
 
   addStyle(event: CdkDragMove) {
     const target = event.source.element.nativeElement;
-    console.log('t...', target.innerHTML);
+    // console.log('t...', target.innerHTML);
 
     target.style.outline = "2px solid #007bff"; // Add a blue outline
     target.style.zIndex = "1000"; // Ensure the dragged item is on top
@@ -219,7 +219,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   }
 
   log() {
-    console.log(true)
+    // console.log(true)
   }
 
 
@@ -279,7 +279,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   }
 
   edit() {
-    console.log(this.previewData)
+    // console.log(this.previewData)
     this.itemUtil.previewItem = false;
     
     if (this.previewData.id) {

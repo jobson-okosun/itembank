@@ -137,7 +137,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log(this.passageForPreview);
+          // console.log(this.passageForPreview);
         },
       });
     }
@@ -188,7 +188,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
       this.tags = this.editData.itemTagDTOs;
 
-      console.log(this.tags);
+      // console.log(this.tags);
       this.editData.scoringOption.answers; //Setting the right answer
       this.options.forEach((option, index) => {
         if (option.value === this.editData.scoringOption.answers[0]) {
@@ -378,7 +378,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
   recieveTags(tag: any) {
     this.tags = tag;
-    console.log(tag);
+    // console.log(tag);
   }
 
   buildItem() {

@@ -754,7 +754,7 @@ export class ClozeRadioSelectComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
-    console.log(this.itemUtil.currentItemTrail)
+    // console.log(this.itemUtil.currentItemTrail)
     const item = this.buildItem(itemForm);
 
     const editor = tinymce.get("abc");

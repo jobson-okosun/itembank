@@ -30,7 +30,7 @@ export class ItemUsageHistoryComponent implements OnInit {
       //   active: true,
       // },
     ];
-    console.log("hello");
+    // console.log("hello");
     this.itemId = this.ar.snapshot.params["id"];
     this.fetchItemUsageCount(this.itemId);
   }

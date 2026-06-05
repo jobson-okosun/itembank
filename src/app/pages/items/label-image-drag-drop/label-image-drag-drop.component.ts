@@ -232,7 +232,7 @@ export class LabelImageDragDropComponent
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log('PASS PREVIEW: ', this.passageForPreview);
+          // console.log('PASS PREVIEW: ', this.passageForPreview);
         },
       });
     }
@@ -333,7 +333,7 @@ export class LabelImageDragDropComponent
   }
 
   log() {
-    console.log('unploading')
+    // console.log('unploading')
   }
   
   onStimulusChange(value: string): void {
@@ -762,7 +762,7 @@ export class LabelImageDragDropComponent
           return { tagId: tag.tagId };
         })
       : [];
-    console.log(item);
+    // console.log(item);
     return item;
   }
 
@@ -961,14 +961,14 @@ export class LabelImageDragDropComponent
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
-    console.log(this.editData, 'edit data');
+    // console.log(this.editData, 'edit data');
     // let validated = this.itemService.validateItem(item);
 
     // if (!validated) {
     //   return;
     // }
 
-    console.log('builtItem', item);
+    // console.log('builtItem', item);
     this.publishingItem = true;
     this.publishLoader();
 
@@ -1036,8 +1036,8 @@ export class LabelImageDragDropComponent
 
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
-    console.log('i am down');
-    console.log(index);
+    // console.log('i am down');
+    // console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;

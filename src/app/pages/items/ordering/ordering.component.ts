@@ -118,15 +118,15 @@ export class OrderingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log('PASS PREVIEW: ', this.passageForPreview);
+          // console.log('PASS PREVIEW: ', this.passageForPreview);
         },
       });
     }
@@ -377,7 +377,7 @@ export class OrderingComponent implements OnInit, OnDestroy {
       return { tagId: tag.tagId };
     });
 
-    console.log(item, 'items');
+    // console.log(item, 'items');
 
     return item;
   }
@@ -600,7 +600,7 @@ export class OrderingComponent implements OnInit, OnDestroy {
           this.tagRef.Tag = [];
           this.tagRef.ngOnInit();
           this.tagRef.sendTag([]);
-          console.log('save and new');
+          // console.log('save and new');
           // this.createOption(4)
           this.ngOnInit();
         }

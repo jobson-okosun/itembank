@@ -101,13 +101,13 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     }
 
     this.passageId = this.ar.snapshot.params["passageId"];
-    console.log(this.passageId);
+    // console.log(this.passageId);
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log(this.passageForPreview);
+          // console.log(this.passageForPreview);
         },
       });
     }
@@ -416,7 +416,7 @@ export class RichEssayComponent implements OnInit, OnDestroy {
   }
 
   saveAndNewItem(itemForm: any) {
-    console.log("i was called");
+    // console.log("i was called");
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -483,7 +483,7 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       msg = `item successfully sent for moderation`;
     }
 
-    console.log("i got here");
+    // console.log("i got here");
     this.itemService.createEssayItem(item).subscribe(
       (value) => {
         //console.log(value);
@@ -500,7 +500,7 @@ export class RichEssayComponent implements OnInit, OnDestroy {
         }
 
         if (type == "save_and_new" || type !== "") {
-          console.log("hello");
+          // console.log("hello");
           this.defaultItemProperties = new DefaultItemProperties();
           this.tags = [];
           this.defaultItemProperties.scoringOption.autoScore = false;

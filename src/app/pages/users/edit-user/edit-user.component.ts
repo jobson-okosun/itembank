@@ -200,11 +200,11 @@ export class EditUserComponent implements OnInit {
   }
 
   addSubjectToUser() {
-    console.log(this.subjects, "subjects")
-    console.log(this.selectedSubjects, "selected subjects")
+    // console.log(this.subjects, "subjects")
+    // console.log(this.selectedSubjects, "selected subjects")
     this.updating = true;
     //  console.log(this.selectedSubjectIds);
-    console.log(this.userDefaultSubjects, "default");
+    // console.log(this.userDefaultSubjects, "default");
 
     // this.selectedSubjects.forEach((subject) => {
     //   /* let newSubject = new AddSubjectToUser();
@@ -218,7 +218,7 @@ export class EditUserComponent implements OnInit {
     //   }
     // });
 
-    console.log(this.selectedSubjects, "selected");
+    // console.log(this.selectedSubjects, "selected");
 
     this.selectedSubjects.forEach((subject) => {
       if (!this.selectedSubjectIds.includes(subject.id)) {
@@ -226,17 +226,17 @@ export class EditUserComponent implements OnInit {
       }
     });
 
-    console.log("Default Subjects1:", this.userDefaultSubjects);
-    console.log("Selected Subjects1:", this.selectedSubjects);
+    // console.log("Default Subjects1:", this.userDefaultSubjects);
+    // console.log("Selected Subjects1:", this.selectedSubjects);
     const removedSubjects = this.userDefaultSubjects.filter((subject) =>
       !this.selectedSubjects.some((selected) => selected.subjectName === subject.subjectName)
     );
 
     this.deselectedSubjects = removedSubjects;
 
-    console.log("Removed Subjects:", removedSubjects);
+    // console.log("Removed Subjects:", removedSubjects);
 
-    console.log(this.selectedSubjectIds, "selectedSubjectIds");
+    // console.log(this.selectedSubjectIds, "selectedSubjectIds");
 
     // return;
 
@@ -271,7 +271,7 @@ export class EditUserComponent implements OnInit {
             (id) => !removedSubjects.some((removed) => removed.subjectId === id)
           );
         
-          console.log("Updated selectedSubjectIds:", this.selectedSubjectIds);
+          // console.log("Updated selectedSubjectIds:", this.selectedSubjectIds);
           this.updateSubjectAssignment();
         }
       });
@@ -279,8 +279,8 @@ export class EditUserComponent implements OnInit {
       this.updateSubjectAssignment();
     }
 
-    console.log(this.newSubject);
-    console.log(this.selectedSubjectIds);
+    // console.log(this.newSubject);
+    // console.log(this.selectedSubjectIds);
 
     // return;
   }

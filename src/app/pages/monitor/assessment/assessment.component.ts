@@ -766,7 +766,7 @@ export class AssessmentComponent implements OnInit, OnDestroy {
   }
 
   openMalpracticeReport(type: string, content: any) {
-    console.log(true, true)
+    // console.log(true, true)
     this.malpracticeReportParams = {
       ...this.malpracticeReportParams,
       size: 50,

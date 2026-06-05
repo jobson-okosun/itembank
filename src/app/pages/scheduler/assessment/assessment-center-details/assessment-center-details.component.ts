@@ -212,7 +212,7 @@ export class AssessmentCenterDetailsComponent implements OnInit {
       this.searchParticipantPayload.searchField !==
         IParticipantSearchEnum.REG_FIELD_DATE
     ) {
-      console.log("i got here center");
+      // console.log("i got here center");
       this.searchParticipantPayload.dateRange = null;
     }
     switch (this.searchParticipantPayload.searchField) {

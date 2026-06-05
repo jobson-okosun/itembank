@@ -476,7 +476,7 @@ export class AssessmentParticipantsComponent implements OnInit {
       this.searchParticipantPayload.searchField !==
         IParticipantSearchEnum.REG_FIELD_DATE
     ) {
-      console.log("i got here");
+      // console.log("i got here");
       this.searchParticipantPayload.dateRange = null;
     }
     switch (this.searchParticipantPayload.searchField) {

@@ -133,7 +133,7 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log(this.passageForPreview);
+          // console.log(this.passageForPreview);
         },
       });
     }

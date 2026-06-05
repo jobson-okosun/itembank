@@ -220,8 +220,8 @@ export class ViewUserComponent implements OnInit {
   }
 
   fetchItem(itemId: string, previewModal: any) {
-    console.log(itemId);
-    console.log(previewModal);
+    // console.log(itemId);
+    // console.log(previewModal);
 
     this.loading_item = true;
     this.currentPreview = 'Question';
@@ -231,7 +231,7 @@ export class ViewUserComponent implements OnInit {
       (value) => {
         if (value) {
           this.item = value;
-          console.log('Items: ', this.item);
+          // console.log('Items: ', this.item);
           this.loading_item = false;
         }
       },

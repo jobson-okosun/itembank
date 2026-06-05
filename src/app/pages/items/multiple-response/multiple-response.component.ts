@@ -435,8 +435,8 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
 
-    console.log(this.currentUser.authorities);
-    console.log(this.subjectModerationStatus, 'mod status');
+    // console.log(this.currentUser.authorities);
+    // console.log(this.subjectModerationStatus, 'mod status');
     this.publishLoader();
     this.saveFunction(item, 'save');
     //this.back();

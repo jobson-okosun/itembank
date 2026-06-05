@@ -64,7 +64,7 @@ export class YesOrNoPreviewComponent implements OnInit {
     this.recycleComponentActive = this.recycleService.recycleActive;
     this.isEditPreview = this.router.url.includes('edit-item');
 
-    console.log(this.isEditPreview);
+    // console.log(this.isEditPreview);
     //console.log(this.previewData);
     //console.log(this.itemTrailInfo);
     this.answer = this.previewData.scoringOption.answers[0];

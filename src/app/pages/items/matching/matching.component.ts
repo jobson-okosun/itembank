@@ -140,15 +140,15 @@ export class MatchingComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log('PASS PREVIEW: ', this.passageForPreview);
+          // console.log('PASS PREVIEW: ', this.passageForPreview);
         },
       });
     }
@@ -420,7 +420,7 @@ export class MatchingComponent implements OnInit, OnDestroy {
       return { tagId: tag.tagId };
     });
 
-    console.log(item, 'from matchn component');
+    // console.log(item, 'from matchn component');
 
     return item;
   }

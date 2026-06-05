@@ -141,7 +141,7 @@ export class AssessmentBatchComponent implements OnInit {
         ? this.batchForEdit.start_date_time + "Z"
         : this.batchForEdit.start_date_time;
 
-    console.log(this.batchForEdit);
+    // console.log(this.batchForEdit);
   }
 
   deleteBatch() {
@@ -171,7 +171,7 @@ export class AssessmentBatchComponent implements OnInit {
   editBatch(editBatch: NgForm) {
     this.processingBatchEdit = true;
 
-    console.log(this.batchForEdit);
+    // console.log(this.batchForEdit);
     let payload: IAssessmentBatchDTO = {
       id: this.selectedBatchId,
       end_date_time: new Date(this.batchForEdit.end_date_time)

@@ -591,7 +591,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe((value) => {
           this.passageTopics = value;
 
-          console.log('PASSAGE TOPICS', this.passageTopics);
+          // console.log('PASSAGE TOPICS', this.passageTopics);
           // console.log(this.passageTopics);
           // Auto-select the first topic by default by calling saveTopicSelection with the first topic
           if (this.passageTopics && this.passageTopics && this.passageTopics.length > 0) {
@@ -613,7 +613,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.manuallySelectedItemsAndPassages = value;
-            console.log('MANUALLY SELECTED ITEMS AND PASSAGES', this.manuallySelectedItemsAndPassages);
+            // console.log('MANUALLY SELECTED ITEMS AND PASSAGES', this.manuallySelectedItemsAndPassages);
           },
           (error: HttpErrorResponse) => {
             this.notifier.notify('error', error.error.message);
@@ -651,7 +651,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.itemsPage = value;
-            console.log('FETCH ALL ITEMS: ', this.itemsPage);
+            // console.log('FETCH ALL ITEMS: ', this.itemsPage);
             this.itemsPage.content.forEach(
               (item) => (item.showFullItem = false),
             );
@@ -688,7 +688,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.itemsPage = value;
-            console.log('FETCH ASSESSMENT ITEMS: ', this.itemsPage);
+            // console.log('FETCH ASSESSMENT ITEMS: ', this.itemsPage);
             this.itemsPage.content.forEach(
               (item) => (item.showFullItem = false),
             );
@@ -806,7 +806,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           (value) => {
             this.subject = value;
             this.subjectId = this.itemService.subjectId;
-            console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
+            // console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
             // console.log(value);
 
             if (!this.subject.topics[0]) {
@@ -846,7 +846,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   fetchSubjectDetails() {
     if (this.currentUser.authorities.includes('ADMIN')) {
-      console.log('ADMIN BLOCK SUBJECT FETCHING DETAILS');
+      // console.log('ADMIN BLOCK SUBJECT FETCHING DETAILS');
 
       this.handleAdminActions();
     }
@@ -926,7 +926,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       next: (value) => {
         this.allSubjects = value;
         this.loadingAllSubjects = false;
-
+                // console.log(true)
         if (this.itemService.subjectId) {
           this.selectSubject(this.itemService.subjectId);
           return;
@@ -955,7 +955,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       (value) => {
         if (value) {
           this.subject = value;
-          console.log(value, 'value');
+          // console.log(value, 'value');
           const firstTopic = this.subject.topics[0];
           this.fetchItems(firstTopic);
           this.setItemTrail(firstTopic);
@@ -973,6 +973,12 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.itemService.setSubjectName(subject.name);
     this.subjectName = subject.name;
     this.subjectId = subject.subjectId;
+    this.itemService.currentSubjectModerationEnabled = subject.moderationId ? true : false;
+    this.setModerationStatus()
+  }
+
+  setModerationStatus() {
+    localStorage.setItem('currentSubjectModerationEnabled', this.itemService.currentSubjectModerationEnabled.toString());
   }
 
   setItemTrail(topic: any) {
@@ -996,6 +1002,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   handleSubjectSelection(subject: ListAllSubjects) {
     this.selectSubject(subject.subjectId);
   }
+
   selectSubject(subjectId: string) {
     this.itemService.subjectId = subjectId;
     const foundSubject = this.allSubjects.find(
@@ -1012,6 +1019,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.itemService.currentSubjectModerationEnabled = foundSubject.moderationId
       ? true
       : false;
+
+    this.setModerationStatus()
 
     if (this.currentUser.authorities.includes('ADMIN')) {
       this.fetchSubjectTopicsTreeAdmin();
@@ -1082,7 +1091,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   fetchTopicTreeModerator() {
-    console.log(this.itemService.subjectId);
+    // console.log(this.itemService.subjectId);
     this.itemService
       .fetchItemsAwaitingModerationTopicsTree(
         this.itemService.subjectId,
@@ -1135,7 +1144,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       .subscribe(
         (value) => {
           this.subject = value;
-          console.log('USER TOPIC TREE', this.subject);
+          // console.log('USER TOPIC TREE', this.subject);
           // console.log(value);
 
           if (!this.subject.topics[0]) {
@@ -1243,7 +1252,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     });
     this.assessmentFilter.totalQuestions -= this.totalFilterSelections;
 
-    console.log(this.assessmentFilter.totalQuestions);
+    // console.log(this.assessmentFilter.totalQuestions);
 
     // RESETING ON FILTER FORM OPENS
     this.resetTagsInputFieldOnOpenFilterDialog = true;
@@ -1264,7 +1273,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       size: 'md',
     });
 
-    console.log(this._currentBlock, 'current block');
+    // console.log(this._currentBlock, 'current block');
     this.assessmentPassageFilter.totalPassages =
       this._currentBlock.totalQuestions;
     this.assessmentPassageFilter.totalPassages -= this.totalFilterSelections;
@@ -1292,7 +1301,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   pickTopic(event: any) {
     // console.log('selected topic', event);
     this.assessmentSelectedTopic = event;
-    console.log(event, 'selected topic');
+    // console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
     this.selectedTopicForFiltering = event.topicId;
     this.assessmentFilter.topicId = event.topicId;
@@ -1302,7 +1311,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   pickTopicForAssessmentPassageFilter(event: any) {
     this.assessmentSelectedTopic = event;
-    console.log(event, 'selected topic');
+    // console.log(event, 'selected topic');
     //this.assessmentFilter.topicName = event.topicName;
     this.selectedTopicForFiltering = event.topicId;
     this.assessmentPassageFilter.topicId = event.topicId;
@@ -1320,7 +1329,7 @@ export class SubjectComponent implements OnInit, OnChanges {
         .subscribe(
           (value) => {
             this.subject = value;
-            console.log('RELOAD TOPIC TREE', this.subject);
+            // console.log('RELOAD TOPIC TREE', this.subject);
             /* this.subject.topics.unshift({ topicName: 'ALL-TOPIC(S)', topicId: '00000000-0000-0000-0000-000000000000', totalItems: 0 }) */
             this.fetchItems(
               this.clickedTopic ? this.clickedTopic : this.subject.topics[0],
@@ -1793,7 +1802,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.buildFilter();
     //this.showFilter = !this.showFilter;
 
-    console.log('FILTER INFORMATION: ', this.filterInformation);
+    // console.log('FILTER INFORMATION: ', this.filterInformation);
 
     if (this.assessmentActive) {
       this.itemService
@@ -2203,11 +2212,11 @@ export class SubjectComponent implements OnInit, OnChanges {
   moveQuestion(movequestion: any) {
     // console.log(this.movedItems);
     this.moving = true;
-    console.log(this.itemToMove, 'item to move');
-    console.log(this.movedItems, 'moved item');
-    console.log(this.movedItems.subjectId, 'move sub id');
-    console.log(this.itemService.subjectId, 'item servive  sub id');
-    console.log(this.subjectId, '  sub id');
+    // console.log(this.itemToMove, 'item to move');
+    // console.log(this.movedItems, 'moved item');
+    // console.log(this.movedItems.subjectId, 'move sub id');
+    // console.log(this.itemService.subjectId, 'item servive  sub id');
+    // console.log(this.subjectId, '  sub id');
     if (
       this.itemService.subjectId === this.movedItems.subjectId &&
       this.itemService.topicId === this.movedItems.topicId &&
@@ -2282,14 +2291,14 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.copiedItems.subtopicId = null; // Reset selected subtopic if needed
     this.copyDestinationTopicTree = []; // Clear topics array
     this.copyDestinationSubtopicTree = [];
-    console.log('called me');
+    // console.log('called me');
     this.itemService
       .fetchSubjectTopicsTreeAdmin(this.copiedItems.subjectId)
       .subscribe(
         (value) => {
           this.copyDestinationTopicTree = value;
-          console.log(this.copyDestinationTopicTree);
-          console.log('GET TOPICS TREE TO COPY ITEM WORKED', this.copyDestinationTopicTree);
+          // console.log(this.copyDestinationTopicTree);
+          // console.log('GET TOPICS TREE TO COPY ITEM WORKED', this.copyDestinationTopicTree);
         },
         (error: HttpErrorResponse) => {
           //console.log(error);
@@ -2306,7 +2315,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       .subscribe(
         (value) => {
           this.moveDestinationTopicTree = value;
-          console.log('FETCH SUBJECT TOPICS TREE ADMIN', this.moveDestinationTopicTree);
+          // console.log('FETCH SUBJECT TOPICS TREE ADMIN', this.moveDestinationTopicTree);
         },
         (error: HttpErrorResponse) => {
           //console.log(error);
@@ -2342,7 +2351,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.assessmentFilter.tagIds = tag.tagName;
     });
 
-    console.log(assessmentFilter, 'assessment filteer');
+    // console.log(assessmentFilter, 'assessment filteer');
     if (score < 0) {
       this.notifier.notify('error', 'Score cannot be negative');
       this.submitted = false;
@@ -2373,7 +2382,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     }
 
     // this.submitted = false;
-    console.log('FILTER RECORD: ', this.assessmentFilter);
+    // console.log('FILTER RECORD: ', this.assessmentFilter);
 
     this.assessmentService
       .newAssessmentFilter(
@@ -2441,8 +2450,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.assessmentPassageFilter.maxPassageItemsCount =
       this._currentBlock.totalQuestionsInPassage;
 
-    console.log(this.assessmentPassageFilter, 'filter');
-    console.log(this._currentBlock, 'current block');
+    // console.log(this.assessmentPassageFilter, 'filter');
+    // console.log(this._currentBlock, 'current block');
     // console.log(this.assessmentPassageFilter);
     this.assessmentService
       .newAssessmentPassageFilter(

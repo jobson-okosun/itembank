@@ -191,7 +191,7 @@ export class LabelImageDropdownComponent
   ) {}
 
   onSelect(event: any): void {
-    console.log(event);
+    // console.log(event);
     const file: File = event.addedFiles[0];
 
     // Check file size (already restricted in Dropzone, but double-checking)
@@ -205,7 +205,7 @@ export class LabelImageDropdownComponent
     const reader = new FileReader();
     reader.onload = () => {
       this.base64Image = reader.result as string;
-      console.log(this.base64Image);
+      // console.log(this.base64Image);
     };
     reader.onerror = () => {
       alert('Failed to convert the file.');
@@ -215,23 +215,23 @@ export class LabelImageDropdownComponent
 
   ngAfterViewInit() {
     // Capture the initial size of the image after the view is initialized
-    this.imageWidth = this.imageElement.nativeElement.offsetWidth;
-    this.imageHeight = this.imageElement.nativeElement.offsetHeight;
-    const rect = this.imageElement.nativeElement.getBoundingClientRect();
-    console.log('Image Dimensions:', rect.width, rect.height);
+    this.imageWidth = this.imageElement?.nativeElement?.offsetWidth;
+    this.imageHeight = this.imageElement?.nativeElement?.offsetHeight;
+    const rect = this.imageElement?.nativeElement?.getBoundingClientRect();
+    // console.log('Image Dimensions:', rect.width, rect.height);
   }
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log('PASS PREVIEW: ', this.passageForPreview);
+          // console.log('PASS PREVIEW: ', this.passageForPreview);
         },
       });
     }
@@ -245,13 +245,12 @@ export class LabelImageDropdownComponent
 
     this.defaultItemProperties.scoringOption.autoScore = true;
     this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces = true;
-    this.subjectModerationStatus =
-      this.itemService.currentSubjectModerationEnabled;
+    this.subjectModerationStatus = this.itemService.currentSubjectModerationEnabled;
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {
-      console.log('edit data');
-      console.log(this.editData);
+      // console.log('edit data');
+      // console.log(this.editData);
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =
         this.editData.difficultyLevel;
@@ -320,7 +319,7 @@ export class LabelImageDropdownComponent
           id: index.toString(),
         }),
       );
-      console.log();
+      // console.log();
       this.defaultItemProperties.possibleResponses =
         this.editData.possibleResponses;
 
@@ -335,7 +334,7 @@ export class LabelImageDropdownComponent
           }); */
     }
 
-    console.log(this.dropdownLabels);
+    // console.log(this.dropdownLabels);
   }
 
   onStimulusChange(value: string): void {
@@ -715,7 +714,7 @@ export class LabelImageDropdownComponent
     });
 
     item.itemTagsDTOS = this.tags?.map((tag) => ({ tagId: tag.tagId })) || [];
-    console.log(item);
+    // console.log(item);
     return item;
   }
 

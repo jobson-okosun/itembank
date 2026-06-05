@@ -178,15 +178,15 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
 
-          console.log('PASS PREVIEW: ', this.passageForPreview);
+          // console.log('PASS PREVIEW: ', this.passageForPreview);
         },
       });
     }
@@ -204,8 +204,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {
-      console.log('edit data');
-      console.log(this.editData);
+      // console.log('edit data');
+      // console.log(this.editData);
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =
         this.editData.difficultyLevel;
@@ -270,7 +270,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       this.tags = this.editData.itemTagDTOs;
       this.itemUtil.setSelectedTags(this.tags);
 
-      console.log(this.tags);
+      // console.log(this.tags);
 
       //Setting the right answer
       /* this.options.forEach((option, index) => {
@@ -651,7 +651,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       item.scoringOption.answers[index] = label.inputValue;
     });
 
-    console.log(item);
+    // console.log(item);
     // this.options[0].positionX;
     // this.options[0].positionY;
 
@@ -696,7 +696,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
     this.itemUtil.previewItem = true;
     this.previewData = this.buildItem();
-    console.log(this.previewData);
+    // console.log(this.previewData);
     this.preview = true;
   }
 
@@ -1047,8 +1047,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   onMouseDown(event: MouseEvent, index: number) {
-    console.log('i am down');
-    console.log(index);
+    // console.log('i am down');
+    // console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
@@ -1081,7 +1081,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   // When mouse button is released
   onMouseUp() {
-    console.log('release');
+    // console.log('release');
     this.isDragging = false;
     document.removeEventListener('mousemove', this.onMouseMove.bind(this));
     document.removeEventListener('mouseup', this.onMouseUp.bind(this));

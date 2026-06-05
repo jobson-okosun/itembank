@@ -6,6 +6,7 @@ import {
   HttpInterceptor,
   HttpErrorResponse,
 } from "@angular/common/http";
+import Swal from "sweetalert2";
 import { Observable, throwError } from "rxjs";
 import { catchError, switchMap } from "rxjs/operators";
 import { AuthenticationService } from "../authentication/authentication.service";
@@ -49,6 +50,34 @@ export class AuthInterceptor implements HttpInterceptor {
           );
         } else {
           // For other errors
+          if (
+            error.status === 401 &&
+            !["/sign-in", "/account/sign-up", "/reset-password"].includes(location.pathname)
+          ) {
+            if (!Swal.isVisible()) {
+              Swal.fire({
+                title: "Session Expired",
+                text: "Your session has expired. Please log in again to continue.",
+                icon: "warning",
+                showCancelButton: false,
+                confirmButtonText: "Logout",
+                confirmButtonColor: "#038edc",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  this.authService.logoutUser().subscribe({
+                    next: () => {
+                      location.assign("/sign-in");
+                    },
+                    error: () => {
+                      location.assign("/sign-in");
+                    },
+                  });
+                }
+              });
+            }
+          }
           if(!['/sign-in', '/account/sign-up', '/reset-password'].includes(location.pathname)) {
             // location.href = '/'
           }

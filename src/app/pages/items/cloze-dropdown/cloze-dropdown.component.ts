@@ -457,7 +457,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     this.editor = editor;
     let activeEquation: HTMLElement | null = null;
 
-    console.log(this.editor, 'this');
+    // console.log(this.editor, 'this');
     let count = 0;
 
     //   let selectBoxes: HTMLSelectElement[] = editor
@@ -465,7 +465,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // .getDoc()
     // .querySelectorAll("select");
 
-    console.log(editor.getBody(), 'editor');
+    // console.log(editor.getBody(), 'editor');
     // console.log(selectBoxes, 'editor selectBoxes');
     const openDialog = (latex: string) => {
       editor.windowManager.open({
@@ -1108,14 +1108,14 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // } else {
     //   item.itemStatus = ItemStatusEnum.PUBLISHED;
     // }
-    console.log(original_content, 'original');
-    console.log(item.stimulus);
+    // console.log(original_content, 'original');
+    // console.log(item.stimulus);
 
     this.saveFunction(item, 'draft');
   }
 
   saveAndNew(itemForm: any) {
-    console.log('called me');
+    // console.log('called me');
     let item = this.buildItem(itemForm);
     const original_content = '';
     // this.content = []
@@ -1140,11 +1140,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     // Reset response array, to avoid duplicate possible respone (possibleResponse) in item.
     if (this.responses.length > 0) {
-      console.log('Resetted for future actions');
+      // console.log('Resetted for future actions');
       this.responses = [];
     }
 
-    console.log(item);
+    // console.log(item);
 
     let content = tinymce.activeEditor.getContent();
     let newContent = content.replaceAll(
@@ -1263,8 +1263,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
-    console.log(original_content, 'original');
-    console.log(item.stimulus);
+    // console.log(original_content, 'original');
+    // console.log(item.stimulus);
 
     this.saveFunction(item, 'save_and_new');
   }
@@ -1352,7 +1352,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
   doPreview(itemForm: any) {
     let item = this.buildItem(itemForm);
-    console.log('Item: ', item);
+    // console.log('Item: ', item);
     this.itemUtil.previewItem = true;
 
     item.scoringOption.answers = [];
@@ -1488,9 +1488,9 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.responses = [];
 
-    console.log(this.editData, 'edit data');
+    // console.log(this.editData, 'edit data');
 
-    console.log('called me');
+    // console.log('called me');
 
     const original_content = '';
 
@@ -1513,7 +1513,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     item.possibleResponses = this.responses;
 
-    console.log(item);
+    // console.log(item);
 
     let content = tinymce.activeEditor.getContent();
     let newContent = content.replaceAll(
@@ -1542,8 +1542,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
-    console.log(original_content, 'original');
-    console.log(item.stimulus);
+    // console.log(original_content, 'original');
+    // console.log(item.stimulus);
 
     // this.saveFunction(item, "save");
     // let validated = this.itemService.validateItem(item);
@@ -1553,7 +1553,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // }
     this.publishingItem = true;
     this.publishLoader();
-    console.log('builtItem', item);
+    // console.log('builtItem', item);
 
     switch (status) {
       case 'save':

@@ -135,7 +135,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.newAssessment.description = this.newAssessment.description.trim();
     this.newAssessment.name = this.newAssessment.name.trim();
 
-    console.log(this.newAssessment);
+    // console.log(this.newAssessment);
 
     this.assessmentService.createNewAssessment(this.newAssessment).subscribe(
       (value) => {

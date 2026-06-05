@@ -267,6 +267,8 @@ export class HorizontalTopbarComponent implements OnInit {
       || link.startsWith('/examalpha/passages')
     ) {
       localStorage.removeItem('item-trail');
+      localStorage.removeItem('currentSubjectModerationEnabled');
+      localStorage.removeItem('activeAssessment');
     }
   }
 }

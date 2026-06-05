@@ -49,10 +49,10 @@ export class NewPassageComponent implements OnInit {
 
   ngOnInit(): void {
     this.passageTrail = this.passageService.currentPassageTrail;
-    console.log(
-      'Is moderation currently enabled on this subject?::::',
-      this.itemService.currentSubjectModerationEnabled
-    );
+    // console.log(
+    //   'Is moderation currently enabled on this subject?::::',
+    //   this.itemService.currentSubjectModerationEnabled
+    // );
     //console.log(this.passageTrail);
     if (this.passageEdit) {
       this.passage.stimulus = this.passageEdit.stimulus;

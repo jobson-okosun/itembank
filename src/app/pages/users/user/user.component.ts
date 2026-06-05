@@ -477,7 +477,7 @@ export class UserComponent implements OnInit {
     //value.subjectIds.forEach((value) => subjectIds.push(value.subjectIds));
 
 
-    console.log(value);
+    // console.log(value);
     user.email = value.email.trim();
     user.firstName = value.firstname.trim();
     user.lastName = value.lastname.trim();

@@ -63,7 +63,7 @@ export class EssayComponent implements OnInit {
     this.currentUser = this.userService.getCurrentUser();
     this.scoringType = Object.values(ScoringTypeEnum);
     this.matchingRule = Object.values(MatchingRuleEnums);
-    console.log("rich");
+    // console.log("rich");
 
     this.tagRef.Tag = [];
     this.tagRef.ngOnInit();
@@ -214,7 +214,7 @@ export class EssayComponent implements OnInit {
 
   saveAsItem(itemForm: any, action: string) {
     if (action === "save_and_new") {
-      console.log("called me");
+      // console.log("called me");
       this.saveItem(itemForm);
       this.ngOnInit();
     } else if (action == "save_as_draft") {

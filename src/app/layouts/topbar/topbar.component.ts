@@ -239,7 +239,9 @@ export class TopbarComponent implements OnInit {
     this.authService.logoutUser().subscribe((value) => {
       // console.log(value);
     });
-    this.router.navigate(['/sign-in']);
+    
+    localStorage.clear()
+    location.assign('/sign-in')
   }
 
   routeToProfile() {

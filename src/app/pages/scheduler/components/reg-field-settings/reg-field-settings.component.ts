@@ -275,7 +275,7 @@ export class RegFieldSettingsComponent implements OnInit {
             ? err.error.message
             : err.error.message
         );
-        console.log(err);
+        // console.log(err);
       },
     });
   }

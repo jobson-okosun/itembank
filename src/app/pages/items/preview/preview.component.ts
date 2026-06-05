@@ -90,14 +90,14 @@ export class PreviewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    console.log('PREVIEW QUESTION/PASSAGE:: ', this.previewData);
+    // console.log('PREVIEW QUESTION/PASSAGE:: ', this.previewData);
     this.currentUser = this.userService.getCurrentUser();
     this.subjectId = this.itemService.subjectId;
     this.assessmentActive = this.itemService.assessmentActive;
     this.recycleComponentActive = this.recycleService.recycleActive;
 
     this.answer = this.previewData.scoringOption.answers[0];
-    console.log(this.previewData);
+    // console.log(this.previewData);
   }
 
   openUsageHistoryModal(itemUsageModal: any, itemId: string) {
@@ -175,9 +175,9 @@ export class PreviewComponent implements OnInit {
   }
 
   openDeleteItemModal(deleteConfirmationModal: any, itemId: any) {
-    console.log(this.previewData, 'preview data');
+    // console.log(this.previewData, 'preview data');
     this.selectedItemId = itemId;
-    console.log(itemId, ' item id');
+    // console.log(itemId, ' item id');
     this.modalRef = this.modalService.open(deleteConfirmationModal, {
       centered: true,
       size: 'md',
@@ -190,8 +190,8 @@ export class PreviewComponent implements OnInit {
   ) {
     this.selectedItemId = itemId;
 
-    console.log(this.previewData, 'preview pass data');
-    console.log(itemId, ' item id');
+    // console.log(this.previewData, 'preview pass data');
+    // console.log(itemId, ' item id');
     this.modalRef = this.modalService.open(
       deletePassageQuestionConfirmationModal,
       {

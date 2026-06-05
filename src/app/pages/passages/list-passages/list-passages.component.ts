@@ -131,10 +131,10 @@ export class ListPassagesComponent implements OnInit {
     this.assessmentActive = this.itemService.assessmentActive;
     // console.log(this.assessmentActive)
 
-    console.log(
-      'SELECT PASS CLASS: ',
-      this.passageService.selectedPassageIndex,
-    );
+    // console.log(
+    //   'SELECT PASS CLASS: ',
+    //   this.passageService.selectedPassageIndex,
+    // );
 
     this.passageStatus = Object.values(ItemStatusEnum);
     this.itemType = Object.values(ItemTypes);
@@ -159,7 +159,7 @@ export class ListPassagesComponent implements OnInit {
     if (!this.assessmentActive) {
       // this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       if (this.subjectId === 'passages') {
-        console.log('passages', 'passed');
+        // console.log('passages', 'passed');
         // this.loading_passages = false;
         if (this.currentUser.authorities.includes('ADMIN')) {
           this.fetchAllSubjects();
@@ -180,7 +180,7 @@ export class ListPassagesComponent implements OnInit {
               .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log('i got here');
+                  // console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -201,7 +201,7 @@ export class ListPassagesComponent implements OnInit {
               .fetchPassageTopicTreeModerator(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log('i got here');
+                  // console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -222,7 +222,7 @@ export class ListPassagesComponent implements OnInit {
               .fetchPassageTopicTreeAuthor(this.passageService.subjectId)
               .subscribe(
                 (value) => {
-                  console.log('i got here');
+                  // console.log('i got here');
                   value.forEach((topic) => {
                     this.totalPassages += topic.totalPassages;
                   });
@@ -247,7 +247,7 @@ export class ListPassagesComponent implements OnInit {
     }
 
     if (this.assessmentActive) {
-      console.log('i got here assesment is active');
+      // console.log('i got here assesment is active');
       this.loadingAllSubjects = false;
       this.subjectName = this._subjectName;
 
@@ -293,13 +293,13 @@ export class ListPassagesComponent implements OnInit {
     );
 
     if (subIndex >= 0) {
-      console.log('SELECTED PASS INDEX: ', subIndex);
+      // console.log('SELECTED PASS INDEX: ', subIndex);
       this.passageService.selectedPassageIndex = subIndex;
     }
 
     this.selectSubject(subject.subjectId);
 
-    console.log('SELECTED PASS: ', subject);
+    // console.log('SELECTED PASS: ', subject);
   }
 
   selectSubject(subjectId: string) {
@@ -332,7 +332,7 @@ export class ListPassagesComponent implements OnInit {
               this.totalPassages += topic.totalPassages;
             });
 
-            console.log('SELECTED VALUE: ', value);
+            // console.log('SELECTED VALUE: ', value);
 
             this.passageTopics = value;
             this.loading_topics_tree = false;
@@ -855,7 +855,7 @@ export class ListPassagesComponent implements OnInit {
     if (this.currentUser.authorities.includes('ADMIN')) {
       this.itemService.fetchPassageTopicTreeAdmin(subjectId).subscribe(
         (value) => {
-          console.log(value);
+          // console.log(value);
           value.forEach((topic) => {
             this.totalPassages += topic.totalPassages;
           });
@@ -875,7 +875,7 @@ export class ListPassagesComponent implements OnInit {
     } else if (this.currentUser.authorities.includes('MODERATOR')) {
       this.itemService.fetchPassageTopicTreeModerator(subjectId).subscribe(
         (value) => {
-          console.log(value);
+          // console.log(value);
           value.forEach((topic) => {
             this.totalPassages += topic.totalPassages;
           });
@@ -895,7 +895,7 @@ export class ListPassagesComponent implements OnInit {
     } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.itemService.fetchPassageTopicTreeAuthor(subjectId).subscribe(
         (value) => {
-          console.log(value);
+          // console.log(value);
           value.forEach((topic) => {
             this.totalPassages += topic.totalPassages;
           });
