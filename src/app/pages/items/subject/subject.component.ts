@@ -759,7 +759,6 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   openRejectionReasonModal(rejectionReasonModal: any, item: any) {
-
     this.rejectionReasonForSelectedQuestion = item.rejectionReason ? item.rejectionReason : 'No rejection reason provided.';
     this.modalService.open(rejectionReasonModal, {
       centered: true,
