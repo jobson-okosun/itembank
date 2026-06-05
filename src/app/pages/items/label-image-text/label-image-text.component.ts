@@ -39,6 +39,7 @@ import { SinglePassageModel } from '../passage-item/model/single-passage-model.m
 import { ActivatedRoute } from '@angular/router';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import katex from 'katex';
+import { VirtualTimeScheduler } from 'rxjs';
 
 declare var tinymce: any;
 export class Image {
@@ -80,6 +81,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
   previewData: NewLabelImageText = new NewLabelImageText();
   currentUser: Account;
+  processingApprove: boolean = false;
   preview: boolean = false;
   image: Images = new Images();
   tags: ItemTagsDtos[] = [];
@@ -1011,6 +1013,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editClozeTextImageItem(item).subscribe(
       (value) => {
         if (value) {
@@ -1021,6 +1025,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
@@ -1030,6 +1036,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
           icon: 'error',
           html: `${error.error.message}`,
         });
+        this.processingApprove = false;
       },
     );
   }

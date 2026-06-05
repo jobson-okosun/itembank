@@ -101,6 +101,7 @@
           *ngIf="
             !currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
+            !previewQuestionOnDialog &&
             !recycleComponentActive &&
             !previewData.passageId &&
             previewData.id &&
@@ -119,6 +120,7 @@
           *ngIf="
             !currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
+            !previewQuestionOnDialog &&
             !recycleComponentActive &&
             previewData.id &&
             previewData.passageId &&
@@ -138,7 +140,9 @@
         </button>
         <button
           *ngIf="
-            !currentUser.authorities.includes('MODERATOR') && !assessmentActive
+            !currentUser.authorities.includes('MODERATOR') && 
+            !assessmentActive &&
+            !previewQuestionOnDialog
           "
           type="button"
           class="btn btn-primary btn-sm"
@@ -150,6 +154,7 @@
           *ngIf="
             currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
+            !previewQuestionOnDialog &&
             previewData.itemStatus !== 'REJECTED' &&
             previewData.itemStatus !== 'PUBLISHED'
           "

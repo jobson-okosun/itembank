@@ -25,6 +25,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
   @Input() itemTrailInfo!: any;
   @Input() formType!: string;
   @Input() selectedItemType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() hidePreview = new EventEmitter<string>();
   @Output() returnPreviewData = new EventEmitter();
   @Output() savedItem = new EventEmitter();

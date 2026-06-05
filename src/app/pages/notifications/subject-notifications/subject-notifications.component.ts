@@ -7,6 +7,7 @@ import { NotifierService } from 'angular-notifier';
 import { ItemHttpService } from '../../items/item-http.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
 
 @Component({
   selector: 'app-subject-notifications',
@@ -32,13 +33,16 @@ export class SubjectNotificationsComponent implements OnInit {
     private notifier: NotifierService,
     private itemService: ItemHttpService,
     private modalService: NgbModal,
-    private router: Router
+    private router: Router,
+    private _userService: UserService
   ) {}
 
   ngOnInit(): void {
     this.subject = this.itemService.subjectName;
     this.subjectId = this.ar.snapshot.params['id'];
     this.status = this.ar.snapshot.params['stats'].toUpperCase();
+    this.currentUser = this._userService.getCurrentUser();
+    console.log('CURRENT USER: ', this.currentUser);
 
     this.breadCrumbItems = [
       { label: 'subjects', active: false },
@@ -73,6 +77,10 @@ export class SubjectNotificationsComponent implements OnInit {
         },
       }
     );
+  }
+
+  goBack(): void {
+    history.back();
   }
 
   openPreviewItemModal(notification: any, itemModal: any) {

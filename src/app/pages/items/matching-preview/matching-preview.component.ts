@@ -33,6 +33,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   @Input() previewData!: any;
   @Input() itemTrailInfo!: any;
   @Input() selectedItemType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() return = new EventEmitter();
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();

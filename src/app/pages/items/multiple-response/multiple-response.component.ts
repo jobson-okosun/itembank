@@ -54,6 +54,8 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
 
   displayTagModal = false;
 
+  processingApprove: boolean = false;
+
   preview: boolean = false;
 
   previewData: MultipleResponseModel;
@@ -663,6 +665,9 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+
+    this.processingApprove = true;
+
     this.itemService.edit_MRQ(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -672,8 +677,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
             icon: 'success',
           });
           this.publishingItem = false;
+          this.processingApprove = false;
           Swal.close();
           this.back();
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
@@ -682,6 +689,7 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
           text: `${error.error.message}`,
           icon: 'error',
         });
+        this.processingApprove = false;
       },
     );
   }

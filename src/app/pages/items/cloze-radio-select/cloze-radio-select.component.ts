@@ -47,6 +47,8 @@ export class ClozeRadioSelectComponent implements OnInit {
 
   content: HTMLSpanElement[] = [];
 
+  processingApprove: boolean = false;
+
   responses: Responses[] = [];
 
   breadCrumbItems!: Array<{}>;
@@ -954,6 +956,8 @@ export class ClozeRadioSelectComponent implements OnInit {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.edit_cloze_radio(this.editData.id, item).subscribe(
       value => {
         if (value) {
@@ -964,6 +968,8 @@ export class ClozeRadioSelectComponent implements OnInit {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
@@ -973,6 +979,7 @@ export class ClozeRadioSelectComponent implements OnInit {
           icon: "error",
           html: `${error.error.message}`,
         });
+        this.processingApprove = false;
       }
     );
   }

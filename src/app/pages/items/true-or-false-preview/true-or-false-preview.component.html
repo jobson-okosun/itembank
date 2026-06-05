@@ -68,6 +68,7 @@
               *ngIf="
                 !currentUser.authorities.includes('MODERATOR') &&
                 !assessmentActive &&
+                !previewQuestionOnDialog &&
                 !recycleComponentActive &&
                 !previewData.passageId &&
                 previewData.id &&
@@ -89,6 +90,7 @@
               *ngIf="
                 !currentUser.authorities.includes('MODERATOR') &&
                 !assessmentActive &&
+                !previewQuestionOnDialog &&
                 !recycleComponentActive &&
                 previewData.id &&
                 previewData.passageId &&
@@ -110,6 +112,7 @@
               *ngIf="
                 !currentUser.authorities.includes('MODERATOR') &&
                 !assessmentActive &&
+                !previewQuestionOnDialog &&
                 !recycleComponentActive &&
                 component !== 'question_status'
               "
@@ -123,6 +126,7 @@
               *ngIf="
                 currentUser.authorities.includes('MODERATOR') &&
                 !assessmentActive &&
+                !previewQuestionOnDialog &&
                 previewData.itemStatus !== 'REJECTED' &&
                 previewData.itemStatus !== 'PUBLISHED'
               "

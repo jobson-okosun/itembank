@@ -26,6 +26,7 @@ export class YesOrNoPreviewComponent implements OnInit {
   @Input() itemTrailInfo: any;
   @Input() formType!: string;
   @Input() selectedItemType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 

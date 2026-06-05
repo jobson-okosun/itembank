@@ -27,6 +27,7 @@ export class PreviewComponent implements OnInit {
   @Input() itemTrailInfo: any;
   @Input() showDeleteBtnInProfileActivitiesQuestionPreview: boolean = true;
   @Input() showEditBtnInProfileActivitiesQuestionPreview: boolean = true;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() hidePreview = new EventEmitter<boolean>(false);
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();

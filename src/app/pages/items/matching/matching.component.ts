@@ -53,6 +53,8 @@ export class MatchingComponent implements OnInit, OnDestroy {
 
   defaultCount: number = 4;
 
+  processingApprove: boolean = false;
+
   matchingRules: string[];
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
@@ -554,6 +556,8 @@ export class MatchingComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editAssociation(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -564,9 +568,13 @@ export class MatchingComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
+
       },
       (error: HttpErrorResponse) => {
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       },
     );
   }

@@ -54,6 +54,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
   init_Options_Count: number = 4;
 
+  processingApprove: boolean = false;
+
   defaultCount: number = 4;
 
   item: ChoiceMatrix = new ChoiceMatrix();
@@ -802,6 +804,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editChoiceMatrixItem(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -812,9 +816,12 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       }
     );
   }

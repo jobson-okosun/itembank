@@ -54,6 +54,8 @@ export class DrawingAndWritingComponent implements OnInit {
 
   preview: boolean = false;
 
+  processingApprove: boolean = false;
+
   previewData: DrawAndWritingModel;
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
@@ -583,6 +585,8 @@ export class DrawingAndWritingComponent implements OnInit {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editDrawWritingItem(item).subscribe(
       (value) => {
         this.publishingItem = false;
@@ -594,12 +598,15 @@ export class DrawingAndWritingComponent implements OnInit {
             icon: 'success',
           });
           this.back();
+          this.processingApprove = false;
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       }
     );
   }

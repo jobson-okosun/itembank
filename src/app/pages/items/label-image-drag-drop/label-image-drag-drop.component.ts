@@ -105,6 +105,8 @@ export class LabelImageDragDropComponent
   private imageWidth: number;
   private imageHeight: number;
 
+  processingApprove: boolean = false;
+
   previewData: LabelImageDragDrop = new LabelImageDragDrop();
   currentUser: Account;
   preview: boolean = false;
@@ -999,6 +1001,8 @@ export class LabelImageDragDropComponent
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editClozeDragDropImageItem(item).subscribe(
       (value) => {
         if (value) {
@@ -1009,6 +1013,8 @@ export class LabelImageDragDropComponent
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
@@ -1018,6 +1024,7 @@ export class LabelImageDragDropComponent
           icon: 'error',
           html: `${error.error.message}`,
         });
+        this.processingApprove = false;
       },
     );
   }

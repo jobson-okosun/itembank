@@ -198,9 +198,22 @@
         >
           No, Cancel
         </button>
-        <button type="button" (click)="approveQuestion(itemForm)">
+        <!-- <button type="button" (click)="approveQuestion(itemForm)">
           Yes, approve It
+        </button> -->
+        <button type="button" *ngIf="!processingApprove" class="btn btn-soft-primary" (click)="approveQuestion(itemForm)">
+          Yes, Approve
         </button>
+        <ng-template [ngIf]="processingApprove">
+          <button class="btn btn-outline-primary btn-load" [disabled]="processingApprove">
+            <span class="d-flex align-items-center">
+              <span class="spinner-border flex-shrink-0" role="status">
+                <span class="visually-hidden">Approving...</span>
+              </span>
+              <span class="flex-grow-1 ms-2">Approving... </span>
+            </span>
+          </button>
+        </ng-template>
       </div>
     </div>
   </ng-template>
@@ -223,9 +236,10 @@
         </button>
         <button
           type="button"
-          (click)="openRejectionReasonModal(rejectionModal)"
+          class="btn btn-danger"
+          (click)="openRejectionReasonModal(rejectionModal);"
         >
-          Yes, reject It
+          Yes, Reject
         </button>
       </div>
     </div>
@@ -470,9 +484,9 @@
           >
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
-                <span class="visually-hidden">Saving...</span>
+                <span class="visually-hidden">Rejecting...</span>
               </span>
-              <span class="flex-grow-1 ms-2"> Saving... </span>
+              <span class="flex-grow-1 ms-2"> Rejecting... </span>
             </span>
           </button>
         </ng-template>

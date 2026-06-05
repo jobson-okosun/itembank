@@ -26,6 +26,7 @@ export class RichEssayPreviewComponent implements OnInit {
   @Input() showAnswerToggle: boolean = true;
   @Input() selectedItemType!: string;
   @Input() formType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 

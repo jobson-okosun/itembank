@@ -68,6 +68,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
 
   input_boxes: HTMLInputElement[] = [];
 
+  processingApprove: boolean = false;
+
   currentUser!: Account;
 
   breadCrumbItems!: Array<{}>;
@@ -921,6 +923,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService
       .edit_cloze_text(this.editData.id, item)
       .pipe(finalize(() => (this.updatingItem = true)))
@@ -934,9 +938,12 @@ export class ClozeComponent implements OnInit, OnDestroy {
             });
           }
           this.back();
+          this.processingApprove = false;
+          this.modalService.dismissAll();
         },
         (error: HttpErrorResponse) => {
           this.notifier.notify('error', `${error.error.message}`);
+          this.processingApprove = false;
         },
       );
   }

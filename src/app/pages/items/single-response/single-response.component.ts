@@ -94,6 +94,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   passageId: string = '';
   passageForPreview: SinglePassageModel;
   processingRejection: boolean = false;
+  processingApprove: boolean = false;
   itemUtil_: ItemUtilitiesService = null;
 
   constructor(
@@ -788,6 +789,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.createItem.editItem(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -798,9 +801,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.modalService.dismissAll();
+        this.processingApprove = false;
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify('error', `${error.error.message}`);
+        this.notifier.notify('error', `${error.message}`);
+        this.processingApprove = false;
       },
     );
   }

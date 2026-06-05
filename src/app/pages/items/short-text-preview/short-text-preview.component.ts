@@ -25,6 +25,7 @@ export class ShortTextPreviewComponent implements OnInit {
   @Input() selectedItemType!: string;
   @Input() formType!: string;
   @Input() isNumericAnswerType: boolean;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 

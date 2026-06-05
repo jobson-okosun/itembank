@@ -22,6 +22,7 @@ export class MultipleResponsePreviewComponent implements OnInit {
   @Input() component!: string;
   @Input() previewData: any;
   @Input() itemTrailInfo: any;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
   @Input() formType!: string;
