@@ -710,6 +710,7 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
   doPreview(itemForm: any) {
     this.itemUtil.previewItem = true;
+    
     if (this.editData) {
       this.previewData = this.editData;
     } else {

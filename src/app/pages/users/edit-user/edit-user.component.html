@@ -39,8 +39,8 @@
               <div class="d-flex justify-content-center mb-4">
                 <div class="image-placeholder bg-soft-primary rounded-circle">
                   <h3 class="">
-                    {{ userDetail.firstName[0].toUpperCase()
-                    }}{{ userDetail.lastName[0].toUpperCase() }}
+                    {{ userDetail?.firstName?.[0]?.toUpperCase()
+                    }}{{ userDetail?.lastName?.[0]?.toUpperCase() }}
                   </h3>
                   <!-- <p class="text-center text-secondary">
                     {{ userDetail.username }}
@@ -48,18 +48,18 @@
                 </div>
               </div>
               <h5 class="fs-16 mb-1 text-capitalize">
-                {{ userDetail.firstName }} {{ userDetail.lastName }}
+                {{ userDetail?.firstName }} {{ userDetail?.lastName }}
               </h5>
-              <p class="text-muted mb-1" *ngIf="userDetail.username">
-                ({{ userDetail.username }})
+              <p class="text-muted mb-1" *ngIf="userDetail?.username">
+                ({{ userDetail?.username }})
               </p>
               <ng-container
-                *ngFor="let user of userDetail.userRolesDTOList; let i = index"
+                *ngFor="let user of userDetail?.userRolesDTOList; let i = index"
               >
                 <span class="text-primary mb-0">
-                  {{ user.role
+                  {{ user?.role
                   }}{{
-                    userDetail.userRolesDTOList.length - i === 1 ? "" : ","
+                    userDetail?.userRolesDTOList?.length - i === 1 ? "" : ","
                   }}
                 </span>
               </ng-container>
@@ -68,10 +68,10 @@
               <span
                 class="badge badge-border p-2"
                 [ngClass]="{
-                  'badge-soft-success': userDetail.activated,
-                  'badge-soft-danger': !userDetail.activated
+                  'badge-soft-success': userDetail?.activated,
+                  'badge-soft-danger': !userDetail?.activated
                 }"
-                >{{ userDetail.activated ? "Active" : "Inactive" }}</span
+                >{{ userDetail?.activated ? "Active" : "Inactive" }}</span
               >
             </div>
           </div>
@@ -102,7 +102,7 @@
                   novalidate
                 >
                   <div class="row">
-                    <div *ngIf="userDetail.username" class="col-12">
+                    <div *ngIf="userDetail?.username" class="col-12">
                       <div class="mb-3">
                         <label for="email" class="form-label">Username</label>
                         <input
@@ -111,10 +111,10 @@
                           name="username"
                           id="username"
                           placeholder="Enter username"
-                          value="{{ userDetail.username }}"
+                          value="{{ userDetail?.username }}"
                           [(ngModel)]="userDetail.username"
                           [disabled]="
-                            !currentUser.authorities.includes('ADMIN')
+                            !currentUser?.authorities?.includes('ADMIN')
                           "
                         />
                       </div>
@@ -130,7 +130,7 @@
                           id="firstnameInput"
                           name="firstName"
                           placeholder="Enter your firstname"
-                          value="{{ userDetail.firstName }}"
+                          value="{{ userDetail?.firstName }}"
                           [(ngModel)]="userDetail.firstName"
                         />
                       </div>
@@ -147,7 +147,7 @@
                           id="lastnameInput"
                           name="lastName"
                           placeholder="Enter your lastname"
-                          value="{{ userDetail.lastName }}"
+                          value="{{ userDetail?.lastName }}"
                           [(ngModel)]="userDetail.lastName"
                         />
                       </div>

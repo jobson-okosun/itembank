@@ -410,9 +410,9 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     item.scoringOption.answers = [];
     item.options = this.options;
 
-    item.itemTagsDTOS = this.tags.map((tag) => {
+    item.itemTagsDTOS = this.tags?.map((tag) => {
       return { tagId: tag.tagId };
-    });
+    }) || [];
 
     this.selectedAnswers.forEach((value) => {
       item.scoringOption.answers.push(value + '');
@@ -670,22 +670,33 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+    // this.itemUtil.previewItem = true;
+
+    // let item = this.buildItem(itemForm);
+
+    // if (this.editData) {
+    //   this.previewData = this.editData;
+    // } else {
+    //   this.previewData = item;
+    // }
+
+    // this.preview = true;
+
     this.itemUtil.previewItem = true;
-
-    let item = this.buildItem(itemForm);
-
+    
     if (this.editData) {
       this.previewData = this.editData;
     } else {
+      let item = this.buildItem(itemForm);
       this.previewData = item;
     }
 
-    // this.preview = true;
+    this.preview = true;
   }
 
   closePreview(data) {
     this.preview = false;
-    this.tags = data.itemTagDTOs;
+    this.tags = data?.itemTagDTOs || data?.itemTagsDTOS || this.tags || [];
     //this.previewData = data;
   }
 
