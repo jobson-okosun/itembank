@@ -182,6 +182,7 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     TableModule,
     ButtonModule,
     ExamPreviewModule,
+    FormsModule
     // DrawingAndWritingPreviewComponent
   ],
   providers: [
