@@ -35,6 +35,8 @@ export class ListAllItemsPage {
       };
       showFullItem: boolean;
       showingPreviewLoader: boolean;
+      moderationStatus: string;
+      rejectionReason: string;
     }
   ];
   number: number;

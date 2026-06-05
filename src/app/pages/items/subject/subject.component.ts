@@ -40,6 +40,7 @@ import { UsageHistory } from '../models/usage-history';
 import { ListAllSubjects } from '../models/list-all-subjects.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, Subscription } from 'rxjs';
+
 export interface RenameTopicModel {
   name: string;
 }
@@ -72,6 +73,8 @@ export class SubjectComponent implements OnInit, OnChanges {
   resetTagsInputFieldOnOpenFilterDialog: boolean = false;
 
   selectedTopicForFiltering: string | null = null;
+
+  rejectionReasonForSelectedQuestion: string = "";
 
   _errorMsg: string;
 
@@ -477,6 +480,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     private assessmentService: AssessmentsService,
     private userService: UserService,
     private domSanitizer: DomSanitizer,
+    private modalService: NgbModal,
   ) {
     this.currentUser = this.userService.getCurrentUser();
 
@@ -752,6 +756,15 @@ export class SubjectComponent implements OnInit, OnChanges {
       { label: 'Subjects' },
       { label: this.subjectName ?? itemTrail?.subjectName, active: true },
     ];
+  }
+
+  openRejectionReasonModal(rejectionReasonModal: any, item: any) {
+
+    this.rejectionReasonForSelectedQuestion = item.rejectionReason ? item.rejectionReason : 'No rejection reason provided.';
+    this.modalService.open(rejectionReasonModal, {
+      centered: true,
+      size: 'lg',
+    });
   }
 
   fetchAssessmentSubjectTopicsTree() {
