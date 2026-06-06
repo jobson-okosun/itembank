@@ -51,7 +51,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   editSection: AssessmentSections = new AssessmentSections();
   editBlock: BlockDetails = new BlockDetails();
   submitted: boolean = false;
-    assessmentSettings: AssessmentSettings = new AssessmentSettings();
+  assessmentSettings: AssessmentSettings = new AssessmentSettings();
   startExamInstruction: string = `
   <ol>
   <li>
@@ -64,7 +64,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   </li>
   <li>
     The duration of the examination is
-    <strong> ${ this.assessmentSettings.instructionReadTimeSec } minutes</strong> and you can attempt the
+    <strong> ${this.assessmentSettings.instructionReadTimeSec} minutes</strong> and you can attempt the
     questions in any order you wish.
   </li>
   <li>
@@ -182,8 +182,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.currentAssessment = this.assessmentService.activeAssessment ?? this._itemService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
       this.assessmentService.activeAssessmentDeliveryMethod ?? this._itemService.getItem('activeAssessmentDeliveryMethod');
-      // console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
-      // console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
+    // console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
+    // console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
   }
 
   setTotalQuestionsPerStudent(blockTotalQuestions: any) {
@@ -218,7 +218,12 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .subscribe(
         (value) => {
           this.assessmentSettings = value;
-          // console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
+          console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
+
+          this.warnEndOfReadingTimeChecked = this.assessmentSettings.warnEndOfReadingTimeSec > 0 ? true : false;
+
+          this.instructionReadTimeChecked = this.assessmentSettings.instructionReadTimeSec > 0 ? true : false;
+
           this.assessmentSettings.startExamInstruction = this.assessmentSettings
             .startExamInstruction
             ? this.assessmentSettings.startExamInstruction
@@ -232,6 +237,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           // console.log(error);
         },
       );
+
+
 
     // Fetch subjects for dropdown
     this.itemService
@@ -350,7 +357,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           if (
             section.totalSelectedQuestions !== section.totalQuestions ||
             section.totalCandidateSelectedQuestions !==
-              section.totalQuestionsPerCandidate
+            section.totalQuestionsPerCandidate
           ) {
             this.incompleteSections++;
             // console.log(this.incompleteSections);
@@ -577,6 +584,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   onWarnEndOfReadingTimeChange(event: any) {
     this.warnEndOfReadingTimeChecked = event.target.checked;
+    console.log('WARNING CHECKED: ', this.warnEndOfReadingTimeChecked);
     if (!event.target.checked) {
       this.previousWarnEndOfReadingTimeSec = this.assessmentSettings.warnEndOfReadingTimeSec;
       this.assessmentSettings.warnEndOfReadingTimeSec = 0;
@@ -584,6 +592,22 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     else {
       this.assessmentSettings.warnEndOfReadingTimeSec = this.previousWarnEndOfReadingTimeSec;
     }
+  }
+
+  onInstructionReadTimeValueChange(event: Event): void {
+    console.log('INSTRUCTION TIME CHANGE: ', event);
+
+    const instructureReadTime: number = Number((event.target as HTMLInputElement).value);
+
+    this.instructionReadTimeChecked = instructureReadTime > 0 ? true : false;
+  }
+
+  onWarningEndOfReadTimeValueChange(event: Event): void {
+    console.log('WARNING TIME CHANGE: ', event);
+
+    const warningTime: number = Number((event.target as HTMLInputElement).value);
+
+    this.warnEndOfReadingTimeChecked = warningTime > 0 ? true : false;
   }
 
   onInstructionReadingTimeSecChange(event: any) {
@@ -999,7 +1023,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     // console.log(this.assessmentSettings, "assessment seetings");
 
     this.submitted = true;
-    // console.log('Saving assessment settings...', this.assessmentSettings);
+    console.log('SAVING ASSESSMENT SETTING: ', this.assessmentSettings);
     this.assessmentService
       .saveAssessmentSettings(this.assessmentSettings, this.assessmentId)
       .subscribe(
@@ -1033,7 +1057,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       if (
         section.totalSelectedQuestions !== section.totalQuestions ||
         section.totalCandidateSelectedQuestions !==
-          section.totalQuestionsPerCandidate
+        section.totalQuestionsPerCandidate
       ) {
         this.incompleteSections++;
         // console.log(this.incompleteSections);
@@ -1072,7 +1096,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  saveAssessmentInstruction(assessmentInstructionForm: any) {}
+  saveAssessmentInstruction(assessmentInstructionForm: any) { }
 
   /* createNewSection(){
     this.assessmentService.createNewSection(this.assessmentId, this.newSection).subscribe((value) => {
@@ -1162,7 +1186,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     // console.log(this.editSection);
   }
 
-  saveAutomaticallySelectedItemsToBlock() {}
+  saveAutomaticallySelectedItemsToBlock() { }
 
   recievePassageIds(passageIds: any) {
     // console.log(passageIds);
