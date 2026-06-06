@@ -11,4 +11,5 @@ export class SinglePassageModel {
     tagName: string;
     tagId: string;
   }>;
+  moderationEnabled: boolean;
 }

@@ -129,8 +129,6 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
-
-          console.log(this.passageForPreview);
         },
       });
     }

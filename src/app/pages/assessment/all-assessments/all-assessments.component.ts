@@ -12,6 +12,7 @@ import { AssessmentList, SingleAssessment } from '../model/assessment-list';
 import { AssessmentDeliveryEnum } from '../model/assessment-delivery-enum';
 import { NotifierService } from 'angular-notifier';
 import { Publish } from '../model/publish';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-all-assessments',
@@ -63,6 +64,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
     private notifier: NotifierService,
+    private _itemService: ItemServiceService
   ) {}
 
   ngOnDestroy(): void {
@@ -183,12 +185,12 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   setCurrentAssessment(assessment: SingleAssessment) {
     this.assessmentService.activeAssessment = assessment.name;
-    this.assessmentService.setItem('activeAssessment', assessment.name);
+    this._itemService.setItem('activeAssessment', assessment.name);
     this.assessmentService.activeAssessmentId = assessment.id;
     this.assessmentService.schedulerAssessmentId = assessment.schId;
     this.assessmentService.activeAssessmentDeliveryMethod =
       assessment.deliveryMethod;
-      this.assessmentService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
+      this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
   }
 
   confirm() {

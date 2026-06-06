@@ -102,20 +102,12 @@
     <app-create-item *ngIf="formType === 'Numeric' || formType === 'Short Answer'" [formType]="formType"
       (savedItem)="saved($event)" (stimulus)="handleStimulusChangeOnQuestionTypes($event)"></app-create-item>
 
-    <app-drawing-and-writing
-      [formType]="formType"
-      [selectedItemType]="selectedItemType"
-      *ngIf="formType === 'DRAWING_AND_WRITING'"
-      (savedItem)="saved($event)"
-    ></app-drawing-and-writing>
+    <app-drawing-and-writing [formType]="formType" [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'DRAWING_AND_WRITING'" (savedItem)="saved($event)"></app-drawing-and-writing>
 
-    <app-cloze-radio-select
-      [formType]="formType"
-      [selectedItemType]="selectedItemType"
-      *ngIf="formType === 'Cloze with Radio Select'"
-      (savedItem)="saved($event)"
-    ></app-cloze-radio-select>
-    
+    <app-cloze-radio-select [formType]="formType" [selectedItemType]="selectedItemType"
+      *ngIf="formType === 'Cloze with Radio Select'" (savedItem)="saved($event)"></app-cloze-radio-select>
+
   </div>
 </div>
 

@@ -158,6 +158,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     console.log(this.itemUtil.passageId); */
     //console.log('item for editing', this.editData);
     this.moderationStatus = this.itemService.currentSubjectModerationEnabled;
+    
     if (this.editData) {
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =

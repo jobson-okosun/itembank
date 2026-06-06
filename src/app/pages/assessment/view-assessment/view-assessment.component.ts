@@ -32,6 +32,7 @@ import { TemplatesService } from "../../templates/service/templates.service";
 import { TemplatesPage } from "../../templates/model/templates-page.model";
 import { ImportTemplate } from "../model/import-template";
 import { Publish } from "../model/publish";
+import { ItemServiceService } from "src/app/shared/item-services/item-service.service";
 
 interface Card {
   title: string;
@@ -175,11 +176,12 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     public itemService: ItemHttpService,
     private notifier: NotifierService,
     private templateService: TemplatesService,
+    private _itemService: ItemServiceService
   ) {
     this.assessmentId = this.ar.snapshot.params['assessmentId'];
-    this.currentAssessment = this.assessmentService.activeAssessment ?? this.assessmentService.getItem('activeAssessment');
+    this.currentAssessment = this.assessmentService.activeAssessment ?? this._itemService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
-      this.assessmentService.activeAssessmentDeliveryMethod ?? this.assessmentService.getItem('activeAssessmentDeliveryMethod');
+      this.assessmentService.activeAssessmentDeliveryMethod ?? this._itemService.getItem('activeAssessmentDeliveryMethod');
       // console.log('ACTIVE ASSESSMENT DELIVERY METHOD: ', this.currentAssessmentDeliveryMethod);
       // console.log('ACTIVE ASSESSMENT: ', this.currentAssessment);
   }
@@ -1399,8 +1401,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.itemService.assessmentActive = false;
-    this.assessmentService.clearItem('activeAssessmentDeliveryMethod');
-    this.assessmentService.clearItem('activeAssessment');
+    this._itemService.clearItem('activeAssessmentDeliveryMethod');
+    this._itemService.clearItem('activeAssessment');
   }
 
   openPublishExamConfirmationModal(publishAssessmentConfirmationModal: any) {
