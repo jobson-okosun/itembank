@@ -62,6 +62,9 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
 
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
+
   preview: boolean = false;
 
   tags: ItemTagsDtos[] = [];
@@ -434,7 +437,27 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  saveAsItem(itemForm?: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveAsItem(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAsItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     const validated = this.itemService.validateItem(item);
 
@@ -518,7 +541,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'save');
   }
 
-  saveAndNew(itemForm: any) {
+  saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
 
@@ -596,7 +623,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'save_and_new');
   }
 
-  saveToDraft(itemForm: any) {
+  saveToDraft(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
 
     // Validation 1
@@ -673,7 +704,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm: any) {
+  saveItemToPassage(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     const validated = this.itemService.validateItem(item);
 
@@ -754,7 +789,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item: ChoiceMatrix = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

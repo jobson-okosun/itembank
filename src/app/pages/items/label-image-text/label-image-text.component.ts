@@ -77,6 +77,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   @ViewChild('imgUpload') imgUpload: ElementRef;
   @ViewChild('imageRef') imageElement: ElementRef;
   @ViewChild('tagRef') tagRef: ItemTagComponent;
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
 
   previewData: NewLabelImageText = new NewLabelImageText();
   currentUser: Account;
@@ -430,8 +432,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   onUploadError(event: any) {
     const [file, message] = event;
 
-    if (file.size > 100 * 1024) {
-      this.notifierService.notify('error', 'File size must not exceed 100KB')
+    if (file.size > 200 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 200KB')
     } else {
       this.notifierService.notify('error', 'An error occurred during file upload. Please try again.')
     }
@@ -544,8 +546,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   processOfflineFile(file: File) {
-    if (file.size > 100 * 1024) {
-      this.notifierService.notify('error', 'File size must not exceed 100KB');
+    if (file.size > 200 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 200KB');
       return;
     }
 
@@ -721,7 +723,27 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     return true;
   }
 
-  save(form: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  save(form: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.save(form, true));
+      return;
+    }
     // Validate that at least one correct answer is provided
     if (!this.validateAnswers()) {
       return;
@@ -759,7 +781,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.tags = tag;
   }
 
-  saveToDraft(itemForm: any) {
+  saveToDraft(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     // Validate that at least one correct answer is provided
     if (!this.validateAnswers()) {
       return;
@@ -783,7 +809,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm: any) {
+  saveItemToPassage(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -812,7 +842,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'passage-item');
   }
 
-  saveAndNew(itemForm: any) {
+  saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
 
@@ -834,7 +868,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'save_and_new');
   }
 
-  saveAndNewItem(itemForm: any) {
+  saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
     //console.log(result);
@@ -968,7 +1006,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     }
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { NgbDropdown, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 interface ItemTypeModel {
@@ -20,9 +19,11 @@ export class ItemTypeComponent implements OnInit {
   @Output() sendFormType = new EventEmitter<string>();
 
   @ViewChild('comfirmNavigationModal') comfirmNavigationModal: TemplateRef<any>;
+  @ViewChild('comfirmItemTypeModal') comfirmItemTypeModal: TemplateRef<any>;
   @Input() stimulus: string = '';
 
   selectedItemType!: string;
+  targetItemType!: string;
   lastCommittedItemType!: string; // Track the last successfully committed type
   paramsObject: any;
   formType: string;
@@ -182,29 +183,31 @@ export class ItemTypeComponent implements OnInit {
   onItemTypeChange(newType: string) {
     // Called when ngModelChange event fires (before model update)
     if(this.hasUnsavedContent()) {
-      Swal.fire({
-        title: 'You have unsaved data',
-        text: 'Discard changes and switch item type?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Leave',
-        cancelButtonText: 'Stay',
-        reverseButtons: true
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.selectedItemType = newType;
-          this.setItemType(newType);
-        } else {
-          // User cancelled - revert to last committed type
-          this.selectedItemType = this.lastCommittedItemType;
-        }
-      });
+      this.targetItemType = newType;
+      this.modal.open(this.comfirmItemTypeModal, { centered: true });
       return;
     }
 
     // No unsaved content, proceed with change
     this.selectedItemType = newType;
+    this.lastCommittedItemType = newType;
     this.setItemType(newType);
+  }
+
+  proceedItemTypeNavigation(): void {
+    this.modal.dismissAll();
+    this.stimulus = '';
+    this.selectedItemType = this.targetItemType;
+    this.lastCommittedItemType = this.targetItemType;
+    this.setItemType(this.targetItemType);
+  }
+
+  cancelItemTypeNavigation(): void {
+    this.modal.dismissAll();
+    // Use timeout to ensure the ngModel update has finished before reverting
+    setTimeout(() => {
+      this.selectedItemType = this.lastCommittedItemType;
+    });
   }
 
   setItemType(itemType: string) {

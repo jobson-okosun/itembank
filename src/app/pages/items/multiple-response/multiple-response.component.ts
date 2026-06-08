@@ -62,6 +62,9 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
 
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
+
   selectedAnswers: Set<number> = new Set();
 
   tags: ItemTagsDtos[] = [];
@@ -408,7 +411,27 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  saveItem(form: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(form: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(form, true));
+      return;
+    }
     let item = this.buildItem(form);
     let result = this.itemService.validateItem(item);
 
@@ -502,7 +525,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     );
   }
 
-  saveToDraft(form: any) {
+  saveToDraft(form: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(form, true));
+      return;
+    }
     let item = this.buildItem(form);
     let validated = this.itemService.validateItem(item);
 
@@ -522,7 +549,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm: any) {
+  saveItemToPassage(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     this.publishingItem = true;
     this.publishLoader();
@@ -545,7 +576,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "passage-item");
   }
 
-  saveAndNewItem(itemForm: any) {
+  saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
     //console.log(result);
@@ -608,7 +643,11 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     // console.log(data);
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

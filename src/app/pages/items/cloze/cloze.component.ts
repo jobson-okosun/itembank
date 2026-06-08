@@ -61,6 +61,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
   @Input() editData!: any;
   @Output() stimulus = new EventEmitter<string>();
   @ViewChild('tagRef') tagRef: ItemTagComponent;
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
 
   editor: any;
 
@@ -530,7 +532,27 @@ export class ClozeComponent implements OnInit, OnDestroy {
   //   return item;
   // }
 
-  saveItem(form: any, type?: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(form: any, type?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(form, type, true));
+      return;
+    }
     const original_content = '<input type="text" />';
     let item = this.buildItem(form);
 
@@ -590,11 +612,25 @@ export class ClozeComponent implements OnInit, OnDestroy {
     this.saveFunction(item, type);
   }
 
-  saveToDraft() {}
+  saveToDraft(skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(true));
+      return;
+    }
+  }
 
-  saveAndNew() {}
+  saveAndNew(skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(true));
+      return;
+    }
+  }
 
-  saveItemToPassage(itemForm?: any) {
+  saveItemToPassage(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     const original_content = '<input type="text" />';
     let item = this.buildItem(itemForm);
 
@@ -848,7 +884,11 @@ export class ClozeComponent implements OnInit, OnDestroy {
     this.itemUtil.previewItem = false;
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     this.updatingItem = true;
     const original_content = '<input type="text" />';
     let item = this.buildItem(itemForm);

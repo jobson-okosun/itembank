@@ -41,10 +41,9 @@
                   <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary" >
                       <div style="position: relative;width: 100%; height: 100%; ">
                         <div *ngFor="let position of previewData.responsePositions; let i = index" class="preview-label" [style.left.%]="position.x" [style.top.%]="position.y">
-                          <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
+                          <!-- <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
                             <div class="pointer"></div>
 
-                            <!-- DROP TARGET -->
                             <ng-container *ngIf="!showAnswer">
                               <div class="form-control form-control-sm" style="max-width: 200px; min-width: 100px; border-style: dashed;" 
                               cdkDropList
@@ -65,6 +64,32 @@
                                 </div>
                             </ng-container>
 
+                          </div> -->
+
+                          <!-- New Drop Position Structure -->
+                          <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" style="position: relative; min-width: 120px; min-height: 40px; border-style: dashed !important;">
+                            <!-- <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="position: absolute; top: -12px; left: -12px; height: 24px; width: 24px; z-index: 10;">
+                              <span style="font-size: 12px;">{{ i + 1 }}</span>
+                            </span> -->
+
+                            <!-- DROP TARGET -->
+                            <ng-container *ngIf="!showAnswer">
+                              <div style="width: 100%; height: 100%; min-height: 36px; padding: 4px;" 
+                                cdkDropList
+                                #zone="cdkDropList"
+                                [id]="'zone-' + i"
+                                [cdkDropListData]="dropZones[i]"
+                                [cdkDropListConnectedTo]="connectedDropLists"
+                                (cdkDropListDropped)="drop($event)">
+                                <div *ngFor="let item of dropZones[i]" cdkDrag [innerHTML]="item.label" class="w-100 text-center" style="cursor: grab;"></div>
+                              </div>
+                            </ng-container>
+
+                            <ng-container *ngIf="showAnswer">
+                              <div style="width: 100%; height: 100%; min-height: 36px; padding: 4px;" class="d-flex align-items-center justify-content-center text-center">
+                                <div [innerHTML]="this.previewData.options[i].label"></div>
+                              </div>
+                            </ng-container>
                           </div>
                         </div>
 

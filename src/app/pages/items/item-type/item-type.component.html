@@ -178,5 +178,31 @@
       </div>
     </div>
   </ng-template>
+
+  <ng-template #comfirmItemTypeModal [showModal] let-modal>
+    <div class="modal-header">
+      <h3 class="modal-title">COMFIRM NAVIGATION</h3>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="cancelItemTypeNavigation()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body px-4">
+      <h6>Are you sure you want to navigate to <i>{{ targetItemType }}</i>, unsaved questions will be lost</h6>
+    </div>
+    <div class="card-footer">
+      <div class="d-flex gap-2 float-end">
+        <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="cancelItemTypeNavigation()">
+          <i class="ri-close-line"></i>Close
+        </button>
+
+        <button type="button" class="btn btn-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="proceedItemTypeNavigation()">
+          <i class="ri-save-line"></i>Proceed
+        </button>
+
+      </div>
+    </div>
+  </ng-template>
 </div>
 <!-- end card -->

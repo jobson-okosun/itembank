@@ -80,6 +80,9 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
   tags: ItemTagsDtos[] = [];
 
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
+
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
 
   uploader: FileUploader;
@@ -776,7 +779,27 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  saveItem(form: any, type?: string) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(form: any, type?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(form, type, true));
+      return;
+    }
     console.log('called me');
     let item = this.buildItem(form);
     const original_content = '';
@@ -959,7 +982,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // console.log(item);
   }
 
-  saveToDraft(itemForm: any) {
+  saveToDraft(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     const original_content = '';
     // this.content = []
@@ -1114,7 +1141,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'draft');
   }
 
-  saveAndNew(itemForm: any) {
+  saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
     // console.log('called me');
     let item = this.buildItem(itemForm);
     const original_content = '';
@@ -1482,7 +1513,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     this.updateItem(itemForm, 'approve');
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

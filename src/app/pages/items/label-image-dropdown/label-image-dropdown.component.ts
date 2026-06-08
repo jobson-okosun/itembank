@@ -147,6 +147,8 @@ export class LabelImageDropdownComponent
 
   @ViewChild('imageRef') imageElement: ElementRef;
   @ViewChild('tagRef') tagRef: ItemTagComponent;
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
 
   currentUser: Account;
   previewData: LabelImageDropdown = new LabelImageDropdown();
@@ -559,8 +561,8 @@ export class LabelImageDropdownComponent
   onUploadError(event: any) {
     const [file, message] = event;
 
-    if (file.size > 100 * 1024) {
-      this.notifierService.notify('error', 'File size must not exceed 100KB')
+    if (file.size > 200 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 200KB')
     } else {
       this.notifierService.notify('error', 'An error occurred during file upload. Please try again.')
     }
@@ -614,8 +616,8 @@ export class LabelImageDropdownComponent
   }
 
   processOfflineFile(file: File) {
-    if (file.size > 100 * 1024) {
-      this.notifierService.notify('error', 'File size must not exceed 100KB');
+    if (file.size > 200 * 1024) {
+      this.notifierService.notify('error', 'File size must not exceed 200KB');
       return;
     }
 
@@ -722,7 +724,27 @@ export class LabelImageDropdownComponent
     this.preview = false;
   }
 
-  saveItem(itemForm?: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem();
     let result = this.itemService.validateItem(item);
 
@@ -867,9 +889,18 @@ export class LabelImageDropdownComponent
     }
   }
 
-  saveAndNew(itemForm?: any) { }
+  saveAndNew(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
+  }
 
-  saveToDraft(itemForm?: any) {
+  saveToDraft(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -888,13 +919,22 @@ export class LabelImageDropdownComponent
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm?: any) { }
+  saveItemToPassage(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
+  }
 
   recieveTag(event: any) {
     this.tags = event;
   }
 
-  saveAndNewItem(itemForm: any) {
+  saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
     //console.log(result);
@@ -917,7 +957,11 @@ export class LabelImageDropdownComponent
     this.updateItem(itemForm, 'approve');
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

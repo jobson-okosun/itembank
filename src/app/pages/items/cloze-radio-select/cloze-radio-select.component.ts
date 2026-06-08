@@ -61,6 +61,9 @@ export class ClozeRadioSelectComponent implements OnInit {
 
   tags: ItemTagsDtos[] = [];
 
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
+
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
 
   uploader: FileUploader;
@@ -669,7 +672,27 @@ export class ClozeRadioSelectComponent implements OnInit {
     };
   }
 
-  saveItem(itemForm: any, type?: string) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(itemForm: any, type?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(itemForm, type, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
 
     const editor = tinymce.get("abc");
@@ -700,7 +723,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     this.saveFunction(item, "save");
   }
 
-  saveToDraft(itemForm: any) {
+  saveToDraft(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
 
     const editor = tinymce.get("abc");
@@ -721,7 +748,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     this.saveFunction(item, "draft");
   }
 
-  saveAndNew(itemForm: any) {
+  saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
 
     const editor = tinymce.get("abc");
@@ -891,7 +922,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     this.updateItem(itemForm, "approve");
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 

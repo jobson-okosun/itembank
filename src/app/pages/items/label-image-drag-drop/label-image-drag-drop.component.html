@@ -488,12 +488,19 @@
                 <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary">
                   <div style="position: relative;width: 100%; height: 100%;" #imageRef>
                     <div *ngFor="let label of dropdownLabels; let i = index" class="draggable-label" [style.left.%]="label.x" [style.top.%]="label.y" (mousedown)="onMouseDown($event, i)" [attr.data-index]="i">
-                      <button class="d-flex align-items-center gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
+                      <!-- <button class="d-flex align-items-center gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
                         <div class="pointer"></div>
                         <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="height: 25px;width: 25px;">
                           <span  style="font-size: 12px;">{{ i + 1 }}</span>
                         </span>
-                      </button>
+                      </button> -->
+                      
+                      <!-- New Drop Position Structure -->
+                      <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" style="position: relative; min-width: 120px; height: 40px; border-style: dashed !important; cursor: move;">
+                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="position: absolute; top: -12px; left: -12px; height: 24px; width: 24px; z-index: 10;">
+                          <span style="font-size: 12px;">{{ i + 1 }}</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1084,7 +1091,7 @@
     >
       <i class="ri-upload-cloud-2-line text-primary mb-3" style="font-size: 48px;"></i>
       <span class="fs-15 fw-medium text-dark mb-1">Drag & drop image here or click to upload</span>
-      <span class="text-muted fs-12">Supported formats: JPG, PNG | Max size: 100KB</span>
+      <span class="text-muted fs-12">Supported formats: JPG, PNG | Max size: 200KB</span>
       <input
         #offlineFileInput
         type="file"
@@ -1196,3 +1203,38 @@
 
 <!-- Button to add new label -->
 <!-- <button (click)="addLabel()">Add Label</button> -->
+
+<ng-template #scoringConfirmationModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm Scoring Type</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <!-- <h5 class="mb-3">You have selected <strong>{{ defaultItemProperties.scoringOption.scoringType }}</strong>.</h5> -->
+    
+    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'EXACT_MATCH'" class="alert alert-info">
+      <strong>Exact Match:</strong> The candidate must tick <strong>all</strong> the correct answers in the option before they can score the {{ defaultItemProperties.scoringOption.score || 1 }} mark(s).
+    </div>
+    
+    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'" class="alert alert-info">
+      <strong>Partial Match:</strong> Each correct option will carry a fraction of the total mark (e.g. if there are 4 options, each correct option carries 1/4 of the marks).
+    </div>
+
+    <p class="mt-3 mb-0">Do you agree with this scoring condition?</p>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 float-end">
+      <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="modal.close('Close click')">
+        <i class="ri-edit-line"></i>Cancel & Edit
+      </button>
+
+      <button type="button" class="btn btn-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="proceedWithSave()">
+        <i class="ri-save-line"></i>Yes, Save
+      </button>
+    </div>
+  </div>
+</ng-template>
