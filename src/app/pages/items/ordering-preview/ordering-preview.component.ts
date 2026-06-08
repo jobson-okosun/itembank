@@ -26,6 +26,7 @@ export class OrderingPreviewComponent implements OnInit {
   @Input() previewData!: any;
   @Input() itemTrailInfo: any;
   @Input() editData!: any;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 

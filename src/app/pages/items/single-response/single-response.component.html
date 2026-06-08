@@ -275,22 +275,19 @@
         <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button type="button" (click)="approveQuestion(itemForm)">
-          Yes, approve It
+        <button type="button" *ngIf="!processingApprove" class="btn btn-soft-primary" (click)="approveQuestion(itemForm)">
+          Yes, Approve
         </button>
-        <!-- <ng-template [ngIf]="processing_delete">
-          <button
-            class="btn btn-outline-danger btn-load"
-            [disabled]="processing_delete"
-          >
+        <ng-template [ngIf]="processingApprove">
+          <button class="btn btn-outline-primary btn-load" [disabled]="processingApprove">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
-                <span class="visually-hidden">Deleting...</span>
+                <span class="visually-hidden">Approving...</span>
               </span>
-              <span class="flex-grow-1 ms-2"> Deleting... </span>
+              <span class="flex-grow-1 ms-2">Approving... </span>
             </span>
           </button>
-        </ng-template> -->
+        </ng-template>
       </div>
     </div>
   </ng-template>
@@ -307,8 +304,8 @@
         <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button type="button" (click)="openRejectionReasonModal(rejectionModal)">
-          Yes, reject It
+        <button type="button" class="btn btn-danger" (click)="openRejectionReasonModal(rejectionModal);">
+          Yes, Reject
         </button>
         <!-- <ng-template [ngIf]="processing_delete">
           <button
@@ -514,9 +511,9 @@
           <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
-                <span class="visually-hidden">Saving...</span>
+                <span class="visually-hidden">Rejecting...</span>
               </span>
-              <span class="flex-grow-1 ms-2"> Saving... </span>
+              <span class="flex-grow-1 ms-2"> Rejecting... </span>
             </span>
           </button>
         </ng-template>

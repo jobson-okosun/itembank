@@ -49,6 +49,8 @@ export class RichEssayComponent implements OnInit, OnDestroy {
 
   displayTagModal = false;
 
+  processingApprove: boolean = false;
+
   preview: boolean = false;
 
   previewData: RichEssayModel;
@@ -537,8 +539,8 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&
@@ -579,6 +581,8 @@ export class RichEssayComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.edit_Essay(this.editData.id, item).subscribe(
       (value) => {
         this.publishingItem = false;
@@ -590,12 +594,15 @@ export class RichEssayComponent implements OnInit, OnDestroy {
             icon: "success",
           });
           this.back();
+          this.processingApprove = false;
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
         this.notifier.notify("error", `${error.error.message}`);
+        this.processingApprove = false;
       }
     );
   }
@@ -609,6 +616,12 @@ export class RichEssayComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.preview = true;
     this.itemUtil.previewItem = true;
 

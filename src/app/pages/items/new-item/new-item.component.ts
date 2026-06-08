@@ -8,11 +8,14 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  OnDestroy,
 } from '@angular/core';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import { Location } from '@angular/common';
 import { ClozeDropdown } from '../cloze-dropdown/cloze-dropdown.model';
 import { newClozeDropDown } from '../utility/ClozeTextUtil';
+import { ItemService } from '../../exam-preview/services/item.service';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 declare var tinymce: any;
 @Component({
@@ -20,7 +23,7 @@ declare var tinymce: any;
   templateUrl: './new-item.component.html',
   styleUrls: ['./new-item.component.scss'],
 })
-export class NewItemComponent implements OnInit {
+export class NewItemComponent implements OnInit, OnDestroy {
   @Input() currentActivity: string;
   @Input() itemTrail!: any;
   @Output() backToAssessment = new EventEmitter();
@@ -48,11 +51,17 @@ export class NewItemComponent implements OnInit {
     private passageService: AllPassagesService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
+    private _itemService: ItemHttpService,
+    private _itemServiceService: ItemServiceService,
     private location: Location,
   ) {
     /* this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.itemId = params.get('id');
     }); */
+  }
+
+  ngOnDestroy(): void {
+    this._itemServiceService.clearItem('Moderation_Enabled');
   }
 
   onSettingsButtonClicked() {
@@ -76,6 +85,10 @@ export class NewItemComponent implements OnInit {
     } */
     this.selectedItemType = 'Multiple choice';
     this.formType = 'Single Response';
+
+    console.log('WANT TO CREATE QUESTIONS.');
+
+    this._itemService.currentSubjectModerationEnabled = Boolean(this._itemServiceService.getItem('Moderation_Enabled'));
 
     this.breadCrumbItems = [
       { label: 'Questions' },

@@ -23,6 +23,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
   @Input() itemTrailInfo: any;
   @Input() formType!: string;
   @Input() selectedItemType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() return = new EventEmitter();
   @Output() reload = new EventEmitter();
   @Output() closeOuterModal = new EventEmitter();

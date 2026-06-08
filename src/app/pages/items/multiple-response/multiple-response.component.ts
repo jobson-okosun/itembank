@@ -54,6 +54,8 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
 
   displayTagModal = false;
 
+  processingApprove: boolean = false;
+
   preview: boolean = false;
 
   previewData: MultipleResponseModel;
@@ -130,8 +132,6 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
         next: (value) => {
           this.passageForPreview = value;
-
-          console.log(this.passageForPreview);
         },
       });
     }
@@ -628,6 +628,12 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     if (!this.validateMinOptions(item)) {
@@ -661,8 +667,8 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&
@@ -702,6 +708,9 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+
+    this.processingApprove = true;
+
     this.itemService.edit_MRQ(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -711,8 +720,10 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
             icon: 'success',
           });
           this.publishingItem = false;
+          this.processingApprove = false;
           Swal.close();
           this.back();
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
@@ -721,6 +732,7 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
           text: `${error.error.message}`,
           icon: 'error',
         });
+        this.processingApprove = false;
       },
     );
   }

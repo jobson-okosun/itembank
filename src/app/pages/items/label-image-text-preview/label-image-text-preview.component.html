@@ -93,8 +93,8 @@
               !assessmentActive &&
               !recycleComponentActive &&
               component !== 'question_status'
-            " type="button" class="btn btn-primary btn-sm" (click)="edit()">
-            <i class="ri-edit-fill align-middle fs-14"></i>Edit
+            " type="button" class="btn btn-primary" (click)="edit()">
+            <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
           </button>
           <button *ngIf="
               currentUser.authorities.includes('MODERATOR') &&

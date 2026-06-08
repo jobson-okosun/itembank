@@ -64,6 +64,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
   newEditData: ClozeDropdown = new ClozeDropdown();
   dropdownCount: any = 0;
 
+  processingApprove: boolean = false;
+
   content: HTMLSelectElement[] = [];
 
   responses: Responses[] = [];
@@ -1382,6 +1384,12 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     let item = this.buildItem(itemForm);
     // console.log('Item: ', item);
     this.itemUtil.previewItem = true;
@@ -1586,8 +1594,10 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // if (!validated) {
     //   return;
     // }
-    this.publishingItem = true;
-    this.publishLoader();
+
+    // this.publishingItem = true;
+    // this.publishLoader();
+
     // console.log('builtItem', item);
 
     switch (status) {
@@ -1617,6 +1627,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.edit_cloze_dropdown(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -1627,6 +1639,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
@@ -1636,6 +1650,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
           icon: 'error',
           html: `${error.error.message}`,
         });
+        this.processingApprove = false;
       },
     );
   }

@@ -25,6 +25,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
   @Input() itemTrailInfo!: any;
   @Input() selectedItemType!: string;
   @Input() formType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 

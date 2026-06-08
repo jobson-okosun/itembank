@@ -81,6 +81,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
 
   publishingItem: boolean = false;
 
+  processingApprove: boolean = false;
+
   itemPassage: SinglePassageModel;
 
   currentUser!: Account;
@@ -616,8 +618,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     switch (status) {
       case 'save':
@@ -646,6 +648,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.edit_Yes_No(this.editData.id, item).subscribe(
       (value) => {
         this.publishingItem = false;
@@ -658,13 +662,16 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
             icon: 'success',
           });
           this.back();
+          this.processingApprove = false;
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         //this.publishLoader();
         Swal.close();
-        this.notifier.notify('error', `${error.error.message}`);
+        this.notifier.notify('error', `${error.message}`);
+        this.processingApprove = false;
       }
     );
   }
@@ -681,6 +688,11 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     // }
 
     // this.preview = true;
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
 
     this.itemUtil.previewItem = true;
     

@@ -1,4 +1,27 @@
+<div class="row mb-4">
+  <div class="col-lg-4 col-sm-12">
+    <div class="d-flex gap-2 align-items-center">
+      <button type="button" class="btn btn-outline-info" (click)="back()">
+        <i class="ri-arrow-left-line align-middle me-2"></i>Back
+      </button>
+      <h4 class="title">
+        Preview Passage
+      </h4>
+    </div>
+  </div>
+  <div class="col-lg-8 col-sm-12 d-flex justify-content-end float-end" *ngIf="passageTrail">
+    <div class="d-flex flex-row mx-2">
+      <span class="d-flex align-items-center text-muted" ngbTooltip="SUBJECT">
+        {{ passageTrail.subjectName.toUpperCase() }}
+      </span>
+      <span class="d-flex align-items-center text-muted" *ngIf="passageTrail.topicName" ngbTooltip="TOPIC">
+        <i class="ri-arrow-right-s-line"></i>{{ passageTrail.topicName.toUpperCase() }}</span>
+    </div>
+  </div>
+</div>
+
 <div class="card">
+
   <div class="card-body">
     <!-- <div class="d-flex justify-content-between">
       <h4>{{ previewData.reference ? previewData.reference : 'Preview' }}</h4>

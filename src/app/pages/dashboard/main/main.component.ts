@@ -930,7 +930,7 @@ export class MainComponent implements OnInit {
       },
       colors: colors,
       xaxis: {
-        categories: ['Total Assessments', 'Total Drafts', 'Total Published'],
+        categories: ['Total Exams', 'Total Drafts', 'Total Published'],
         axisTicks: {
           show: false,
         },

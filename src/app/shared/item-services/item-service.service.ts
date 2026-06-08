@@ -12,11 +12,41 @@ export class ItemServiceService {
     this.getItems(); //.subscribe(item => this.items = item);
   }
 
+  getItem(key: string, fallback = null): string | null {
+    try {
+      const value = localStorage.getItem(key);
+      return value ? JSON.parse(value) : fallback;
+    }
+    catch (error) {
+      return fallback;
+    }
+  }
+
+  setItem(key: string, value: any): void {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+    catch (error) {
+      if (error.name === "QuotaExceededError") {
+        console.error("LocalStorage quota exceeded!");
+      }
+    }
+  }
+
+  clearItem(key: string): void {
+    try {
+      localStorage.removeItem(key);
+    }
+    catch (error) {
+      console.error("Error clearing item from LocalStorage:", error);
+    }
+  }
+
   getItems() {
     return this.items;
   }
 
-  getPassages(){
+  getPassages() {
     return this.passages;
   }
 
@@ -31,7 +61,7 @@ export class ItemServiceService {
     this.items.push(data);
   }
 
-  addPassage(data:any){
+  addPassage(data: any) {
     this.passages.push(data);
   }
 }

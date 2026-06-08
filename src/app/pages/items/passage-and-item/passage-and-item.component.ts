@@ -11,6 +11,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Location } from '@angular/common';
 import { UserService } from 'src/app/shared/user.service';
 import { Account } from 'src/app/authentication/model/account.model';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-passage-and-item',
@@ -43,9 +44,9 @@ export class PassageAndItemComponent implements OnInit {
 
   processing_delete: boolean = false;
 
-  itemTrail: ItemDetails =  this.itemUtil.currentItemTrail;
+  itemTrail: ItemDetails = this.itemUtil.currentItemTrail;
 
-  currentUser: Account =  this.userService.getCurrentUser();
+  currentUser: Account = this.userService.getCurrentUser();
 
   constructor(
     private router: Router,
@@ -55,13 +56,14 @@ export class PassageAndItemComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private modalService: NgbModal,
     private location: Location,
-    private userService: UserService
+    private userService: UserService,
+    private _itemService: ItemServiceService
   ) {
     /* this.activatedRoute.paramMap.subscribe((params: ParamMap) => {
       this.passageId = params.get('id');
       this.itemUtil.passageId = this.passageId;
     }); */
-    this.passageId = this.activatedRoute.snapshot.params['passageId'];    
+    this.passageId = this.activatedRoute.snapshot.params['passageId'];
   }
 
   ngOnInit(): void {
@@ -70,8 +72,8 @@ export class PassageAndItemComponent implements OnInit {
     this.breadCrumbItems = [{ label: 'Passage-preview', active: true }];
     this.assessmentActive = this.itemService.assessmentActive ?? localTrail.assessmentActive;
 
-    if(!this.itemTrail) {
-       this.itemTrail = localTrail
+    if (!this.itemTrail) {
+      this.itemTrail = localTrail
     }
 
     this.itemService.subjectId = this.itemTrail?.subjectId;
@@ -83,6 +85,8 @@ export class PassageAndItemComponent implements OnInit {
     this.itemService.fetchPassageItem(this.passageId).subscribe(
       (value) => {
         this.passage = value;
+        console.log('PASSAGE ITEMS: ', this.passage);
+
         this.passage.items.forEach((item) => {
           item.showAnswer = false;
         });
@@ -97,7 +101,7 @@ export class PassageAndItemComponent implements OnInit {
     //this.fetchPassage();
   }
 
-  goBack(){
+  goBack() {
     this.location.back();
   }
 
@@ -114,6 +118,10 @@ export class PassageAndItemComponent implements OnInit {
   addQuestionToPassage() {
     this.itemUtil.passageItemWorkflow = true;
     this.itemUtil.passageId = this.passageId;
+
+    const moderationEnabled: boolean = this.passage.passage.moderationEnabled;
+
+    this._itemService.setItem('Moderation_Enabled', moderationEnabled);
 
     this.router.navigate([
       `/examalpha/passages/subjects/${this.itemTrail.subjectName}/passage/${this.passageId}/new-item`,
@@ -189,5 +197,5 @@ export class PassageAndItemComponent implements OnInit {
           });
         }
       );
-  } 
+  }
 }

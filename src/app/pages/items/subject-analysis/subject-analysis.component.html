@@ -18,52 +18,64 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 10px" pFrozenColumn></th>
-        <th style="width: 500px" pFrozenColumn pSortableColumn="topicName">
+        <th style="max-width: 50px" pFrozenColumn>
+          <span>
+            Clps.
+          </span>
+        </th>
+        <th style="min-width: 200px" pFrozenColumn pSortableColumn="topicName">
           Topic <p-sortIcon field="topicName"></p-sortIcon>
         </th>
 
         <th pSortableColumn="totalItems">
-          Total Questions <p-sortIcon field="totalItems"></p-sortIcon>
+          <!-- Total Questions <p-sortIcon field="totalItems"></p-sortIcon> -->
+           Total Qnts. <p-sortIcon field="totalItems"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsAwaitingModeration">
-          Total Awaiting Moderation <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
+          <!-- Total Awaiting Moderation <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon> -->
+           Tot. Awaiting Mod. <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
         </th>
 
         <th pSortableColumn="totalItemsRejected">
-          Total Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon>
+          <!-- Total Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon> -->
+           Tot. Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsPublished">
-          Total Published <p-sortIcon field="totalItemsPublished"></p-sortIcon>
+          <!-- Total Published <p-sortIcon field="totalItemsPublished"></p-sortIcon> -->
+           Tot. Published <p-sortIcon field="totalItemsPublished"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsInRecycle">
-          Total Questions In Recycle
+          Total Qnts. In Recycle
           <p-sortIcon field="totalItemsInRecycle"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsUsed">
-          Item Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
+          <!-- Item Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon> -->
+           Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsDraft">
-          Total Items in Draft <p-sortIcon field="totalItemsDraft"></p-sortIcon>
+          <!-- Total Items in Draft <p-sortIcon field="totalItemsDraft"></p-sortIcon> -->
+           Tot. Drafts <p-sortIcon field="totalItemsDraft"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassages">
-          Total Passages <p-sortIcon field="totalPassages"></p-sortIcon>
+          <!-- Total Passages <p-sortIcon field="totalPassages"></p-sortIcon> -->
+           Tot. Passages <p-sortIcon field="totalPassages"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesAwaitingModeration">
-          Total Passages Awaiting Moderation
-          <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon>
+          <!-- Total Passages Awaiting Moderation <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon> -->
+           Tot. Passages Awaiting Mod. <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesDraft">
-          Total Passages In Draft
-          <p-sortIcon field="totalPassagesDraft"></p-sortIcon>
+          <!-- Total Passages In Draft <p-sortIcon field="totalPassagesDraft"></p-sortIcon> -->
+           Tot. Passage Drafts <p-sortIcon field="totalPassagesDraft"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesPublished">
-          Total Passages Published
-          <p-sortIcon field="totalPassagesPublished"></p-sortIcon>
+          <!-- Total Passages Published <p-sortIcon field="totalPassagesPublished"></p-sortIcon> -->
+           Tot. Published Passages <p-sortIcon field="totalPassagesPublished"></p-sortIcon>
         </th>
 
         <th pSortableColumn="totalPassagesUsed">
-          Total Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon>
+          <!-- Total Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon> -->
+           Tot. Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon>
         </th>
       </tr>
     </ng-template>
@@ -74,7 +86,7 @@
       let-i="rowIndex"
     >
       <tr>
-        <td style="width: 10px" pFrozenColumn>
+        <td style="max-width: 50px" pFrozenColumn>
           <i
             *ngIf="activeRow === i"
             class="la la-angle-down cursor"
@@ -87,14 +99,14 @@
           ></i>
         </td>
         <td
-          style="width: 500px"
+          style="min-width: 200px"
           pFrozenColumn
           (click)="showSubTopic(i)"
           class="text-truncate cursor"
+          title="{{ subjectAnalysis.topicName | uppercase }}"
           [ngClass]="{ 'text-primary': activeRow === i }"
         >
           <i class="la la-book"></i>
-
           {{ subjectAnalysis.topicName | uppercase }}
         </td>
         <td>

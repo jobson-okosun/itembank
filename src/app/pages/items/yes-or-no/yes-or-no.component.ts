@@ -57,6 +57,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
   preview: boolean = false;
 
+  processingApprove: boolean = false;
+
   previewData: YesOrNoModel;
 
   passageWorkFlow: boolean = this.itemUtil.passageItemWorkflow;
@@ -630,8 +632,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&
@@ -672,6 +674,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.edit_Yes_No(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -682,12 +686,15 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
             icon: 'success',
           });
           this.back();
+          this.modalService.dismissAll();
+          this.processingApprove = false;
         }
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       },
     );
   }
@@ -709,6 +716,12 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     
     if (this.editData) {

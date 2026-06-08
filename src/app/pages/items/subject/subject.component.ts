@@ -140,6 +140,8 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   updatedTopicName: any;
 
+  resetTagsInputFieldOnManualOpenFilterDialog: boolean = false;
+
   submitted: boolean = false;
 
   activePreviewItem: number;
@@ -1494,7 +1496,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   showFilters() {
-    this.showFilter = !this.showFilter;
+    this.showFilter = !this.showFilter;    
   }
 
   showTopicDetails(topic: any, subtopicId?: string, index?: number) {
@@ -1727,6 +1729,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(tags);
     this.tags = tags;
     // console.log('logging selected tag:', this.tags);
+    console.log('ASSIGNED TAGS: ', this.tags);
   }
 
   recieveTags(tags: any) {
@@ -1778,10 +1781,17 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   buildFilter() {
     // console.log('Tags', this.tags);
-    this.tags = this.tags.map((tag) => {
+
+    // this.tags = this.tags.map((tag) => {
+    //   return tag.tagId;
+    // });
+
+    // this.tagIds = this.tags;
+
+    this.tagIds = this.tags.map((tag) => {
       return tag.tagId;
     });
-    this.tagIds = this.tags;
+
     // console.log(this.tagIds);
 
     if (this.filterQuestionsScore < 0) {
@@ -1797,7 +1807,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.filterInformation.score = 10000000;
     }
 
-    this.filterInformation.tagIds = this.tags;
+    // this.filterInformation.tagIds = this.tags;
+    this.filterInformation.tagIds = this.tagIds;
     this.filterInformation.subjectId = this.itemService.subjectId;
     this.filterInformation.topicId = this.itemUtil.currentItemTrail.topicId;
     this.filterInformation.subtopicId =
@@ -2192,14 +2203,22 @@ export class SubjectComponent implements OnInit, OnChanges {
   clearFilter() {
     //this.showFilter = !this.showFilter;
     if (this.selectedSubtopicId) {
+      console.log('SUBTOPIC SELECTED');
+      console.log('CURRENT TOPIC: ', this.currentTopic);
+      console.log('CURRENT TOPIC: ', this.selectedSubtopicId);
       // reload the questions list after filter options are cleared
       this.fetchItems(this.currentTopic, this.selectedSubtopicId);
     } else {
+      console.log('SUBTOPIC NOT SELECTED');
+      console.log('CURRENT TOPIC: ', this.currentTopic);
       // reload the questions list after filter options are cleared
       this.fetchItems(this.clickedTopic);
     }
+    this.filterQuestionsScore = 0;
     this.filterInformation = new FilterItems();
+    this.resetTagsInputFieldOnManualOpenFilterDialog = true;
     this.tags = [];
+    console.log('FILTER INFORMATION: ', this.filterInformation);
   }
 
   openSelectCopyLocationModal(

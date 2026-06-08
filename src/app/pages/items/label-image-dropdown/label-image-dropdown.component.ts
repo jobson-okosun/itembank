@@ -38,6 +38,7 @@ import { ActivatedRoute } from '@angular/router';
 import { SinglePassageModel } from '../passage-item/model/single-passage-model.model';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import katex from 'katex';
+import { VirtualTimeScheduler } from 'rxjs';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -75,6 +76,8 @@ export class LabelImageDropdownComponent
 
   private offsetX: number;
   private offsetY: number;
+
+  processingApprove: boolean = false;
 
   // labels: Array<{ text: string; x: number; y: number }> = [
   //   { text: "Label 1", x: 50, y: 50 },
@@ -552,6 +555,12 @@ export class LabelImageDropdownComponent
   editPassage() { }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifierService.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     this.previewData = item;
@@ -971,8 +980,10 @@ export class LabelImageDropdownComponent
     // if (!validated) {
     //   return;
     // }
-    this.publishingItem = true;
-    this.publishLoader();
+
+    // this.publishingItem = true;
+    // this.publishLoader();
+
     // console.log("builtItem", item);
 
     switch (status) {
@@ -1002,6 +1013,8 @@ export class LabelImageDropdownComponent
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editClozeDropdownImageItem(item).subscribe(
       (value) => {
         if (value) {
@@ -1012,6 +1025,8 @@ export class LabelImageDropdownComponent
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
@@ -1021,6 +1036,7 @@ export class LabelImageDropdownComponent
           icon: 'error',
           html: `${error.error.message}`,
         });
+        this.processingApprove = false;
       },
     );
   }

@@ -64,6 +64,7 @@ export class OrderingComponent implements OnInit, OnDestroy {
   difficultyLevel: number[] = [1, 2, 3, 4, 5];
   itemPassage: SinglePassageModel;
   processingRejection: boolean = false;
+  processingApprove: boolean = false;
   passageId: string = '';
   showPassage: boolean = false;
   passageForPreview: SinglePassageModel;
@@ -454,6 +455,9 @@ export class OrderingComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+
+    this.processingApprove = true;
+
     this.itemService.edit_order_list(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -464,9 +468,12 @@ export class OrderingComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.processingApprove = false;
+        this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       },
     );
   }
@@ -618,6 +625,12 @@ export class OrderingComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm?: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     this.previewData = item;

@@ -70,6 +70,7 @@
         <button
           *ngIf="
             !currentUser.authorities.includes('MODERATOR') &&
+            !previewQuestionOnDialog &&
             !assessmentActive &&
             !recycleComponentActive &&
             !previewData.passageId &&
@@ -89,6 +90,7 @@
           *ngIf="
             !currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
+            !previewQuestionOnDialog &&
             !recycleComponentActive &&
             previewData.id &&
             previewData.passageId &&
@@ -111,18 +113,20 @@
             !currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
             !recycleComponentActive &&
+            !previewQuestionOnDialog &&
             component !== 'question-status'
           "
           type="button"
-          class="btn btn-primary btn-sm"
+          class="btn btn-primary"
           (click)="edit()"
         >
-          <i class="ri-edit-fill align-middle fs-14"></i>Edit
+          <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
         </button>
         <button
           *ngIf="
             currentUser.authorities.includes('MODERATOR') &&
             !assessmentActive &&
+            !previewQuestionOnDialog &&
             previewData.itemStatus !== 'REJECTED' &&
             previewData.itemStatus !== 'PUBLISHED'
           "

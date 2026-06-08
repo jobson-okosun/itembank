@@ -52,7 +52,7 @@
                 <a class="dropdown-item">Save</a>
               </li>
               <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
-                (click)="openConfirmationModal(acceptConfirmationModal)">
+                (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
             </ul>
@@ -234,22 +234,19 @@
         <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button type="button" (click)="approveQuestion()">
-          Yes, approve It
+        <button type="button" *ngIf="!processingApprove" class="btn btn-soft-primary" (click)="approveQuestion()">
+          Yes, Approve
         </button>
-        <!-- <ng-template [ngIf]="processing_delete">
-          <button
-            class="btn btn-outline-danger btn-load"
-            [disabled]="processing_delete"
-          >
+        <ng-template [ngIf]="processingApprove">
+          <button class="btn btn-outline-success btn-load" [disabled]="processingApprove">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
-                <span class="visually-hidden">Deleting...</span>
+                <span class="visually-hidden">Approving...</span>
               </span>
-              <span class="flex-grow-1 ms-2"> Deleting... </span>
+              <span class="flex-grow-1 ms-2">Approving... </span>
             </span>
           </button>
-        </ng-template> -->
+        </ng-template>
       </div>
     </div>
   </ng-template>
@@ -266,8 +263,8 @@
         <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
           No, Cancel
         </button>
-        <button type="button" (click)="openRejectionReasonModal(rejectionModal)">
-          Yes, reject It
+        <button type="button" class="btn btn-danger" (click)="openRejectionReasonModal(rejectionModal);">
+          Yes, Reject
         </button>
         <!-- <ng-template [ngIf]="processing_delete">
           <button
@@ -430,7 +427,7 @@
 <app-yes-or-no-preview *ngIf="preview === true" (returnPreviewData)="closePreview($event)" [previewData]="previewData"
   [selectedItemType]="selectedItemType" [formType]="formType" (hidePreview)="preview = !$event"></app-yes-or-no-preview>
 
-<ng-template #rejectionModal let-modal>
+  <!-- <ng-template #rejectionModal let-modal>
   <div class="modal-body p-5">
     <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
       <h4 class="text-center mb-4">Reason for Rejection</h4>
@@ -465,9 +462,55 @@
           <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
             <span class="d-flex align-items-center">
               <span class="spinner-border flex-shrink-0" role="status">
-                <span class="visually-hidden">Saving...</span>
+                <span class="visually-hidden">Rejecting...</span>
               </span>
-              <span class="flex-grow-1 ms-2"> Saving... </span>
+              <span class="flex-grow-1 ms-2"> Rejecting... </span>
+            </span>
+          </button>
+        </ng-template>
+      </div>
+    </form>
+  </div>
+</ng-template> -->
+
+<ng-template #rejectionModal let-modal>
+  <div class="modal-body p-5">
+    <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
+      <h4 class="text-center mb-4">Reason for Rejection</h4>
+      <p class="text-muted text-center">
+        provide a reason why you have rejected the question.ii
+      </p>
+      <div class="row mb-2">
+        <label>Reason</label>
+        <editor name="reason" [(ngModel)]="newRejectionReason.reason" initialValue="reason(s)...." [init]="{
+            base_url: '/tinymce',
+            height: 200,
+            suffix: '.min',
+            menubar: true,
+            plugins: 'table quickbars lists autoresize',
+            quickbars_insert_toolbars: false,
+            branding: false,
+            toolbar:
+              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
+          }"></editor>
+      </div>
+
+      <div class="d-flex gap-2 float-end mt-4">
+        <button type="button" class="btn btn-outline-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
+          <i class="ri-close-line"></i>Close
+        </button>
+        <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
+          <i class="las la-file-excel"></i>Reject
+        </button>
+
+        <ng-template [ngIf]="processingRejection">
+          <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
+            <span class="d-flex align-items-center">
+              <span class="spinner-border flex-shrink-0" role="status">
+                <span class="visually-hidden">Rejecting...</span>
+              </span>
+              <span class="flex-grow-1 ms-2"> Rejecting... </span>
             </span>
           </button>
         </ng-template>
@@ -475,6 +518,52 @@
     </form>
   </div>
 </ng-template>
+
+<!-- <ng-template #rejectionModal let-modal>
+  <div class="modal-body p-5">
+    <form #questionRejectionForm="ngForm" (ngSubmit)="submitRejection(questionRejectionForm)">
+      <h4 class="text-center mb-4">Reason for Rejection</h4>
+      <p class="text-muted text-center">
+        provide a reason why you have rejected the question.
+      </p>
+      <div class="row mb-2">
+        <label>Reason</label>
+        <editor name="reason" [(ngModel)]="newRejectionReason.reason" initialValue="reason(s)...." [init]="{
+            base_url: '/tinymce',
+            height: 200,
+            suffix: '.min',
+            menubar: true,
+            plugins: 'table quickbars lists autoresize',
+            quickbars_insert_toolbars: false,
+            branding: false,
+            toolbar:
+              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink'
+          }"></editor>
+      </div>
+
+      <div class="d-flex gap-2 float-end mt-4">
+        <button type="button" class="btn btn-outline-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="modal.close('Close click')">
+          <i class="ri-close-line"></i>Close
+        </button>
+        <button *ngIf="!processingRejection" type="submit" class="btn btn-danger d-flex gap-1 align-items-center">
+          <i class="las la-file-excel"></i>Reject
+        </button>
+
+        <ng-template [ngIf]="processingRejection">
+          <button class="btn btn-outline-success btn-load" [disabled]="processingRejection">
+            <span class="d-flex align-items-center">
+              <span class="spinner-border flex-shrink-0" role="status">
+                <span class="visually-hidden">Rejecting...</span>
+              </span>
+              <span class="flex-grow-1 ms-2"> Rejecting... </span>
+            </span>
+          </button>
+        </ng-template>
+      </div>
+    </form>
+  </div>
+</ng-template> -->
 
 <ng-template #passageModal let-modal>
   <div class="modal-header d-flex justify-content-between">

@@ -54,6 +54,8 @@ export class DrawingAndWritingComponent implements OnInit {
 
   preview: boolean = false;
 
+  processingApprove: boolean = false;
+
   previewData: DrawAndWritingModel;
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
@@ -541,8 +543,8 @@ export class DrawingAndWritingComponent implements OnInit {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&
@@ -583,6 +585,8 @@ export class DrawingAndWritingComponent implements OnInit {
         break;
     }
 
+    this.processingApprove = true;
+
     this.itemService.editDrawWritingItem(item).subscribe(
       (value) => {
         this.publishingItem = false;
@@ -594,12 +598,15 @@ export class DrawingAndWritingComponent implements OnInit {
             icon: 'success',
           });
           this.back();
+          this.processingApprove = false;
+          this.modalService.dismissAll();
         }
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
         this.notifier.notify('error', `${error.error.message}`);
+        this.processingApprove = false;
       }
     );
   }
@@ -613,6 +620,12 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.preview = true;
     this.itemUtil.previewItem = true;
 

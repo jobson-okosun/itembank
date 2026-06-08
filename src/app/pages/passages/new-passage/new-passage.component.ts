@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Passage } from '../../items/passage-item/model/passage.model';
 import { ItemTagsDtos } from '../../items/models/item-tags-dtos';
 import { ItemUtilitiesService } from '../../items/item-utilities.service';
@@ -12,13 +12,16 @@ import { SinglePassageModel } from '../../items/passage-item/model/single-passag
 import { ActivatedRoute } from '@angular/router';
 import { Account } from 'src/app/authentication/model/account.model';
 import { UserService } from 'src/app/shared/user.service';
+import { ItemService } from '../../exam-preview/services/item.service';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-new-passage',
   templateUrl: './new-passage.component.html',
   styleUrls: ['./new-passage.component.scss'],
 })
-export class NewPassageComponent implements OnInit {
+export class NewPassageComponent implements OnInit, OnDestroy {
   @Input() passageEdit!: SinglePassageModel;
 
   selectedItemType: string = '';
@@ -44,11 +47,17 @@ export class NewPassageComponent implements OnInit {
     private passageService: AllPassagesService,
     private location: Location,
     private itemService: ItemHttpService,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private _itemServiceService: ItemServiceService,
+    private notifier: NotifierService
+  ) { }
+
+  ngOnDestroy(): void {
+    this._itemServiceService.clearItem('Passage_Trail');
+  }
 
   ngOnInit(): void {
-    this.passageTrail = this.passageService.currentPassageTrail;
+    this.passageTrail = this.passageService.currentPassageTrail || this._itemServiceService.getItem('Passage_Trail');
     // console.log(
     //   'Is moderation currently enabled on this subject?::::',
     //   this.itemService.currentSubjectModerationEnabled
@@ -66,6 +75,12 @@ export class NewPassageComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.passage.stimulus) {
+      this.notifier.notify('error', `Please compose a passage`);
+      return;
+    }
+
     this.itemUtil.previewItem = true
     this.preview = true;
     this.previewData = this.passage;
@@ -83,8 +98,8 @@ export class NewPassageComponent implements OnInit {
     //   return { tagId: tag.tagId };
     // });
 
-    this.passage.itemTagsDTOS = this.tags.map((tag)=> {
-      return {tagId: tag.tagId}
+    this.passage.itemTagsDTOS = this.tags.map((tag) => {
+      return { tagId: tag.tagId }
     });
 
     this.passage.subjectId = this.passageService.currentPassageTrail.subjectId;

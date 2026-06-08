@@ -30,6 +30,7 @@ export class ClozeTextPreviewComponent implements OnInit {
   @Input() itemTrailInfo: any;
   @Input() selectedItemType!: string;
   @Input() formType!: string;
+  @Input() previewQuestionOnDialog: boolean = false;
   //@Input() assessmentActive: boolean;
   //@Output() hidePreview = new EventEmitter<string>();
   @Output() returnPreviewData = new EventEmitter();

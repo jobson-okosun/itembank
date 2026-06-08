@@ -94,6 +94,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   passageId: string = '';
   passageForPreview: SinglePassageModel;
   processingRejection: boolean = false;
+  processingApprove: boolean = false;
   itemUtil_: ItemUtilitiesService = null;
 
   constructor(
@@ -157,6 +158,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     console.log(this.itemUtil.passageId); */
     //console.log('item for editing', this.editData);
     this.moderationStatus = this.itemService.currentSubjectModerationEnabled;
+    
     if (this.editData) {
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel =
@@ -788,6 +790,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.processingApprove = true;
+
     this.createItem.editItem(this.editData.id, item).subscribe(
       (value) => {
         if (value) {
@@ -798,9 +802,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
           });
         }
         this.back();
+        this.modalService.dismissAll();
+        this.processingApprove = false;
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify('error', `${error.error.message}`);
+        this.notifier.notify('error', `${error.message}`);
+        this.processingApprove = false;
       },
     );
   }
@@ -810,6 +817,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if(!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+    
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
 

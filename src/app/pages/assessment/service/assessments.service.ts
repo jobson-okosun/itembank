@@ -38,36 +38,6 @@ export class AssessmentsService {
 
   constructor(private http: HttpClient, private notifier: NotifierService) {}
 
-  getItem(key: string, fallback = null): string | null {
-    try {
-      const value = localStorage.getItem(key);
-      return value ? JSON.parse(value) : fallback;
-    }
-    catch (error) {
-      return fallback;
-    }
-  }
-
-  setItem(key: string, value: any): void {
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-    catch (error) {
-      if(error.name === "QuotaExceededError") {
-        console.error("LocalStorage quota exceeded!");
-      }
-    }
-  }
-
-  clearItem(key: string): void {
-    try {
-      localStorage.removeItem(key);
-    }
-    catch (error) {
-      console.error("Error clearing item from LocalStorage:", error);
-    }
-  }
-
   validateBlockSection(newBlock: NewSectionBlock, section: SectionDetails) {
     // console.log(this.currentBlock, "currentBlock");
     // console.log(newBlock, "newblock");

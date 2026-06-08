@@ -24,6 +24,7 @@ import { UsageHistory } from '../../items/models/usage-history';
 import { BlockDetails } from '../../assessment/model/section-details';
 import { Location } from '@angular/common';
 import { timer } from 'rxjs';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-list-passages',
@@ -122,6 +123,7 @@ export class ListPassagesComponent implements OnInit {
     private modalService: NgbModal,
     private userService: UserService,
     private location: Location,
+    private _itemService: ItemServiceService
   ) {}
 
   ngOnInit(): void {
@@ -768,6 +770,17 @@ export class ListPassagesComponent implements OnInit {
       topicId: this.selectedTopic.topicId,
       topicName: this.selectedTopic.topicName,
     };
+
+    const passageTrail = {
+      subjectId: this.subjectId,
+      subjectName: this.subjectName,
+      topicId: this.selectedTopic.topicId,
+      topicName: this.selectedTopic.topicName,
+    };
+
+    this._itemService.setItem('Passage_Trail', passageTrail);
+
+
     this.router.navigate([
       '/examalpha/passages/subjects/' + this.subjectId + '/new-passage',
     ]);
