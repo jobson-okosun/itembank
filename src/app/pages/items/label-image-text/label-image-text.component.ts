@@ -167,6 +167,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     private notifierService: NotifierService,
     private ar: ActivatedRoute,
     private passageService: AllPassagesService,
+
   ) {}
 
   // ngAfterViewInit() {
@@ -683,6 +684,12 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm?: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifierService.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     // Validate that all label positions have non-empty labels
     const hasEmptyLabel = this.dropdownLabels.some(
       (label) => !label.inputValue || label.inputValue.trim() === ""
@@ -981,7 +988,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     // if (!validated) {
     //   return;
     // }
-    
+
     // this.publishingItem = true;
     // this.publishLoader();
 

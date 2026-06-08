@@ -28,6 +28,7 @@ export class ItemTagComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() sendTags = new EventEmitter();
   @Input() resetTagsArray: boolean = false;
+  @Input() resetTagsArrayOnManualFilter: boolean = false;
   @Input() selectedTopicForFiltering: string | null = null;
 
 
@@ -59,6 +60,12 @@ export class ItemTagComponent implements OnInit {
     this.loadTags();
 
     if (this.resetTagsArray) {
+      // console.log("RESETTING TAGS ARRAY");
+      this.Tag = [];
+      this.sendTags.emit(this.Tag);
+    }
+
+       if (this.resetTagsArrayOnManualFilter) {
       // console.log("RESETTING TAGS ARRAY");
       this.Tag = [];
       this.sendTags.emit(this.Tag);

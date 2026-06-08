@@ -108,6 +108,7 @@
                 (click)="approveQuestion(itemForm)">
                 <a class="dropdown-item">Save</a>
               </li>
+
               <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
                 (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>

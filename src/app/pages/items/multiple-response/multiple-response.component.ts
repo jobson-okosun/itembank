@@ -593,6 +593,12 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     if (!this.validateMinOptions(item)) {

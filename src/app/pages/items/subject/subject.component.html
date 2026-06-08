@@ -549,13 +549,12 @@
               </div>
               <div class="row-g-3">
                 <div class="col-sm-12">
-                  <app-item-tag (sendTags)="recieveItemTags($event)"></app-item-tag>
+                  <app-item-tag (sendTags)="recieveItemTags($event)" [resetTagsArrayOnManualFilter]="resetTagsInputFieldOnManualOpenFilterDialog"></app-item-tag>
                 </div>
               </div>
               <div class="d-flex align-items-center gap-2">
                 <button type="button" (click)="clearFilter()" class="btn btn-danger mt-2">
-                  <i class="ri-close-line align-middle me-2 mr-1"></i>clear
-                  filter
+                  <i class="ri-close-line align-middle me-2 mr-1"></i>Clear Filter
                 </button>
                 <div class="col-sm-auto">
                   <button type="submit" class="btn btn-secondary mt-2">

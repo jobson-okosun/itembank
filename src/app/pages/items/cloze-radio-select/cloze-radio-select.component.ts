@@ -314,7 +314,7 @@ export class ClozeRadioSelectComponent implements OnInit {
               // Replace the old IMG element with a new SPAN element
               const newSpan = document.createElement('span');
               newSpan.className = 'math-expression';
-              newSpan.setAttribute('data-latex', updatedLatex);  
+              newSpan.setAttribute('data-latex', updatedLatex);
               newSpan.setAttribute('contenteditable', 'false');
               newSpan.style.display = 'inline-block';
               newSpan.style.verticalAlign = 'middle';
@@ -756,6 +756,12 @@ export class ClozeRadioSelectComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     // console.log(this.itemUtil.currentItemTrail)
     const item = this.buildItem(itemForm);
 
@@ -870,7 +876,7 @@ export class ClozeRadioSelectComponent implements OnInit {
         const options = container.querySelectorAll<HTMLElement>(".option")
 
         for (let i = 0; i < Array.from(options).length; i++) {
-          const option =  Array.from(options)[i];
+          const option = Array.from(options)[i];
           const optionLabel = option.querySelector('label')
           const optionInput = option.querySelector('input[type="radio"]') as HTMLInputElement
 
@@ -1017,7 +1023,7 @@ export class ClozeRadioSelectComponent implements OnInit {
         }
       );
   }
-  
+
   ngOnDestroy(): void {
     this.itemUtil.previewItem = false
   }

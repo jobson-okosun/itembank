@@ -689,6 +689,11 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
 
     // this.preview = true;
 
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     
     if (this.editData) {

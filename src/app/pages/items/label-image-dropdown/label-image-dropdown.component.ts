@@ -553,6 +553,12 @@ export class LabelImageDropdownComponent
   editPassage() { }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifierService.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     this.previewData = item;
@@ -933,7 +939,7 @@ export class LabelImageDropdownComponent
 
     // this.publishingItem = true;
     // this.publishLoader();
-    
+
     // console.log("builtItem", item);
 
     switch (status) {

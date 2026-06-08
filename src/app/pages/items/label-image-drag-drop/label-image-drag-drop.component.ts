@@ -60,8 +60,7 @@ declare const MathJax: any;
   styleUrls: ['./label-image-drag-drop.component.scss'],
 })
 export class LabelImageDragDropComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+  implements OnInit, AfterViewInit, OnDestroy {
   @Input() selectedItemType!: string;
   @Input() formType!: string;
   @Input() editData!: any;
@@ -139,25 +138,25 @@ export class LabelImageDragDropComponent
     id: string;
     item: null;
   }> = [
-    {
-      x: 0,
-      y: 0,
-      inputValue: "",
-      selectedOptionIndex: null,
+      {
+        x: 0,
+        y: 0,
+        inputValue: "",
+        selectedOptionIndex: null,
 
-      id: '1',
-      item: null,
-    },
-    // {
-    //   x: 80,
-    //   y: 80,
-    //   inputValue: "",
-    //   selectedOptionIndex: null,
+        id: '1',
+        item: null,
+      },
+      // {
+      //   x: 80,
+      //   y: 80,
+      //   inputValue: "",
+      //   selectedOptionIndex: null,
 
-    //   id: "2",
-    //   item: null,
-    // },
-  ];
+      //   id: "2",
+      //   item: null,
+      // },
+    ];
   selectedOptionIndex: number | null = null;
   draggedItem: any = null;
   distractor: string = '';
@@ -214,7 +213,7 @@ export class LabelImageDragDropComponent
     private itemService: ItemHttpService,
     private ar: ActivatedRoute,
     private passageService: AllPassagesService,
-  ) {}
+  ) { }
 
   ngAfterViewInit() {
     // Capture the initial size of the image after the view is initialized
@@ -337,7 +336,7 @@ export class LabelImageDragDropComponent
   log() {
     // console.log('unploading')
   }
-  
+
   onStimulusChange(value: string): void {
     this.stimulus.emit(value);
   }
@@ -377,7 +376,7 @@ export class LabelImageDragDropComponent
               // Replace the old IMG element with a new SPAN element
               const newSpan = document.createElement('span');
               newSpan.className = 'math-expression';
-              newSpan.setAttribute('data-latex', updatedLatex);  
+              newSpan.setAttribute('data-latex', updatedLatex);
               newSpan.setAttribute('contenteditable', 'false');
               newSpan.style.display = 'inline-block';
               newSpan.style.verticalAlign = 'middle';
@@ -481,7 +480,7 @@ export class LabelImageDragDropComponent
     this.responseContainers.push(responseContainer);
   }
 
-  onChange() {}
+  onChange() { }
 
   changePosition(e: any, option: Option) {
     /* console.log(e);*/
@@ -594,9 +593,9 @@ export class LabelImageDragDropComponent
     setTimeout(() => {
       const element = document.getElementById("labels");
       element?.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "nearest"
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest"
       });
     }, 1000)
   }
@@ -761,14 +760,20 @@ export class LabelImageDragDropComponent
 
     item.itemTagsDTOS = this.tags
       ? this.tags.map((tag) => {
-          return { tagId: tag.tagId };
-        })
+        return { tagId: tag.tagId };
+      })
       : [];
     // console.log(item);
     return item;
   }
 
   doPreview(itemForm?: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifierService.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     this.previewData = this.buildItem();
     // console.log(this.previewData);
@@ -957,7 +962,7 @@ export class LabelImageDragDropComponent
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm?: any) {}
+  saveItemToPassage(itemForm?: any) { }
 
   updateItem(itemForm?: any, status?: string) {
     let item = this.buildItem(itemForm);

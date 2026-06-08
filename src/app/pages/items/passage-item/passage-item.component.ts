@@ -10,6 +10,7 @@ import { ItemTagsDtos } from '../models/item-tags-dtos';
 import { ItemStatusEnum } from '../models/item-status-enum';
 import Swal from 'sweetalert2';
 import { Location } from '@angular/common';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-passage-item',
@@ -33,7 +34,8 @@ export class PassageItemComponent implements OnInit, OnDestroy {
     public itemUtil: ItemUtilitiesService,
     private passageService: AllPassagesService,
     private location: Location,
-    private itemService: ItemHttpService
+    private itemService: ItemHttpService,
+    private notifier: NotifierService
   ) {}
 
   ngOnInit(): void {}
@@ -43,6 +45,12 @@ export class PassageItemComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.passage.stimulus) {
+      this.notifier.notify('error', 'Please enter a passage to preview');
+      return;
+    }
+
     this.preview = true;
     this.itemUtil.previewItem = true
     this.previewData = this.passage;

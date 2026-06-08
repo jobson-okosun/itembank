@@ -607,6 +607,12 @@ export class MatchingComponent implements OnInit, OnDestroy {
   }
 
   doPreview(item: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     this.buildItem(item);
     this.previewData = this.buildItem(item);

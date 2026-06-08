@@ -618,6 +618,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.defaultItemProperties.stimulus) {
+      this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
     this.previewData = this.buildItem(itemForm);
     this.itemUtil.previewItem = true;
     //console.log(this.previewData);
