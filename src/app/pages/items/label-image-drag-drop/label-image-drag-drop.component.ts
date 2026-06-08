@@ -971,8 +971,9 @@ export class LabelImageDragDropComponent
     // }
 
     // console.log('builtItem', item);
-    this.publishingItem = true;
-    this.publishLoader();
+
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     switch (status) {
       case 'save':

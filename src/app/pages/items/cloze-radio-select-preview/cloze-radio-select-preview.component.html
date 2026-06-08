@@ -1,58 +1,49 @@
 <div class="card">
-  <div class="card-body">
+    <div class="card-body">
 
-    <!-- Passage stimulus -->
-    <div *ngIf="previewData?.itemPassage && component !== 'passageItem'" class="mb-3">
-      <div [innerHTML]="previewData.itemPassage | htmlSanitizer"></div>
-      <hr />
-    </div>
-
-    <!-- Cloze text + options -->
-    <div style="max-height: 250px; overflow-y: auto;" class="text-justify d-flex flex-wrap gap-2 cloze">
-        <div *ngFor="let item of clozeRenderArray; let i = index" class="d-flex align-items-center gap-2">
-            <!-- Plain text -->
-            <span [innerHTML]="item.text"  class="d-flex align-items-center"></span>
-
-            <!-- Radio buttons -->
-            <ng-container *ngIf="item.responses.length">
-                <div class="d-inline-flex flex-wrap gap-2 bg-light p-2 rounded-pill">
-                <span *ngFor="let resp of item.responses; let respIndex = index" type="button" class="d-flex align-items-center gap-2 rounded-pill bg-white py-2 px-3">
-                    <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp" [checked]="previewData.scoringOption.answers[i] === resp" />
-
-                    <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp"/>
-                    <span>{{ resp }}</span>
-                </span>
-                </div>
-            </ng-container>
+        <!-- Passage stimulus -->
+        <div *ngIf="previewData?.itemPassage && component !== 'passageItem'" class="mb-3">
+            <div [innerHTML]="previewData.itemPassage | htmlSanitizer"></div>
+            <hr />
         </div>
-    </div>
 
-    <hr />
+        <!-- Cloze text + options -->
+        <div style="max-height: 250px; overflow-y: auto;" class="text-justify d-flex flex-wrap gap-2 cloze">
+            <div *ngFor="let item of clozeRenderArray; let i = index" class="d-flex align-items-center gap-2">
+                <!-- Plain text -->
+                <span [innerHTML]="item.text" class="d-flex align-items-center"></span>
 
-    <!-- Show answer toggle -->
+                <!-- Radio buttons -->
+                <ng-container *ngIf="item.responses.length">
+                    <div class="d-inline-flex flex-wrap gap-2 bg-light p-2 rounded-pill">
+                        <span *ngFor="let resp of item.responses; let respIndex = index" type="button"
+                            class="d-flex align-items-center gap-2 rounded-pill bg-white py-2 px-3">
+                            <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp"
+                                [checked]="previewData.scoringOption.answers[i] === resp" />
+
+                            <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp" />
+                            <span>{{ resp }}</span>
+                        </span>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+        <hr />
+
+        <!-- Show answer toggle -->
         <div class="text-primary d-flex justify-content-between">
-      <div class="form-check mt-1">
-        <input
-        
-          class="form-check-input"
-          type="checkbox"
-          name="showAnswer"
-          (change)="viewAnswer()"
-        />
-        <label class="form-check-label">
-          Show Answer
-          <span
-            *ngIf="previewData.scoringOption.answers.length < 1"
-            class="text-danger"
-            >incomplete answers provided!</span
-          ></label
-        >
-      </div>
+            <div class="form-check mt-1">
+                <input class="form-check-input" type="checkbox" name="showAnswer" (change)="viewAnswer()" />
+                <label class="form-check-label">
+                    Show Answer
+                    <span *ngIf="previewData.scoringOption.answers.length < 1" class="text-danger">incomplete answers
+                        provided!</span></label>
+            </div>
 
-      <div *ngIf="!assessmentActive" class="d-flex gap-2 float-end flex-wrap">
+            <div *ngIf="!assessmentActive" class="d-flex gap-2 float-end flex-wrap">
 
-        <button
-        *ngIf="
+                <button *ngIf="
           !currentUser.authorities.includes('MODERATOR') &&
           !assessmentActive &&
           !recycleComponentActive &&
@@ -61,17 +52,12 @@
           component !== 'question_status'
           &&
                 !isEditPreview
-        "
-        class="btn btn-sm btn-danger"
-        type="button"
-        (click)="
+        " class="btn btn-sm btn-danger" type="button" (click)="
           openDeleteItemModal(deleteQuestionConfirmationModal, previewData.id)
-        "
-      >
-        <i class="ri-delete-bin-2-fill align-middle fs-14"></i>Delete
-      </button>
-      <button
-        *ngIf="
+        ">
+                    <i class="ri-delete-bin-2-fill align-middle fs-14"></i>Delete
+                </button>
+                <button *ngIf="
           !currentUser.authorities.includes('MODERATOR') &&
           !assessmentActive &&
           !recycleComponentActive &&
@@ -80,45 +66,31 @@
           component !== 'question_status'
           &&
                 !isEditPreview
-        "
-        class="btn btn-sm btn-danger"
-        type="button"
-        (click)="
+        " class="btn btn-sm btn-danger" type="button" (click)="
           openDeletePassageItemModal(
             deleteQuestionConfirmationModal,
             previewData.itemId
           )
-        "
-      >
-        <i class="ri-delete-bin-5-fill align-middle fs-14"></i>Delete
-      </button>
+        ">
+                    <i class="ri-delete-bin-5-fill align-middle fs-14"></i>Delete
+                </button>
 
-        <button
-          *ngIf="
+                <button *ngIf="
             !currentUser.authorities.includes('MODERATOR') && !assessmentActive
-          "
-          type="button"
-          class="btn btn-primary"
-          (click)="edit()"
-        >
-          <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
-        </button>
-        <button
-        *ngIf="
+          " type="button" class="btn btn-primary" (click)="edit()">
+                    <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
+                </button>
+                <button *ngIf="
             currentUser.authorities.includes('MODERATOR') && 
             !assessmentActive &&
             previewData.itemStatus !== 'REJECTED' &&
             previewData.itemStatus !== 'PUBLISHED'
-          "
-          type="button"
-          class="btn btn-primary"
-          (click)="edit()"
-        >
-          Review
-        </button>
-      </div>
+          " type="button" class="btn btn-primary" (click)="edit()">
+                    Review
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -131,26 +103,17 @@
             </p>
         </div>
         <div class="d-flex justify-content-center gap-2 mt-2">
-            <button
-                type="button"
-                (click)="modal.close('Close click')"
-                class="btn btn-secondary">
+            <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
                 No, Cancel
             </button>
-            <button
-                type="button"
-                (click)="deleteItem()"
-                class="btn btn-danger"
+            <button type="button" (click)="deleteItem()" class="btn btn-danger"
                 *ngIf="!processing_delete && !assessmentActive">
                 Yes, Delete It
             </button>
             <ng-template [ngIf]="processing_delete">
-                <button
-                    class="btn btn-outline-danger btn-load"
-                    [disabled]="processing_delete">
+                <button class="btn btn-outline-danger btn-load" [disabled]="processing_delete">
                     <span class="d-flex align-items-center">
-                        <span class="spinner-border flex-shrink-0"
-                            role="status">
+                        <span class="spinner-border flex-shrink-0" role="status">
                             <span class="visually-hidden">Deleting...</span>
                         </span>
                         <span class="flex-grow-1 ms-2"> Deleting... </span>
@@ -170,26 +133,16 @@
             </p>
         </div>
         <div class="d-flex justify-content-center gap-2 mt-2">
-            <button
-                type="button"
-                (click)="modal.close('Close click')"
-                class="btn btn-secondary">
+            <button type="button" (click)="modal.close('Close click')" class="btn btn-secondary">
                 No, Cancel
             </button>
-            <button
-                type="button"
-                (click)="deletePassageItem()"
-                class="btn btn-danger"
-                *ngIf="!processing_delete">
+            <button type="button" (click)="deletePassageItem()" class="btn btn-danger" *ngIf="!processing_delete">
                 Yes, Delete It
             </button>
             <ng-template [ngIf]="processing_delete">
-                <button
-                    class="btn btn-outline-danger btn-load"
-                    [disabled]="processing_delete">
+                <button class="btn btn-outline-danger btn-load" [disabled]="processing_delete">
                     <span class="d-flex align-items-center">
-                        <span class="spinner-border flex-shrink-0"
-                            role="status">
+                        <span class="spinner-border flex-shrink-0" role="status">
                             <span class="visually-hidden">Deleting...</span>
                         </span>
                         <span class="flex-grow-1 ms-2"> Deleting... </span>
@@ -203,31 +156,23 @@
 <ng-template #itemUsageModal let-modal>
     <div class="modal-header">
         <h3 class="modal-title">QUESTION USAGE HISTORY</h3>
-        <button
-            type="button"
-            class="close"
-            data-dismiss="modal"
-            aria-label="Close"
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"
             (click)="modal.close('Close click')">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div
-        class="modal-body px-5"
-        style="
+    <div class="modal-body px-5" style="
       height: 350px;
       scroll-behavior: smooth;
       overflow-x: hidden;
       overflow-y: auto;
     ">
-        <ng-container
-            *ngIf="
+        <ng-container *ngIf="
         !loading_usage_history &&
         itemUsageHistory &&
         itemUsageHistory.length > 0
       ">
-            <div *ngFor="let usage of itemUsageHistory"
-                class="profile-timeline">
+            <div *ngFor="let usage of itemUsageHistory" class="profile-timeline">
                 <!-- <div class="d-flex align-items-center">
           <div class="flex-shrink-0 avatar-xs">
             <div class="avatar-title rounded-circle 'bg-success'">
@@ -243,22 +188,14 @@
             </h6>
           </div>
         </div> -->
-                <ngb-accordion
-                    #acc="ngbAccordion"
-                    activeIds="static-1"
-                    [closeOthers]="true">
+                <ngb-accordion #acc="ngbAccordion" activeIds="static-1" [closeOthers]="true">
                     <ngb-panel id="static-1">
                         <ng-template ngbPanelTitle>
-                            <a
-                                class="accordion-button p-2 shadow-none"
-                                data-bs-toggle="collapse"
-                                href="javasccript:void(0;)"
-                                aria-expanded="true"
-                                aria-controls="collapseOne">
+                            <a class="accordion-button p-2 shadow-none" data-bs-toggle="collapse"
+                                href="javasccript:void(0;)" aria-expanded="true" aria-controls="collapseOne">
                                 <div class="d-flex align-items-center">
                                     <div class="flex-shrink-0 avatar-xs">
-                                        <div
-                                            class="avatar-title rounded-circle 'bg-success'">
+                                        <div class="avatar-title rounded-circle 'bg-success'">
                                             <i class="ri-file-line"></i>
                                         </div>
                                     </div>
@@ -275,10 +212,7 @@
                             </a>
                         </ng-template>
                         <ng-template ngbPanelContent>
-                            <div
-                                id="collapseOne"
-                                class="accordion-collapse collapse show"
-                                aria-labelledby="headingOne"
+                            <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
                                 data-bs-parent="#accordionExample">
                                 <div class="accordion-body ms-2 ps-5 pt-0">
                                     <p class="text-muted">
@@ -293,43 +227,30 @@
             </div>
         </ng-container>
 
-        <div
-            class="p-2"
-            *ngIf="!loading_usage_history && itemUsageHistory.length < 1">
-            <div
-                class="d-flex flex-column justify-content-between align-items-center">
-                <img
-                    src="assets/images/blank_pages/empty-state.png"
-                    width="200"
-                    height="200"
-                    class />
+        <div class="p-2" *ngIf="!loading_usage_history && itemUsageHistory.length < 1">
+            <div class="d-flex flex-column justify-content-between align-items-center">
+                <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class />
                 <h4 class="text-secondary fw-bold my-2">
                     This Question has never been used for an exam!
                 </h4>
             </div>
         </div>
 
-        <div
-            *ngIf="loading_usage_history"
-            class="d-flex align-items-center justify-content-center"
+        <div *ngIf="loading_usage_history" class="d-flex align-items-center justify-content-center"
             style="height: 60vh">
             <div class="d-flex align-items-center gap-2">
                 <div class="spinner-border text-info fs-18" role="status">
                     <span class="visually-hidden">Loading question usage
                         history...</span>
                 </div>
-                <span
-                    class="text-info text-center fs-16 flex-grow-1 ms-2">Loading
+                <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading
                     question usage history...</span>
             </div>
         </div>
     </div>
     <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
-            <button
-                type="button"
-                (click)="modal.close('Close click')"
-                class="btn btn-danger">
+            <button type="button" (click)="modal.close('Close click')" class="btn btn-danger">
                 Close
             </button>
         </div>

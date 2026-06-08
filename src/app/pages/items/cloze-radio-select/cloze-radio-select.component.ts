@@ -926,8 +926,8 @@ export class ClozeRadioSelectComponent implements OnInit {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     switch (status) {
       case "save":

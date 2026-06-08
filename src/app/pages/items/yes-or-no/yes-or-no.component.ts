@@ -632,8 +632,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&

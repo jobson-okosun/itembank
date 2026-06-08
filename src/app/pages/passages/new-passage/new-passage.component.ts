@@ -14,6 +14,7 @@ import { Account } from 'src/app/authentication/model/account.model';
 import { UserService } from 'src/app/shared/user.service';
 import { ItemService } from '../../exam-preview/services/item.service';
 import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-new-passage',
@@ -47,8 +48,9 @@ export class NewPassageComponent implements OnInit, OnDestroy {
     private location: Location,
     private itemService: ItemHttpService,
     private userService: UserService,
-    private _itemServiceService: ItemServiceService
-  ) {}
+    private _itemServiceService: ItemServiceService,
+    private notifier: NotifierService
+  ) { }
 
   ngOnDestroy(): void {
     this._itemServiceService.clearItem('Passage_Trail');
@@ -73,6 +75,12 @@ export class NewPassageComponent implements OnInit, OnDestroy {
   }
 
   doPreview(itemForm: any) {
+
+    if (!this.passage.stimulus) {
+      this.notifier.notify('error', `Please compose a passage`);
+      return;
+    }
+
     this.itemUtil.previewItem = true
     this.preview = true;
     this.previewData = this.passage;
@@ -90,8 +98,8 @@ export class NewPassageComponent implements OnInit, OnDestroy {
     //   return { tagId: tag.tagId };
     // });
 
-    this.passage.itemTagsDTOS = this.tags.map((tag)=> {
-      return {tagId: tag.tagId}
+    this.passage.itemTagsDTOS = this.tags.map((tag) => {
+      return { tagId: tag.tagId }
     });
 
     this.passage.subjectId = this.passageService.currentPassageTrail.subjectId;

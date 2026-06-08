@@ -981,8 +981,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     // if (!validated) {
     //   return;
     // }
-    this.publishingItem = true;
-    this.publishLoader();
+    
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     // console.log("builtItem", item);
 

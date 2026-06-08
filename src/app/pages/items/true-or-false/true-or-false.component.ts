@@ -618,8 +618,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.publishingItem = true;
-    this.publishLoader();
+    // this.publishingItem = true;
+    // this.publishLoader();
 
     switch (status) {
       case 'save':

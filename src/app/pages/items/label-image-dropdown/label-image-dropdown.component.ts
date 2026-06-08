@@ -930,8 +930,10 @@ export class LabelImageDropdownComponent
     // if (!validated) {
     //   return;
     // }
-    this.publishingItem = true;
-    this.publishLoader();
+
+    // this.publishingItem = true;
+    // this.publishLoader();
+    
     // console.log("builtItem", item);
 
     switch (status) {
