@@ -20,9 +20,9 @@
 
 <div *ngIf="!fetchingAssessment && assessments">
     <div class="d-flex align-items-center justify-content-end gap-2 mb-3">
-      <button class="btn btn-primary" (click)="openAppDownloadsReportModal(appDownloadsReportModal)">App downloads</button>
+      <!-- <button class="btn btn-primary" (click)="openAppDownloadsReportModal(appDownloadsReportModal)">App downloads</button> -->
       <!-- <button class="btn btn-primary" (click)="openAppInstallationsReportModal(appInstallationsReportModal)">App installations</button> -->
-      <button class="btn btn-primary" (click)="openAppClearsReportModal(appClearsReportModal)">App clear</button>
+      <!-- <button class="btn btn-primary" (click)="openAppClearsReportModal(appClearsReportModal)">App clear</button> -->
     </div>
     <div class="row">
       <ng-container *ngFor="let assessment of assessments.content">
@@ -34,7 +34,7 @@
                   href="javascript:void(0);"
                   (click)="setCurrentAssessment(assessment)"
                   routerLink="/examalpha/exams/{{ assessment.id }}/exam-schedule">{{
-                  assessment.name }}</a>
+                  assessment.name?.toUpperCase() }}</a>
               </h5>
               <div class="dropdown" ngbDropdown>
                 <a

@@ -79,6 +79,14 @@
                   Grading
                 </a>
               </li>
+              <li>
+                <a
+                  class="dropdown-item"
+                  routerLink="/examalpha/exams/{{ assessment.id }}/marking-guide/sections"
+                  [queryParams]="{ assessmentName: assessment.name }"><i
+                    class="ri-check-double-line align-bottom me-2 text-muted"></i>
+                  Marking Guide</a>
+              </li>
               <!-- <li>
                 <a
                   *ngIf="assessment.status !== 'PUBLISHED'"

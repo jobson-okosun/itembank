@@ -50,7 +50,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
   @Output() stimulus = new EventEmitter<string>();
   @ViewChild('tagRef') tagRef: ItemTagComponent;
 
-  currentUser: Account;
+  currentUser: Account; 
 
   init_Options_Count: number = 4;
 

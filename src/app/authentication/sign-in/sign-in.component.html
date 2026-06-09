@@ -1,390 +1,136 @@
-<!-- Login Page-->
-<!-- <div class="auth-page-wrapper pt-4">
-  
-  <div class="auth-one-bg-position auth-one-bg" id="auth-particles">
-    <div class="bg-overlay"></div>
-
-    <div class="shape">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.1"
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-        viewBox="0 0 1440 120"
-      >
-        <path
-          d="M 0,36 C 144,53.6 432,123.2 720,124 C 1008,124.8 1296,56.8 1440,40L1440 140L0 140z"
-        ></path>
-      </svg>
-    </div>
-  </div>
-
-  <div class="auth-page-content overflow-hidden pt-5">
-    <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8 col-lg-6 col-xl-5">
-          <div class="card mt-2">
-            <div class="card-body px-4">
-              <div class="text-center mt-sm-5 mb-4 text-white-50">
-                <div>
-                  <a routerLink="/" class="d-inline-block auth-logo">
-                    <img src="/assets/logo/EXPryLogoHor.png" alt="" height="20" />
-                  </a>
-                </div>
-              </div>
-              <div *ngIf="itembankForm">
-                <div class="text-center mt-2">
-                  <h5 class="text-primary">Welcome Back!</h5>
-                </div>
-                <div class="p-2 mt-2">
-                  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                    <div class="mb-3">
-                      <label for="username" class="form-label">Username</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="username"
-                        placeholder="Enter username"
-                        formControlName="username"
-                        [ngClass]="{
-                          'is-invalid': checkSubmit && f['username'].errors
-                        }"
-                      />
-                      <div
-                        *ngIf="checkSubmit && f['username'].errors"
-                        class="invalid-feedback"
-                        align="left"
-                      >
-                        <div *ngIf="f['username'].errors['required']">
-                          Username is required
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mb-3">
-                      <div class="float-end">
-                        <a
-                          routerLink="/reset-password"
-                          class="text-muted"
-                          >Forgot password?</a
-                        >
-                      </div>
-                      <label class="form-label" for="password-input"
-                        >Password</label
-                      >
-                      <div class="position-relative auth-pass-inputgroup mb-3">
-                        <input
-                          [type]="fieldTextType ? 'text' : 'password'"
-                          class="form-control pe-5"
-                          placeholder="Enter password"
-                          id="password-input"
-                          formControlName="password"
-                          [ngClass]="{
-                            'is-invalid': checkSubmit && f['password'].errors
-                          }"
-                        />
-                        <button
-                          class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
-                          type="button"
-                          id="password-addon"
-                        >
-                          <i
-                            class="mdi align-middle"
-                            [ngClass]="{
-                              'mdi-eye-off-outline': !fieldTextType,
-                              'mdi-eye-outline': fieldTextType
-                            }"
-                            (click)="toggleFieldTextType()"
-                          ></i>
-                        </button>
-                        <div
-                          *ngIf="checkSubmit && f['password'].errors"
-                          class="invalid-feedback"
-                        >
-                          <span *ngIf="f['password'].errors['required']"
-                            >Password is required</span
-                          >
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="mt-2">
-                      <button
-                        class="btn btn-success w-100"
-                        type="submit"
-                        [disabled]="submitted === true"
-                      >
-                        {{ submitted === false ? 'Sign In' : 'Signing in...' }}
-                      </button>
-                    </div>
-
-                    <div *ngIf="error" class="mt-2">
-                      <p class="alert alert-danger alert-dismissible fade show">
-                        {{ error_msg }}
-                      </p>
-                    </div>
-                  </form>
-                </div>
-
-                <div class="mt-3 text-center">
-                  <p class="mb-0">
-                    Don't have an account ?
-                    <a
-                      routerLink="/auth/sign-up"
-                      class="fw-semibold text-primary text-decoration-underline"
-                    >
-                      Signup</a
-                    >
-                  </p>
-                </div>
-              </div>
-          
-            </div>
-          
-          </div>
-          
+<!-- auth-page wrapper -->
+<div class="container-fluid p-0">
+  <div class="row g-0 vh-100">
+    <!-- Left Column: Form Section -->
+    <div class="col-lg-6 d-flex flex-column justify-content-center bg-white shadow-lg position-relative" style="z-index: 1;">
+      <div class="w-100 m-auto px-4 px-sm-5" style="max-width: 480px;">
+        <!-- Logo -->
+        <div class="mb-5 text-center text-lg-start">
+          <a routerLink="/" class="d-inline-block auth-logo" *ngIf="showAppAssets">
+            <img src="/assets/logo/EXPryLogoHor.png" alt="ExamAlpha Logo" height="24" />
+          </a>
         </div>
-      </div>
-    </div>
-    
-  </div>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="text-center">
-            <p class="mb-0 text-primary">
-              &copy; {{ year }} ExamAlpha. Crafted with
-              <i class="mdi mdi-heart text-danger"></i> by Multilent
+        <!-- Greeting -->
+        <div class="mb-4 text-center text-lg-start">
+          <h3 class="fw-bold" style="color: #063c5a;">Welcome Back!</h3>
+          <p class="text-muted">Sign in to your account to continue.</p>
+        </div>
+
+        <!-- Login Form -->
+        <div class="mt-2" *ngIf="true">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-4">
+              <label for="username" class="form-label fw-medium text-dark">Username</label>
+              <input type="text" class="form-control form-control-lg bg-light border-light" id="username" placeholder="Enter username"
+                formControlName="username" [ngClass]="{
+                  'is-invalid': checkSubmit && f['username'].errors
+                }" />
+              <div *ngIf="checkSubmit && f['username'].errors" class="invalid-feedback">
+                <div *ngIf="f['username'].errors['required']">
+                  Username is required
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="float-end">
+                <a routerLink="/reset-password" class="text-muted fs-14">Forgot password?</a>
+              </div>
+              <label class="form-label fw-medium text-dark" for="password-input">Password</label>
+              <div class="position-relative auth-pass-inputgroup">
+                <input [type]="fieldTextType ? 'text' : 'password'" class="form-control form-control-lg bg-light border-light pe-5"
+                  placeholder="Enter password" id="password-input" formControlName="password" [ngClass]="{
+                    'is-invalid': checkSubmit && f['password'].errors
+                  }" />
+                <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
+                  style="padding: 0.75rem 1rem;"
+                  type="button" id="password-addon" (click)="toggleFieldTextType()">
+                  <i class="mdi align-middle fs-18" [ngClass]="{
+                      'mdi-eye-off-outline': !fieldTextType,
+                      'mdi-eye-outline': fieldTextType
+                    }"></i>
+                </button>
+                <div *ngIf="checkSubmit && f['password'].errors" class="invalid-feedback">
+                  <span *ngIf="f['password'].errors['required']">Password is required</span>
+                </div>
+              </div>
+            </div>
+
+            <div *ngIf="error" class="mb-3">
+              <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm mb-0">
+                <i class="ri-error-warning-line me-2"></i><strong>Error</strong> - {{ error_msg }}
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <button class="btn w-100 btn-lg shadow-sm text-white" style="background-color: #063c5a; border-color: #063c5a;" type="submit" [disabled]="submitted === true">
+                {{ submitted === false ? "Sign In" : "Signing in..." }}
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-5 text-center">
+            <p class="mb-0 text-muted">
+              Don't have an account?
+              <a routerLink="/account/sign-up" class="fw-semibold text-decoration-underline" style="color: #063c5a;">
+                Sign up</a>
+            </p>
+          </div>
+        </div>
+
+        <!-- OTP screen (hidden by default based on *ngIf="false") -->
+        <div class="mt-2" *ngIf="false">
+          <p class="text-muted mb-4">Please enter the 6-digit OTP sent to your device.</p>
+          <div class="d-flex gap-2 mb-4 justify-content-between">
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 0)" />
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 1)" />
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 2)" />
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 3)" />
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 4)" />
+            <input #otpInput type="text" class="form-control form-control-lg text-center bg-light border-light" style="width: 45px; height: 50px;" maxlength="1" (keyup)="moveFocus($event, 5)" />
+          </div>
+        
+          <div class="mt-4">
+            <button class="btn btn-primary w-100 btn-lg shadow-sm" type="submit" [disabled]="!isOtpComplete() || isSubmittingOtp" (click)="submitOtp()">
+              {{ isSubmittingOtp === false ? "Verify & Sign In" : "Verifying..." }}
+            </button>
+          </div>
+
+          <div class="mt-5 text-center">
+            <p class="mb-0 text-muted">
+              Don't have an account?
+              <a routerLink="/account/sign-up" class="fw-semibold text-primary text-decoration-underline">
+                Sign up</a>
             </p>
           </div>
         </div>
       </div>
     </div>
-  </footer>
-</div> -->
 
-<!-- auth-page wrapper -->
-<div style="height: 100vh; overflow: hidden"
-  class="auth-page-wrapper auth-bg-cover d-flex justify-content-center align-items-center min-vh-100">
-  <div class="bg-overlay"></div>
-  <!-- auth-page content -->
-  <div class="auth-page-content overflow-hidden d-flex align-items-center border py-0" style="height: 100vh">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-12">
-
-          <!-- Login screen -->
-          <div class="card overflow-hidden border-0 m-0" style="background-color: #f4f4f4" *ngIf="true">
-            <div class="row g-0">
-              <div class="col-lg-6">
-                <div class="p-lg-5 p-3 mx-5 d-flex flex-column justify-content-center mt-5">
-                  <div class="mt-sm-5 mb-4 text-white-50">
-                    <div>
-                      <a routerLink="/" class="d-inline-block auth-logo" *ngIf="showAppAssets">
-                        <img src="/assets/logo/EXPryLogoHor.png" alt="" height="20" />
-                      </a>
-                    </div>
-                  </div>
-                  <div>
-                    <h5 class="text-primary">Welcome Back!</h5>
-                    <!-- <p class="text-muted">Sign in to continue to Velzon.</p> -->
-                  </div>
-
-                  <div class="mt-2">
-                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                      <div class="mb-2">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username"
-                          formControlName="username" [ngClass]="{
-                            'is-invalid': checkSubmit && f['username'].errors
-                          }" />
-                        <div *ngIf="checkSubmit && f['username'].errors" class="invalid-feedback" align="left">
-                          <div *ngIf="f['username'].errors['required']">
-                            Username is required
-                          </div>
-                        </div>
-                      </div>
-
-                      <div class="mb-2">
-                        <div class="float-end">
-                          <a routerLink="/reset-password" class="text-muted">Forgot password?</a>
-                        </div>
-                        <label class="form-label" for="password-input">Password</label>
-                        <div class="position-relative auth-pass-inputgroup mb-3">
-                          <input [type]="fieldTextType ? 'text' : 'password'" class="form-control pe-5"
-                            placeholder="Enter password" id="password-input" formControlName="password" [ngClass]="{
-                              'is-invalid': checkSubmit && f['password'].errors
-                            }" />
-                          <button class="btn btn-link position-absolute end-0 top-0 text-decoration-none text-muted"
-                            type="button" id="password-addon">
-                            <i class="mdi align-middle" [ngClass]="{
-                                'mdi-eye-off-outline': !fieldTextType,
-                                'mdi-eye-outline': fieldTextType
-                              }" (click)="toggleFieldTextType()"></i>
-                          </button>
-                          <div *ngIf="checkSubmit && f['password'].errors" class="invalid-feedback">
-                            <span *ngIf="f['password'].errors['required']">Password is required</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div *ngIf="error" class="mt-2">
-                        <p class="alert alert-danger alert-dismissible fade show">
-                          {{ error_msg }}
-                        </p>
-                      </div>
-
-                      <div class="mt-2">
-                        <button class="btn btn-success w-100" type="submit" [disabled]="submitted === true">
-                          {{
-                          submitted === false ? "Sign In" : "Signing in..."
-                          }}
-                        </button>
-                      </div>
-
-                      <!-- <div class="mt-3 text-center">
-                        <div class="signin-other-title">
-                          <h5 class="fs-13 mb-3 title">Or Sign In with</h5>
-                        </div>
-
-                        <div class="d-flex gap-2 justify-content-center">
-                          <button
-                            type="button"
-                            style="width: 100%"
-                            class="btn btn-outline-secondary btn-icon waves-effect waves-light"
-                          >
-                            <img
-                              src="/assets/images/google-icon.svg"
-                              alt=""
-                              srcset=""
-                              style="width: 20px"
-                            />
-                          </button>
-                        </div>
-                      </div> -->
-                    </form>
-                  </div>
-
-                  <div class="mt-3 text-center">
-                    <p class="mb-0">
-                      Don't have an account ?
-                      <a routerLink="/account/sign-up" class="fw-semibold text-primary text-decoration-underline">
-                        Signup</a>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
-
-              <div class="col-lg-6" style="background-color: #f4f4f4">
-                <div class="p-lg-5 p-3 d-lg-block d-none d-lg-block">
-                  <div class="d-flex justify-content-end align-items-center">
-                    <img src="assets/images/signup.png" alt="" style="max-width: 100%" />
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
-            </div>
-            <!-- end row -->
-          </div>
-
-          <!-- OTP screen -->
-          <div class="card overflow-hidden border-0 m-0" style="background-color: #f4f4f4" *ngIf="false">
-            <div class="row g-0">
-              <div class="col-lg-6">
-                <div class="p-lg-5 p-3 mx-5 d-flex flex-column justify-content-center mt-5">
-                  <div class="mt-sm-5 mb-4 text-white-50">
-                    <div>
-                      <a routerLink="/" class="d-inline-block auth-logo" *ngIf="showAppAssets">
-                        <img src="/assets/logo/EXPryLogoHor.png" alt="" height="20" />
-                      </a>
-                    </div>
-                  </div>
-                  <div>
-                    <h5 class="text-primary">Welcome Back!</h5>
-                    <!-- <p class="text-muted">Sign in to continue to Velzon.</p> -->
-                  </div>
-
-                  <div class="mt-2">                  
-                    <div class="d-flex gap-1 my-4">
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 0)" />
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 1)" />
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 2)" />
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 3)" />
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 4)" />
-                      <input #otpInput type="text" class="form-control fs-1 text-center" maxlength="1" (keyup)="moveFocus($event, 5)" />
-                    </div>
-                  
-                    <div class="mt-2">
-                      <button class="btn btn-success w-100" type="submit" [disabled]="!isOtpComplete() || isSubmittingOtp" (click)="submitOtp()">
-                        {{
-                        isSubmittingOtp === false ? "Sign In" : "Signing in..."
-                        }}
-                      </button>
-                    </div>
-                  </div>
-                    
-                    <div class="mt-3 text-center">
-                      <p class="mb-0">
-                        Don't have an account ?
-                        <a routerLink="/account/sign-up" class="fw-semibold text-primary text-decoration-underline">
-                          Signup</a>
-                      </p>
-                    </div>
-                </div>
-              </div>
-              <!-- end col -->
-
-              <div class="col-lg-6" style="background-color: #f4f4f4">
-                <div class="p-lg-5 p-3 d-lg-block d-none d-lg-block">
-                  <div class="d-flex justify-content-end align-items-center">
-                    <img src="assets/images/signup.png" alt="" style="max-width: 100%" />
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
-            </div>
-            <!-- end row -->
-          </div>
-
-          <!-- end card -->
+    <!-- Right Column: Banner Section -->
+    <div class="col-lg-6 d-none d-lg-flex flex-column position-relative" style="background: linear-gradient(135deg, #063c5a 0%, #021a2c 100%); color: white;">
+      <!-- Decorative overlay pattern -->
+      <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E'); opacity: 0.15;"></div>
+      
+      <div class="p-5 position-relative w-100 h-100 d-flex flex-column justify-content-between align-items-center" style="z-index: 1;">
+        
+        <!-- Top Section -->
+        <div class="text-center mt-5">
+          <h2 class="fw-bold text-white mb-3 fs-1" style="letter-spacing: 0.5px;">ExamAlpha</h2>
+          <p class="fs-16" style="color: rgba(255,255,255,0.8); max-width: 450px; margin: 0 auto; line-height: 1.6;">
+            A world-class assessment and authoring platform built for modern educational needs.
+          </p>
         </div>
-        <!-- end col -->
+
+        <!-- Bottom Section -->
+        <div class="w-100 text-center mb-5 px-4" style="max-width: 500px;">
+          <p class="fs-14 mb-0" style="color: rgba(255,255,255,0.6); line-height: 1.8;">
+            Empower your team with advanced interactive item types, a streamlined collaborative workflow for seamless reviewing, and deep actionable analytics to track assessment performance, all in one place.
+          </p>
+        </div>
+
       </div>
-      <!-- end row -->
     </div>
-    <!-- end container -->
   </div>
-  <!-- end auth page content -->
-
-  <!-- footer -->
-  <!-- end Footer -->
 </div>
-<!-- end auth-page-wrapper -->
-
-<!-- <editor
-*ngIf="!show"
-  name="stimulus"
-  #stimulus="ngModel"
-  [(ngModel)]="itemStimulus"
-  [init]="{
-    branding: false,
-    base_url: '/tinymce',
-    height: 200,
-    suffix: '.min',
-    menubar: true,
-    plugins: 'table quickbars lists autoresize charmap paste code eqneditor',
-    paste_preprocess: preProcess,
-    setup: setup,
-    quickbars_insert_toolbars: false,
-    toolbar:
-      'undo redo | formatselect | bold italic underline eqneditor | subscript superscript | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | table quickimage quicklink equation-editor | code charmap'
-  }"
-></editor>
-
-<button (click)="viewInnerHtml()" (click)="show = !show">view</button>
-
-{{ itemStimulus }}
-
-<app-item-offline (goBack)="capture($event)" *ngIf="show"></app-item-offline> -->

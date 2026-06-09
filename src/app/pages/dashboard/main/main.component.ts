@@ -73,7 +73,7 @@ export class MainComponent implements OnInit {
     'Total Published',
     'Total Passages',
     'Total Drafts',
-    'Total Recycling',
+    'Total in Recycle',
     'Total Awaiting Moderation',
     'Total Questions Used',
   ];

@@ -142,13 +142,13 @@ export const MENU: MenuItem[] = [
     role: ["EXAMINER", "ADMIN", "MONITOR"],
     icon: "airplay",
   },
-  {
-    id: 19,
-    label: 'MENUITEMS.RESULTS.TEXT',
-    link: '/examalpha/reports',
-    role: ['EXAMINER', 'ADMIN'],
-    icon: 'bar-chart',
-  },
+  // {
+  //   id: 19,
+  //   label: 'MENUITEMS.RESULTS.TEXT',
+  //   link: '/examalpha/reports',
+  //   role: ['EXAMINER', 'ADMIN'],
+  //   icon: 'bar-chart',
+  // },
   /* {
     id: 18,
     label: 'MENUITEMS.SETTINGS.TEXT',
