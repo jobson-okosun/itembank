@@ -22,7 +22,7 @@ import { SearchTags } from "../../tags/model/search-tags.model";
 import Swal from "sweetalert2";
 import { DefaultUserSubjects } from "../model/default-user-subjects";
 import { DropdownSubjectList } from "../../items/models/dropdown-subject-list.model";
-import { NgSelectOption } from "@angular/forms";
+import { NgForm, NgSelectOption } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Account } from "src/app/authentication/model/account.model";
 import { UserService } from "src/app/shared/user.service";
@@ -60,6 +60,8 @@ export class EditUserComponent implements OnInit {
   userDefaultSubjects: Array<DefaultUserSubjects> = [];
 
   updating: boolean = false;
+
+  allEditInputFieldIsRequired: boolean = false;
 
   // currentUser: Account = this.userService2.getCurrentUser();
   currentUser = this.userService2.getCurrentUser()
@@ -159,8 +161,30 @@ export class EditUserComponent implements OnInit {
     }
   }
 
-  updateUserDetails(updateDetailForm?: any) {
-    this.updating = true;
+  updateUserDetails(updateDetailForm: NgForm) {
+
+    if(this.userDetail.firstName.trim() === "" || this.userDetail.lastName.trim() === "" || this.userDetail.phone.trim() === "" || this.userDetail.email.trim() === "") {
+
+      this.allEditInputFieldIsRequired = true;
+
+      console.log('INPUT ALL FIELD: ', this.userDetail);
+      return;
+    }
+
+    if (updateDetailForm.controls['email']?.invalid) {
+      console.log('INVALID EMAIL');
+      return;
+    }
+
+    if(this.currentUser.authorities?.includes('ADMIN') && this.userDetail.username.trim() === "") {
+
+      this.allEditInputFieldIsRequired = true;
+
+      console.log('USERNAME IS REQUIRED FOR ADMIN: ', this.userDetail);
+      return;
+    }
+
+    // this.updating = true;
     //console.log(updateDetailForm.value);
     this.newUserDetails.firstName = this.userDetail.firstName.trim();
     this.newUserDetails.lastName = this.userDetail.lastName.trim();
@@ -169,25 +193,27 @@ export class EditUserComponent implements OnInit {
     this.newUserDetails.role = this.userDetail.userRolesDTOList[0].roleId;
     this.newUserDetails.id = this.userDetail.id;
 
+    console.log('USER DETAIL FOR SUBMISSION: ', this.newUserDetails);
+
     //console.log(this.newUserDetails);
-    this.userService.updateUserDetails(this.newUserDetails).subscribe(
-      (value) => {
-        //console.log(value);
-        this.updating = false;
-        Swal.fire({
-          icon: "success",
-          html: "User information has been updated successfully.",
-        });
-      },
-      (error: HttpErrorResponse) => {
-        //console.log(error);
-        this.updating = false;
-        Swal.fire({
-          icon: "error",
-          html: `${error.error}`,
-        });
-      }
-    );
+    // this.userService.updateUserDetails(this.newUserDetails).subscribe(
+    //   (value) => {
+    //     //console.log(value);
+    //     this.updating = false;
+    //     Swal.fire({
+    //       icon: "success",
+    //       html: "User information has been updated successfully.",
+    //     });
+    //   },
+    //   (error: HttpErrorResponse) => {
+    //     //console.log(error);
+    //     this.updating = false;
+    //     Swal.fire({
+    //       icon: "error",
+    //       html: `${error.error}`,
+    //     });
+    //   }
+    // );
   }
 
   recieveSubjects($events) {

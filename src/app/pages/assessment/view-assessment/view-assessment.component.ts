@@ -218,6 +218,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .subscribe(
         (value) => {
           this.assessmentSettings = value;
+          
           console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
 
           this.warnEndOfReadingTimeChecked = this.assessmentSettings.warnEndOfReadingTimeSec > 0 ? true : false;
@@ -1518,5 +1519,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     } else {
       this.assessmentSettings.displayAllSectionsAtOnce = false;
     }
+  }
+
+  back(): void {
+    history.back();
   }
 }

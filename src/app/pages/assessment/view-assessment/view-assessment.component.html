@@ -31,8 +31,13 @@
 </div>
 
 <!-- Action Buttons, PUBLISH, ADVANCED OPTIONS, ADD SUBJECT-->
-<div *ngIf="!loading" class="row">
-  <div class="d-flex flex-row mb-2 justify-content-end gap-2">
+<div *ngIf="!loading" class="d-flex flex-row justify-content-between items-center mb-4">
+  <div class="d-flex flex-row justify-content-end">
+    <button type="button" class="btn btn-outline-info" (click)="back()">
+      <i class="ri-arrow-left-line align-middle me-2"></i>Back
+    </button>
+  </div>
+  <div class="d-flex flex-row justify-content-end gap-2">
     <button type="button" *ngIf="assessment && assessment.status !== 'PUBLISHED'"
       (click)="openNewSectionModal(newSectionModal)" class="btn btn-outline-success btn-label waves-effect waves-light">
       <i class="ri-add-line label-icon align-middle me-2"></i>Add Section
@@ -1462,7 +1467,7 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="px-5 modal-body border border-primary" style="
+  <div class="px-5 modal-body" style="
       height: 450px;
       scroll-behavior: smooth;
       overflow-x: hidden;

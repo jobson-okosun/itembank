@@ -1,11 +1,13 @@
 <div *ngIf="userDetail">
   <div class="position-relative mx-n4 mt-n4">
-      <div class="py-2 d-flex align-items-center flex-row gap-2">
-    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12l4-4m-4 4 4 4"/>
-    </svg>
-    <a (click)="routeBack()">Back to Users</a>
-  </div>
+    <div class="py-2 d-flex align-items-center flex-row gap-2">
+      <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+        width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M5 12h14M5 12l4-4m-4 4 4 4" />
+      </svg>
+      <a (click)="routeBack()">Back to Users</a>
+    </div>
     <div class="profile-wid-bg profile-setting-img">
       <!-- <img src="assets/images/profile-bg.jpg" class="profile-wid-img" alt="" /> -->
       <div class="overlay-content">
@@ -33,9 +35,7 @@
       <div class="card mt-n5">
         <div class="card-body p-4">
           <div class="text-center">
-            <div
-              class="profile-user position-relative d-inline-block mx-auto mb-4"
-            >
+            <div class="profile-user position-relative d-inline-block mx-auto mb-4">
               <div class="d-flex justify-content-center mb-4">
                 <div class="image-placeholder bg-soft-primary rounded-circle">
                   <h3 class="">
@@ -53,26 +53,20 @@
               <p class="text-muted mb-1" *ngIf="userDetail?.username">
                 ({{ userDetail?.username }})
               </p>
-              <ng-container
-                *ngFor="let user of userDetail?.userRolesDTOList; let i = index"
-              >
+              <ng-container *ngFor="let user of userDetail?.userRolesDTOList; let i = index">
                 <span class="text-primary mb-0">
                   {{ user?.role
                   }}{{
-                    userDetail?.userRolesDTOList?.length - i === 1 ? "" : ","
+                  userDetail?.userRolesDTOList?.length - i === 1 ? "" : ","
                   }}
                 </span>
               </ng-container>
             </div>
             <div>
-              <span
-                class="badge badge-border p-2"
-                [ngClass]="{
+              <span class="badge badge-border p-2" [ngClass]="{
                   'badge-soft-success': userDetail?.activated,
                   'badge-soft-danger': !userDetail?.activated
-                }"
-                >{{ userDetail?.activated ? "Active" : "Inactive" }}</span
-              >
+                }">{{ userDetail?.activated ? "Active" : "Inactive" }}</span>
             </div>
           </div>
         </div>
@@ -83,107 +77,78 @@
     <div class="col-lg-9">
       <div class="card mt-lg-n5">
         <div class="card-header">
-          <ul
-            ngbNav
-            #customNav="ngbNav"
-            [activeId]="1"
-            class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
-            role="tablist"
-          >
+          <ul ngbNav #customNav="ngbNav" [activeId]="1"
+            class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0" role="tablist">
             <li [ngbNavItem]="1" class="nav-item">
               <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
                 <i class="fas fa-home"></i>
                 Personal Details
               </a>
               <ng-template ngbNavContent>
-                <form
-                  #updateUserDetailForm="ngForm"
-                  (ngSubmit)="updateUserDetails(updateUserDetailForm)"
-                  novalidate
-                >
+                <form #updateUserDetailForm="ngForm" (ngSubmit)="updateUserDetails(updateUserDetailForm)" novalidate>
                   <div class="row">
-                    <div *ngIf="userDetail?.username" class="col-12">
+                    <!-- <div *ngIf="userDetail?.username" class="col-12"> -->
+                    <div class="col-12">
                       <div class="mb-3">
-                        <label for="email" class="form-label">Username</label>
-                        <input
-                          type="text"
-                          class="form-control"
-                          name="username"
-                          id="username"
-                          placeholder="Enter username"
-                          value="{{ userDetail?.username }}"
-                          [(ngModel)]="userDetail.username"
-                          [disabled]="
-                            !currentUser?.authorities?.includes('ADMIN')
-                          "
-                        />
+                        <label for="email" class="form-label">Username <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="username" id="username"
+                          placeholder="Enter username" value="{{ userDetail?.username }}"
+                          [(ngModel)]="userDetail.username" [disabled]="
+                                                  !currentUser?.authorities?.includes('ADMIN')
+                                                " />
+                        <span
+                          *ngIf="!userDetail.username.trim() && currentUser?.authorities?.includes('ADMIN') && allEditInputFieldIsRequired"
+                          class="text-danger">Username is
+                          required</span>
                       </div>
                     </div>
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label for="firstName" class="form-label"
-                          >First Name</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="firstnameInput"
-                          name="firstName"
-                          placeholder="Enter your firstname"
-                          value="{{ userDetail?.firstName }}"
-                          [(ngModel)]="userDetail.firstName"
-                        />
+                        <label for="firstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="firstnameInput" name="firstName"
+                          placeholder="Enter your firstname" value="{{ userDetail?.firstName }}"
+                          [(ngModel)]="userDetail.firstName" />
+                        <span *ngIf="!userDetail.firstName.trim() && allEditInputFieldIsRequired"
+                          class="text-danger">First name is required</span>
                       </div>
                     </div>
                     <!--end col-->
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label for="lastName" class="form-label"
-                          >Last Name</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="lastnameInput"
-                          name="lastName"
-                          placeholder="Enter your lastname"
-                          value="{{ userDetail?.lastName }}"
-                          [(ngModel)]="userDetail.lastName"
-                        />
+                        <label for="lastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="lastnameInput" name="lastName"
+                          placeholder="Enter your lastname" value="{{ userDetail?.lastName }}"
+                          [(ngModel)]="userDetail.lastName" />
+                        <span *ngIf="!userDetail.lastName.trim() && allEditInputFieldIsRequired"
+                          class="text-danger">Last name is required</span>
                       </div>
                     </div>
                     <!--end col-->
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label for="phone" class="form-label"
-                          >Phone Number</label
-                        >
-                        <input
-                          type="text"
-                          class="form-control"
-                          name="phone"
-                          id="phone"
-                          placeholder="Enter your phone number"
-                          value="{{ userDetail.phone }}"
-                          [(ngModel)]="userDetail.phone"
-                        />
+                        <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" name="phone" id="phone"
+                          placeholder="Enter your phone number" value="{{ userDetail.phone }}"
+                          [(ngModel)]="userDetail.phone" appPhoneInput />
+                        <span *ngIf="!userDetail.phone.trim() && allEditInputFieldIsRequired" class="text-danger">Phone
+                          number is required</span>
                       </div>
                     </div>
                     <!--end col-->
                     <div class="col-lg-6">
                       <div class="mb-3">
-                        <label for="email" class="form-label"
-                          >Email Address</label
-                        >
-                        <input
-                          type="email"
-                          class="form-control"
-                          name="email"
-                          id="email"
-                          placeholder="Enter your email"
-                          value="{{ userDetail.email }}"
-                          [(ngModel)]="userDetail.email"
-                        />
+                        <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email"
+                          value="{{ userDetail.email }}" [(ngModel)]="userDetail.email" appEmailValidate
+                          #emailCtrl="ngModel" />
+                        <span *ngIf="!userDetail.email.trim() && allEditInputFieldIsRequired" class="text-danger">Email
+                          address is
+                          required</span>
+                        <span class="text-danger" *ngIf="emailCtrl.errors?.['invalidEmailFormat']">Please enter a valid
+                          email.</span>
+                        <!-- <span class="error-text" *ngIf="emailInput.classList.contains('is-invalid')">
+                          Please enter a valid email format.
+                        </span> -->
                       </div>
                     </div>
                     <!--end col-->
@@ -222,34 +187,20 @@
                     <!--end col-->
                     <div class="col-lg-12">
                       <div class="hstack gap-2 justify-content-end">
-                        <button
-                          *ngIf="!updating"
-                          type="button"
-                          (click)="updateUserDetails()"
-                          class="btn btn-primary"
-                        >
+                        <!-- <button *ngIf="!updating" type="button" (click)="updateUserDetails()" class="btn btn-primary"> -->
+                        <button *ngIf="!updating" type="submit" class="btn btn-primary"
+                          [disabled]="emailCtrl.errors?.['invalidEmailFormat'] || !userDetail.phone.trim() || !userDetail.lastName.trim() || !userDetail.firstName.trim() || (!userDetail.username.trim() && currentUser?.authorities?.includes('ADMIN'))">
                           Update
                         </button>
-                        <button
-                          *ngIf="updating"
-                          class="btn btn-outline-primary btn-load"
-                          [disabled]="updating"
-                        >
+                        <button *ngIf="updating" class="btn btn-outline-primary btn-load" [disabled]="updating">
                           <span class="d-flex align-items-center">
-                            <span
-                              class="spinner-border flex-shrink-0"
-                              role="status"
-                            >
+                            <span class="spinner-border flex-shrink-0" role="status">
                               <span class="visually-hidden">Saving...</span>
                             </span>
                             <span class="flex-grow-1 ms-2"> Saving... </span>
                           </span>
                         </button>
-                        <button
-                          type="button"
-                          (click)="cancel()"
-                          class="btn btn-danger"
-                        >
+                        <button type="button" (click)="cancel()" class="btn btn-danger">
                           Cancel
                         </button>
                       </div>
@@ -337,43 +288,25 @@
                 </form>
               </ng-template>
             </li> -->
-            <li
-              *ngIf="
+            <li *ngIf="
                 currentUser.authority === 'ADMIN' && userDetail.role !== 'ADMIN'
-              "
-              [ngbNavItem]="2"
-              class="nav-item"
-            >
+              " [ngbNavItem]="2" class="nav-item">
               <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
                 <i class="far fa-envelope"></i>
                 Subjects
               </a>
               <ng-template ngbNavContent>
-                <form
-                  #assignNewTagToUserForm="ngForm"
-                  (ngSubmit)="addSubjectToUser()"
-                  novalidate
-                >
+                <form #assignNewTagToUserForm="ngForm" (ngSubmit)="addSubjectToUser()" novalidate>
                   <div id="newlink">
                     <div id="1">
                       <div class="row">
                         <div class="col-lg-12">
                           <div class="mb-3">
                             <!-- <app-item-topic [label]="'Subjects'" (sendSubjects)="recieveSubjects($events)"></app-item-topic> -->
-                            <label
-                              for="choices-multiple-default"
-                              class="form-label"
-                              >Add/Remove User Subjects
+                            <label for="choices-multiple-default" class="form-label">Add/Remove User Subjects
                             </label>
-                            <ng-select
-                              class="custom"
-                              [items]="subjects"
-                              [multiple]="true"
-                              bindLabel="subjectName"
-                              name="subject"
-                              [(ngModel)]="selectedSubjects"
-                              (change)="viewDeselected($event)"
-                            >
+                            <ng-select class="custom" [items]="subjects" [multiple]="true" bindLabel="subjectName"
+                              name="subject" [(ngModel)]="selectedSubjects" (change)="viewDeselected($event)">
                               <ng-template ng-optgroup-tmp let-item="item">
                                 {{ item[0].subjectName | uppercase }}
                               </ng-template>
@@ -388,24 +321,12 @@
 
                   <div class="col-lg-12">
                     <div class="d-flex gap-2 justify-content-end">
-                      <button
-                        *ngIf="!updating"
-                        type="button"
-                        (click)="addSubjectToUser()"
-                        class="btn btn-success"
-                      >
+                      <button *ngIf="!updating" type="button" (click)="addSubjectToUser()" class="btn btn-success">
                         Update Subject(s)
                       </button>
-                      <button
-                        *ngIf="updating"
-                        class="btn btn-outline-success btn-load"
-                        [disabled]="updating"
-                      >
+                      <button *ngIf="updating" class="btn btn-outline-success btn-load" [disabled]="updating">
                         <span class="d-flex align-items-center">
-                          <span
-                            class="spinner-border flex-shrink-0"
-                            role="status"
-                          >
+                          <span class="spinner-border flex-shrink-0" role="status">
                             <span class="visually-hidden">Saving...</span>
                           </span>
                           <span class="flex-grow-1 ms-2"> Saving... </span>

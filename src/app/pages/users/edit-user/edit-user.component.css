@@ -1,1 +1,4 @@
 /* No CSS *//*# sourceMappingURL=edit-user.component.css.map */
+input.is-invalid {
+  color: red;
+}

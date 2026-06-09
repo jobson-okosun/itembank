@@ -4,3 +4,7 @@
   background-color: aliceblue;
   font-size: small;
 }
+
+.dropdown-menu {
+  z-index: 9999 !important;
+}

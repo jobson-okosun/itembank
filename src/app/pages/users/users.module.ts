@@ -31,6 +31,8 @@ import { ModeratorActivitiesComponent } from './moderator-activities/moderator-a
 import { NoSpaceDirective } from './directives/no-space.directive';
 import { noLettersDirective } from './directives/no-letters.directive';
 import { DrawingAndWritingPreviewComponent } from '../items/drawing-and-writing-preview/drawing-and-writing-preview.component';
+import { PhoneInputDirective } from './directives/phone-input.directive';
+import { EmailValidateDirective } from './directives/valid-email.directive';
 
 @NgModule({
   declarations: [    
@@ -42,6 +44,8 @@ import { DrawingAndWritingPreviewComponent } from '../items/drawing-and-writing-
     AddUserComponent,
     NoSpaceDirective,
     noLettersDirective,
+    PhoneInputDirective,
+    EmailValidateDirective
     // DrawingAndWritingPreviewComponent
   ],
   imports: [
