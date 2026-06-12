@@ -65,8 +65,8 @@ export class EditUserComponent implements OnInit {
 
   // currentUser: Account = this.userService2.getCurrentUser();
   currentUser = this.userService2.getCurrentUser()
-  ? this.userService2.getCurrentUser()
-  : this.userService2.getCurrentUserAfterReload();
+    ? this.userService2.getCurrentUser()
+    : this.userService2.getCurrentUserAfterReload();
 
 
   constructor(
@@ -163,7 +163,7 @@ export class EditUserComponent implements OnInit {
 
   updateUserDetails(updateDetailForm: NgForm) {
 
-    if(this.userDetail.firstName.trim() === "" || this.userDetail.lastName.trim() === "" || this.userDetail.phone.trim() === "" || this.userDetail.email.trim() === "") {
+    if (this.userDetail.firstName.trim() === "" || this.userDetail.lastName.trim() === "" || this.userDetail.phone.trim() === "" || this.userDetail.email.trim() === "") {
 
       this.allEditInputFieldIsRequired = true;
 
@@ -176,7 +176,7 @@ export class EditUserComponent implements OnInit {
       return;
     }
 
-    if(this.currentUser.authorities?.includes('ADMIN') && this.userDetail.username.trim() === "") {
+    if (this.currentUser.authorities?.includes('ADMIN') && this.userDetail.username.trim() === "") {
 
       this.allEditInputFieldIsRequired = true;
 
@@ -196,24 +196,24 @@ export class EditUserComponent implements OnInit {
     console.log('USER DETAIL FOR SUBMISSION: ', this.newUserDetails);
 
     //console.log(this.newUserDetails);
-    // this.userService.updateUserDetails(this.newUserDetails).subscribe(
-    //   (value) => {
-    //     //console.log(value);
-    //     this.updating = false;
-    //     Swal.fire({
-    //       icon: "success",
-    //       html: "User information has been updated successfully.",
-    //     });
-    //   },
-    //   (error: HttpErrorResponse) => {
-    //     //console.log(error);
-    //     this.updating = false;
-    //     Swal.fire({
-    //       icon: "error",
-    //       html: `${error.error}`,
-    //     });
-    //   }
-    // );
+    this.userService.updateUserDetails(this.newUserDetails).subscribe(
+      (value) => {
+        //console.log(value);
+        this.updating = false;
+        Swal.fire({
+          icon: "success",
+          html: "User information has been updated successfully.",
+        });
+      },
+      (error: HttpErrorResponse) => {
+        //console.log(error);
+        this.updating = false;
+        Swal.fire({
+          icon: "error",
+          html: `${error.error}`,
+        });
+      }
+    );
   }
 
   recieveSubjects($events) {
@@ -274,8 +274,8 @@ export class EditUserComponent implements OnInit {
 
     if (this.deselectedSubjects.length > 0) {
       // Get names of removed subject
-      const removedSubjectNames =  removedSubjects.map(subject => subject.subjectName).join(", ")
-      
+      const removedSubjectNames = removedSubjects.map(subject => subject.subjectName).join(", ")
+
       // this.subjects
       //     .filter(subject => removedSubjects.includes(subject.id))
       //     .map(subject => subject.subjectName)
@@ -284,9 +284,8 @@ export class EditUserComponent implements OnInit {
       Swal.fire({
         icon: "warning",
         title: "Warning",
-        text: `Are you sure you want to remove the following subject(s): ${
-          removedSubjectNames
-        } from ${this.userDetail.username.toUpperCase()}?`,
+        text: `Are you sure you want to remove the following subject(s): ${removedSubjectNames
+          } from ${this.userDetail.username.toUpperCase()}?`,
         showCancelButton: true,
         confirmButtonText: "Yes, remove them!",
         cancelButtonText: "Cancel",
@@ -296,7 +295,7 @@ export class EditUserComponent implements OnInit {
           this.selectedSubjectIds = this.selectedSubjectIds.filter(
             (id) => !removedSubjects.some((removed) => removed.subjectId === id)
           );
-        
+
           // console.log("Updated selectedSubjectIds:", this.selectedSubjectIds);
           this.updateSubjectAssignment();
         }
@@ -321,9 +320,8 @@ export class EditUserComponent implements OnInit {
           Swal.fire({
             icon: "success",
             title: "Congratulations",
-            text: `You successfully assigned ${
-              this.selectedSubjectIds.length
-            } subject(s) to ${this.userDetail.username.toUpperCase()}`,
+            text: `You successfully assigned ${this.selectedSubjectIds.length
+              } subject(s) to ${this.userDetail.username.toUpperCase()}`,
           });
         }
       })
@@ -337,7 +335,7 @@ export class EditUserComponent implements OnInit {
       });
   }
 
-  editUserModerationLevels() {}
+  editUserModerationLevels() { }
 
   routeBack() {
     this.location.back()

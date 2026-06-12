@@ -18,12 +18,9 @@
   >
     <ng-template pTemplate="header">
       <tr>
-        <th style="max-width: 50px" pFrozenColumn>
-          <span>
-            Clps.
-          </span>
+        <th style="min-width: 50px" pFrozenColumn>
         </th>
-        <th style="min-width: 200px" pFrozenColumn pSortableColumn="topicName">
+        <th style="min-width: 400px !important" pFrozenColumn pSortableColumn="topicName">
           Topic <p-sortIcon field="topicName"></p-sortIcon>
         </th>
 
@@ -99,7 +96,7 @@
           ></i>
         </td>
         <td
-          style="min-width: 200px"
+          style="min-width: 400px"
           pFrozenColumn
           (click)="showSubTopic(i)"
           class="text-truncate cursor"

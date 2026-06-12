@@ -267,13 +267,19 @@ export class UserComponent implements OnInit {
   }
 
   getUsers() {
-    this.userService.listAllUsers().subscribe((value) => {
+    this.userService.listAllUsers().subscribe({
+      next: (value) => {
       this.users = value;
       this.users.forEach((user) => {
         user.updatingUserStatus = false;
       });
       this.users$ = of(this.users);
       this.loading = false;
+    },
+    error: (error: HttpErrorResponse) => {
+      this.loading = false;
+      this.notifier.notify("error", `${error.message}`);
+    }
     });
   }
 
