@@ -8,7 +8,7 @@
         d="M5 12h14M5 12l4-4m-4 4 4 4" />
     </svg>
     <a (click)="routeBack()">Back to Tag questions</a> -->
-        <button class="btn mb-2 btn-outline-info" (click)="routeBack()">
+    <button class="btn mb-2 btn-outline-info" (click)="routeBack()">
       <i class="ri-arrow-left-line"></i>Back
     </button>
   </div>
@@ -84,12 +84,13 @@
     </ng-template>
     <ng-template pTemplate="body" let-topicAnalysis let-expanded="expanded" let-i="rowIndex">
       <tr>
-        <td style="max-width: 50px;" pFrozenColumn>
+        <td style="max-width: 50px; cursor: pointer !important;" pFrozenColumn>
           <i *ngIf="activeRow === i" class="la la-angle-down cursor" (click)="showSubTopic(i)"></i>
           <i *ngIf="activeRow !== i" class="la la-angle-right cursor" (click)="showSubTopic(i)"></i>
         </td>
-        <td style="min-width: 400px" pFrozenColumn (click)="showSubTopic(i)" class="text-truncate cursor"
-          [ngClass]="{ 'text-primary': activeRow === i }" title="{{ topicAnalysis.topicName | uppercase }}">
+        <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn (click)="showSubTopic(i)"
+          class="text-truncate" [ngClass]="{ 'text-primary': activeRow === i }"
+          title="{{ topicAnalysis.topicName | uppercase }}">
           <i class="la la-book"></i>
 
           {{ topicAnalysis.topicName | uppercase }}
@@ -116,8 +117,11 @@
           <!-- <th style="border: none" class="text-primary">SUBTOPICS</th> -->
         </tr>
         <tr *ngFor="let subTopic of topicAnalysis.subtopics" style="margin-left: 30px;">
-          <td style="width: 10px" pFrozenColumn style="border: none"></td>
-          <td style="width: 500px" pFrozenColumn class="text-truncate">
+          <!-- <td style="width: 10px" pFrozenColumn style="border: none"></td> -->
+          <td style="max-width: 50px; cursor: pointer !important;" pFrozenColumn>
+            <i *ngIf="false" class="la la-angle-down cursor"></i>
+          </td>
+          <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn class="text-truncate">
             {{ subTopic.subtopicName | uppercase }}
           </td>
           <td>{{ subTopic.totalItems }}</td>

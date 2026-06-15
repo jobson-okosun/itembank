@@ -1,21 +1,16 @@
 <div class="d-flex align-items-center gap-2 mb-3">
-    <button class="btn btn-outline-info" (click)="back()">
-      <i class="ri-arrow-left-line align-middle me-2"></i>Back
-    </button>
+  <button class="btn btn-outline-info" (click)="back()">
+    <i class="ri-arrow-left-line align-middle me-2"></i>Back
+  </button>
 </div>
 
-<app-breadcrumbs
-  title="SUBJECTS | ANALYSIS "
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<div>
+  <app-breadcrumbs title="SUBJECTS | ANALYSIS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
+</div>
 
 <div class="card card-body">
-  <p-table
-    [value]="subjectAnalysis && subjectAnalysis.topics"
-    dataKey="name"
-    responsiveLayout="scroll"
-    [scrollable]="true"
-  >
+  <p-table [value]="subjectAnalysis && subjectAnalysis.topics" dataKey="name" responsiveLayout="scroll"
+    [scrollable]="true">
     <ng-template pTemplate="header">
       <tr>
         <th style="min-width: 50px" pFrozenColumn>
@@ -26,20 +21,20 @@
 
         <th pSortableColumn="totalItems">
           <!-- Total Questions <p-sortIcon field="totalItems"></p-sortIcon> -->
-           Total Qnts. <p-sortIcon field="totalItems"></p-sortIcon>
+          Total Qnts. <p-sortIcon field="totalItems"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsAwaitingModeration">
           <!-- Total Awaiting Moderation <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon> -->
-           Tot. Awaiting Mod. <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
+          Tot. Awaiting Mod. <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
         </th>
 
         <th pSortableColumn="totalItemsRejected">
           <!-- Total Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon> -->
-           Tot. Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon>
+          Tot. Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsPublished">
           <!-- Total Published <p-sortIcon field="totalItemsPublished"></p-sortIcon> -->
-           Tot. Published <p-sortIcon field="totalItemsPublished"></p-sortIcon>
+          Tot. Published <p-sortIcon field="totalItemsPublished"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsInRecycle">
           Total Qnts. In Recycle
@@ -47,62 +42,44 @@
         </th>
         <th pSortableColumn="totalItemsUsed">
           <!-- Item Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon> -->
-           Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
+          Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
         </th>
         <th pSortableColumn="totalItemsDraft">
           <!-- Total Items in Draft <p-sortIcon field="totalItemsDraft"></p-sortIcon> -->
-           Tot. Drafts <p-sortIcon field="totalItemsDraft"></p-sortIcon>
+          Tot. Drafts <p-sortIcon field="totalItemsDraft"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassages">
           <!-- Total Passages <p-sortIcon field="totalPassages"></p-sortIcon> -->
-           Tot. Passages <p-sortIcon field="totalPassages"></p-sortIcon>
+          Tot. Passages <p-sortIcon field="totalPassages"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesAwaitingModeration">
           <!-- Total Passages Awaiting Moderation <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon> -->
-           Tot. Passages Awaiting Mod. <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon>
+          Tot. Passages Awaiting Mod. <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesDraft">
           <!-- Total Passages In Draft <p-sortIcon field="totalPassagesDraft"></p-sortIcon> -->
-           Tot. Passage Drafts <p-sortIcon field="totalPassagesDraft"></p-sortIcon>
+          Tot. Passage Drafts <p-sortIcon field="totalPassagesDraft"></p-sortIcon>
         </th>
         <th pSortableColumn="totalPassagesPublished">
           <!-- Total Passages Published <p-sortIcon field="totalPassagesPublished"></p-sortIcon> -->
-           Tot. Published Passages <p-sortIcon field="totalPassagesPublished"></p-sortIcon>
+          Tot. Published Passages <p-sortIcon field="totalPassagesPublished"></p-sortIcon>
         </th>
 
         <th pSortableColumn="totalPassagesUsed">
           <!-- Total Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon> -->
-           Tot. Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon>
+          Tot. Passages Used <p-sortIcon field="totalPassagesUsed"></p-sortIcon>
         </th>
       </tr>
     </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-subjectAnalysis
-      let-expanded="expanded"
-      let-i="rowIndex"
-    >
+    <ng-template pTemplate="body" let-subjectAnalysis let-expanded="expanded" let-i="rowIndex">
       <tr>
         <td style="max-width: 50px" pFrozenColumn>
-          <i
-            *ngIf="activeRow === i"
-            class="la la-angle-down cursor"
-            (click)="showSubTopic(i)"
-          ></i>
-          <i
-            *ngIf="activeRow !== i"
-            class="la la-angle-right cursor"
-            (click)="showSubTopic(i)"
-          ></i>
+          <i *ngIf="activeRow === i" class="la la-angle-down cursor" (click)="showSubTopic(i)"></i>
+          <i *ngIf="activeRow !== i" class="la la-angle-right cursor" (click)="showSubTopic(i)"></i>
         </td>
-        <td
-          style="min-width: 400px"
-          pFrozenColumn
-          (click)="showSubTopic(i)"
-          class="text-truncate cursor"
-          title="{{ subjectAnalysis.topicName | uppercase }}"
-          [ngClass]="{ 'text-primary': activeRow === i }"
-        >
+        <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn (click)="showSubTopic(i)"
+          class="text-truncate" title="{{ subjectAnalysis.topicName | uppercase }}"
+          [ngClass]="{ 'text-primary': activeRow === i }">
           <i class="la la-book"></i>
           {{ subjectAnalysis.topicName | uppercase }}
         </td>
@@ -155,8 +132,11 @@
           <!-- <th style="border: none" class="text-primary">SUBTOPICS</th> -->
         </tr>
         <tr *ngFor="let subTopic of subjectAnalysis.subtopics">
-          <td style="width: 10px" pFrozenColumn style="border: none"></td>
-          <td style="width: 500px" pFrozenColumn class="text-truncate">
+          <!-- <td style="width: 10px border border-primary" pFrozenColumn style="border: none"></td> -->
+          <td style="max-width: 50px" pFrozenColumn>
+            <i *ngIf="false" class="la la-angle-right cursor"></i>
+          </td>
+          <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn class="text-truncate">
             {{ subTopic.subtopicName | uppercase }}
           </td>
           <td>{{ subTopic.totalItems }}</td>
