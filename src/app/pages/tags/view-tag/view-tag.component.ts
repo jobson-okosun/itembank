@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ItemHttpService } from '../../items/item-http.service';
 import { ListAllItemsPage } from '../../items/models/list-all-items-page.model';
@@ -9,6 +9,7 @@ import { Account } from 'src/app/authentication/model/account.model';
 import { NotifierService } from 'angular-notifier';
 import { UserService } from 'src/app/shared/user.service';
 import { TagAnalysis } from '../model/tag-analysis';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-view-tag',
@@ -34,7 +35,8 @@ export class ViewTagComponent implements OnInit {
     private tagService: TagsService,
     private ar: ActivatedRoute,
     private notifier: NotifierService,
-    private userService: UserService
+    private userService: UserService,
+    private itemServiceService: ItemServiceService
   ) {}
 
   /** Handler function for the quick guide pull out */
@@ -49,7 +51,7 @@ export class ViewTagComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
-    this.currentTag = this.tagService.activeTag;
+    this.currentTag = this.tagService.activeTag || this.itemServiceService.getItem('TAG_NAME');
     this.breadCrumbItems = [
       { label: 'Tags' },
       { label: this.currentTag, active: true },

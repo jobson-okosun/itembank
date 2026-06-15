@@ -6,12 +6,13 @@ import { environment } from 'src/environments/environment';
 import { DashboardGraph } from './model/dashboard-graph';
 import { PassageGraph } from './model/passage-graph';
 import { TagsGraph } from './model/tags-graph';
+import { CurrentExamMonitorGraph } from './main/main.component';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   fetchDashboardData(): Observable<DashboardCards> {
     return this.http.get<DashboardCards>(
@@ -29,6 +30,14 @@ export class DashboardService {
     );
   }
 
+  fetchGraphInformationForCurrentExamMonitorFromSingleSubject(
+    subjectId: string
+  ): Observable<CurrentExamMonitorGraph> {
+    return this.http.get<CurrentExamMonitorGraph>(
+      `${environment.developmentIP}/itembank/dashboard/${subjectId}/graph/current_exam_monitor`,
+      { withCredentials: true }
+    );
+  }
 
   fetchTagsGraph(subjectId: string): Observable<TagsGraph[]> {
     return this.http.get<TagsGraph[]>(

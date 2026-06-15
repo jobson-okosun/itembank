@@ -36,6 +36,19 @@ interface AuthoringGraph {
   totalDrafts: number;
   totalRejected: number;
   totalPublished: number;
+  totalAwaitingModeration: number;
+  totalApproved: number;
+  totalUsed?: number
+}
+
+export interface CurrentExamMonitorGraph {
+  downloadedCenters: number;
+  startedCenters: number;
+  completedCenters: number;
+  uploadedCenters: number;
+  scheduledCandidates: number;
+  presentCandidates: number;
+  absentCandidates: number;
 }
 
 @Component({
@@ -50,6 +63,7 @@ export class MainComponent implements OnInit {
   currentUser: Account;
   simpleDonutChart: any;
   authorLineChart: any;
+  currentExamMonitorLineChart: any;
   basicLineChart: any;
   basicAreaChart: any;
   simplePieChart: any;
@@ -61,6 +75,8 @@ export class MainComponent implements OnInit {
   passageChartLabels: string[] = [];
   authoringGraph: AuthoringGraph;
   authorGraph: number[] = [];
+  currentExamMonitoringGraph: CurrentExamMonitorGraph;
+  currentExamMonitorGraph: number[] = [];
   moderationGraph: ModeratorGraph;
   moderatorGraph: number[] = [];
   activeTagGraph: TagsGraph;
@@ -68,6 +84,7 @@ export class MainComponent implements OnInit {
   assessmentGraph: any[] = [];
   tagSeries: any[] = [];
   tagNames: string[] = [];
+
   authorChartLabels: string[] = [
     'Total Questions',
     'Total Published',
@@ -77,6 +94,17 @@ export class MainComponent implements OnInit {
     'Total Awaiting Moderation',
     'Total Questions Used',
   ];
+
+  currentExamMonitorChartLabels: string[] = [
+    'Total Downloaded Centers',
+    'Total Started Centers',
+    'Total Completed Centers',
+    'Total Uploaded Centers',
+    'Total Candidates Scheduled',
+    'Total Candidates Present',
+    'Total Candidates Absent',
+  ];
+
   loading: boolean = false;
 
   quickGuide = `<div class="p-4">
@@ -279,8 +307,21 @@ export class MainComponent implements OnInit {
         this.dashboardData = value;
         this.moderationGraph = this.dashboardData.questionModerationGraph;
         this.authoringGraph = this.dashboardData.questionModerationGraph;
+        this.currentExamMonitoringGraph = {
+          downloadedCenters: 12,
+          startedCenters: 34,
+          completedCenters: 70,
+          uploadedCenters: 5,
+          scheduledCandidates: 4,
+          presentCandidates: 9,
+          absentCandidates: 10
+        };
         this.passageGraph = this.dashboardData.passageDashboardProj;
         this.tagsGraph = this.dashboardData.tagGraphProj;
+
+        // Ask if it's visibility depends on role
+        this.setCurrentExamMonitorGraph();
+
         if (this.currentUser.authorities.includes('AUTHOR')) {
           this.setAuthorGraph();
           this.setupPassageGraph();
@@ -380,7 +421,31 @@ export class MainComponent implements OnInit {
     );
   }
 
-  setAuthorGraph() {
+  setCurrentExamMonitorGraph() {
+    this.currentExamMonitorGraph = [];
+    if (this.dashboardData) {
+      Object.keys(this.currentExamMonitoringGraph).forEach((key, index) => {
+        if (key === 'downloadedCenters') {
+          this.currentExamMonitorGraph[0] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'startedCenters') {
+          this.currentExamMonitorGraph[1] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'completedCenters') {
+          this.currentExamMonitorGraph[2] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'uploadedCenters') {
+          this.currentExamMonitorGraph[3] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'scheduledCandidates') {
+          this.currentExamMonitorGraph[4] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'presentCandidates') {
+          this.currentExamMonitorGraph[5] = Object.values(this.currentExamMonitoringGraph)[index];
+        } else if (key === 'absentCandidates') {
+          this.currentExamMonitorGraph[6] = Object.values(this.currentExamMonitoringGraph)[index];
+        } 
+      });
+    }
+    this.currentExamMonitorChart('["--vz-primary", "--vz-success"]');
+  }
+
+    setAuthorGraph() {
     this.authorGraph = [];
     if (this.dashboardData) {
       Object.keys(this.authoringGraph).forEach((key, index) => {
@@ -566,21 +631,47 @@ export class MainComponent implements OnInit {
   }
 
   setupAssessmentChart() {
-    Object.keys(this.dashboardData.assessmentCard).forEach((key, i) => {
+
+    const assessmentCard = { ...this.dashboardData.assessmentCard,
+        totalCompletedExams: 80
+    };
+
+    // Object.keys(this.dashboardData.assessmentCard).forEach((key, i) => {
+    //   if (key === 'totalAssessments') {
+    //     this.assessmentGraph[0] = Object.values(
+    //       this.dashboardData.assessmentCard
+    //     )[i];
+    //   } else if (key === 'totalDrafts') {
+    //     this.assessmentGraph[1] = Object.values(
+    //       this.dashboardData.assessmentCard
+    //     )[i];
+    //   } else if (key === 'totalPublished') {
+    //     this.assessmentGraph[2] = Object.values(
+    //       this.dashboardData.assessmentCard
+    //     )[i];
+    //   }
+    // });
+
+   Object.keys(assessmentCard).forEach((key, i) => {
       if (key === 'totalAssessments') {
         this.assessmentGraph[0] = Object.values(
-          this.dashboardData.assessmentCard
+          assessmentCard
         )[i];
       } else if (key === 'totalDrafts') {
         this.assessmentGraph[1] = Object.values(
-          this.dashboardData.assessmentCard
+          assessmentCard
         )[i];
       } else if (key === 'totalPublished') {
         this.assessmentGraph[2] = Object.values(
-          this.dashboardData.assessmentCard
+          assessmentCard
+        )[i];
+      } else if (key === 'totalCompletedExams') {
+        this.assessmentGraph[3] = Object.values(
+          assessmentCard
         )[i];
       }
     });
+
     this._assessmentChart('["--vz-primary"]');
   }
 
@@ -594,6 +685,30 @@ export class MainComponent implements OnInit {
           if (value) {
             this.authoringGraph = value;
             this.setAuthorGraph();
+            this.loading = false;
+            Swal.close();
+          }
+          // this.loading = false;
+          // Swal.close();
+        },
+        (error: HttpErrorResponse) => {
+          this.loading = false;
+          Swal.close();
+          this.notifierService.notify('error', `${error.error.message}`);
+        }
+      );
+  }
+
+    updateCurrentExamMonitorGraphFromSubjectDropdown(subjectId: any) {
+    this.loading = true;
+    this.loader();
+    this.dashboardService
+      .fetchGraphInformationForCurrentExamMonitorFromSingleSubject(subjectId)
+      .subscribe(
+        (value: CurrentExamMonitorGraph) => {
+          if (value) {
+            this.currentExamMonitoringGraph = value;
+            this.setCurrentExamMonitorGraph();
             this.loading = false;
             Swal.close();
           }
@@ -735,6 +850,45 @@ export class MainComponent implements OnInit {
             },
           },
 
+          yAxes: {
+            gridLines: {
+              color: 'rgba(166, 176, 207, 0.1)',
+            },
+          },
+        },
+      },
+    };
+  }
+
+    private currentExamMonitorChart(colors: any) {
+    colors = this.getChartColorsArray(colors);
+
+    this.currentExamMonitorLineChart = {
+      labels: this.currentExamMonitorChartLabels,
+      datasets: [
+        {
+          //label: 'Questions Analysis',
+          backgroundColor: colors[0],
+          borderColor: colors[0],
+          borderWidth: 1,
+          hoverBackgroundColor: colors[1],
+          hoverBorderColor: colors[1],
+          data: this.currentExamMonitorGraph,
+        },
+      ],
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          xAxes: {
+            gridLines: {
+              color: 'rgba(166, 176, 207, 0.1)',
+            },
+          },
           yAxes: {
             gridLines: {
               color: 'rgba(166, 176, 207, 0.1)',
@@ -930,7 +1084,7 @@ export class MainComponent implements OnInit {
       },
       colors: colors,
       xaxis: {
-        categories: ['Total Exams', 'Total Drafts', 'Total Published'],
+        categories: ['Total Exams', 'Total Drafts', 'Total Published', 'Total Completed Exams'],
         axisTicks: {
           show: false,
         },

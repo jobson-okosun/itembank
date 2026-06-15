@@ -218,7 +218,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       .subscribe(
         (value) => {
           this.assessmentSettings = value;
-          
+
           console.log('ASSESSMENT SETTINGS: ', this.assessmentSettings);
 
           this.warnEndOfReadingTimeChecked = this.assessmentSettings.warnEndOfReadingTimeSec > 0 ? true : false;
@@ -1065,9 +1065,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       }
       // console.log(section, 'section');
       if (section.totalSelectedQuestions !== section.totalQuestions) {
+        // this.notifier.notify(
+        //   'error',
+        //   `The total expected questions and total found questions for ${section.sectionName} are not equal per section`,
+        // );
         this.notifier.notify(
           'error',
-          `The total expected questions and total found questions are not equal per section`,
+          `Expected questions and found questions are not equal for ${section.sectionName} Session `,
         );
         // console.log(
         //   `totalslected and ${section.totalSelectedQuestions} section total found ${section.totalQuestions} are not equal`,
@@ -1078,10 +1082,16 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         section.totalQuestionsPerCandidate !==
         section.totalCandidateSelectedQuestions
       ) {
+        // this.notifier.notify(
+        //   'error',
+        //   `The total expected question per candidate and total found questions  per candidate are  not equal per sections`,
+        // );
+
         this.notifier.notify(
           'error',
-          `The total expected question per candidate and total found questions  per candidate are  not equal per sections`,
+          `Expected questions per found questions are not equal for ${section.sectionName} Session `,
         );
+
         // console.log(
         //   `total question percandiate ${section.totalQuestionsPerCandidate} is not equal to totalfound for percandidate in section ${section.totalCandidateSelectedQuestions}`,
         // );
@@ -1442,6 +1452,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     let publish: Publish = {
       assessmentId: this.assessmentId,
     };
+
+    console.log('ASSESSMENT STATUS: ', this.assessment);
 
     if (this.canPublish(this.assessment.status) === false) {
       this.submitted = false;
