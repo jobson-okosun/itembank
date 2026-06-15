@@ -7,39 +7,41 @@
           <span class="text-muted">{{ formType }}</span>
         </h3>
 
-        <div class="d-flex flex-wrap gap-2 float-end">
-          <!-- <div>
+        <div class="d-flex flex-1 justify-content-end">
+          <div class="d-flex flex-row gap-2">
+            <!-- <div>
             <div class="badge badge-soft-info btn-sm" *ngIf="passageWorkFlow === true">
               passage question
             </div>
           </div> -->
-          <button type="button" class="btn btn-outline-success waves-effect waves-light" (click)="doPreview(itemForm)">
-            Preview
-          </button>
-
-          <button type="button" *ngIf="passageId" class="btn btn-outline-warning waves-effect waves-light"
-            (click)="setShowPassage(!showPassage)">
-            View Passage
-          </button>
-
-          <!-- author -->
-          <div *ngIf="editData && currentUser.authorities.includes('AUTHOR')" class="btn-group" role="group"
-            ngbDropdown>
-            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-              Save <i class="mdi mdi-chevron-down"></i>
+            <button type="button" class="btn btn-outline-success waves-effect waves-light"
+              (click)="doPreview(itemForm)">
+              Preview
             </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
-              <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
-              </li>
-              <li style="cursor: pointer" (click)="saveToDraft(itemForm)">
-                <a class="dropdown-item">Save as draft</a>
-              </li>
-              <!-- <li style="cursor: pointer">
+
+            <button type="button" *ngIf="passageId" class="btn btn-outline-warning waves-effect waves-light"
+              (click)="setShowPassage(!showPassage)">
+              View Passage
+            </button>
+
+            <!-- author -->
+            <div *ngIf="editData && currentUser.authorities.includes('AUTHOR')" class="btn-group" role="group"
+              ngbDropdown>
+              <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+                data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                Save <i class="mdi mdi-chevron-down"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
+                <li style="cursor: pointer">
+                  <a class="dropdown-item" (click)="updateItem(itemForm, 'save'); updatingLabelImageDragAndDrop = true;">Save</a>
+                </li>
+                <li style="cursor: pointer" (click)="saveToDraft(itemForm)">
+                  <a class="dropdown-item">Save as draft</a>
+                </li>
+                <!-- <li style="cursor: pointer">
           <a class="dropdown-item" (click)="saveAndNew()">Save and new</a>
         </li> -->
-              <!-- <li style="cursor: pointer">
+                <!-- <li style="cursor: pointer">
           <a
             *ngIf="passageWorkFlow === true"
             class="dropdown-item"
@@ -47,9 +49,9 @@
             >Save to passage</a
           >
         </li> -->
-            </ul>
-          </div>
-          <!-- <div
+              </ul>
+            </div>
+            <!-- <div
           class="d-flex gap-2"
           *ngIf="
             editData &&
@@ -75,42 +77,42 @@
           </button>
         </div> -->
 
-          <!-- moderator and author -->
-          <div ngbDropdown class="d-flex gap-2" *ngIf="
+            <!-- moderator and author -->
+            <div ngbDropdown *ngIf="
               editData &&
               (currentUser.authorities.includes('MODERATOR') ||
                 currentUser.authorities.includes('ADMIN'))
-            ">
-            <button id="btnGroupDrop3" type="button" class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-              Save <i class="mdi mdi-chevron-down"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
-              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
-                (click)="openConfirmationModal(acceptConfirmationModal)">
-                <a class="dropdown-item">Approve</a>
-              </li>
+            " class="d-flex gap-2">
+              <button id="btnGroupDrop3" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+                data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                Save <i class="mdi mdi-chevron-down"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupDrop3" ngbDropdownMenu>
+                <li style="cursor: pointer" *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
+                  (click)="openConfirmationModal(acceptConfirmationModal)">
+                  <a class="dropdown-item">Approve</a>
+                </li>
 
-              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'PUBLISHED'"
-                (click)="approveQuestion(itemForm)">
-                <a class="dropdown-item">Save</a>
-              </li>
-              <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
-                (click)="openConfirmationModal(rejectConfirmationModal)">
-                <a class="dropdown-item">Reject</a>
-              </li>
+                <li style="cursor: pointer" *ngIf="editData.itemStatus === 'PUBLISHED'"
+                  (click)="approveQuestion(itemForm)">
+                  <a class="dropdown-item">Save</a>
+                </li>
+                <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
+                  (click)="openConfirmationModal(rejectConfirmationModal)">
+                  <a class="dropdown-item">Reject</a>
+                </li>
 
-              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')">Save as Draft</a>
-              </li>
-              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
-                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
-              </li>
-            </ul>
+                <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                  <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')">Save as Draft</a>
+                </li>
+                <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                  <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
+                </li>
+              </ul>
 
-            <!--  -->
+              <!--  -->
 
-            <!-- <button
+              <!-- <button
         *ngIf="editData.itemStatus === 'AWAITING_MODERATION'"
         type="button"
         class="btn btn-soft-danger"
@@ -126,9 +128,9 @@
       >
         <i class="ri-double-check-line align-middle me-2"></i>Approve
       </button> -->
-          </div>
+            </div>
 
-          <!-- <div
+            <!-- <div
             class="d-flex gap-2"
             *ngIf="
               editData &&
@@ -154,22 +156,22 @@
             </button>
           </div> -->
 
-          <div *ngIf="!editData" class="btn-group" role="group" ngbDropdown>
-            <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
-              data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-              Save <i class="mdi mdi-chevron-down"></i>
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
-              <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveItem(itemForm)">Save</a>
-              </li>
-              <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
-              </li>
-              <li style="cursor: pointer">
-                <a class="dropdown-item" (click)="saveAndNewItem(itemForm)">Save and new</a>
-              </li>
-              <!-- <li style="cursor: pointer">
+            <div *ngIf="!editData" class="btn-group" role="group" ngbDropdown>
+              <button id="btnGroupDrop1" type="button" class="btn btn-primary dropdown-toggle arrow-none"
+                data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                Save <i class="mdi mdi-chevron-down"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1" ngbDropdownMenu>
+                <li style="cursor: pointer">
+                  <a class="dropdown-item" (click)="saveItem(itemForm)">Save</a>
+                </li>
+                <li style="cursor: pointer">
+                  <a class="dropdown-item" (click)="saveToDraft(itemForm)">Save as draft</a>
+                </li>
+                <li style="cursor: pointer">
+                  <a class="dropdown-item" (click)="saveAndNewItem(itemForm)">Save and new</a>
+                </li>
+                <!-- <li style="cursor: pointer">
                 <a
                   *ngIf="passageWorkFlow === true"
                   class="dropdown-item"
@@ -177,9 +179,11 @@
                   >Save to passage</a
                 >
               </li> -->
-            </ul>
+              </ul>
+            </div>
           </div>
         </div>
+
       </div>
 
       <app-passage-preview [previewData]="passageForPreview" *ngIf="showPassage"></app-passage-preview>
@@ -399,11 +403,12 @@
         </div>
       </div>
 
-      <div class="row mb-5" *ngIf="image.url" >
+      <div class="row mb-5" *ngIf="image.url">
         <div class="col-4">
           <div class="border">
 
-            <div class="py-2 px-3 border border-top-0 border-start-0 border-end-0 border-dotted mb-3 d-flex justify-content-between align-items-center gap-2">
+            <div
+              class="py-2 px-3 border border-top-0 border-start-0 border-end-0 border-dotted mb-3 d-flex justify-content-between align-items-center gap-2">
               <h4 id="labels">Labels</h4>
               <!-- <div>
                 <button class="btn btn-sm btn-primary" (click)="addDropdownLabel()">
@@ -414,90 +419,98 @@
             </div>
 
             <div class="tab-menu border-bottom">
-              <button *ngFor="let tab of ['Labels', 'Distractors']; let i = index" (click)="activeTab = i" [class.active]="activeTab === i">
-                  {{ tab }}
+              <button *ngFor="let tab of ['Labels', 'Distractors']; let i = index" (click)="activeTab = i"
+                [class.active]="activeTab === i">
+                {{ tab }}
               </button>
-          </div>
-
-          <div class="tab-content">
-            <div *ngIf="activeTab == 0" style="height: 500px;overflow-y: auto;" class="px-3">
-              <label class="form-label">Options and Answers</label>
-
-              <div ngModelGroup="options">
-                <div class="" *ngFor="let label of dropdownLabels; let i = index">
-                  <div class="d-flex gap-1 mb-2">
-                    <div class="btn-icon radio-background">
-                      <input class="form-check-input d-none" id="form-radio-right5" type="checkbox" name="value" value="{{ label.item }}"/>
-                       {{ i + 1}}
-                    </div>
-                    <editor name="label{{ i }}" class="editor" required #option{{i}} [(ngModel)]="label.item" [inline]="false"
-                      [init]="optionSmall"
-                    ></editor>
-                    <div>
-                      <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteLabel(i)">
-                        <i class="ri-delete-bin-line"></i>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <button class="btn btn-primary" (click)="addDropdownLabel()">
-                  Add Option
-                </button>
-              </div>
             </div>
 
-            <div *ngIf="activeTab == 1" style="height: 500px;overflow-y: auto;" class="px-3">
-                  <!-- distractors -->
-              <label class="form-label">Distractors</label>
-              <div ngModelGroup="options">
-                <div class="" *ngFor="let distractor of distractors; let i = index">
-                  <div class="d-flex gap-1 mb-2">
-                    <div class="btn-icon radio-background">
-                      <input class="form-check-input d-none" id="form-radio-right5" type="checkbox" name="value" value="{{ distractor.value }}"
-                      />
-                      {{ i + 1}}
-                    </div>
-                    <editor name="distractor{{ i }}" class="editor" required #option{{i}} [(ngModel)]="distractor.value" [inline]="false"
-                      [init]="optionSmall"
-                    ></editor>
-                    <div>
-                      <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteDistractor(i)">
-                        <i class="ri-delete-bin-line"></i>
-                      </button>
+            <div class="tab-content">
+              <div *ngIf="activeTab == 0" style="height: 500px;overflow-y: auto;" class="px-3">
+                <label class="form-label">Options and Answers</label>
+
+                <div ngModelGroup="options">
+                  <div class="" *ngFor="let label of dropdownLabels; let i = index">
+                    <div class="d-flex gap-1 mb-2">
+                      <div class="btn-icon radio-background">
+                        <input class="form-check-input d-none" id="form-radio-right5" type="checkbox" name="value"
+                          value="{{ label.item }}" />
+                        {{ i + 1}}
+                      </div>
+                      <editor name="label{{ i }}" class="editor" required #option{{i}} [(ngModel)]="label.item"
+                        [inline]="false" [init]="optionSmall"></editor>
+                      <div>
+                        <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteLabel(i)">
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <button class="btn btn-warning" (click)="addDistractor()">
-                  Add distractor
-                </button>
+                  <button class="btn btn-primary" (click)="addDropdownLabel()">
+                    Add Option
+                  </button>
+                </div>
+              </div>
+
+              <div *ngIf="activeTab == 1" style="height: 500px;overflow-y: auto;" class="px-3">
+                <!-- distractors -->
+                <label class="form-label">Distractors</label>
+                <div ngModelGroup="options">
+                  <div class="" *ngFor="let distractor of distractors; let i = index">
+                    <div class="d-flex gap-1 mb-2">
+                      <div class="btn-icon radio-background">
+                        <input class="form-check-input d-none" id="form-radio-right5" type="checkbox" name="value"
+                          value="{{ distractor.value }}" />
+                        {{ i + 1}}
+                      </div>
+                      <editor name="distractor{{ i }}" class="editor" required #option{{i}}
+                        [(ngModel)]="distractor.value" [inline]="false" [init]="optionSmall"></editor>
+                      <div>
+                        <button type="button" class="btn btn-outline-danger btn-icon" (click)="deleteDistractor(i)">
+                          <i class="ri-delete-bin-line"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="btn btn-warning" (click)="addDistractor()">
+                    Add distractor
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
           </div>
         </div>
 
-        <div class="col-8" >
+        <div class="col-8">
           <div class="border d-flex align-items-center" style="height: 100%;">
-            <div class="container" >
-              <div [style.width.px]="image.width > 600 ? 600 : image.width" *ngIf="image.url" style="position: relative;">
+            <div class="container">
+              <div [style.width.px]="image.width > 600 ? 600 : image.width" *ngIf="image.url"
+                style="position: relative;">
                 <img *ngIf="image.url" [src]="image.url" alt="" alt="Image" class="image" />
-                
-                <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary">
+
+                <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;"
+                  class="border-2 border-dashed border-primary">
                   <div style="position: relative;width: 100%; height: 100%;" #imageRef>
-                    <div *ngFor="let label of dropdownLabels; let i = index" class="draggable-label" [style.left.%]="label.x" [style.top.%]="label.y" (mousedown)="onMouseDown($event, i)" [attr.data-index]="i">
+                    <div *ngFor="let label of dropdownLabels; let i = index" class="draggable-label"
+                      [style.left.%]="label.x" [style.top.%]="label.y" (mousedown)="onMouseDown($event, i)"
+                      [attr.data-index]="i">
                       <!-- <button class="d-flex align-items-center gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
                         <div class="pointer"></div>
                         <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold" style="height: 25px;width: 25px;">
                           <span  style="font-size: 12px;">{{ i + 1 }}</span>
                         </span>
                       </button> -->
-                      
+
                       <!-- New Drop Position Structure -->
-                      <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" style="position: relative; min-width: 120px; height: 40px; border-style: dashed !important; cursor: move;">
-                        <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="position: absolute; top: -12px; left: -12px; height: 24px; width: 24px; z-index: 10;">
+                      <div
+                        class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white"
+                        style="position: relative; min-width: 120px; height: 40px; border-style: dashed !important; cursor: move;">
+                        <span
+                          class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm"
+                          style="position: absolute; top: -12px; left: -12px; height: 24px; width: 24px; z-index: 10;">
                           <span style="font-size: 12px;">{{ i + 1 }}</span>
                         </span>
                       </div>
@@ -554,7 +567,8 @@
         <!-- <button type="button" (click)="approveQuestion(itemForm)">
           Yes, approve It
         </button> -->
-         <button type="button" *ngIf="!processingApprove" class="btn btn-soft-primary" (click)="approveQuestion(itemForm)">
+        <button type="button" *ngIf="!processingApprove" class="btn btn-soft-primary"
+          (click)="approveQuestion(itemForm)">
           Yes, Approve
         </button>
         <ng-template [ngIf]="processingApprove">
@@ -842,21 +856,10 @@
                   </div> -->
                   <!--end col-->
                   <div class="col-sm-12">
-                    <label for="choices-privacy-status-input" class="form-label"
-                      >Difficulty level</label
-                    >
-                    <select
-                      class="form-select"
-                      data-choices
-                      data-choices-search-false
-                      id="choices-privacy-status-input"
-                      name="difficultyLevel"
-                      [(ngModel)]="defaultItemProperties.difficultyLevel"
-                    >
-                      <option
-                        *ngFor="let difficulty of difficultyLevel"
-                        value="{{ difficulty }}"
-                      >
+                    <label for="choices-privacy-status-input" class="form-label">Difficulty level</label>
+                    <select class="form-select" data-choices data-choices-search-false id="choices-privacy-status-input"
+                      name="difficultyLevel" [(ngModel)]="defaultItemProperties.difficultyLevel">
+                      <option *ngFor="let difficulty of difficultyLevel" value="{{ difficulty }}">
                         {{ difficulty }}
                       </option>
                     </select>
@@ -1019,33 +1022,20 @@
 <ng-template #imageUploadModal let-modal>
   <div class="modal-header border-0 pb-0">
     <h3 class="modal-title fw-bold">Upload Image</h3>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.close()"
-    ></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
   </div>
 
-  <div
-    class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
-    style="min-height: 350px; max-height: 480px; overflow-y: auto;"
-  >
-    <div #loadingTemplate style="display: none; width: 100%;" class="p-3"> 
+  <div class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+    style="min-height: 350px; max-height: 480px; overflow-y: auto;">
+    <div #loadingTemplate style="display: none; width: 100%;" class="p-3">
       <p class="text-center text-primary">
         Please wait, file is uploading...
       </p>
     </div>
     <!-- Drag & Drop Area -->
-    <dropzone
-      #dzRef
-      [message]="'Drag & drop images here or click to upload'"
-      [config]="dropZoneConfig"
-      (success)="onUploadSuccess($event);loadingTemplate.style.display = 'none'"
-      (error)="onUploadError($event)"
-      class="custom-dropzone w-100"
-      (uploadProgress)="loadingTemplate.style.display = 'block'"
-    ></dropzone>
+    <dropzone #dzRef [message]="'Drag & drop images here or click to upload'" [config]="dropZoneConfig"
+      (success)="onUploadSuccess($event);loadingTemplate.style.display = 'none'" (error)="onUploadError($event)"
+      class="custom-dropzone w-100" (uploadProgress)="loadingTemplate.style.display = 'block'"></dropzone>
 
     <!-- Info Text -->
     <p class="mt-3 text-center text-secondary fs-6">
@@ -1066,39 +1056,24 @@
 <ng-template #offlineImageUploadModal let-modal>
   <div class="modal-header border-0 pb-0">
     <h3 class="modal-title fw-bold">Upload Image</h3>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.close()"
-    ></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
   </div>
 
-  <div
-    class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
-    style="min-height: 350px; max-height: 480px; overflow-y: auto;"
-  >
+  <div class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+    style="min-height: 350px; max-height: 480px; overflow-y: auto;">
     <!-- Local Drag & Drop Area -->
     <div
       class="custom-dropzone w-100 d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded-3 p-5"
       style="cursor: pointer; min-height: 200px; transition: all 0.2s;"
       [style.borderColor]="isDragOver ? '#0b5ed7' : '#bbd0f0'"
-      [style.backgroundColor]="isDragOver ? '#e9f0ff' : '#f8f9fa'"
-      (click)="offlineFileInput.click()"
-      (dragover)="onOfflineDragOver($event)"
-      (dragleave)="onOfflineDragLeave($event)"
-      (drop)="onOfflineFileDrop($event)"
-    >
+      [style.backgroundColor]="isDragOver ? '#e9f0ff' : '#f8f9fa'" (click)="offlineFileInput.click()"
+      (dragover)="onOfflineDragOver($event)" (dragleave)="onOfflineDragLeave($event)"
+      (drop)="onOfflineFileDrop($event)">
       <i class="ri-upload-cloud-2-line text-primary mb-3" style="font-size: 48px;"></i>
       <span class="fs-15 fw-medium text-dark mb-1">Drag & drop image here or click to upload</span>
       <span class="text-muted fs-12">Supported formats: JPG, PNG | Max size: 200KB</span>
-      <input
-        #offlineFileInput
-        type="file"
-        accept="image/*"
-        style="display: none"
-        (change)="onOfflineFileSelected($event)"
-      />
+      <input #offlineFileInput type="file" accept="image/*" style="display: none"
+        (change)="onOfflineFileSelected($event)" />
     </div>
   </div>
 
@@ -1213,13 +1188,16 @@
   </div>
   <div class="modal-body px-4">
     <!-- <h5 class="mb-3">You have selected <strong>{{ defaultItemProperties.scoringOption.scoringType }}</strong>.</h5> -->
-    
+
     <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'EXACT_MATCH'" class="alert alert-info">
-      <strong>Exact Match:</strong> The candidate must tick <strong>all</strong> the correct answers in the option before they can score the {{ defaultItemProperties.scoringOption.score || 1 }} mark(s).
+      <strong>Exact Match:</strong> The candidate must tick <strong>all</strong> the correct answers in the option
+      before they can score the {{ defaultItemProperties.scoringOption.score || 1 }} mark(s).
     </div>
-    
-    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'" class="alert alert-info">
-      <strong>Partial Match:</strong> Each correct option will carry a fraction of the total mark (e.g. if there are 4 options, each correct option carries 1/4 of the marks).
+
+    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'"
+      class="alert alert-info">
+      <strong>Partial Match:</strong> Each correct option will carry a fraction of the total mark (e.g. if there are 4
+      options, each correct option carries 1/4 of the marks).
     </div>
 
     <p class="mt-3 mb-0">Do you agree with this scoring condition?</p>
