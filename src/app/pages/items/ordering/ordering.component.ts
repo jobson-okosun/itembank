@@ -89,9 +89,8 @@ export class OrderingComponent implements OnInit, OnDestroy {
   };
 
   optionSmall: Object = {
-    min_height: 50,
-    height: 100,
-    menubar: false,
+    min_height: 100,
+    menubar: true,
     branding: false,
     base_url: '/tinymce',
     content_css: '/katex/dist/katex.min.css',
@@ -102,7 +101,7 @@ export class OrderingComponent implements OnInit, OnDestroy {
     setup: this.setup.bind(this),
     extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
     toolbar:
-      'undo redo | bold italic underline equation-editor | subscript superscript charmap',
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink equation-editor | subscript superscript charmap',
   };
 
   constructor(
@@ -391,6 +390,9 @@ export class OrderingComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.publishingItem = true;
+    this.publishLoader();
+
     if (
       this.currentUser.authorities.includes('AUTHOR') &&
       this.subjectModerationStatusEnabled
@@ -456,10 +458,15 @@ export class OrderingComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
+
     this.processingApprove = true;
 
     this.itemService.edit_order_list(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -472,6 +479,8 @@ export class OrderingComponent implements OnInit, OnDestroy {
         this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
+        this.publishingItem = false;
+        Swal.close();
         this.notifier.notify('error', `${error.error.message}`);
         this.processingApprove = false;
       },

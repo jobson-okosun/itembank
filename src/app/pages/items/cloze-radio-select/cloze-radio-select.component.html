@@ -86,7 +86,7 @@
 
       <div class="mb-3">
         <label>Compose Question</label>
-        <editor name="stimulus" id="abc" #stimulus="ngModel" [(ngModel)]="defaultItemProperties.stimulus"
+        <editor name="stimulus" id="abc" #stimulus="ngModel" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
           [init]="option" (onInit)="logEditor($event);"></editor>
       </div>
     </div>

@@ -38,8 +38,9 @@ export class UsersService {
         { withCredentials: true }
       )
       .pipe(
-        tap((results) => {
+        map((results) => {
           results.sort((a, b) => a.role.localeCompare(b.role));
+          return results.filter(r => r.role !== 'ANALYTIC');
         })
       );
   }

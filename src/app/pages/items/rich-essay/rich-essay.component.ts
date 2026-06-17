@@ -337,6 +337,7 @@ export class RichEssayComponent implements OnInit, OnDestroy {
 
   buildItem(itemForm?: any) {
     let item: RichEssayModel = new RichEssayModel();
+
     item.stimulus = this.defaultItemProperties.stimulus;
     item.scoringOption = this.defaultItemProperties.scoringOption;
     item.reference = this.defaultItemProperties.reference;
@@ -353,12 +354,12 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     item.itemTagsDTOS = this.tags.map((tag) => {
       return { tagId: tag.tagId };
     });
-    item.itemType = ItemTypes.ESSAY_RICH_TEXT;
+    item.itemType = this.defaultItemProperties.plainText ? ItemTypes.ESSAY_PLAIN_TEXT : ItemTypes.ESSAY_RICH_TEXT;
     /* item.allowCopy = this.item.allowCopy;
     item.allowCut = this.item.allowCut;
     item.allowPaste = this.item.allowPaste; */
-    item.plainText = this.item.plainText;
-    item.maxWords = this.item.maxWords;
+    item.plainText = this.defaultItemProperties.plainText;
+    // item.maxWords = this.defaultItemProperties.maxWords;
 
     if (this.itemUtil.passageId) {
       item.passageId = this.itemUtil.passageId;
@@ -539,8 +540,8 @@ export class RichEssayComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     // if (
     //   !this.currentUser.authorities.includes("MODERATOR") &&

@@ -13,6 +13,9 @@ import { AssessmentDeliveryEnum } from '../model/assessment-delivery-enum';
 import { NotifierService } from 'angular-notifier';
 import { Publish } from '../model/publish';
 import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
+import { Account } from 'src/app/authentication/model/account.model';
+import { UserService } from 'src/app/shared/user.service';
+import { Role } from 'src/app/shared/enum/role';
 
 @Component({
   selector: 'app-all-assessments',
@@ -57,6 +60,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   loading: boolean = true;
 
   currentUserTime = new Date();
+  currentUser: Account;
+  isCurrentUserMarker = false;
 
   constructor(
     private router: Router,
@@ -64,7 +69,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     private assessmentService: AssessmentsService,
     private modalService: NgbModal,
     private notifier: NotifierService,
-    private _itemService: ItemServiceService
+    private _itemService: ItemServiceService,
+    private userService: UserService,
   ) {}
 
   ngOnDestroy(): void {
@@ -106,6 +112,13 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
           this.loading = false;
         },
       );
+
+      this.currentUser = this.userService.getCurrentUser();
+      
+      if(this.currentUser.authorities[0] == Role.MARKER) {
+        this.isCurrentUserMarker = true;
+      }
+
   }
 
   createNewAssessment(newAssessmentForm: any) {

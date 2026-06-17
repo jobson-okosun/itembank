@@ -539,7 +539,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     }
 
-    Swal.close();
+    this.publishingItem = true;
+    this.publishLoader();
     this.saveFunction(item, 'save');
   }
 
@@ -718,6 +719,9 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     }
 
+    this.publishingItem = true;
+    this.publishLoader();
+
     if (this.subjectModerationStatusEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
@@ -805,15 +809,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // if (
-    //   item.itemStatus == ItemStatusEnum.AWAITING_MODERATION &&
-    //   !this.currentUser.authorities.includes("MODERATOR") &&
-    //   !this.currentUser.authorities.includes("ADMIN")
-    // ) {
-    //   item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    // } else {
-    //   item.itemStatus = ItemStatusEnum.PUBLISHED;
-    // }
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -847,6 +844,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
     this.itemService.editChoiceMatrixItem(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -859,6 +858,8 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
         this.modalService.dismissAll();
       },
       (error: HttpErrorResponse) => {
+        this.publishingItem = false;
+        Swal.close();
         this.notifier.notify('error', `${error.error.message}`);
         this.processingApprove = false;
       }

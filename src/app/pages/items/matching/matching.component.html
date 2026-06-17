@@ -109,9 +109,19 @@
                 (click)="approveQuestion(itemForm)">
                 <a class="dropdown-item">Save</a>
               </li>
+              <!-- <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'"
+                (click)="saveToDraft(itemForm)">
+                <a class="dropdown-item">Save as draft</a>
+              </li> -->
               <li *ngIf="editData.itemStatus === 'AWAITING_MODERATION'" style="cursor: pointer"
                 (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
+              </li>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'draft')">Save as Draft</a>
+              </li>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem(itemForm, 'save')">Save</a>
               </li>
             </ul>
 
@@ -181,30 +191,28 @@
         <editor name="stimulus" [(ngModel)]="defaultItemProperties.stimulus" (ngModelChange)="onStimulusChange($event)"
           [init]="option"></editor>
       </div>
-      <div *ngIf="stems.length > 0 && options.length > 0" class="row">
-        <div class="col-xl-6 mb-3">
-          <label class="form-label">Stimulus List</label>
-          <div ngModelGroup="stimulusList" *ngFor="let stem of stems; let i = index">
-            <div class="d-flex gap-1 mb-2">
-              <editor name="stem{{ i }}" class="editor" [(ngModel)]="stem.stem" [inline]="false" [init]="optionSmall"></editor>
-              <div>
-                <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
-                  <i class="ri-delete-bin-line"></i>
-                </button>
-              </div>
-            </div>
+      <div *ngIf="stems.length > 0 && options.length > 0" class="d-flex flex-column gap-4">
+        <div *ngFor="let stem of stems; let i = index" class="p-3 border border-dashed">
+          <!-- Pair Header and Action -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <span class="badge bg-soft-primary text-primary fs-13 fw-semibold">Pair #{{ i + 1 }}</span>
+            <button type="button" class="btn btn-sm btn-outline-danger d-flex align-items-center gap-1" (click)="delete(i)">
+              <i class="ri-delete-bin-line"></i> Remove Pair
+            </button>
           </div>
-        </div>
-        <div class="col-xl-6 mb-3">
-          <label class="form-label">Options List</label>
-          <div ngModelGroup="options" *ngFor="let option of options; let i = index">
-            <div class="d-flex gap-1 mb-2">
-              <editor name="label{{ i }}" class="editor" [(ngModel)]="option.label" [inline]="false" [init]="optionSmall"></editor>
-              <div>
-                <button type="button" class="btn btn-outline-danger btn-icon" (click)="delete(i)">
-                  <i class="ri-delete-bin-line"></i>
-                </button>
-              </div>
+
+          <!-- Pair Editors -->
+          <div class="row">
+            <!-- Stimulus (Left) -->
+            <div class="col-xl-6 mb-3 mb-xl-0" ngModelGroup="stimulusList">
+              <label class="form-label text-muted fs-12 mb-1">Stimulus (Question/Stem)</label>
+              <editor name="stem{{ i }}" class="editor w-100" [(ngModel)]="stem.stem" [inline]="false" [init]="optionSmall"></editor>
+            </div>
+
+            <!-- Option/Label (Right) -->
+            <div class="col-xl-6" ngModelGroup="options">
+              <label class="form-label text-muted fs-12 mb-1">Option (Answer Label)</label>
+              <editor name="label{{ i }}" class="editor w-100" [(ngModel)]="options[i].label" [inline]="false" [init]="optionSmall"></editor>
             </div>
           </div>
         </div>

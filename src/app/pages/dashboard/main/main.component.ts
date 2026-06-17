@@ -270,8 +270,13 @@ export class MainComponent implements OnInit {
     if(this.currentUser.authorities[0] == Role.MONITOR) {
       this.router.navigateByUrl('/examalpha/monitor')
     } else if(this.currentUser.authorities[0] == Role.ANALYTIC) {
-      // this.router.navigateByUrl('/examalpha/exams')
       this.router.navigateByUrl('/examalpha/result')
+    } else if(this.currentUser.authorities[0] == Role.PROCTOR_ADMIN) {
+      this.router.navigateByUrl('/examalpha/schedule')
+      return;
+    } else if(this.currentUser.authorities[0] == Role.MARKER) {
+      this.router.navigateByUrl('/examalpha/exams')
+      return;
     }
 
     this.dashboardService.fetchDashboardData().subscribe(

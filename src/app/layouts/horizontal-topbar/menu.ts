@@ -118,14 +118,14 @@ export const MENU: MenuItem[] = [
     id: 17,
     label: 'MENUITEMS.EXAMS.TEXT',
     link: '/examalpha/exams',
-    role: ['ADMIN', 'EXAMINER'],
+    role: ['ADMIN', 'EXAMINER', 'MARKER'],
     icon: 'monitor',
   },
   {
     id: 18,
     label: 'MENUITEMS.SCHEDULE.TEXT',
     link: '/examalpha/schedule',
-    role: ['EXAMINER', 'ADMIN'],
+    role: ['EXAMINER', 'ADMIN', 'PROCTOR_ADMIN'],
     icon: 'calendar',
   },
   {

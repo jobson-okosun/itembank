@@ -291,7 +291,7 @@
                       Manage Account</a>
                   </li>
                   <li style="cursor: pointer">
-                    <button class="dropdown-item" [disabled]="user.activated"
+                    <button class="dropdown-item" [disabled]="user.registrationComplete"
                       (click)="resendEmailVerification(user.id)">
                       <i class="ri-mail-send-fill me-2 align-middle"></i> Resend Email Verification
                     </button>
@@ -431,6 +431,12 @@
                         class="ri-pencil-fill align-bottom me-2 text-muted"></i>
                       Manage Account</a>
                   </li>
+                  <li style="cursor: pointer">
+                    <button class="dropdown-item" [disabled]="user.registrationComplete"
+                      (click)="resendEmailVerification(user.id)">
+                      <i class="ri-mail-send-fill me-2 align-middle"></i> Resend Email Verification
+                    </button>
+                  </li>
                   <li class="dropdown-divider"></li>
                   <li style="cursor: pointer">
                     <a class="dropdown-item" (click)="activateUser(user)"><i class="align-middle me-2 text-muted"
@@ -467,7 +473,7 @@
   <div class="p-4 modal-body">
     <form class="row g-3" #userForm="ngForm" (ngSubmit)="userForm.valid && createUser(userForm.value)">
       <div class="col-6">
-        <label for="firstname" class="form-label">Firstname <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <label for="firstname" class="form-label">First name <span [ngStyle]="{ color: 'red' }">*</span></label>
         <input type="text" name="firstname" #firstname="ngModel" class="form-control" id="firstname"
           placeholder="Enter your First name" [class.is-invalid]="firstname.invalid && firstname.touched" required
           ngModel noInputSpace />
@@ -477,13 +483,13 @@
         </div>
       </div>
       <div class="col-6">
-        <label for="lastnameInput" class="form-label">Lastname <span [ngStyle]="{ color: 'red' }">*</span></label>
+        <label for="lastnameInput" class="form-label">Last name <span [ngStyle]="{ color: 'red' }">*</span></label>
         <input type="text" name="lastname" #lastname="ngModel" class="form-control" id="lastnameInput"
-          placeholder="Enter your Lastname" [class.is-invalid]="lastname.invalid && lastname.touched" required ngModel
-          noInputSpace />
+          placeholder="Enter your Last name" [class.is-invalid]="lastname.invalid && lastname.touched" required ngModel
+          pattern="^[^\s]+(\s+[^\s]+)*$" />
         <div *ngIf="lastname.invalid && lastname.touched" [ngStyle]="{ color: 'red' }">
           <span *ngIf="lastname.hasError('required')">Last name is required.</span>
-          <span *ngIf="lastname.hasError('noSpaces')"> No spaces allowed in last name </span>
+          <span *ngIf="lastname.hasError('pattern')">Last name cannot have leading or trailing spaces.</span>
         </div>
       </div>
 
@@ -558,9 +564,9 @@
         <ng-select (change)="onRoleSelectChange()" #roleSelect [items]="appRoles$ | async" #roleRef="ngModel" bindLabel="role" name="role" [(ngModel)]="role" [required]="true" ngModel></ng-select>
       </div>
       <div class="col-12" *ngIf="
-          role.role == 'AUTHOR' ||
-          role.role == 'MODERATOR' ||
-          role.role == 'MARKER'
+          role?.role == 'AUTHOR' ||
+          role?.role == 'MODERATOR' ||
+          role?.role == 'MARKER'
         ">
         <div class="mb-3">
           <app-item-topic [label]="'Subject'" (sendSubjects)="receiveSubjects($event)"></app-item-topic>
@@ -576,8 +582,8 @@
       </button>
 
       <button *ngIf="!submitted" type="button" (click)="createUser(userForm.value)" class="btn btn-primary"
-        [disabled]="userForm.invalid || !role.id || disableSubmit">
-        Create User {{ role.role }}
+        [disabled]="userForm.invalid || !role?.id || disableSubmit">
+        Create User {{ role?.role }}
       </button>
 
       <button *ngIf="submitted" class="btn btn-outline-primary btn-load" [disabled]="submitted">

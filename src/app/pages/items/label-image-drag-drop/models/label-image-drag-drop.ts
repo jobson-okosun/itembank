@@ -35,6 +35,7 @@ export class LabelImageDragDrop {
   responsePositions: Array<{
     x: number;
     y: number;
+    direction?: string;
   }> = [];
   distractors: Array<{
     label: string; //text

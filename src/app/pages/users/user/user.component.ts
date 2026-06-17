@@ -400,7 +400,7 @@ export class UserComponent implements OnInit {
 
   clearSelectedRoles() {
     //this.selectedRoles = [];
-    this.role = new Role();
+    this.role = null;
   }
 
   onAdd($event: any) {
@@ -514,6 +514,7 @@ export class UserComponent implements OnInit {
         this.selectedRoles = [];
         this.Role = [];
         this.selectedRoleIds = [];
+        this.clearSelectedRoles();
         this.ngOnInit();
         //form.reset();
         success = value;
@@ -684,7 +685,7 @@ export class UserComponent implements OnInit {
   }
 
   onRoleSelectChange() {
-    if(['AUTHOR', 'MODERATOR', 'MARKER'].includes(this.role.role)) {
+    if(this.role && ['AUTHOR', 'MODERATOR', 'MARKER'].includes(this.role.role)) {
        this.disableSubmit = true
        return
     }

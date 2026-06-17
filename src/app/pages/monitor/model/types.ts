@@ -87,7 +87,7 @@ export interface TechnicalIssueCentersPage {
 }
 
 export interface participantSummaryFilter {
-    center_id?: string
+  center_id?: string
 }
 
 export interface ParticipantStatusCountDTO {
@@ -188,7 +188,7 @@ export interface ParticipantRescheduleStatusDTO {
 export enum RESCHEDULE_STATUS {
   NONE = "NONE",
   MANUAL = "MANUAL",
-  FORCED = "FORCED",  
+  FORCED = "FORCED",
 }
 
 export interface RescheduleParticipantParams {
@@ -298,7 +298,7 @@ export interface AttemptedBucketParticipantDTO {
   center_name?: string;
   state?: string;
   section_attempts?: {
-    sections: Array<{name: string, total_attempted: number, id: string}>
+    sections: Array<{ name: string, total_attempted: number, id: string }>
     total_attempted: number,
     total_attempted_percent: number
   }
@@ -435,7 +435,7 @@ export interface AllParticipantDTO {
   end_time?: string;
   timed_out: boolean;
   section_attempts?: {
-    sections: Array<{name: string, total_attempted: number, id: string}>
+    sections: Array<{ name: string, total_attempted: number, id: string }>
     total_attempted: number,
     total_attempted_percent: number
   }
@@ -451,4 +451,48 @@ export interface AllParticipantPage {
   total: number;
   page: number;
   size: number;
+}
+
+export interface InfractionTypeSummaryDTO {
+  infraction_types: Array<{
+    infraction_type: string;
+    total_candidates: number;
+    max_strike_candidates: number;
+    candidate_id?: string
+  }>
+}
+
+export interface InfractionEventDTO {
+  id: string;
+  exam_id: string;
+  batch_id: string;
+  candidate_id: string;
+  infraction_type: string;
+  detection_timestamp: string;
+  candidate_name: string | null;
+  candidate_login_field_value: string | null;
+  infraction_strikes: number;
+  max_strike_reached: boolean;
+  created_at: string;
+  // Evidence placeholders
+  evidence_type?: 'image' | 'video' | 'none';
+  evidence_data?: string[];
+}
+
+export interface InfractionEventsPage {
+  total: number;
+  content: InfractionEventDTO[];
+  page: number;
+  size: number;
+}
+
+export interface InfractionEvidenceDTO {
+  exam_name: string | null;
+  candidate_name: string | null;
+  login_field_value: string | null;
+  infraction_type: string;
+  detection_timestamp: string;
+  infraction_strikes: number;
+  max_strike_reached: boolean;
+  signed_url: string;
 }

@@ -572,14 +572,14 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
           item.itemId = value.id;
           this.savedItem.emit(item);
         }
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             icon: 'success',
             title: 'Congratulations',
             text: msg,
           });
-          this.publishingItem = false;
-          this.publishLoader();
         }
 
         if (type === 'save') {
@@ -611,7 +611,6 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -645,6 +644,8 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     // } else {
     //   item.itemStatus = ItemStatusEnum.PUBLISHED;
     // }
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -678,8 +679,9 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
 
     this.itemService.edit_Yes_No(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
-          this.publishingItem = false;
           Swal.fire({
             title: 'Congratulations!',
             text: 'The question was successfully updated.',
@@ -745,12 +747,12 @@ export class YesOrNoComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,

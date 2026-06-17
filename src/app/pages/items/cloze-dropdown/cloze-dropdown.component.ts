@@ -802,6 +802,10 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.saveItem(form, type, true));
       return;
     }
+    const editor = tinymce.get('abc');
+    if (!editor || !this.validateClozeDropdown(editor)) {
+      return;
+    }
     console.log('called me');
     let item = this.buildItem(form);
     const original_content = '';
@@ -989,6 +993,10 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
       return;
     }
+    const editor = tinymce.get('abc');
+    if (!editor || !this.validateClozeDropdown(editor)) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     const original_content = '';
     // this.content = []
@@ -1146,6 +1154,10 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
   saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
+    const editor = tinymce.get('abc');
+    if (!editor || !this.validateClozeDropdown(editor)) {
       return;
     }
     // console.log('called me');
@@ -1383,10 +1395,61 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     }
   }
 
+  validateClozeDropdown(editor: any): boolean {
+    if (!editor) return false;
+    const doc = editor.getDoc();
+    const selectElements: NodeListOf<HTMLSelectElement> = doc.querySelectorAll("select");
+
+    if (selectElements.length === 0) {
+      this.notifier.notify("error", "Please add at least one dropdown select block to your question stimulus.");
+      return false;
+    }
+
+    for (let i = 0; i < selectElements.length; i++) {
+      const selectBox = selectElements[i];
+      const options = selectBox.options;
+      const actualOptionsCount = options.length - 2;
+
+      if (actualOptionsCount <= 0) {
+        this.notifier.notify("error", `Dropdown block ${i + 1} does not contain any options. Please add options.`);
+        return false;
+      }
+
+      let hasEmptyOption = false;
+      for (let j = 2; j < options.length; j++) {
+        const optionLabel = options[j].label.trim();
+        if (optionLabel === "") {
+          hasEmptyOption = true;
+          break;
+        }
+      }
+
+      if (hasEmptyOption) {
+        this.notifier.notify("error", `Option labels in Dropdown block ${i + 1} cannot be empty or contain only spaces.`);
+        return false;
+      }
+
+      const selectedValue = selectBox.value;
+      const selectedLabel = selectBox.selectedOptions[0]?.label?.trim() || "";
+
+      if (selectedValue === "blank" || selectedLabel === "--" || selectedLabel === "") {
+        this.notifier.notify("error", `Please select the correct answer for Dropdown block ${i + 1}.`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   doPreview(itemForm: any) {
 
     if (!this.defaultItemProperties.stimulus) {
       this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
+    const editor = tinymce.get('abc');
+    if (!editor || !this.validateClozeDropdown(editor)) {
       return;
     }
 
@@ -1526,6 +1589,10 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
       return;
     }
+    const editor = tinymce.get('abc');
+    if (!editor || !this.validateClozeDropdown(editor)) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
@@ -1595,10 +1662,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     //   return;
     // }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
-
-    // console.log('builtItem', item);
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -1631,6 +1696,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.itemService.edit_cloze_dropdown(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -1644,7 +1711,6 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',

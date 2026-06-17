@@ -35,6 +35,10 @@
     <div class="row">
       <div>
         <editor
+          [class.d-none]="
+            previewData.type == ItemTypes.ESSAY_PLAIN_TEXT ||
+            previewData.itemType == ItemTypes.ESSAY_PLAIN_TEXT
+          "
           name="stimulus"
           [(ngModel)]="answer"
           [init]="{
@@ -46,6 +50,15 @@
               'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
           }"
         ></editor>
+
+        <div
+          *ngIf="
+            previewData.type == ItemTypes.ESSAY_PLAIN_TEXT ||
+            previewData.itemType == ItemTypes.ESSAY_PLAIN_TEXT
+          "
+          class="card border rounded p-5"
+          [innerHTML]="answer"
+        ></div>
       </div>
     </div>
 

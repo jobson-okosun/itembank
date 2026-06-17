@@ -11,9 +11,9 @@
 
           <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;" class="border-2 border-dashed border-primary" >
               <div style="position: relative;width: 100%; height: 100%; ">
-                <div *ngFor="let position of previewData.responsePositions; let i = index" class="preview-label" [style.left.%]="position.x" [style.top.%]="position.y">
-                  <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent">
-                    <div class="pointer"></div>
+                <div *ngFor="let position of previewData.responsePositions; let i = index" class="preview-label" [style.left.%]="position.x" [style.top.%]="position.y" [style.transform]="position.direction === 'LEFT' ? 'translateX(-100%)' : 'none'">
+                  <div class="d-flex gap-2 p-0 m-0 border-0 outline-0 bg-transparent" [style.flex-direction]="position.direction === 'LEFT' ? 'row-reverse' : 'row'">
+                    <div class="pointer" [style.transform]="position.direction === 'LEFT' ? 'scaleX(-1)' : 'none'"></div>
 
                     <select class="form-select form-select-sm" name="" id="" style="width: 100px">
                       <option disabled selected>Select correct answer</option>

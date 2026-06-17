@@ -55,6 +55,12 @@
                 (click)="openConfirmationModal(rejectConfirmationModal)">
                 <a class="dropdown-item">Reject</a>
               </li>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem('draft')">Save as Draft</a>
+              </li>
+              <li style="cursor: pointer" *ngIf="editData.itemStatus === 'DRAFT'">
+                <a class="dropdown-item" (click)="updateItem('save')">Save</a>
+              </li>
             </ul>
 
             <!--  -->

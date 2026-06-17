@@ -13,6 +13,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AllPassagesService } from '../../passages/list-passages/all-passages.service';
 import { UsageHistory } from '../models/usage-history';
 import { NotifierService } from 'angular-notifier';
+import { ItemTypes } from '../models/item-types';
 
 @Component({
   selector: 'app-rich-essay-preview',
@@ -50,6 +51,7 @@ export class RichEssayPreviewComponent implements OnInit {
   itemUsageHistory: UsageHistory[] = [];
   loading_usage_history: boolean = false;
   isEditPreview: boolean = false;
+  ItemTypes = ItemTypes
 
   constructor(
     private router: Router,
@@ -71,6 +73,7 @@ export class RichEssayPreviewComponent implements OnInit {
     // console.log(this.previewData);
     // console.log(this.itemTrailInfo);
     this.answer = this.previewData.scoringOption.answers[0];
+    console.log(this.previewData);
   }
 
   edit() {

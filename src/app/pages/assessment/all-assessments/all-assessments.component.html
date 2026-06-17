@@ -14,7 +14,7 @@
     <h5 class="card-title mb-0 flex-grow-1">
       List of all Exams({{ assessments.content.length }})
     </h5>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2" *ngIf="!isCurrentUserMarker">
       <a routerLink="/examalpha/exams/templates" class="btn btn-soft-success"><i
           class="ri-pages-line align-bottom me-1"></i>Exam Templates</a>
       <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i
@@ -37,7 +37,7 @@
               ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
                 style="cursor: pointer"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
-              <li>
+              <li *ngIf="!isCurrentUserMarker">
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
                   routerLink="/examalpha/exams/{{ assessment.id }}"><i
                     class="bx bxs-edit align-bottom me-2 text-muted"></i>
@@ -59,7 +59,7 @@
                     Participants
                   </a>
                 </li> -->
-              <li>
+              <li *ngIf="!isCurrentUserMarker">
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
                   routerLink="/examalpha/reports/{{ assessment.schId }}/results" data-bs-toggle="modal">
                   <i class="ri-survey-line align-bottom me-2 text-muted"></i>

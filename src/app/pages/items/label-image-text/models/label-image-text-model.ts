@@ -40,6 +40,7 @@ export class NewLabelImageText {
   responsePositions: Array<{
     x: number;
     y: number;
+    direction?: string;
   }> = [];
   caseSensitive: boolean;
   maxLength: number;

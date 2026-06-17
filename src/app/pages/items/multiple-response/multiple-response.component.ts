@@ -487,13 +487,13 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
           item.itemId = value.id;
           this.savedItem.emit(item);
         }
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           icon: 'success',
           html: msg,
           title: 'Congratulations!',
         });
-        this.publishingItem = false;
-        this.publishLoader();
 
         if (type === 'save' || type === 'draft') {
           this.back();
@@ -515,7 +515,6 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -667,20 +666,6 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
-
-    // if (
-    //   !this.currentUser.authorities.includes("MODERATOR") &&
-    //   !this.currentUser.authorities.includes("ADMIN") &&
-    //   (this.subjectModerationStatus ||
-    //     item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
-    // ) {
-    //   item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    // } else {
-    //   item.itemStatus = ItemStatusEnum.PUBLISHED;
-    // }
-
     switch (status) {
       case 'save':
         if (
@@ -709,24 +694,29 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
+
     this.processingApprove = true;
 
     this.itemService.edit_MRQ(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
             text: 'The question was successfully updated.',
             icon: 'success',
           });
-          this.publishingItem = false;
-          this.processingApprove = false;
-          Swal.close();
           this.back();
           this.modalService.dismissAll();
+          this.processingApprove = false;
         }
       },
       (error: HttpErrorResponse) => {
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           title: 'Failed!',
           text: `${error.error.message}`,
@@ -741,12 +731,12 @@ export class MultipleResponseComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,

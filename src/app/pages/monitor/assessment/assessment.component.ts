@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MonitorService } from '../services/monitor.service';
 import { interval, pipe, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams } from '../model/types';
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, AssessmentBatchDTO, InfractionTypeSummaryDTO, InfractionEventsPage, InfractionEventDTO, InfractionEvidenceDTO } from '../model/types';
 import { finalize } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { HttpResponse } from '@angular/common/http';
@@ -16,6 +16,7 @@ import { AssessmentCenterListPage, AssessmentCenterListParams } from '../../asse
 })
 export class AssessmentComponent implements OnInit, OnDestroy {
   poolSub: Subscription
+  proctoringPoolSub: Subscription
   assessmentId: string
   DoughnutChart: any;
   assessmentOverview: MonitorExamDetailsDTO
@@ -152,6 +153,25 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     center_id: ''
   }
 
+  InfractionsDoughnutChart: any;
+  fetchingInfractionsSummary: boolean = false;
+  infractionsSummary: InfractionTypeSummaryDTO;
+  infractionBatchFilter: string = '';
+  infractionCandidateFilter: string = '';
+  infractionBatches: AssessmentBatchDTO[] = [];
+  fetchingInfractionBatches: boolean = false;
+
+  fetchingInfractionEvents: boolean = false;
+  infractionEventsReport: InfractionEventsPage;
+  infractionEventsParams: PageParams = { page: 1, size: 50 };
+  selectedInfractionCategoryFilter: string = '';
+  selectedInfractionBatchFilter: string = '';
+  selectedInfractionCandidateIdFilter?: string;
+
+  evidenceData: { type: 'image' | 'video' | 'audio' | 'none', data: string[] } = { type: 'none', data: [] };
+  evidenceDetails?: InfractionEvidenceDTO;
+  fetchingEvidence: boolean = false;
+
 
   constructor(
     private modalService: NgbModal,
@@ -167,6 +187,10 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     if (this.poolSub) {
       this.poolSub.unsubscribe()
       this.poolSub = null
+    }
+    if (this.proctoringPoolSub) {
+      this.proctoringPoolSub.unsubscribe()
+      this.proctoringPoolSub = null
     }
   }
 
@@ -188,6 +212,18 @@ export class AssessmentComponent implements OnInit, OnDestroy {
         this.onPool()
       }
     })
+
+    this.proctoringPoolSub = interval(30000).subscribe({
+      next: () => {
+        if (this.isProctored()) {
+          this.fetchInfractionsSummary()
+        }
+      }
+    })
+  }
+
+  isProctored(): boolean {
+    return this.assessmentOverview?.delivery_method === 'AUTO_PROCTORING' || this.assessmentOverview?.delivery_method === 'LIVE_PROCTORING';
   }
 
   onPool() {
@@ -206,6 +242,12 @@ export class AssessmentComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (res) => {
           this.assessmentOverview = res
+          
+          if (!this.pageInitialized && this.isProctored()) {
+             this.fetchInfractionBatches()
+             this.fetchInfractionsSummary()
+          }
+
           this.pageInitialized = true
         }
       })
@@ -1218,6 +1260,159 @@ export class AssessmentComponent implements OnInit, OnDestroy {
         fontFamily: "Poppins, sans-serif",
       },
     };
+  }
+
+  fetchInfractionBatches(silent: boolean = false) {
+    if (!silent) {
+      this.fetchingInfractionBatches = true;
+    }
+    this.monitorService.fetchInfractionBatches(this.assessmentId)
+      .pipe(finalize(() => {
+        if (!silent) this.fetchingInfractionBatches = false;
+      }))
+      .subscribe(res => {
+        this.infractionBatches = res;
+      });
+  }
+
+  fetchInfractionsSummary(silent: boolean = false) {
+    if (!silent) {
+      this.fetchingInfractionsSummary = true;
+    }
+    const params: any = {};
+    if (this.infractionBatchFilter) params.batch_id = this.infractionBatchFilter;
+    if (this.infractionCandidateFilter) params.candidate_login_field_value = this.infractionCandidateFilter;
+    
+    this.monitorService.fetchInfractionTypeSummary(this.assessmentId, params)
+      .pipe(finalize(() => {
+        if (!silent) this.fetchingInfractionsSummary = false;
+      }))
+      .subscribe({
+        next: (res) => {
+          this.infractionsSummary = res;
+          if (this.infractionsSummary.infraction_types.length) {
+             const chartData = this.infractionsSummary.infraction_types.map(b => ({ value: b.total_candidates, name: b.infraction_type }));
+             const value = this.infractionsSummary.infraction_types.reduce((total, curr) => total + curr.total_candidates, 0);
+             this._InfractionsDoughnutChart(chartData, value);
+          }
+        }
+      });
+  }
+
+  applyInfractionsFilter() {
+    this.fetchInfractionsSummary();
+  }
+
+  _InfractionsDoughnutChart(chartData: any[], value: number) {
+     const mappedData = chartData.map((item, index) => {
+       return {
+         ...item,
+         itemStyle: {
+           color: this.defaultChartColors[index % this.defaultChartColors.length]
+         }
+       };
+     });
+
+     this.InfractionsDoughnutChart = {
+       tooltip: { trigger: "item" },
+       series: [
+         {
+           type: "pie",
+           radius: ["40%", "70%"],
+           center: ["50%", "35%"],
+           startAngle: 180,
+           label: { show: false },
+           data: [
+             ...mappedData,
+             {
+               value: value,
+               itemStyle: { color: "none" },
+               label: { show: false },
+             },
+           ],
+         },
+       ],
+       textStyle: { fontFamily: "Poppins, sans-serif" },
+     };
+  }
+
+  openInfractionEventsModal(category: string, content: any, candidate_id?: string) {
+    this.selectedInfractionCategoryFilter = category;
+    this.selectedInfractionBatchFilter = this.infractionBatchFilter; // Sync with main card
+    this.selectedInfractionCandidateIdFilter = candidate_id;
+    this.infractionEventsParams = { page: 1, size: 50 };
+    this.fetchInfractionEvents();
+    this.modalService.open(content, { size: 'xl', centered: true });
+  }
+
+  fetchInfractionEvents() {
+    this.fetchingInfractionEvents = true;
+    this.monitorService.fetchInfractionEvents(this.assessmentId, {
+      batch_id: this.selectedInfractionBatchFilter,
+      infraction_type: this.selectedInfractionCategoryFilter,
+      candidate_id: this.selectedInfractionCandidateIdFilter,
+      page: this.infractionEventsParams.page,
+      size: this.infractionEventsParams.size
+    })
+      .pipe(finalize(() => this.fetchingInfractionEvents = false))
+      .subscribe(res => {
+        this.infractionEventsReport = res;
+      });
+  }
+
+  onInfractionEventsPageChange(event: any) {
+    const size = event.rows;
+    const page = (event.page ?? 0) + 1;
+    this.infractionEventsParams = { size, page };
+    this.fetchInfractionEvents();
+  }
+
+  applyModalInfractionFilter() {
+    this.infractionEventsParams.page = 1;
+    this.fetchInfractionEvents();
+    
+    // If the batch filter changed in the modal, we also want to update the main card's batch filter 
+    // and re-fetch the summary behind the scenes.
+    if (this.infractionBatchFilter !== this.selectedInfractionBatchFilter) {
+      this.infractionBatchFilter = this.selectedInfractionBatchFilter;
+      this.fetchInfractionsSummary();
+    }
+  }
+
+  openEvidenceModal(eventData: InfractionEventDTO, content: any) {
+    this.evidenceData = { type: 'none', data: [] };
+    this.evidenceDetails = undefined;
+    this.fetchingEvidence = true;
+    this.modalService.open(content, { size: 'lg', centered: true });
+
+    this.monitorService.fetchInfractionEvidence(this.assessmentId, eventData.id)
+      .pipe(finalize(() => this.fetchingEvidence = false))
+      .subscribe({
+        next: (res: InfractionEvidenceDTO) => {
+          this.evidenceDetails = res;
+          if (res.signed_url) {
+             const url = res.signed_url.toLowerCase();
+             const isAudioType = eventData.infraction_type.includes('TALKING_DETECTED') || eventData.infraction_type.includes('BACKGROUND_VOICES');
+
+             if (isAudioType || url.includes('.mp3') || url.includes('.wav') || url.includes('.webm') && isAudioType) {
+                this.evidenceData = { type: 'audio', data: [res.signed_url] };
+             } else if (url.includes('.mp4') || url.includes('.mov') || url.includes('.webm')) {
+                this.evidenceData = { type: 'video', data: [res.signed_url] };
+             } else if (url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || url.includes('.webp')) {
+                this.evidenceData = { type: 'image', data: [res.signed_url] };
+             } else {
+                // Fallback based on infraction type if URL lacks clear extension
+                this.evidenceData = { type: isAudioType ? 'audio' : 'image', data: [res.signed_url] };
+             }
+          } else {
+             this.evidenceData = { type: 'none', data: [] };
+          }
+        },
+        error: () => {
+          this.evidenceData = { type: 'none', data: [] };
+          this.evidenceDetails = undefined;
+        }
+      });
   }
 
   goBack() {

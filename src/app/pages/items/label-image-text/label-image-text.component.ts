@@ -116,6 +116,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   dropdownLabels: Array<{
     x: number;
     y: number;
+    direction: string;
     inputValue: string;
     selectedOptionIndex: number | null;
 
@@ -125,6 +126,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       {
         x: 0,
         y: 0,
+        direction: 'RIGHT',
         inputValue: "",
         selectedOptionIndex: null,
 
@@ -264,8 +266,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
         (position, index) => ({
           x: position.x || 50, // Default to 50 if not provided
           y: position.y || 50, // Default to 50 if not provided
+          direction: position.direction || 'RIGHT',
 
-          inputValue: this.editData.options[index].label || '',
+          inputValue: (this.editData.options[index] && this.editData.options[index].label) || '',
           id: index.toString(),
           item: null,
           selectedOptionIndex: null,
@@ -644,9 +647,11 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       let reponsePosition: {
         x: number;
         y: number;
+        direction?: string;
       } = {
         x: option.x,
         y: option.y,
+        direction: option.direction || 'RIGHT',
       };
 
       item.responsePositions.push(reponsePosition);
@@ -692,16 +697,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Validate that all label positions have non-empty labels
-    const hasEmptyLabel = this.dropdownLabels.some(
-      (label) => !label.inputValue || label.inputValue.trim() === ""
-    );
-
-    if (hasEmptyLabel) {
-      this.notifierService.notify(
-        "error",
-        "Please ensure all label positions have a label before preview"
-      );
+    if (!this.validateAnswers()) {
       return;
     }
 
@@ -716,17 +712,21 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   }
 
   validateAnswers(): boolean {
-    // Check if at least one answer is provided and not empty
-    const hasValidAnswer = this.dropdownLabels.some(
-      (label) => label.inputValue && label.inputValue.trim() !== ""
-    );
-
-    if (!hasValidAnswer) {
-      this.notifierService.notify(
-        "error",
-        "Please provide at least one correct answer for the label image with text item"
-      );
+    if (this.dropdownLabels.length === 0) {
+      this.notifierService.notify('error', 'Please add at least one label position to the image.');
       return false;
+    }
+
+    for (let i = 0; i < this.dropdownLabels.length; i++) {
+      const val = this.dropdownLabels[i].inputValue;
+      if (!val || val.trim() === '') {
+        this.notifierService.notify('error', `The answer for Label ${i + 1} cannot be empty or contain only spaces.`);
+        return false;
+      }
+      if (val.startsWith(' ') || val.endsWith(' ')) {
+        this.notifierService.notify('error', `The answer for Label ${i + 1} cannot start or end with spaces.`);
+        return false;
+      }
     }
 
     return true;
@@ -823,6 +823,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
       return;
     }
+    if (!this.validateAnswers()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -856,6 +859,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
       return;
     }
+    if (!this.validateAnswers()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
 
@@ -880,6 +886,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
+    if (!this.validateAnswers()) {
       return;
     }
     let item = this.buildItem(itemForm);
@@ -923,12 +932,12 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
           this.savedItem.emit(item);
         }
         // console.log(value);
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           icon: 'success',
           html: msg,
         });
-        this.publishingItem = false;
-        this.publishLoader();
 
         if (type === 'save' || type === 'draft') {
           this.back();
@@ -955,6 +964,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
             {
               x: 0,
               y: 0,
+              direction: 'RIGHT',
               inputValue: "",
               selectedOptionIndex: null,
 
@@ -964,6 +974,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
             {
               x: 0,
               y: 0,
+              direction: 'RIGHT',
               inputValue: "",
               selectedOptionIndex: null,
 
@@ -984,7 +995,6 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -998,12 +1008,12 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.location.back();
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -1020,21 +1030,16 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
       return;
     }
+    if (!this.validateAnswers()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
     // console.log(this.editData, "edit data");
     // console.log(item, "built item");
-    // let validated = this.itemService.validateItem(item);
-
-    // if (!validated) {
-    //   return;
-    // }
-
-    // this.publishingItem = true;
-    // this.publishLoader();
-
-    // console.log("builtItem", item);
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -1067,6 +1072,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
 
     this.itemService.editClozeTextImageItem(item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -1080,7 +1087,6 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -1103,6 +1109,9 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.processingRejection = true;
   }
 
+  private boundMouseMove = this.onMouseMove.bind(this);
+  private boundMouseUp = this.onMouseUp.bind(this);
+
   onMouseDown(event: MouseEvent, index: number) {
     // console.log('i am down');
     // console.log(index);
@@ -1110,8 +1119,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener('mousemove', this.onMouseMove.bind(this));
-    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.boundMouseMove);
+    document.addEventListener('mouseup', this.boundMouseUp);
   }
 
   // While dragging
@@ -1140,8 +1149,8 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
   onMouseUp() {
     // console.log('release');
     this.isDragging = false;
-    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.boundMouseMove);
+    document.removeEventListener('mouseup', this.boundMouseUp);
   }
 
   onWindowResize() {
@@ -1166,6 +1175,7 @@ export class LabelImageTextComponent implements OnInit, OnDestroy {
       // y: Math.random() * 80,
       x: 0,
       y: 0,
+      direction: 'RIGHT',
       item: null, // Initially no item is associated
       inputValue: '',
       selectedOptionIndex: 1,

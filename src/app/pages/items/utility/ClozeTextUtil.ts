@@ -24,7 +24,7 @@ export function newClozeDropDown(editor: any, count: number) {
   el.add(optionBlank);
   el.add(optionAddRemove);
 
-  tinymce.activeEditor.selection.setNode(el);
+  editor.insertContent('&nbsp;' + el.outerHTML + '&nbsp;');
 
   tinymce.activeEditor
     .getDoc()
@@ -129,7 +129,7 @@ export function newClozeRadioContainer(editor: any, count: number) {
   el.appendChild(optionsContainer);
   el.appendChild(actionsDiv);
 
-  tinymce.activeEditor.selection.setNode(el);
+  editor.insertContent('&nbsp;' + el.outerHTML + '&nbsp;');
 }
 
 

@@ -381,6 +381,12 @@
           <div class="col-lg-12">
             <div class="hstack gap-2 justify-content-end">
               <button
+                (click)="downloadTemplate()"
+                type="button"
+                class="btn btn-outline-info me-auto">
+                <i class="ri-download-2-line align-middle me-1"></i> Download Template
+              </button>
+              <button
                 [disabled]="!subjectsFile.files.length"
                 (click)="uploadSubjects(subjectsFile)"
                 type="submit"

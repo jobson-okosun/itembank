@@ -90,7 +90,8 @@ export class CreateItemComponent implements OnInit, OnDestroy {
   showPassage: boolean = false;
   processingRejection: boolean = false;
   @ViewChild("tagRef") tagRef: ItemTagComponent;
-
+  @ViewChild("scoringConfirmationModal") scoringConfirmationModal: any;
+  pendingSaveAction: any;
   option: Object = {
     height: 200,
     menubar: true,
@@ -187,6 +188,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
       this.defaultItemProperties.numerical = false;
 
       this.defaultItemProperties.difficultyLevel = 1;
+      this.defaultItemProperties.scoringOption.autoScore = true;
     }
   }
 
@@ -374,7 +376,28 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  save(itemForm: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  save(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.save(itemForm, true));
+      return;
+    }
+
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -404,7 +427,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "save");
   }
 
-  saveToDraft() {
+  saveToDraft(skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(true));
+      return;
+    }
+
     let item = this.buildItem();
     let validated = this.itemService.validateItem(item);
 
@@ -420,7 +448,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "draft");
   }
 
-  saveItemToPassage(itemForm: any) {
+  saveItemToPassage(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
+
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -469,7 +502,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     ]);
   }
 
-  saveAndNew() {
+  saveAndNew(skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(true));
+      return;
+    }
+
     let item = this.buildItem();
     let result = this.itemService.validateItem(item);
 
@@ -539,7 +577,12 @@ export class CreateItemComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
+
     // console.log(status);
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);

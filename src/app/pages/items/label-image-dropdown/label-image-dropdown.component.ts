@@ -91,7 +91,8 @@ export class LabelImageDropdownComponent
     inputValue: string;
     selectedOptionIndex: number | null;
     correctAnswerIndex: number | null;
-    showEnterOptionInput: boolean
+    showEnterOptionInput: boolean;
+    direction?: string;
   }> = [
       {
         options: [],
@@ -100,7 +101,8 @@ export class LabelImageDropdownComponent
         inputValue: "",
         selectedOptionIndex: null,
         correctAnswerIndex: null,
-        showEnterOptionInput: false
+        showEnterOptionInput: false,
+        direction: 'RIGHT'
       },
     ];
 
@@ -129,9 +131,8 @@ export class LabelImageDropdownComponent
   };
 
   optionSmall: Object = {
-    min_height: 50,
-    height: 100,
-    menubar: false,
+    min_height: 100,
+    menubar: true,
     branding: false,
     base_url: '/tinymce',
     content_css: '/katex/dist/katex.min.css',
@@ -142,7 +143,7 @@ export class LabelImageDropdownComponent
     setup: this.setup.bind(this),
     extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
     toolbar:
-      'undo redo | bold italic underline equation-editor | subscript superscript charmap',
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink equation-editor | subscript superscript charmap',
   };
 
   @ViewChild('container', { static: false }) containerRef!: ElementRef;
@@ -318,10 +319,12 @@ export class LabelImageDropdownComponent
           x: position.x || 50, // Default to 50 if not provided
           y: position.y || 50, // Default to 50 if not provided
           inputValue: '',
-          selectedOptionIndex: 0, // Or a default value
+          selectedOptionIndex: this.editData.scoringOption.answers[index] ? parseInt(this.editData.scoringOption.answers[index]) : null,
           correctAnswerIndex:
-            this.editData.scoringOption.answers[index] || null,
+            this.editData.scoringOption.answers[index] !== undefined && this.editData.scoringOption.answers[index] !== null ? parseInt(this.editData.scoringOption.answers[index]) : null,
           id: index.toString(),
+          direction: position.direction || 'RIGHT',
+          showEnterOptionInput: false
         }),
       );
       // console.log();
@@ -561,6 +564,10 @@ export class LabelImageDropdownComponent
       return;
     }
 
+    if (!this.validateLabelImageDropdown()) {
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     let item = this.buildItem(itemForm);
     this.previewData = item;
@@ -708,14 +715,13 @@ export class LabelImageDropdownComponent
     }
 
     this.dropdownLabels.forEach((label, index) => {
-      const responsePosition = { x: label.x, y: label.y };
+      const responsePosition = { x: label.x, y: label.y, direction: label.direction || 'RIGHT' };
       const correctAnswerIndex =
         label.correctAnswerIndex !== null &&
           label.correctAnswerIndex !== undefined
           ? label.correctAnswerIndex.toString()
           : '';
 
-      label.options = label.options.map((option) => option.trim());
       item.possibleResponses[index] = { responses: label.options };
       item.responsePositions.push(responsePosition);
 
@@ -754,6 +760,9 @@ export class LabelImageDropdownComponent
       this.confirmScoringAndSave(() => this.saveItem(itemForm, true));
       return;
     }
+    if (!this.validateLabelImageDropdown()) {
+      return;
+    }
     let item = this.buildItem();
     let result = this.itemService.validateItem(item);
 
@@ -781,6 +790,40 @@ export class LabelImageDropdownComponent
     this.saveFunction(item, 'save');
   }
 
+  validateLabelImageDropdown(): boolean {
+    if (this.dropdownLabels.length === 0) {
+      this.notifierService.notify('error', 'Please add at least one label position to the image.');
+      return false;
+    }
+
+    for (let i = 0; i < this.dropdownLabels.length; i++) {
+      const label = this.dropdownLabels[i];
+      if (!label.options || label.options.length === 0) {
+        this.notifierService.notify('error', `Label ${i + 1} does not contain any options. Please add options.`);
+        return false;
+      }
+
+      for (let j = 0; j < label.options.length; j++) {
+        const optionText = label.options[j];
+        if (!optionText || optionText.trim() === '') {
+          this.notifierService.notify('error', `Option labels in Label ${i + 1} cannot be empty or contain only spaces.`);
+          return false;
+        }
+        if (optionText.startsWith(' ') || optionText.endsWith(' ')) {
+          this.notifierService.notify('error', `Option labels in Label ${i + 1} cannot start or end with spaces.`);
+          return false;
+        }
+      }
+
+      if (label.correctAnswerIndex === null || label.correctAnswerIndex === undefined) {
+        this.notifierService.notify('error', `Please select the correct answer for Label ${i + 1}.`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   saveFunction(item: any, type?: string) {
     let msg: string;
     if (type == 'save' || type === 'save_and_new') {
@@ -804,12 +847,12 @@ export class LabelImageDropdownComponent
           this.savedItem.emit(item);
         }
         // console.log(value);
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           icon: 'success',
           html: msg,
         });
-        this.publishingItem = false;
-        this.publishLoader();
 
         if (type === 'save' || type === 'draft') {
           this.back();
@@ -834,24 +877,15 @@ export class LabelImageDropdownComponent
 
           this.dropdownLabels = [
             {
-              x: 50,
-              y: 50,
+              x: 0,
+              y: 0,
               inputValue: '',
               selectedOptionIndex: null,
 
               correctAnswerIndex: null,
-              options: null,
-              showEnterOptionInput: false
-            },
-            {
-              x: 80,
-              y: 80,
-              inputValue: '',
-              selectedOptionIndex: null,
-
-              correctAnswerIndex: null,
-              options: null,
-              showEnterOptionInput: false
+              options: [],
+              showEnterOptionInput: false,
+              direction: 'RIGHT'
             },
           ];
 
@@ -867,7 +901,6 @@ export class LabelImageDropdownComponent
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -881,12 +914,12 @@ export class LabelImageDropdownComponent
     this.location.back();
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -908,6 +941,9 @@ export class LabelImageDropdownComponent
   saveToDraft(itemForm?: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
+    if (!this.validateLabelImageDropdown()) {
       return;
     }
     let item = this.buildItem(itemForm);
@@ -944,6 +980,9 @@ export class LabelImageDropdownComponent
       this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
       return;
     }
+    if (!this.validateLabelImageDropdown()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     let result = this.itemService.validateItem(item);
     //console.log(result);
@@ -971,6 +1010,9 @@ export class LabelImageDropdownComponent
       this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
       return;
     }
+    if (!this.validateLabelImageDropdown()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
@@ -981,10 +1023,8 @@ export class LabelImageDropdownComponent
     //   return;
     // }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
-
-    // console.log("builtItem", item);
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -1017,6 +1057,8 @@ export class LabelImageDropdownComponent
 
     this.itemService.editClozeDropdownImageItem(item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -1030,7 +1072,6 @@ export class LabelImageDropdownComponent
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -1049,14 +1090,17 @@ export class LabelImageDropdownComponent
     this.processingRejection = true;
   }
 
+  private boundMouseMove = this.onMouseMove.bind(this);
+  private boundMouseUp = this.onMouseUp.bind(this);
+
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener('mousemove', this.onMouseMove.bind(this));
-    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.boundMouseMove);
+    document.addEventListener('mouseup', this.boundMouseUp);
   }
 
   // While dragging
@@ -1087,8 +1131,8 @@ export class LabelImageDropdownComponent
   // When mouse button is released
   onMouseUp() {
     this.isDragging = false;
-    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.boundMouseMove);
+    document.removeEventListener('mouseup', this.boundMouseUp);
   }
 
   // Add a new label to the array at a fixed position
@@ -1110,7 +1154,8 @@ export class LabelImageDropdownComponent
       inputValue: "",
       selectedOptionIndex: null,
       correctAnswerIndex: null,
-      showEnterOptionInput: false
+      showEnterOptionInput: false,
+      direction: 'RIGHT'
     });
 
     this.notifierService.notify('success', 'New label added')
@@ -1132,6 +1177,10 @@ export class LabelImageDropdownComponent
     this.onWindowResize();
   }
   addDropOption(index: number, value: string) {
+    if (value.startsWith(' ') || value.endsWith(' ')) {
+      this.notifierService.notify('error', 'Option value cannot start or end with spaces');
+      return;
+    }
     if (value.trim()) {
       this.dropdownLabels[index].options.push(value);
       this.dropdownLabels[index].inputValue = ''; // Clear the input box for this label
@@ -1143,6 +1192,10 @@ export class LabelImageDropdownComponent
   }
 
   editDropOption(labelIndex: number, optionIndex: number, newValue: string) {
+    if (newValue.startsWith(' ') || newValue.endsWith(' ')) {
+      this.notifierService.notify('error', 'Option value cannot start or end with spaces');
+      return;
+    }
     if (optionIndex !== null && newValue.trim()) {
       this.dropdownLabels[labelIndex].options[optionIndex] = newValue;
       this.dropdownLabels[labelIndex].inputValue = ''; // Clear input box after editing
@@ -1221,6 +1274,17 @@ export class LabelImageDropdownComponent
   }
 
   saveOptions(labelIndex: number, modal: any) {
+    for (let i = 0; i < this.tempOptions.length; i++) {
+      const opt = this.tempOptions[i];
+      if (!opt || opt.trim() === '') {
+        this.notifierService.notify('error', 'Option value cannot be empty');
+        return;
+      }
+      if (opt.startsWith(' ') || opt.endsWith(' ')) {
+        this.notifierService.notify('error', 'Option value cannot start or end with spaces');
+        return;
+      }
+    }
     this.dropdownLabels[labelIndex].options = [...this.tempOptions];
     modal.close();
   }

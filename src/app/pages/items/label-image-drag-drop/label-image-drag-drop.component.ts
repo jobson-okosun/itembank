@@ -138,7 +138,8 @@ export class LabelImageDragDropComponent
     selectedOptionIndex: number | null;
 
     id: string;
-    item: null;
+    item: any;
+    direction?: string;
   }> = [
       {
         x: 0,
@@ -148,6 +149,7 @@ export class LabelImageDragDropComponent
 
         id: '1',
         item: null,
+        direction: 'RIGHT',
       },
       // {
       //   x: 80,
@@ -185,9 +187,8 @@ export class LabelImageDragDropComponent
   };
 
   optionSmall: Object = {
-    min_height: 50,
-    height: 100,
-    menubar: false,
+    min_height: 100,
+    menubar: true,
     branding: false,
     base_url: '/tinymce',
     content_css: '/katex/dist/katex.min.css',
@@ -198,7 +199,7 @@ export class LabelImageDragDropComponent
     setup: this.setup.bind(this),
     extended_valid_elements: 'span[*],svg[*],path[*],g[*],defs[*],line[*],rect[*],circle[*],ellipse[*],polygon[*],polyline[*],math[*],semantics[*],annotation[*],annotation-xml[*],merror[*],mtext[*],mspace[*],mover[*],munder[*],munderover[*],mstack[*],mrow[*],msrow[*],mfenced[*],menclose[*],mphantom[*],msup[*],msub[*],msubsup[*],mmultiscripts[*],mi[*],mn[*],mo[*],ms[*],mtable[*],mtr[*],mtd[*],mlabeledtr[*],mfrac[*],mfraction[*],msline[*],msqrt[*],mroot[*],mscarries[*],mscarry[*]',
     toolbar:
-      'undo redo | bold italic underline equation-editor | subscript superscript charmap',
+      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink equation-editor | subscript superscript charmap',
   };
 
   activeTab = 0
@@ -315,6 +316,7 @@ export class LabelImageDragDropComponent
           id: index.toString(),
           item: this.editData.options[index].label || '',
           selectedOptionIndex: null,
+          direction: position.direction || 'RIGHT',
         }),
       );
 
@@ -727,9 +729,11 @@ export class LabelImageDragDropComponent
       let reponsePosition: {
         x: number;
         y: number;
+        direction: string;
       } = {
         x: option.x,
         y: option.y,
+        direction: option.direction || 'RIGHT',
       };
 
       item.responsePositions.push(reponsePosition);
@@ -776,6 +780,10 @@ export class LabelImageDragDropComponent
       return;
     }
 
+    if (!this.validateLabelImageDragDrop()) {
+      return;
+    }
+
     this.itemUtil.previewItem = true;
     this.previewData = this.buildItem();
     // console.log(this.previewData);
@@ -807,6 +815,9 @@ export class LabelImageDragDropComponent
       this.confirmScoringAndSave(() => this.saveItem(itemForm, true));
       return;
     }
+    if (!this.validateLabelImageDragDrop()) {
+      return;
+    }
     let item = this.buildItem();
     let result = this.itemService.validateItem(item);
 
@@ -835,6 +846,27 @@ export class LabelImageDragDropComponent
     this.saveFunction(item, 'save');
   }
 
+  validateLabelImageDragDrop(): boolean {
+    if (this.dropdownLabels.length === 0) {
+      this.notifierService.notify('error', 'Please add at least one drop position to the image.');
+      return false;
+    }
+
+    for (let i = 0; i < this.dropdownLabels.length; i++) {
+      const val = this.dropdownLabels[i].item as any;
+      if (!val || val.trim() === '') {
+        this.notifierService.notify('error', `The item for Drop Zone ${i + 1} cannot be empty or contain only spaces.`);
+        return false;
+      }
+      if (val.startsWith(' ') || val.endsWith(' ')) {
+        this.notifierService.notify('error', `The item for Drop Zone ${i + 1} cannot start or end with spaces.`);
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   saveFunction(item: any, type?: string) {
     let msg: string;
     if (type == 'save' || type === 'save_and_new') {
@@ -858,12 +890,12 @@ export class LabelImageDragDropComponent
           this.savedItem.emit(item);
         }
         // console.log(value);
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           icon: 'success',
           html: msg,
         });
-        this.publishingItem = false;
-        this.publishLoader();
 
         if (type === 'save' || type === 'draft') {
           this.back();
@@ -915,7 +947,6 @@ export class LabelImageDragDropComponent
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -929,12 +960,12 @@ export class LabelImageDragDropComponent
     this.location.back();
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -949,6 +980,9 @@ export class LabelImageDragDropComponent
   saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
+    if (!this.validateLabelImageDragDrop()) {
       return;
     }
     let item = this.buildItem(itemForm);
@@ -972,6 +1006,9 @@ export class LabelImageDragDropComponent
   saveToDraft(itemForm?: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
+    if (!this.validateLabelImageDragDrop()) {
       return;
     }
     let item = this.buildItem(itemForm);
@@ -1004,6 +1041,9 @@ export class LabelImageDragDropComponent
       this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
       return;
     }
+    if (!this.validateLabelImageDragDrop()) {
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
@@ -1016,8 +1056,8 @@ export class LabelImageDragDropComponent
 
     // console.log('builtItem', item);
 
-    // this.publishingItem = true;
-    // this.publishLoader();
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -1050,6 +1090,8 @@ export class LabelImageDragDropComponent
 
     this.itemService.editClozeDragDropImageItem(item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -1063,7 +1105,6 @@ export class LabelImageDragDropComponent
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -1086,6 +1127,9 @@ export class LabelImageDragDropComponent
     this.processingRejection = true;
   }
 
+  private boundMouseMove = this.onMouseMove.bind(this);
+  private boundMouseUp = this.onMouseUp.bind(this);
+
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
     // console.log('i am down');
@@ -1094,8 +1138,8 @@ export class LabelImageDragDropComponent
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
-    document.addEventListener('mousemove', this.onMouseMove.bind(this));
-    document.addEventListener('mouseup', this.onMouseUp.bind(this));
+    document.addEventListener('mousemove', this.boundMouseMove);
+    document.addEventListener('mouseup', this.boundMouseUp);
   }
 
   // While dragging
@@ -1127,8 +1171,8 @@ export class LabelImageDragDropComponent
   onMouseUp() {
     // console.log("release");
     this.isDragging = false;
-    document.removeEventListener('mousemove', this.onMouseMove.bind(this));
-    document.removeEventListener('mouseup', this.onMouseUp.bind(this));
+    document.removeEventListener('mousemove', this.boundMouseMove);
+    document.removeEventListener('mouseup', this.boundMouseUp);
   }
 
   // Add a new label to the array at a fixed position
@@ -1150,6 +1194,7 @@ export class LabelImageDragDropComponent
       item: null, // Initially no item is associated
       inputValue: '',
       selectedOptionIndex: 1,
+      direction: 'RIGHT',
     };
 
 

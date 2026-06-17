@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { NotifierService } from 'angular-notifier';
 import { FileUploader } from 'ng2-file-upload';
@@ -39,6 +39,7 @@ export class ClozeRadioSelectComponent implements OnInit {
   @Input() editData!: any;
   @Input() itemTrailInfo!: any;
   @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @Output() stimulus = new EventEmitter<string>();
   editor: any;
 
   editDataStatus: boolean = false;
@@ -193,6 +194,10 @@ export class ClozeRadioSelectComponent implements OnInit {
       this.defaultItemProperties.scoringOption.minimumScoreIfAttempted =
         this.editData.scoringOption.minimumScoreIfAttempted;
     }
+  }
+
+  onStimulusChange(value: string): void {
+    this.stimulus.emit(value);
   }
 
   logEditor(event: any) {
@@ -589,8 +594,14 @@ export class ClozeRadioSelectComponent implements OnInit {
   }
 
   validateClozeRadioContainers(editor: any): boolean {
+    if (!editor) return false;
     const doc = editor.getDoc();
     const containers: NodeListOf<HTMLElement> = doc.querySelectorAll(".cloze-radio-container");
+
+    if (containers.length === 0) {
+      this.notifier.notify("error", "Please add at least one radio select block to your question stimulus.");
+      return false;
+    }
 
     for (let i = 0; i < containers.length; i++) {
       const container = containers[i];
@@ -602,12 +613,23 @@ export class ClozeRadioSelectComponent implements OnInit {
       }
 
       let selectedCount = 0;
+      let hasEmptyOption = false;
+
       optionNodes.forEach(opt => {
+        const labelText = opt.querySelector("label")?.textContent?.trim() || "";
+        if (labelText === "") {
+          hasEmptyOption = true;
+        }
         const radio = opt.querySelector<HTMLInputElement>('input[type="radio"]');
         if (radio?.checked) {
           selectedCount++;
         }
       });
+
+      if (hasEmptyOption) {
+        this.notifier.notify("error", `Option labels in Radio block ${i + 1} cannot be empty or contain only spaces.`);
+        return false;
+      }
 
       if (selectedCount === 0) {
         this.notifier.notify("error", `Please select a correct answer for Radio block ${i + 1}.`);
@@ -967,8 +989,8 @@ export class ClozeRadioSelectComponent implements OnInit {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case "save":
@@ -1001,6 +1023,8 @@ export class ClozeRadioSelectComponent implements OnInit {
 
     this.itemService.edit_cloze_radio(this.editData.id, item).subscribe(
       value => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: "Congratulations!",
@@ -1014,7 +1038,6 @@ export class ClozeRadioSelectComponent implements OnInit {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: "error",

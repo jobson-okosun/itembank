@@ -1,7 +1,7 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams } from "../model/types";
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO } from "../model/types";
 import { environment } from "src/environments/environment";
 import { AssessmentCenterListPage, AssessmentCenterListParams } from "../../assessment/model/assessment-list";
 
@@ -224,5 +224,27 @@ export class MonitorService {
     const url = this.baseURL + `/download_participants_in_assessment/assessment/${assessmentId}`  + this.buildQuery(params);
 
     return this._http.get(url, { withCredentials: true, responseType: 'blob', observe: 'response' });
+    }
+
+    fetchInfractionBatches(assessmentId: string): Observable<AssessmentBatchDTO[]> {
+      return this._http.get<AssessmentBatchDTO[]>(
+        `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/list`,
+        { withCredentials: true }
+      );
+    }
+
+    fetchInfractionTypeSummary(assessmentId: string, params?: { batch_id?: string, candidate_login_field_value?: string }): Observable<InfractionTypeSummaryDTO> {
+      const url = this.baseURL + `/infraction_type_summary/exam/${assessmentId}` + this.buildQuery(params);
+      return this._http.get<InfractionTypeSummaryDTO>(url, { withCredentials: true });
+    }
+    
+    fetchInfractionEvents(assessmentId: string, params?: { batch_id?: string, infraction_type?: string, candidate_id?: string, page?: number, size?: number }): Observable<InfractionEventsPage> {
+      const url = this.baseURL + `/list_infraction_events/exam/${assessmentId}` + this.buildQuery(params);
+      return this._http.get<InfractionEventsPage>(url, { withCredentials: true });
+    }
+
+    fetchInfractionEvidence(assessmentId: string, eventId: string): Observable<any> {
+      const url = this.baseURL + `/infraction_evidence/exam/${assessmentId}/event/${eventId}`;
+      return this._http.get<any>(url, { withCredentials: true });
     }
 }

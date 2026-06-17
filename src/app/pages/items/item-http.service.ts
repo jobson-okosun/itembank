@@ -170,6 +170,7 @@ export class ItemHttpService {
 
     if (
       item.itemType !== ItemTypes.ESSAY_RICH_TEXT &&
+      item.itemType !== ItemTypes.ESSAY_PLAIN_TEXT &&
       item.itemType !== ItemTypes.SHORT_TEXT &&
       item.itemType !== ItemTypes.CLOZE_DROPDOWN &&
       item.itemType !== ItemTypes.CLOZE_DROPDOWN_IMAGE &&

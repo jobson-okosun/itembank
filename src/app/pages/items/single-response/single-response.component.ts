@@ -569,7 +569,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    //this.publishingItem = true;
+    this.publishingItem = true;
 
     /* if (item.scoringOption.answers.length == 0) {
       return this.notifier.notify(
@@ -590,7 +590,7 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
-    //this.publishLoader();
+    this.publishLoader();
     this.saveFunction(item, 'save');
     //this.back();
   }
@@ -720,8 +720,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    //this.publishingItem = true;
-    //this.publishLoader();
+    this.publishingItem = true;
+    this.publishLoader();
 
     if (this.moderationStatus) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
@@ -790,10 +790,15 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
+
     this.processingApprove = true;
 
     this.createItem.editItem(this.editData.id, item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
           Swal.fire({
             title: 'Congratulations!',
@@ -806,6 +811,8 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
         this.processingApprove = false;
       },
       (error: HttpErrorResponse) => {
+        this.publishingItem = false;
+        Swal.close();
         this.notifier.notify('error', `${error.message}`);
         this.processingApprove = false;
       },

@@ -318,6 +318,7 @@
               </div>
 
               <!-- Admin Buttons -->
+              <!-- 
               <ng-container *ngIf="!assessmentActive">
                 <button *ngIf="!currentUser.authorities.includes('MODERATOR')" class="btn btn-primary btn-icon"
                   ngbTooltip="NEW QUESTION" (click)="sendData()">
@@ -342,10 +343,6 @@
                     ">
                     <i class="ri-pencil-line"></i>
                   </button>
-                  <!-- *ngIf="
-                      clickedTopic.subtopicName &&
-                      currentUser.authorities.includes('ADMIN')
-                    " -->
                   <button *ngIf="
                       clickedTopic.subtopicName &&
                       currentUser.authorities.includes('ADMIN')
@@ -378,6 +375,47 @@
                   </button>
                 </ng-container>
               </ng-container>
+              -->
+
+              <div class="dropdown" ngbDropdown *ngIf="!assessmentActive">
+                <button class="btn btn-primary" type="button" id="manageDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                  <i class="ri-settings-4-line align-middle me-1"></i> Actions
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="manageDropdown" ngbDropdownMenu>
+                  <li *ngIf="!currentUser.authorities.includes('MODERATOR')">
+                    <button class="dropdown-item" (click)="sendData()">
+                      <i class="ri-add-line align-middle me-2 text-primary"></i> New Question
+                    </button>
+                  </li>
+                  <ng-container *ngIf="clickedTopic && currentUser.authorities.includes('ADMIN')">
+                    <li *ngIf="!clickedTopic.subtopicName">
+                      <button class="dropdown-item" (click)="openNewSubTopicModal(newSubTopicModal, clickedTopic)">
+                        <i class="ri-draft-line align-middle me-2 text-warning"></i> Add Subtopic
+                      </button>
+                    </li>
+                    <li *ngIf="!clickedTopic.subtopicName">
+                      <button class="dropdown-item" (click)="openRenameTopicModal(renameTopicModal, clickedTopic)">
+                        <i class="ri-pencil-line align-middle me-2 text-info"></i> Edit Topic
+                      </button>
+                    </li>
+                    <li *ngIf="clickedTopic.subtopicName">
+                      <button class="dropdown-item" (click)="openRenameSubtopicModal(renameSubtopicModal, clickedTopic)">
+                        <i class="ri-pencil-line align-middle me-2 text-info"></i> Rename Sub-Topic
+                      </button>
+                    </li>
+                    <li *ngIf="clickedTopic.subtopicName">
+                      <button class="dropdown-item text-danger" (click)="openDeleteSubtopicConfirmationModal(deleteSubtopicConfirmationModal, clickedTopic)">
+                        <i class="ri-delete-bin-6-line align-middle me-2"></i> Remove Subtopic
+                      </button>
+                    </li>
+                    <li *ngIf="!clickedTopic.subtopicName">
+                      <button class="dropdown-item text-danger" (click)="openDeleteTopicConfirmationModal(deleteTopicConfirmationModal, clickedTopic)">
+                        <i class="ri-delete-bin-6-line align-middle me-2"></i> Remove Topic
+                      </button>
+                    </li>
+                  </ng-container>
+                </ul>
+              </div>
 
               <!-- Filter Button -->
               <button type="button" ngbTooltip="{{

@@ -13,6 +13,8 @@ import { NotifierService } from "angular-notifier";
 import { Router } from "@angular/router";
 import { AllPassagesService } from "../../passages/list-passages/all-passages.service";
 import { ItemDetails, ItemUtilitiesService } from "../item-utilities.service";
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 
 export interface RenameSubjectModel {
   subjectName: string;
@@ -184,7 +186,22 @@ export class AllSubjectsComponent implements OnInit {
       ? true
       : false;
 
+    this.setModerationStatus()
+    this.setSubjectTrail(subject)
     //this.router.navigate(['/examalpha/passages/subjects/' + subject.name])
+  }
+
+  setModerationStatus() {
+    localStorage.setItem('currentSubjectModerationEnabled', this.itemService.currentSubjectModerationEnabled.toString());
+  }
+
+  setSubjectTrail(subject: ListAllSubjects) {
+    const trail: ItemDetails = {
+      subjectId: subject.subjectId,
+      subjectName: subject.name,
+    }
+    
+    this.itemUtil.saveCurrentItemTrail(trail)
   }
 
   gotoPassages(subject: ListAllSubjects) {
@@ -445,5 +462,22 @@ export class AllSubjectsComponent implements OnInit {
         },
       });
     }
+  }
+
+  downloadTemplate() {
+    const templateData = [
+      {
+        'Subject Name': '',
+        'Subject Code': ''
+      }
+    ];
+
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(templateData);
+    const csvOutput = XLSX.utils.sheet_to_csv(worksheet);
+    
+    const data: Blob = new Blob([csvOutput], {
+      type: 'text/csv;charset=utf-8;'
+    });
+    FileSaver.saveAs(data, 'Subject_Import_Template_' + new Date().getTime() + '.csv');
   }
 }

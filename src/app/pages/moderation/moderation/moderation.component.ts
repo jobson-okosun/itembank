@@ -116,7 +116,7 @@ export class ModerationComponent implements OnInit {
             value.id &&
             value.id === 'Moderation disabled for subject'
           ) {
-            this.notifier.notify('error', `${value.id} ${subject.subjectName}`);
+            this.notifier.notify('success', `${value.id} ${subject.subjectName}`);
           }
           this.processing = false;
           this.activityLoader();

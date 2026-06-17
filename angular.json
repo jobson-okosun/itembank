@@ -35,8 +35,21 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*", "input":"node_modules/tinymce", "output": "/tinymce/"},
-              { "glob": "**/*", "input":"node_modules/katex", "output": "/katex/"}
+              {
+                "glob": "**/*",
+                "input": "node_modules/tinymce",
+                "output": "/tinymce/"
+              },
+              {
+                "glob": "**/*",
+                "input": "node_modules/katex",
+                "output": "/katex/"
+              },
+              {
+                "glob": "vercel.json",
+                "input": "./",
+                "output": "./"
+              }
             ],
             "styles": [
               "src/styles.scss",
@@ -49,9 +62,8 @@
               "node_modules/primeng/resources/primeng.min.css",
               "node_modules/shepherd.js/dist/css/shepherd.css",
               "node_modules/katex/dist/katex.min.css"
-             
             ],
-            "scripts":[
+            "scripts": [
               "node_modules/tinymce/tinymce.min.js",
               "node_modules/@codecogs/eqneditor-tinymce6/eqneditor.js"
             ]
@@ -122,7 +134,6 @@
             "styles": [
               "src/styles.scss",
               "src/assets/css/main.css"
-           
             ],
             "scripts": []
           }

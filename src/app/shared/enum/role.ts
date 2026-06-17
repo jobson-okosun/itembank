@@ -7,4 +7,5 @@ export enum Role {
   MARKER = 'MARKER',
   MODERATOR = 'MODERATOR',
   MONITOR = 'MONITOR',
+  PROCTOR_ADMIN = "PROCTOR_ADMIN",
 }

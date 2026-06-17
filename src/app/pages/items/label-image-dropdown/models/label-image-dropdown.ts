@@ -43,6 +43,7 @@ export class LabelImageDropdown {
   responsePositions: Array<{
     x: number;
     y: number;
+    direction?: string;
   }> = [];
   moderation_status: string  = null
   id?: string

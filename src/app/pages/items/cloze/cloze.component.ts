@@ -349,7 +349,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
       onAction(): void {
         // editor.execCommand('openImageDialog', false, null);
         //console.log('button clicked');
-        editor.insertContent('<input type="text" />');
+        editor.insertContent(' <input type="text" /> ');
         /* console.log(editor.getDoc().querySelectorAll('input[type=text]'));
         console.log(count + ' this is count'); */
         ++count;
@@ -555,6 +555,10 @@ export class ClozeComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.saveItem(form, type, true));
       return;
     }
+    const editor = tinymce.get('xyz');
+    if (!editor || !this.validateClozeText(editor)) {
+      return;
+    }
     const original_content = '<input type="text" />';
     let item = this.buildItem(form);
 
@@ -570,7 +574,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
 
     // Loop through each input box and process the options
     for (let i = 0; i < this.input_boxes.length; i++) {
-      let inputValue = this.input_boxes[i].value.trim();
+      let inputValue = this.input_boxes[i].value;
 
       // Check if an option with the same value (index) already exists
       let existingOption = this.options.find(
@@ -589,7 +593,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
       }
 
       // Update scoring answers with the current input value
-      item.scoringOption.answers.push(inputValue.trim());
+      item.scoringOption.answers.push(inputValue);
     }
 
     let content = tinymce.activeEditor.getContent();
@@ -597,7 +601,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
     tinymce.get('xyz').dom.select();
 
     item.options = this.options.map((option) => {
-      return { label: option.label.trim(), value: option.value };
+      return { label: option.label, value: option.value };
     });
     item.stimulus = newContent;
 
@@ -631,6 +635,10 @@ export class ClozeComponent implements OnInit, OnDestroy {
   saveItemToPassage(itemForm?: any, skipScoringCheck: boolean = false) {
     if (!skipScoringCheck) {
       this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
+    const editor = tinymce.get('xyz');
+    if (!editor || !this.validateClozeText(editor)) {
       return;
     }
     const original_content = '<input type="text" />';
@@ -698,9 +706,9 @@ export class ClozeComponent implements OnInit, OnDestroy {
     }
     this.itemService.createClozeItem(item).subscribe(
       (value) => {
+        this.publishingItem = false;
+        Swal.close();
         if (value) {
-          this.publishingItem = false;
-          this.publishLoader();
           Swal.fire({
             icon: 'success',
             title: 'Congratulations',
@@ -728,7 +736,6 @@ export class ClozeComponent implements OnInit, OnDestroy {
       },
       (err: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -748,6 +755,11 @@ export class ClozeComponent implements OnInit, OnDestroy {
 
     if (!this.defaultItemProperties.stimulus) {
       this.notifier.notify('error', 'Please compose a question to preview');
+      return;
+    }
+
+    const editor = tinymce.get('xyz');
+    if (!editor || !this.validateClozeText(editor)) {
       return;
     }
 
@@ -897,6 +909,10 @@ export class ClozeComponent implements OnInit, OnDestroy {
       this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
       return;
     }
+    const editor = tinymce.get('xyz');
+    if (!editor || !this.validateClozeText(editor)) {
+      return;
+    }
     this.updatingItem = true;
     const original_content = '<input type="text" />';
     let item = this.buildItem(itemForm);
@@ -969,6 +985,9 @@ export class ClozeComponent implements OnInit, OnDestroy {
         break;
     }
 
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
+
     this.processingApprove = true;
 
     this.itemService
@@ -976,6 +995,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
       .pipe(finalize(() => (this.updatingItem = true)))
       .subscribe(
         (value) => {
+          this.publishingItem = false;
+          Swal.close();
           if (value) {
             Swal.fire({
               title: 'Congratulations!',
@@ -988,6 +1009,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
           this.modalService.dismissAll();
         },
         (error: HttpErrorResponse) => {
+          this.publishingItem = false;
+          Swal.close();
           this.notifier.notify('error', `${error.error.message}`);
           this.processingApprove = false;
         },
@@ -1013,6 +1036,31 @@ export class ClozeComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+
+  validateClozeText(editor: any): boolean {
+    if (!editor) return false;
+    const doc = editor.getDoc();
+    const inputElements: NodeListOf<HTMLInputElement> = doc.querySelectorAll("input[type='text']");
+
+    if (inputElements.length === 0) {
+      this.notifier.notify("error", "Please add at least one text input block (blank) to your question stimulus.");
+      return false;
+    }
+
+    for (let i = 0; i < inputElements.length; i++) {
+      const inputVal = inputElements[i].value;
+      if (inputVal.trim() === "") {
+        this.notifier.notify("error", `The answer for text blank ${i + 1} cannot be empty or contain only spaces.`);
+        return false;
+      }
+      if (inputVal.startsWith(" ") || inputVal.endsWith(" ")) {
+        this.notifier.notify("error", `The answer for text blank ${i + 1} cannot start or end with spaces.`);
+        return false;
+      }
+    }
+
+    return true;
   }
 
   approveQuestion(itemForm: any) {

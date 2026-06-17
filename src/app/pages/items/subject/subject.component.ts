@@ -1815,6 +1815,8 @@ export class SubjectComponent implements OnInit, OnChanges {
       this.itemUtil.currentItemTrail.subtopicId !== null
         ? this.itemUtil.currentItemTrail.subtopicId
         : null;
+
+    this.filterInformation.stimulusSearchText = this.filterInformation.stimulusSearchText == '' ? null : this.filterInformation.stimulusSearchText;
     //this.filterInformation.subtopicId = null; *****For filter from tags
     //this.filterInformation.topicId = null;
     // console.log(this.filterInformation);

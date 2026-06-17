@@ -554,12 +554,12 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
           this.savedItem.emit(item);
         }
         // console.log(value);
+        this.publishingItem = false;
+        Swal.close();
         Swal.fire({
           icon: 'success',
           html: msg,
         });
-        this.publishingItem = false;
-        this.publishLoader();
 
         if (type === 'save' || type === 'draft') {
           this.back();
@@ -581,7 +581,6 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        this.publishLoader();
         Swal.close();
         Swal.fire({
           icon: 'error',
@@ -591,12 +590,12 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     );
   }
 
-  publishLoader() {
+  publishLoader(msg?: string) {
     if (!this.publishingItem) {
       return;
     } else {
       Swal.fire({
-        title: 'Saving your question, Please Wait...',
+        title: msg ? msg : 'Saving your question, Please Wait...',
         allowEnterKey: false,
         allowEscapeKey: false,
         allowOutsideClick: false,
@@ -618,8 +617,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // this.publishingItem = true;
-    // this.publishLoader();
+    this.publishingItem = true;
+    this.publishLoader('Updating your question, Please Wait...');
 
     switch (status) {
       case 'save':
@@ -653,7 +652,7 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     this.itemService.edit_Yes_No(this.editData.id, item).subscribe(
       (value) => {
         this.publishingItem = false;
-        this.publishLoader();
+        Swal.close();
 
         if (value) {
           Swal.fire({
@@ -668,7 +667,6 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       },
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
-        //this.publishLoader();
         Swal.close();
         this.notifier.notify('error', `${error.message}`);
         this.processingApprove = false;
