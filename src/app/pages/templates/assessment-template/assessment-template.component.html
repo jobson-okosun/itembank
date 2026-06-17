@@ -25,11 +25,10 @@
       <div class="card">
         <div class="card-header mb-0">
           <div class="d-flex">
-            <h6 class="fs-15 text-truncate flex-grow-1">
+            <h6 class="fs-15 text-truncate flex-grow-1 text-uppercase">
               <a
                 (click)="setCurrentTemplate(template.name)"
-                routerLink="/examalpha/exams/templates/{{ template.id }}"
-                >{{ template.name }}</a
+                routerLink="/examalpha/exams/templates/{{ template.id }}">{{ template.name }}</a
               >
             </h6>
             <div class="dropdown" ngbDropdown>
