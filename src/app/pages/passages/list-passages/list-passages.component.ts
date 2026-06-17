@@ -44,6 +44,8 @@ export class ListPassagesComponent implements OnInit {
 
   breadCrumbItems!: any;
 
+  clearTagsArrUponClearingFilter: boolean = false;
+
   subjects: ListAllSubjects[] = [];
 
   assessmentStatus: boolean = false;
@@ -124,7 +126,7 @@ export class ListPassagesComponent implements OnInit {
     private userService: UserService,
     private location: Location,
     private _itemService: ItemServiceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.subjectId = this.activatedRoute.snapshot.params['subjectId'];
@@ -489,10 +491,10 @@ export class ListPassagesComponent implements OnInit {
   gotoUsageHistory(passageId: string) {
     this.router.navigate([
       '/examalpha/passages/subjects/' +
-        this.subjectId +
-        '/passage/' +
-        passageId +
-        '/usage',
+      this.subjectId +
+      '/passage/' +
+      passageId +
+      '/usage',
     ]);
   }
 
@@ -684,6 +686,7 @@ export class ListPassagesComponent implements OnInit {
 
   showFilterOptions() {
     this.showFilter = !this.showFilter;
+    this.clearTagsArrUponClearingFilter = false;
   }
 
   filterPassage(passageFilterForm: any) {
@@ -725,6 +728,10 @@ export class ListPassagesComponent implements OnInit {
     //console.log('original passages after clearing filter::::', this.passages);
     //this.getPassages(this.selectedTopic);
     //this.ngOnInit();
+
+    // clear tags upon closing filter
+    this.tagIds = [];
+    this.clearTagsArrUponClearingFilter = true;
   }
 
   setSubjectId() {
@@ -796,10 +803,10 @@ export class ListPassagesComponent implements OnInit {
 
     this.router.navigate([
       'examalpha/passages/subjects/' +
-        this.subjectId +
-        '/passage/' +
-        passage.id +
-        '/edit-passage',
+      this.subjectId +
+      '/passage/' +
+      passage.id +
+      '/edit-passage',
     ]);
   }
 

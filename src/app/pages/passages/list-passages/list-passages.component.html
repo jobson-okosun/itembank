@@ -326,7 +326,7 @@
             </div>
 
             <div class="col-8">
-              <app-item-tag (sendTags)="recieveTag($event)"></app-item-tag>
+              <app-item-tag (sendTags)="recieveTag($event)" [resetTagsArray]="clearTagsArrUponClearingFilter"></app-item-tag>
             </div>
             <!--end col-->
 

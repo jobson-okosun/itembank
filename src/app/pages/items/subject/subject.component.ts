@@ -1269,11 +1269,11 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(this.assessmentFilter.totalQuestions);
 
     // RESETING ON FILTER FORM OPENS
-    this.resetTagsInputFieldOnOpenFilterDialog = true;
-    this.assessmentFilter.tagIds = [];
-    this.assessmentPassageFilter.tagIds = [];
+    // this.resetTagsInputFieldOnOpenFilterDialog = false;
+    // this.assessmentFilter.tagIds = [];
+    // this.assessmentPassageFilter.tagIds = [];
 
-    this.selectedTopicForFiltering = null;
+    // this.selectedTopicForFiltering = null;
 
   }
 
@@ -1294,11 +1294,11 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(this.modalReference);
 
     // RESETING ON FILTER FORM OPENS
-    this.resetTagsInputFieldOnOpenFilterDialog = true;
-    this.assessmentFilter.tagIds = [];
-    this.assessmentPassageFilter.tagIds = [];
+    // this.resetTagsInputFieldOnOpenFilterDialog = true;
+    // this.assessmentFilter.tagIds = [];
+    // this.assessmentPassageFilter.tagIds = [];
 
-    this.selectedTopicForFiltering = null;
+    // this.selectedTopicForFiltering = null;
   }
 
   recieveTag($event: any) {
@@ -2220,7 +2220,6 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.filterInformation = new FilterItems();
     this.resetTagsInputFieldOnManualOpenFilterDialog = true;
     this.tags = [];
-    console.log('FILTER INFORMATION: ', this.filterInformation);
   }
 
   openSelectCopyLocationModal(

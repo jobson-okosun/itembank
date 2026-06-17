@@ -5,7 +5,7 @@ import { tap } from "rxjs/operators";
 import { distinctUntilChanged } from "rxjs/operators";
 import { debounceTime } from "rxjs/operators";
 import { filter } from "rxjs/operators";
-import { Component, OnInit, Output, EventEmitter, Input } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter, Input, OnChanges, SimpleChanges } from "@angular/core";
 import { concat, Observable, of, Subject } from "rxjs";
 import { Tags } from "../../tags/model/tags.model";
 import { ItemUtilitiesService } from "../item-utilities.service";
@@ -15,7 +15,7 @@ import { ItemUtilitiesService } from "../item-utilities.service";
   templateUrl: "./item-tag.component.html",
   styleUrls: ["./item-tag.component.scss"],
 })
-export class ItemTagComponent implements OnInit {
+export class ItemTagComponent implements OnInit, OnChanges {
   /* tags: AllTagsModel[] = [];
 
   assignedTags: AllTagsModel[] = [];
@@ -28,7 +28,6 @@ export class ItemTagComponent implements OnInit {
   @Input() disabled: boolean;
   @Output() sendTags = new EventEmitter();
   @Input() resetTagsArray: boolean = false;
-  @Input() resetTagsArrayOnManualFilter: boolean = false;
   @Input() selectedTopicForFiltering: string | null = null;
 
 
@@ -48,6 +47,17 @@ export class ItemTagComponent implements OnInit {
     private itemUtilityService: ItemUtilitiesService
   ) { }
 
+  ngOnChanges(changes: SimpleChanges): void {
+
+    if (changes['resetTagsArray']) {
+      const current = changes['resetTagsArray'].currentValue;
+
+      if (current) {
+        this.clearTags();
+      }
+    }
+  }
+
   ngOnInit(): void {
     if (this.recievedTag) {
       this.Tag = this.recievedTag
@@ -65,11 +75,6 @@ export class ItemTagComponent implements OnInit {
       this.sendTags.emit(this.Tag);
     }
 
-       if (this.resetTagsArrayOnManualFilter) {
-      // console.log("RESETTING TAGS ARRAY");
-      this.Tag = [];
-      this.sendTags.emit(this.Tag);
-    }
   }
 
   showSelect(event) {
