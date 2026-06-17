@@ -93,9 +93,7 @@
                         <label for="email" class="form-label">Username <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="username" id="username"
                           placeholder="Enter username" value="{{ userDetail?.username }}"
-                          [(ngModel)]="userDetail.username" [disabled]="
-                                                  !currentUser?.authorities?.includes('ADMIN')
-                                                " />
+                          [(ngModel)]="userDetail.username" [disabled]="!currentUser?.authorities?.includes('ADMIN')" />
                         <span
                           *ngIf="!userDetail.username.trim() && currentUser?.authorities?.includes('ADMIN') && allEditInputFieldIsRequired"
                           class="text-danger">Username is
@@ -453,8 +451,11 @@
         </div>
       </div>
     </div>
+
     <!--end col-->
   </div>
+
+
   <!--end row-->
 </div>
 

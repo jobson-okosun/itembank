@@ -9,7 +9,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AssessmentsService } from '../service/assessments.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AssessmentList, SingleAssessment } from '../model/assessment-list';
-import { AssessmentDeliveryEnum } from '../model/assessment-delivery-enum';
+import { AssessmentDeliveryEnum, CentreBasedCategoryEnum, E_PaperEnum, ProctoredCategoryEnum, UnsupervisedCategoryEnum } from '../model/assessment-delivery-enum';
 import { NotifierService } from 'angular-notifier';
 import { Publish } from '../model/publish';
 import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
@@ -32,16 +32,55 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   deliveryMethods: any[] = [];
 
+  proctoredCategory: any[] = [];
+
+  unsupervisedCategory: any[] = [];
+
+  centreBasedCategory: any[] = [];
+
+  ePaperCategory: any[] = [];
+
   DELIVERY_METHOD_LABEL: string[] = [
-    'LIVE PROCTORING',
-    'AUTO PROCTORING',
-    'ONLINE WITH NO PROCTORING',
-    'ON PREMISE WITH LOCKDOWN BROWSER',
-    'ON PREMISE WITHOUT LOCKDOWN BROWSER',
+    'LIVE SUPERVISED', //'LIVE PROCTORING',
+    'AUTO SUPERVISED', //'AUTO PROCTORING',
+    'ONLINE UNSUPERVISED', //'ONLINE WITH NO PROCTORING',
+    'CENTER-BASED SECURE', //'ON PREMISE WITH LOCKDOWN BROWSER',
+    'CENTER-BASED STANDARD', //'ON PREMISE WITHOUT LOCKDOWN BROWSER',
     'E-PAPER',
+    'BRING YOUR OWN DEVICE',
+  ];
+
+  // ======== CATEGORIES ===========
+
+  PROCTORED_CATEGORY_LABEL: string[] = [
+    'LIVE SUPERVISED',
+    'AUTO SUPERVISED',
+  ];
+
+  UNSUPERVISED_CATEGORY_LABEL: string[] = [
+    'ONLINE WITH LOCKDOWN BROWSER',
+    'ONLINE WITHOUT LOCKDOWN BROWSER'
+  ];
+
+  CENTRE_BASED_CATEGORY_LABEL: string[] = [
+    'OFFLINE WITH SECURE BROWSER',
+    'OFFLINE WITHOUT SECURE BROWSER',
+    'BRING YOUR OWN DEVICE'
+  ];
+
+  E_PAPER_CATEGORY_LABEL: string[] = [
+    'E-PAPER'
   ];
 
   deliveryMethodsWithLabel: { label: string; value: string }[] = [];
+
+  proctorCategoryWithLabel: { label: string; value: string }[] = [];
+
+  unsupervisedCategoryWithLabel: { label: string; value: string }[] = [];
+
+  centerBasedCategoryWithLabel: { label: string; value: string }[] = [];
+
+  ePaperCategoryWithLabel: { label: string; value: string }[] = [];
 
   newAssessment: NewAssessment = new NewAssessment();
 
@@ -87,15 +126,54 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    let m = Object.keys(AssessmentDeliveryEnum);
 
-    m.forEach((method) => {
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
       this.deliveryMethods.push(method);
     });
 
-    this.deliveryMethodsWithLabel = m.map((value: string, index: number) => ({
+    this.deliveryMethodsWithLabel = this.deliveryMethods.map((value: string, index: number) => ({
       value: value,
       label: this.DELIVERY_METHOD_LABEL[index],
+    }));
+
+    // Proctored Categories
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.proctoredCategory.push(method);
+    });
+
+    this.proctorCategoryWithLabel = Object.keys(ProctoredCategoryEnum).map((value: string, index: number) => ({
+      value: value,
+      label: this.PROCTORED_CATEGORY_LABEL[index],
+    }));
+
+    // Unsupervised Categories
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.unsupervisedCategory.push(method);
+    });
+
+    this.unsupervisedCategoryWithLabel = Object.keys(UnsupervisedCategoryEnum).map((value: string, index: number) => ({
+      value: value,
+      label: this.UNSUPERVISED_CATEGORY_LABEL[index],
+    }));
+
+    // Centre based Categories
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.centreBasedCategory.push(method);
+    });
+
+    this.centerBasedCategoryWithLabel = Object.keys(CentreBasedCategoryEnum).map((value: string, index: number) => ({
+      value: value,
+      label: this.CENTRE_BASED_CATEGORY_LABEL[index],
+    }));
+
+    // E-Paper Categories
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.ePaperCategory.push(method);
+    });
+
+    this.ePaperCategoryWithLabel = Object.keys(E_PaperEnum).map((value: string, index: number) => ({
+      value: value,
+      label: this.E_PAPER_CATEGORY_LABEL[index],
     }));
 
     this.breadCrumbItems = [{ label: 'Exams', active: true }];
@@ -150,7 +228,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.newAssessment.description = this.newAssessment.description.trim();
     this.newAssessment.name = this.newAssessment.name.trim();
 
-    // console.log(this.newAssessment);
+    console.log('NEW ASSESSMENT: ', this.newAssessment);
 
     this.assessmentService.createNewAssessment(this.newAssessment).subscribe(
       (value) => {
@@ -203,7 +281,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.assessmentService.schedulerAssessmentId = assessment.schId;
     this.assessmentService.activeAssessmentDeliveryMethod =
       assessment.deliveryMethod;
-      this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
+    this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
   }
 
   confirm() {

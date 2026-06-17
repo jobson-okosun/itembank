@@ -12,6 +12,7 @@ import { Tags } from '../model/tags.model';
 import { Account } from 'src/app/authentication/model/account.model';
 import { UserService } from 'src/app/shared/user.service';
 import { Paginator } from 'primeng/paginator';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-all-tags',
@@ -105,7 +106,8 @@ export class AllTagsComponent implements OnInit {
     private router: Router,
     private notifier: NotifierService,
     private user: UserService,
-    private activeModal: NgbActiveModal
+    private activeModal: NgbActiveModal,
+    private itemService: ItemServiceService
   ) {}
 
   /** Handler function for the quick guide pull out */
@@ -119,6 +121,9 @@ export class AllTagsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.itemService.clearItem('TAG_NAME');
+
     this.breadCrumbItems = [{ label: 'Tags', active: true }];
     // this.currentUser = this.user.getCurrentUser();
         this.currentUser = this.user.getCurrentUser()
@@ -140,6 +145,7 @@ export class AllTagsComponent implements OnInit {
 
   viewTag(tag: any) {
     this.tagService.activeTag = tag.tagName;
+    this.itemService.setItem('TAG_NAME', tag.tagName);
     //this.router.navigate(['/examalpha/tags/tag/' + tagId]);
   }
 

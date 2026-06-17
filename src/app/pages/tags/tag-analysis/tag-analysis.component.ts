@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TagsService } from '../service/tags.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TagAnalysis } from '../model/tag-analysis';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 @Component({
   selector: 'app-tag-analysis',
@@ -17,7 +18,7 @@ export class TagAnalysisComponent implements OnInit {
   breadCrumbItems: Array<{}>;
   activeRow: number;
 
-  constructor(private ar: ActivatedRoute, private tagService: TagsService) {}
+  constructor(private ar: ActivatedRoute, private tagService: TagsService, private itemService: ItemServiceService) {}
 
   
   /** Handler function for the quick guide pull out */
@@ -33,7 +34,7 @@ export class TagAnalysisComponent implements OnInit {
   ngOnInit(): void {
     this.tagId = this.ar.snapshot.params['tagId'];
     this.subjectId = this.ar.snapshot.params['subjectId'];
-    this.currentTag = this.tagService.activeTag;
+    this.currentTag = this.tagService.activeTag || this.itemService.getItem('TAG_NAME');
     this.breadCrumbItems = [
       { label: 'Tag', active: false },
       { label: this.currentTag, active: false },

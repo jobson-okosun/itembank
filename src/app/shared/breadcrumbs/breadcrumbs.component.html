@@ -7,7 +7,7 @@
             <div class="page-title-right">
                 <ol class="breadcrumb m-0">
                   <ng-container *ngFor="let item of breadcrumbItems">
-                    <li class="breadcrumb-item" [ngClass]="{'active': item.active == true}">{{ item.label }}
+                    <li class="breadcrumb-item text-capitalize" [ngClass]="{'active': item.active == true}">{{ item.label }}
                     </li>
                 </ng-container>
                 </ol>

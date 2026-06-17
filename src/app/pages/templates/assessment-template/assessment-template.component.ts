@@ -6,6 +6,7 @@ import { TemplatesPageContent } from "../model/templates-page-content.model";
 import { NotifierService } from "angular-notifier";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { Location } from "@angular/common";
+import { ItemServiceService } from "src/app/shared/item-services/item-service.service";
 
 @Component({
   selector: "app-assessment-template",
@@ -22,7 +23,8 @@ export class AssessmentTemplateComponent implements OnInit {
     private templateService: TemplatesService,
     private notifier: NotifierService,
     private modalService: NgbModal,
-    private location: Location
+    private location: Location,
+    private itemService: ItemServiceService
   ) {}
 
   ngOnInit(): void {
@@ -88,6 +90,7 @@ export class AssessmentTemplateComponent implements OnInit {
 
   setCurrentTemplate(templateName: string) {
     this.templateService.currentTemplate = templateName;
+    this.itemService.setItem('TEMPLATE_NAME', templateName)
   }
 
   goBack() {

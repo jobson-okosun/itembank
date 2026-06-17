@@ -93,6 +93,7 @@ export class LabelImageDragDropComponent
   private offsetX: number;
   private offsetY: number;
   private currentLabelIndex: number;
+  updatingLabelImageDragAndDrop: boolean = false;
 
   @ViewChild('imgUpload') imgUpload: ElementRef;
 
@@ -700,6 +701,7 @@ export class LabelImageDragDropComponent
     this.options = [];
     // item.scoringOption.answers = [];
     item.stimulus = this.defaultItemProperties.stimulus;
+    item.reference = this.defaultItemProperties.reference;
     item.difficultyLevel = this.defaultItemProperties.difficultyLevel;
     item.scoringOption = {
       ...this.defaultItemProperties.scoringOption,
@@ -1047,6 +1049,8 @@ export class LabelImageDragDropComponent
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
+
+
     // console.log(this.editData, 'edit data');
     // let validated = this.itemService.validateItem(item);
 
@@ -1088,6 +1092,10 @@ export class LabelImageDragDropComponent
 
     this.processingApprove = true;
 
+    this.loader();
+
+    console.log('ITEM DRAG AND DROP: ', item);
+
     this.itemService.editClozeDragDropImageItem(item).subscribe(
       (value) => {
         this.publishingItem = false;
@@ -1100,6 +1108,7 @@ export class LabelImageDragDropComponent
           });
         }
         this.back();
+
         this.processingApprove = false;
         this.modalService.dismissAll();
       },
@@ -1113,6 +1122,24 @@ export class LabelImageDragDropComponent
         this.processingApprove = false;
       },
     );
+  }
+
+  loader() {
+    if (this.updatingLabelImageDragAndDrop === false) {
+      Swal.close();
+    } else {
+      // console.log('I am still displaying');
+      Swal.fire({
+        title: 'Updating your questions, Please Wait...',
+        allowEnterKey: false,
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+        },
+      });
+    }
   }
 
   approveQuestion(itemForm: any) {

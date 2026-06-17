@@ -1,5 +1,6 @@
+
 <div class="d-flex align-items-center gap-2 mb-3">
-    <button class="btn btn-outline-info" (click)="back()">
+    <button class="btn btn-outline-info" (click)="routeBack()">
       <i class="ri-arrow-left-line align-middle me-2"></i>Back
     </button>
 
@@ -23,12 +24,8 @@
 ></app-breadcrumbs>
 
 <div class="card card-body">
-  <p-table
-    [value]="subjectAnalysis && subjectAnalysis.topics"
-    dataKey="name"
-    responsiveLayout="scroll"
-    [scrollable]="true"
-  >
+  <p-table [value]="subjectAnalysis && subjectAnalysis.topics" dataKey="name" responsiveLayout="scroll"
+    [scrollable]="true">
     <ng-template pTemplate="header">
       <tr>
         <th class="text-nowrap" style="max-width: 100px" pFrozenColumn>
@@ -51,17 +48,13 @@
           <!-- Total Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon> -->
            T. Rejected <p-sortIcon field="totalItemsRejected"></p-sortIcon>
         </th>
-        <th class="text-nowrap" pSortableColumn="totalItemsPublished">
-          <!-- Total Published <p-sortIcon field="totalItemsPublished"></p-sortIcon> -->
-           T. Published <p-sortIcon field="totalItemsPublished"></p-sortIcon>
-        </th>
         <th class="text-nowrap" pSortableColumn="totalItemsInRecycle">
           T. QNTY. In Recycle
           <p-sortIcon field="totalItemsInRecycle"></p-sortIcon>
         </th>
         <th class="text-nowrap" pSortableColumn="totalItemsUsed">
           <!-- Item Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon> -->
-           Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
+          Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
         </th>
         <th class="text-nowrap" pSortableColumn="totalItemsDraft">
           <!-- Total Items in Draft <p-sortIcon field="totalItemsDraft"></p-sortIcon> -->
@@ -70,10 +63,6 @@
         <th class="text-nowrap" pSortableColumn="totalPassages">
           <!-- Total Passages <p-sortIcon field="totalPassages"></p-sortIcon> -->
            T. Passages <p-sortIcon field="totalPassages"></p-sortIcon>
-        </th>
-        <th class="text-nowrap" pSortableColumn="totalPassagesAwaitingModeration">
-          <!-- Total Passages Awaiting Moderation <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon> -->
-           T. Passages Awaiting Mod. <p-sortIcon field="totalPassagesAwaitingModeration"></p-sortIcon>
         </th>
         <th class="text-nowrap" pSortableColumn="totalPassagesDraft">
           <!-- Total Passages In Draft <p-sortIcon field="totalPassagesDraft"></p-sortIcon> -->
@@ -90,24 +79,11 @@
         </th>
       </tr>
     </ng-template>
-    <ng-template
-      pTemplate="body"
-      let-subjectAnalysis
-      let-expanded="expanded"
-      let-i="rowIndex"
-    >
+    <ng-template pTemplate="body" let-subjectAnalysis let-expanded="expanded" let-i="rowIndex">
       <tr>
         <td style="max-width: 50px" pFrozenColumn>
-          <i
-            *ngIf="activeRow === i"
-            class="la la-angle-down cursor"
-            (click)="showSubTopic(i)"
-          ></i>
-          <i
-            *ngIf="activeRow !== i"
-            class="la la-angle-right cursor"
-            (click)="showSubTopic(i)"
-          ></i>
+          <i *ngIf="activeRow === i" class="la la-angle-down cursor" (click)="showSubTopic(i)"></i>
+          <i *ngIf="activeRow !== i" class="la la-angle-right cursor" (click)="showSubTopic(i)"></i>
         </td>
         <td
           style="min-width: 200px; max-width: 200px;"

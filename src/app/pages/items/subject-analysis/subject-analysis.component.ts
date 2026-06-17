@@ -73,7 +73,7 @@ export class SubjectAnalysisComponent implements OnInit {
     );
   }
 
-  back() {
+  routeBack() {
     history.back()
   }
 

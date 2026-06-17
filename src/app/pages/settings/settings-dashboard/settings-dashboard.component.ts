@@ -237,6 +237,8 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
       newPassword: changePasswordDetail.newPassword,
     };
 
+    console.log('CHANGE PASSWORD: ', payload);
+
     this.changePasswordSubscription = this.settingsService
       .changePassword(payload)
       .subscribe({

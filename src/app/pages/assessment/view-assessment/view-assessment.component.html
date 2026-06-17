@@ -363,7 +363,7 @@
             {{ section.totalScore }}
           </td>
           <td *ngIf="assessment.status !== 'PUBLISHED'">
-            <div class="dropdown" ngbDropdown>
+            <div class="dropdown" ngbDropdown container="body">
               <button class="btn btn-soft-info dropdown arrow-none" type="button" (click)="setSelectedSection(section)"
                 data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                 <i class="ri-more-fill align-middle"></i>
@@ -377,7 +377,7 @@
                     New Question Block</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" style="cursor: pointer" (click)="
+                  <a class="dropdown-item text-capitalize" style="cursor: pointer" (click)="
                       openAssessmentSectionModal(sectionSettingsModal, section)
                     "><i class="ri-settings-4-line align-bottom me-2 text-muted"></i>
                     section settings</a>
@@ -404,7 +404,7 @@
                         deleteSectionConfirmationModal,
                         section
                       )
-                    " class="dropdown-item" style="cursor: pointer"><i
+                    " class="dropdown-item text-capitalize" style="cursor: pointer"><i
                       class="ri-delete-bin-2-line align-bottom me-2 text-muted"></i>
                     Remove section</a>
                 </li>

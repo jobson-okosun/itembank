@@ -80,9 +80,7 @@
                 </a>
               </li>
               <li>
-                <a
-                  class="dropdown-item"
-                  routerLink="/examalpha/exams/{{ assessment.id }}/marking-guide/sections"
+                <a class="dropdown-item" routerLink="/examalpha/exams/{{ assessment.id }}/marking-guide/sections"
                   [queryParams]="{ assessmentName: assessment.name }"><i
                     class="ri-check-double-line align-bottom me-2 text-muted"></i>
                   Marking Guide</a>
@@ -190,15 +188,9 @@
 </div>
 
 <div *ngIf="!loading && assessments?.totalElements > 0">
-  <p-paginator
-    [totalRecords]="assessments.totalElements"
-    (onPageChange)="onPageChange($event)"
-    [first]="0"
-    [rowsPerPageOptions]="[100, 150, 200, 300]"
-    [rows]="100"
-    [showCurrentPageReport]="true"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-  >
+  <p-paginator [totalRecords]="assessments.totalElements" (onPageChange)="onPageChange($event)" [first]="0"
+    [rowsPerPageOptions]="[100, 150, 200, 300]" [rows]="100" [showCurrentPageReport]="true"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
   </p-paginator>
 </div>
 
@@ -282,6 +274,76 @@
               placeholder="Exam duration in minute(s)" required [(ngModel)]="newAssessment.duration" required />
           </div>
         </div>
+
+        <div class="my-4 ps-2">
+          <div
+            class="ml-2 mr-2 bg-soft-primary row border border-4 border-primary border-top-0 border-top-0 border-end-0 border-bottom-0 pt-2 pb-2">
+            <span class="text-black fw-bold text-capitalize">CATEGORIES</span>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6">
+            <label for="proctorCategory" class="label">Proctored <span class="text-danger">*</span></label>
+            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+              name="proctorCategory" [(ngModel)]="newAssessment.proctored" required>
+              <option *ngFor="let category of proctorCategoryWithLabel" value="{{ category.value }}">
+                {{ category.label }}
+              </option>
+            </select>
+            <div [ngSwitch]="newAssessment.proctored">
+              <small *ngSwitchCase="'LIVE_PROCTORING'"><em>A proctored with human supervision</em></small>
+              <small *ngSwitchCase="'AUTO_PROCTORING'"><em>A proctored exam with AI supervision</em></small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <label for="unsupervisedCategory" class="label">Unsupervised <span class="text-danger">*</span></label>
+            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+              name="unsupervisedCategory" [(ngModel)]="newAssessment.unsupervised" required>
+              <option *ngFor="let category of unsupervisedCategoryWithLabel" value="{{ category.value }}">
+                {{ category.label }}
+              </option>
+            </select>
+            <div [ngSwitch]="newAssessment.unsupervised">
+              <small *ngSwitchCase="'ONLINE_SECURE_BROWSER'"><em>Unsupervised exam in physical location which the
+                  candidate use the lockdown browser to access the examination.</em></small>
+              <small *ngSwitchCase="'ONLINE_NO_SECURE_BROWSER'"><em>Unsupervised exam in physical location which the
+                  candidate use the regular browser to access the examination.</em></small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-2">
+          <div class="col-6">
+            <label for="centreBasedCategory" class="label">Centre based <span class="text-danger">*</span></label>
+            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+              name="centreBasedCategory" [(ngModel)]="newAssessment.centreBased" required>
+              <option *ngFor="let category of centerBasedCategoryWithLabel" value="{{ category.value }}">
+                {{ category.label }}
+              </option>
+            </select>
+            <div [ngSwitch]="newAssessment.centreBased">
+              <small *ngSwitchCase="'OFFLINE_SECURE_BROWSER'"><em>Supervised exam in physical location which the
+                  candidate use the lockdown browser to access the examination.</em></small>
+              <small *ngSwitchCase="'OFFLINE_NO_SECURE_BROWSER'"><em>Supervised exam in physical location which the
+                  candidate use the regular browser to access the examination.</em></small>
+              <small *ngSwitchCase="'BYOD'"><em>Candidates are allowed to bring there own device.</em></small>
+            </div>
+          </div>
+
+          <div class="col-6">
+            <label for="ePaperCategory" class="label">E-PAPER <span class="text-danger">*</span></label>
+            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
+              name="ePaperCategory" [(ngModel)]="newAssessment.ePaper" required>
+              <option *ngFor="let category of ePaperCategoryWithLabel" value="{{ category.value }}">
+                {{ category.label }}
+              </option>
+            </select>
+
+          </div>
+        </div>
+
       </div>
     </form>
   </div>

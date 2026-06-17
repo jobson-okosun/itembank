@@ -1,6 +1,8 @@
-<header id="page-topbar">
+<header id="page-topbar" style="margin: 0% -3% 0% 0% !important; padding-left: -8% !important;">
+   <!-- style="margin: 0% -2% 0% -2% !important; padding-left: -8% !important;" -->
   <div class="layout-width">
     <div class="navbar-header">
+
       <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box horizontal-logo" *ngIf="showAppAssets">
@@ -23,12 +25,8 @@
           </a>
         </div>
 
-        <button
-          type="button"
-          class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
-          id="topnav-hamburger-icon"
-          (click)="toggleMobileMenu($event)"
-        >
+        <button type="button" class="btn btn-sm px-3 fs-16 header-item vertical-menu-btn topnav-hamburger"
+          id="topnav-hamburger-icon" (click)="toggleMobileMenu($event)">
           <span class="hamburger-icon">
             <span></span>
             <span></span>
@@ -38,35 +36,18 @@
       </div>
 
       <div class="d-flex align-items-center">
-        <div
-          class="dropdown d-md-none topbar-head-dropdown header-item"
-          ngbDropdown
-        >
-          <button
-            type="button"
-            class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
-            id="page-header-search-dropdown"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            ngbDropdownToggle
-          >
+        <div class="dropdown d-md-none topbar-head-dropdown header-item" ngbDropdown>
+          <button type="button" class="btn btn-icon btn-topbar btn-ghost-secondary rounded-circle"
+            id="page-header-search-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            ngbDropdownToggle>
             <i class="bx bx-search fs-22" style="cursor: pointer"></i>
           </button>
-          <div
-            class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-            aria-labelledby="page-header-search-dropdown"
-            ngbDropdownMenu
-          >
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+            aria-labelledby="page-header-search-dropdown" ngbDropdownMenu>
             <form class="p-3">
               <div class="form-group m-0">
                 <div class="input-group">
-                  <input
-                    type="text"
-                    class="form-control"
-                    placeholder="Search ..."
-                    aria-label="Recipient's username"
-                  />
+                  <input type="text" class="form-control" placeholder="Search ..." aria-label="Recipient's username" />
                   <button class="btn btn-primary" type="submit">
                     <i class="mdi mdi-magnify"></i>
                   </button>
@@ -410,81 +391,41 @@
           </div>
         </div> -->
 
-        <div
-          class="dropdown ms-sm-3 header-item topbar-user"
-          *ngIf="currentUser"
-          ngbDropdown
-        >
-          <button
-            type="button"
-            class="btn"
-            id="page-header-user-dropdown"
-            (click)="(routeToProfile)"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-            ngbDropdownToggle
-          >
+        <div class="dropdown ms-sm-3 header-item topbar-user" *ngIf="currentUser" ngbDropdown>
+          <button type="button" class="btn" id="page-header-user-dropdown" (click)="(routeToProfile)"
+            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ngbDropdownToggle>
             <span class="d-flex align-items-center">
-              <img
-                class="rounded-circle header-profile-user"
-                src="assets/logo/profile.png"
-                alt="Header Avatar"
-              />
+              <img class="rounded-circle header-profile-user" src="assets/logo/profile.png" alt="Header Avatar" />
               <span class="text-start ms-xl-2">
-                <span
-                  class="d-none d-xl-inline-block ms-1 fw-medium user-name-text"
-                  >{{
-                    currentUser.firstName.length <= 8
-                      ? currentUser.firstName
-                      : (currentUser.firstName.substring(0, 8) + '...'
-                        | titlecase)
-                  }}
-                  {{
-                    currentUser.firstName.length <= 8
-                      ? currentUser.lastName
-                      : (currentUser.lastName.substring(0, 8) + '...'
-                        | titlecase)
-                  }}</span
-                >
-                <span
-                  class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text"
-                  >{{
-                    currentUser.username.length <= 12
-                      ? currentUser.username
-                      : currentUser.username.substring(0, 12) + '...'
-                  }}</span
-                >
-                <span class="d-none d-xl-block ms-1 fs-12">{{
-                  currentUser.authorities[0]
-                }}</span>
-              </span>
-            </span>
+                <span class="d-none d-xl-inline-block ms-1 fw-medium user-name-text">{{
+                  currentUser.firstName.length <= 8 ? currentUser.firstName : (currentUser.firstName.substring(0, 8)
+                    + '...' | titlecase) }} {{ currentUser.firstName.length <=8 ? currentUser.lastName :
+                    (currentUser.lastName.substring(0, 8) + '...' | titlecase) }}</span>
+                    <span class="d-none d-xl-block ms-1 fs-12 text-muted user-name-sub-text">{{
+                      currentUser.username.length <= 12 ? currentUser.username : currentUser.username.substring(0, 12)
+                        + '...' }}</span>
+                        <span class="d-none d-xl-block ms-1 fs-12">{{
+                          currentUser.authorities[0]
+                          }}</span>
+                    </span>
+                </span>
           </button>
           <div class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
             <!-- item-->
             <h6 class="dropdown-header">Welcome {{ currentUser.firstName }}</h6>
-            <a
-              class="dropdown-item"
-              routerLink="/examalpha/users/view/{{ currentUser.id }}"
-              ><i
-                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"
-              ></i>
-              <span class="align-middle">Profile</span></a
-            >
-            <a class="dropdown-item" routerLink="/examalpha/settings"
-              ><i
-                class="ri-settings-5-fill text-muted fs-16 align-middle me-1"
-              ></i>
-              <span class="align-middle">Settings</span></a
-            >
+            <a class="dropdown-item" routerLink="/examalpha/users/view/{{ currentUser.id }}"><i
+                class="mdi mdi-account-circle text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle">Profile</span></a>
+            <a class="dropdown-item" routerLink="/examalpha/settings"><i
+                class="ri-settings-5-fill text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle">Settings</span></a>
             <div class="dropdown-divider"></div>
-            <a class="dropdown-item" (click)="logout()"
-              ><i class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
-              <span class="align-middle" data-key="t-logout">Logout</span></a
-            >
+            <a class="dropdown-item" (click)="logout()"><i
+                class="mdi mdi-logout text-muted fs-16 align-middle me-1"></i>
+              <span class="align-middle" data-key="t-logout">Logout</span></a>
           </div>
         </div>
+
       </div>
     </div>
   </div>

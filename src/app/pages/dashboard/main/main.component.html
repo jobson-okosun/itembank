@@ -1,20 +1,11 @@
-<app-breadcrumbs
-  title="DASHBOARD"
-  [breadcrumbItems]="breadCrumbItems"
-></app-breadcrumbs>
+<app-breadcrumbs title="DASHBOARD" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div
-  *ngIf="!dashboardData"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="!dashboardData" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading dashboard...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading dashboard...</span>
   </div>
 </div>
 
@@ -23,9 +14,7 @@
   <div class="row">
     <div class="col-xl-12">
       <div *ngIf="currentUser.authority === 'ADMIN'" class="card">
-        <div
-          class="d-flex align-items-center justify-content-between card-header"
-        >
+        <div class="d-flex align-items-center justify-content-between card-header">
           <h4 class="card-title mb-0 flex-grow-1">
             Questions Analysis Overview
           </h4>
@@ -40,9 +29,7 @@
                   </h5>
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                      <i
-                        class="ri-{{ data.icon }} display-6"
-                        [ngClass]="{
+                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
                           'text-info': data.title === 'Total Subjects',
                           'text-success':
                             data.title === 'Total Approved Questions',
@@ -55,8 +42,7 @@
                           'text-warning':
                             data.title === 'Total Draft Questions' ||
                             data.title === 'Awaiting Moderation'
-                        }"
-                      ></i>
+                        }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -84,9 +70,7 @@
                   </h5>
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                      <i
-                        class="ri-{{ data.icon }} display-6"
-                        [ngClass]="{
+                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
                           'text-info': data.title === 'Total Subjects',
                           'text-success': data.title === 'Total Approved',
                           'text-secondary': data.title === 'Total Questions',
@@ -95,8 +79,7 @@
                           'text-warning':
                             data.title === 'Total Draft' ||
                             data.title === 'Awaiting Moderation'
-                        }"
-                      ></i>
+                        }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -124,9 +107,7 @@
                   </h5>
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                      <i
-                        class="ri-{{ data.icon }} display-6"
-                        [ngClass]="{
+                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
                           'text-info': data.title === 'Total Subjects',
                           'text-success': data.title === 'Total Approved',
                           'text-secondary': data.title === 'Total Questions',
@@ -135,8 +116,7 @@
                           'text-warning':
                             data.title === 'Total Draft' ||
                             data.title === 'Awaiting Moderation'
-                        }"
-                      ></i>
+                        }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -164,9 +144,7 @@
                   </h5>
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                      <i
-                        class="ri-{{ data.icon }} display-6"
-                        [ngClass]="{
+                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
                           'text-info': data.title === 'Total Subjects',
                           'text-success': data.title === 'Total Approved',
                           'text-secondary': data.title === 'Total Questions',
@@ -175,8 +153,7 @@
                           'text-warning':
                             data.title === 'Total Draft' ||
                             data.title === 'Awaiting Moderation'
-                        }"
-                      ></i>
+                        }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -200,32 +177,21 @@
   <!--Admin Dashboard for Users and Passages-->
   <div>
     <div class="row project-wrapper">
-      <div
-        *ngIf="currentUser.authorities.includes('ADMIN')"
-        class="col-lg-4 col-sm-12"
-      >
+      <div *ngIf="currentUser.authorities.includes('ADMIN')" class="col-lg-4 col-sm-12">
         <div class="card card-height-100">
           <div class="card-header align-items-center d-flex">
             <h4 class="card-title mb-0 flex-grow-1">Users</h4>
           </div>
           <!-- end card header -->
           <div class="card-body">
-            <apx-chart
-              [series]="simpleDonutChart.series"
-              [labels]="simpleDonutChart.labels"
-              [chart]="simpleDonutChart.chart"
-              [plotOptions]="simpleDonutChart.plotOptions"
-              [dataLabels]="simpleDonutChart.dataLabels"
-              [legend]="simpleDonutChart.legend"
-              [stroke]="simpleDonutChart.stroke"
-              [yaxis]="simpleDonutChart.yaxis"
-              [colors]="simpleDonutChart.colors"
-            ></apx-chart>
+            <apx-chart [series]="simpleDonutChart.series" [labels]="simpleDonutChart.labels"
+              [chart]="simpleDonutChart.chart" [plotOptions]="simpleDonutChart.plotOptions"
+              [dataLabels]="simpleDonutChart.dataLabels" [legend]="simpleDonutChart.legend"
+              [stroke]="simpleDonutChart.stroke" [yaxis]="simpleDonutChart.yaxis"
+              [colors]="simpleDonutChart.colors"></apx-chart>
 
             <div class="table-responsive mt-3">
-              <div
-                class="d-flex justify-content-center align-items-center mb-4"
-              >
+              <div class="d-flex justify-content-center align-items-center mb-4">
                 <h2 class="me-3 ff-secondary mb-0">
                   {{ dashboardData.usersCard.totalUsers }}
                 </h2>
@@ -239,25 +205,18 @@
                   </p> -->
                 </div>
               </div>
-              <table
-                class="table table-borderless table-sm table-centered align-middle table-nowrap mb-0"
-              >
+              <table class="table table-borderless table-sm table-centered align-middle table-nowrap mb-0">
                 <tbody class="border-0">
                   <tr>
                     <td>
                       <h4 class="text-truncate fs-14 fs-medium mb-0">
-                        <i
-                          class="ri-stop-fill align-middle fs-18 text-success me-2"
-                        ></i
-                        >Active Users
+                        <i class="ri-stop-fill align-middle fs-18 text-success me-2"></i>Active Users
                       </h4>
                     </td>
                     <td>
                       <p class="text-success mb-0">
-                        <i
-                          class="ri-group-line align-middle text-success me-2"
-                        ></i
-                        >{{ dashboardData.usersCard.totalActiveUsers }}
+                        <i class="ri-group-line align-middle text-success me-2"></i>{{
+                        dashboardData.usersCard.totalActiveUsers }}
                       </p>
                     </td>
                     <!-- <td class="text-end">
@@ -270,18 +229,13 @@
                   <tr>
                     <td>
                       <h4 class="fs-14 fs-medium mb-0">
-                        <i
-                          class="ri-stop-fill align-middle fs-18 text-danger me-2"
-                        ></i
-                        >Inactive Users
+                        <i class="ri-stop-fill align-middle fs-18 text-danger me-2"></i>Inactive Users
                       </h4>
                     </td>
                     <td>
                       <p class="text-danger mb-0">
-                        <i
-                          class="ri-group-line align-middle text-danger me-2"
-                        ></i
-                        >{{ dashboardData.usersCard.totalInActiveUsers }}
+                        <i class="ri-group-line align-middle text-danger me-2"></i>{{
+                        dashboardData.usersCard.totalInActiveUsers }}
                       </p>
                     </td>
                     <!-- <td class="text-end">
@@ -300,39 +254,28 @@
         <!-- end card -->
       </div>
       <!-- end col -->
-      <div
-        *ngIf="
+      <div *ngIf="
           (tagsGraph.length > 0 &&
             currentUser.authorities.includes('AUTHOR')) ||
           currentUser.authorities.includes('ADMIN') ||
           currentUser.authorities.includes('EXAMINER') ||
           currentUser.authorities.includes('MODERATOR')
-        "
-        [ngClass]="{
+        " [ngClass]="{
           'col-lg-8 col-sm-12': currentUser.authorities.includes('ADMIN'),
           'col-12':
             currentUser.authorities.includes('AUTHOR') ||
             currentUser.authorities.includes('EXAMINER') ||
             currentUser.authorities.includes('MODERATOR')
-        }"
-      >
+        }">
         <div class="card">
           <div class="card-header align-items-center d-flex">
             <h4 class="card-title mb-0 flex-grow-1">Tags Overview</h4>
             <div *ngIf="dashboardData.subjects.length > 0">
-              <select
-                #subjectDropdownForTags
-                name="subjectGraph"
-                class="form-select"
-                value="{{ dashboardData.subjects[0].subjectId }}"
-                (change)="
+              <select #subjectDropdownForTags name="subjectGraph" class="form-select"
+                value="{{ dashboardData.subjects[0].subjectId }}" (change)="
                   updateSubjectForTagsGraph(subjectDropdownForTags.value)
-                "
-              >
-                <option
-                  value="{{ subject.subjectId }}"
-                  *ngFor="let subject of dashboardData.subjects; let i = index"
-                >
+                ">
+                <option value="{{ subject.subjectId }}" *ngFor="let subject of dashboardData.subjects; let i = index">
                   {{ subject.subjectName | uppercase }}
                 </option>
               </select>
@@ -351,17 +294,11 @@
             ></apx-chart> -->
 
             <div class="card-body">
-              <apx-chart
-                [series]="TagsColumnChart.series"
-                [chart]="TagsColumnChart.chart"
-                [dataLabels]="TagsColumnChart.dataLabels"
-                [plotOptions]="TagsColumnChart.plotOptions"
-                [responsive]="TagsColumnChart.responsive"
-                [xaxis]="TagsColumnChart.xaxis"
-                [legend]="TagsColumnChart.legend"
-                [fill]="TagsColumnChart.fill"
-                [colors]="TagsColumnChart.colors"
-              ></apx-chart>
+              <apx-chart [series]="TagsColumnChart.series" [chart]="TagsColumnChart.chart"
+                [dataLabels]="TagsColumnChart.dataLabels" [plotOptions]="TagsColumnChart.plotOptions"
+                [responsive]="TagsColumnChart.responsive" [xaxis]="TagsColumnChart.xaxis"
+                [legend]="TagsColumnChart.legend" [fill]="TagsColumnChart.fill"
+                [colors]="TagsColumnChart.colors"></apx-chart>
             </div>
           </div>
           <!-- end card-body -->
@@ -372,37 +309,25 @@
   </div>
 
   <!--Author Dashboard-->
-  <div
-    *ngIf="
+  <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
       currentUser.authorities.includes('MODERATOR') ||
       currentUser.authorities.includes('AUTHOR')
-    "
-    class="card"
-  >
-    <div
-      class="card-header border-1 align-items-center d-flex justify-content-between"
-    >
+    " class="card">
+    <div class="card-header border-1 align-items-center d-flex justify-content-between">
       <h4 class="card-title mb-0 flex-grow-1">Questions Overview</h4>
       <div *ngIf="dashboardData.subjects.length > 0">
-        <select
-          #subjectDropdownForGraph
-          name="subjectGraph"
-          class="form-select"
+        <select #subjectDropdownForGraph name="subjectGraph" class="form-select"
           value="{{ dashboardData.subjects[0].subjectId }}"
-          (change)="updateSubjectGraphForAuthor(subjectDropdownForGraph.value)"
-        >
-          <option
-            value="{{ subject.subjectId }}"
-            *ngFor="let subject of dashboardData.subjects"
-          >
+          (change)="updateSubjectGraphForAuthor(subjectDropdownForGraph.value)">
+          <option value="{{ subject.subjectId }}" *ngFor="let subject of dashboardData.subjects">
             {{ subject.subjectName | uppercase }}
           </option>
         </select>
       </div>
     </div>
 
-    <div class="row project-wrapper">
+    <!-- <div class="row project-wrapper"> -->
       <div class="row">
         <div class="col-12">
           <!-- <div class="card">
@@ -484,27 +409,144 @@
         </div>
         <!-- end row -->
       </div>
+    <!-- </div> -->
+  </div>
+
+  <!-- Current Exam Monitor -->
+   <div class="card">
+    <div class="card-header border-1 align-items-center d-flex justify-content-between">
+      <h4 class="card-title mb-0 flex-grow-1">Current Exam Monitor</h4>
+      <div *ngIf="dashboardData.subjects.length > 0">
+        <select #subjectDropdownForGraph name="subjectGraph" class="form-select"
+          value="{{ dashboardData.subjects[0].subjectId }}"
+          (change)="updateCurrentExamMonitorGraphFromSubjectDropdown(subjectDropdownForGraph.value)">
+          <option value="{{ subject.subjectId }}" *ngFor="let subject of dashboardData.subjects">
+            {{ subject.subjectName | uppercase }}
+          </option>
+        </select>
+      </div>
     </div>
+
+    <!-- <div class="row project-wrapper"> -->
+      <div class="row">
+        <div class="col-12">
+          <!-- <div class="card">
+            <div class="card-header border-0 align-items-center d-flex">
+              <h4 class="card-title mb-0 flex-grow-1">Graph</h4> -->
+          <!-- <div class="d-flex gap-1">
+                            <button type="button" class="btn btn-soft-secondary btn-sm">
+                                ALL
+                            </button>
+                            <button type="button" class="btn btn-soft-secondary btn-sm">
+                                1M
+                            </button>
+                            <button type="button" class="btn btn-soft-secondary btn-sm">
+                                6M
+                            </button>
+                            <button type="button" class="btn btn-soft-primary btn-sm">
+                                1Y
+                            </button>
+                        </div> -->
+          <!-- </div> -->
+          <!-- end card header -->
+
+          <!-- <div class="card-header p-0 border-0 bg-soft-light"> -->
+          <div class="row g-0 text-center">
+            <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.downloadedCenters }}
+                </h5>
+                <p class="text-muted mb-0">Total Downloaded Centers</p>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.startedCenters }}
+                </h5>
+                <p class="text-muted mb-0">Total Started Centers</p>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.completedCenters }}
+                </h5>
+                <p class="text-muted mb-0">Total Completed Centers</p>
+              </div>
+            </div>
+            <!--end col-->
+            <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.uploadedCenters }}
+                </h5>
+                <p class="text-muted mb-0">Total Uploaded Centers</p>
+              </div>
+            </div>
+            <!--end col-->
+            <!-- <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.scheduledCandidates }}
+                </h5>
+                <p class="text-muted mb-0">Total Candidates Scheduled</p>
+              </div>
+            </div> -->
+             <!--end col-->
+            <!-- <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.presentCandidates }}
+                </h5>
+                <p class="text-muted mb-0">Total Candidates Present</p>
+              </div>
+            </div> -->
+             <!--end col-->
+            <!-- <div class="col-6 col-sm-3">
+              <div class="p-3 border border-dashed border-start-0">
+                <h5 class="mb-1 text-primary">
+                  {{ currentExamMonitoringGraph.absentCandidates }}
+                </h5>
+                <p class="text-muted mb-0">Total Candidate Absent</p>
+              </div>
+            </div> -->
+          </div>
+          <!-- </div> -->
+          <!-- end card header -->
+
+          <div class="card-body">
+            <canvas
+              baseChart
+              [datasets]="currentExamMonitorLineChart.datasets"
+              [type]="'bar'"
+              [options]="currentExamMonitorLineChart.options"
+              height="300"
+              [labels]="currentExamMonitorLineChart.labels"
+            ></canvas>
+            <!-- end card body -->
+          </div>
+          <!-- end card -->
+          <!-- </div> -->
+          <!-- end col -->
+        </div>
+        <!-- end row -->
+      </div>
+    <!-- </div> -->
   </div>
 
   <!--Passage Chart-->
   <div class="card">
-    <div
-      class="card-header border-0 align-items-center d-flex justify-content-between"
-    >
+    <div class="card-header border-0 align-items-center d-flex justify-content-between">
       <h4 class="card-title mb-0 flex-grow-1">Passages Overview</h4>
       <div *ngIf="dashboardData.subjects.length > 0">
-        <select
-          #subjectDropdownForPassageChart
-          name="subjectGraph"
-          class="form-select"
+        <select #subjectDropdownForPassageChart name="subjectGraph" class="form-select"
           value="{{ dashboardData.subjects[0].subjectId }}"
-          (change)="updatePassageGraph(subjectDropdownForPassageChart.value)"
-        >
-          <option
-            value="{{ subject.subjectId }}"
-            *ngFor="let subject of dashboardData.subjects"
-          >
+          (change)="updatePassageGraph(subjectDropdownForPassageChart.value)">
+          <option value="{{ subject.subjectId }}" *ngFor="let subject of dashboardData.subjects">
             {{ subject.subjectName | uppercase }}
           </option>
         </select>
@@ -532,48 +574,27 @@
     </div>
     <!-- end card header -->
     <div class="card-body">
-      <apx-chart
-        [series]="basicAreaChart.series"
-        [chart]="basicAreaChart.chart"
-        [xaxis]="basicAreaChart.xaxis"
-        [stroke]="basicAreaChart.stroke"
-        [dataLabels]="basicAreaChart.dataLabels"
-        [yaxis]="basicAreaChart.yaxis"
-        [labels]="basicAreaChart.labels"
-        [legend]="basicAreaChart.legend"
-        [title]="basicAreaChart.title"
-        [colors]="basicAreaChart.colors"
-      ></apx-chart>
+      <apx-chart [series]="basicAreaChart.series" [chart]="basicAreaChart.chart" [xaxis]="basicAreaChart.xaxis"
+        [stroke]="basicAreaChart.stroke" [dataLabels]="basicAreaChart.dataLabels" [yaxis]="basicAreaChart.yaxis"
+        [labels]="basicAreaChart.labels" [legend]="basicAreaChart.legend" [title]="basicAreaChart.title"
+        [colors]="basicAreaChart.colors"></apx-chart>
     </div>
     <!-- end card-body -->
   </div>
 
   <!--Moderator Dashboard-->
-  <div
-    *ngIf="
+  <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
       currentUser.authorities.includes('MODERATOR')
-    "
-    class="card"
-  >
-    <div
-      class="card-header border-1 align-items-center d-flex justify-content-between"
-    >
+    " class="card">
+    <div class="card-header border-1 align-items-center d-flex justify-content-between">
       <h4 class="card-title mb-0 flex-grow-1">Moderation Overview</h4>
       <div *ngIf="dashboardData.subjects.length > 0">
-        <select
-          #subjectDropdownForGraph
-          name="subjectGraph"
-          class="form-select"
-          value="{{ dashboardData.subjects[0].subjectId }}"
-          (change)="
+        <select #subjectDropdownForGraph name="subjectGraph" class="form-select"
+          value="{{ dashboardData.subjects[0].subjectId }}" (change)="
             updateSubjectGraphForModerator(subjectDropdownForGraph.value)
-          "
-        >
-          <option
-            value="{{ subject.subjectId }}"
-            *ngFor="let subject of dashboardData.subjects"
-          >
+          ">
+          <option value="{{ subject.subjectId }}" *ngFor="let subject of dashboardData.subjects">
             {{ subject.subjectName | uppercase }}
           </option>
         </select>
@@ -614,16 +635,9 @@
           </li>
         </ul> -->
         <div class="card-body">
-          <apx-chart
-            [series]="basicLineChart.series"
-            [chart]="basicLineChart.chart"
-            [markers]="basicLineChart.markers"
-            [dataLabels]="basicLineChart.dataLabels"
-            [stroke]="basicLineChart.stroke"
-            [colors]="basicLineChart.colors"
-            [title]="basicLineChart.title"
-            [xaxis]="basicLineChart.xaxis"
-          ></apx-chart>
+          <apx-chart [series]="basicLineChart.series" [chart]="basicLineChart.chart" [markers]="basicLineChart.markers"
+            [dataLabels]="basicLineChart.dataLabels" [stroke]="basicLineChart.stroke" [colors]="basicLineChart.colors"
+            [title]="basicLineChart.title" [xaxis]="basicLineChart.xaxis"></apx-chart>
         </div>
         <!-- end card-body -->
       </div>
@@ -633,19 +647,16 @@
   </div>
 
   <!--Examiner Dashboard-->
-  <div
-    *ngIf="
+  <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
       currentUser.authorities.includes('EXAMINER')
-    "
-    class="card"
-  >
+    " class="card">
     <div class="card-header border-1 align-items-center d-flex">
       <h4 class="card-title mb-0 flex-grow-1">Exams Overview</h4>
     </div>
 
     <div class="row g-0 text-center">
-      <div class="col-4">
+      <div class="col-3">
         <div class="p-3 border border-dashed border-start-0">
           <h5 class="mb-1 text-primary">
             {{ dashboardData.assessmentCard.totalAssessments }}
@@ -654,7 +665,7 @@
         </div>
       </div>
       <!--end col-->
-      <div class="col-4">
+      <div class="col-3">
         <div class="p-3 border border-dashed border-start-0">
           <h5 class="mb-1 text-warning">
             {{ dashboardData.assessmentCard.totalDrafts }}
@@ -663,7 +674,7 @@
         </div>
       </div>
       <!--end col-->
-      <div class="col-4">
+      <div class="col-3">
         <div class="p-3 border border-dashed border-start-0">
           <h5 class="mb-1 text-success">
             {{ dashboardData.assessmentCard.totalPublished }}
@@ -671,29 +682,26 @@
           <p class="text-muted mb-0">Total Published</p>
         </div>
       </div>
+      <div class="col-3">
+        <div class="p-3 border border-dashed border-start-0">
+          <h5 class="mb-1 text-primary">
+            00
+          </h5>
+          <p class="text-muted mb-0 text-capitalize">Total completed Exams</p>
+        </div>
+      </div>
       <!--end col-->
     </div>
 
     <div>
-      <apx-chart
-        [series]="assessmentChart.series"
-        [chart]="assessmentChart.chart"
-        [colors]="assessmentChart.colors"
-        [dataLabels]="assessmentChart.dataLabels"
-        [plotOptions]="assessmentChart.plotOptions"
-        [yaxis]="assessmentChart.yaxis"
-        [legend]="assessmentChart.legend"
-        [fill]="assessmentChart.fill"
-        [stroke]="assessmentChart.stroke"
-        [tooltip]="assessmentChart.tooltip"
-        [xaxis]="assessmentChart.xaxis"
-      ></apx-chart>
+      <apx-chart [series]="assessmentChart.series" [chart]="assessmentChart.chart" [colors]="assessmentChart.colors"
+        [dataLabels]="assessmentChart.dataLabels" [plotOptions]="assessmentChart.plotOptions"
+        [yaxis]="assessmentChart.yaxis" [legend]="assessmentChart.legend" [fill]="assessmentChart.fill"
+        [stroke]="assessmentChart.stroke" [tooltip]="assessmentChart.tooltip"
+        [xaxis]="assessmentChart.xaxis"></apx-chart>
     </div>
   </div>
 </div>
 
-<app-rightsidebar
-  [currentView]="'Dashboard'"
-  [pageGuide]="quickGuide"
-  (settingsButtonClicked)="onSettingsButtonClicked()"
-></app-rightsidebar>
+<app-rightsidebar [currentView]="'Dashboard'" [pageGuide]="quickGuide"
+  (settingsButtonClicked)="onSettingsButtonClicked()"></app-rightsidebar>
