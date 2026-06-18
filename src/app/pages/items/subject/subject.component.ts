@@ -1275,6 +1275,8 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     // this.selectedTopicForFiltering = null;
 
+    this.resetTagsInputFieldOnOpenFilterDialog = false;
+
   }
 
   removeAllTopics() {
@@ -1299,6 +1301,8 @@ export class SubjectComponent implements OnInit, OnChanges {
     // this.assessmentPassageFilter.tagIds = [];
 
     // this.selectedTopicForFiltering = null;
+
+    this.resetTagsInputFieldOnOpenFilterDialog = false;
   }
 
   recieveTag($event: any) {
@@ -1496,7 +1500,8 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   showFilters() {
-    this.showFilter = !this.showFilter;    
+    this.showFilter = !this.showFilter;  
+    this.resetTagsInputFieldOnManualOpenFilterDialog = false;
   }
 
   showTopicDetails(topic: any, subtopicId?: string, index?: number) {

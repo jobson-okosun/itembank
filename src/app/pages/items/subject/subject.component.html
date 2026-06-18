@@ -1738,7 +1738,7 @@
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal" (click)="
               modal.close('Close click');
               assessmentFilterForm.reset();
-              removeAllTopics();">
+              removeAllTopics(); resetTagsInputFieldOnOpenFilterDialog = true;">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
           <button [disabled]="!assessmentFilter.topicId" type="button" *ngIf="!submitted" (click)="
@@ -1828,8 +1828,9 @@
       </div>
       <div class="card-footer">
         <div class="d-flex justify-content-end gap-2">
+          <!-- this.resetTagsInputFieldOnOpenFilterDialog = false; -->
           <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"
-            (click)="modal.close('Close click')">
+            (click)="modal.close('Close click'); resetTagsInputFieldOnOpenFilterDialog = true;">
             <i class="ri-close-line me-2 align-middle"></i>Close
           </button>
           <button *ngIf="!submitted" [disabled]="

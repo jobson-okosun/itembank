@@ -1,5 +1,3 @@
-<app-breadcrumbs title="TAG | ANALYSIS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
-
 <div class="d-flex align-items-center justify-content-between gap-2 mb-3">
   <div class="d-flex align-items-center flex-row gap-2">
     <!-- <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
@@ -12,11 +10,26 @@
       <i class="ri-arrow-left-line"></i>Back
     </button>
   </div>
-  <h4 *ngIf="analysis" class="card-title" style="cursor: default">
+
+      <div class="dropdown ms-auto" ngbDropdown>
+      <button class="btn btn-primary" type="button" id="exportDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+        <i class="ri-download-2-line align-middle me-2"></i>Export
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportDropdown" ngbDropdownMenu>
+        <li>
+          <button class="dropdown-item" (click)="exportExcel()">
+            <i class="ri-file-excel-2-line align-middle me-2 text-success"></i> Export Excel
+          </button>
+        </li>
+      </ul>
+    </div>
+  <!-- <h4 *ngIf="analysis" class="card-title" style="cursor: default">
     <span title="SUBJECT">{{ analysis.subjectName | uppercase }}</span> | <span title="TAG">{{ currentTag | uppercase
       }}</span><span title="TOTAL QUESTIONS">({{ analysis.totalItems }})</span>
-  </h4>
+  </h4> -->
 </div>
+
+<app-breadcrumbs title="TAG - {{subjectName | uppercase}} | {{ currentTag | uppercase }} ({{ totalItems }})" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
 <div *ngIf="!analysis" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
@@ -37,29 +50,27 @@
           Topic <p-sortIcon field="topicName"></p-sortIcon>
         </th>
 
-        <th pSortableColumn="totalItems">
-          Total Ques. <p-sortIcon field="totalItems"></p-sortIcon>
+        <th class="text-nowrap" title="Total Questions" pSortableColumn="totalItems">
+          T. Questions <p-sortIcon field="totalItems"></p-sortIcon>
         </th>
-        <th pSortableColumn="totalItemsAwaitingModeration">
-          Total Awaiting Mod.
-          <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
+        <th class="text-nowrap" title="Total Awaiting Moderations" pSortableColumn="totalItemsAwaitingModeration">
+          T. Awaiting Mod <p-sortIcon field="totalItemsAwaitingModeration"></p-sortIcon>
         </th>
 
         <!-- <th pSortableColumn="inventoryStatus">
           Total Rejected <p-sortIcon field="inventoryStatus"></p-sortIcon>
         </th> -->
-        <th pSortableColumn="totalItemsPublished">
-          Total Pub.<p-sortIcon field="totalItemsPublished"></p-sortIcon>
+        <th class="text-nowrap" title="Total Publised" pSortableColumn="totalItemsPublished">
+          T. Publish<p-sortIcon field="totalItemsPublished"></p-sortIcon>
         </th>
-        <th pSortableColumn="totalItemsInRecycle">
-          Total Recy.
-          <p-sortIcon field="totalItemsInRecycle"></p-sortIcon>
+        <th class="text-nowrap" title="Total Recycled" pSortableColumn="totalItemsInRecycle">
+          T. Recycle <p-sortIcon field="totalItemsInRecycle"></p-sortIcon>
         </th>
         <!-- <th pSortableColumn="totalItemsUsed">
           Item Usage Count <p-sortIcon field="totalItemsUsed"></p-sortIcon>
         </th> -->
-        <th pSortableColumn="totalItemsDraft">
-          Total Drf. <p-sortIcon field="totalItemsDraft"></p-sortIcon>
+        <th class="text-nowrap" title="Total Drafts" pSortableColumn="totalItemsDraft">
+          T. Draft <p-sortIcon field="totalItemsDraft"></p-sortIcon>
         </th>
         <!-- <th pSortableColumn="inventoryStatus">
           Total Passages <p-sortIcon field="inventoryStatus"></p-sortIcon>
@@ -116,12 +127,11 @@
           <th style="width: 10px" pFrozenColumn style="border: none"></th>
           <!-- <th style="border: none" class="text-primary">SUBTOPICS</th> -->
         </tr>
-        <tr *ngFor="let subTopic of topicAnalysis.subtopics" style="margin-left: 30px;">
+        <tr *ngFor="let subTopic of topicAnalysis.subtopics">
           <!-- <td style="width: 10px" pFrozenColumn style="border: none"></td> -->
           <td style="max-width: 50px; cursor: pointer !important;" pFrozenColumn>
-            <i *ngIf="false" class="la la-angle-down cursor"></i>
           </td>
-          <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn class="text-truncate">
+          <td style="min-width: 400px; cursor: pointer !important;" pFrozenColumn class="text-truncate" title="{{ subTopic.subtopicName | uppercase }}">
             {{ subTopic.subtopicName | uppercase }}
           </td>
           <td>{{ subTopic.totalItems }}</td>
