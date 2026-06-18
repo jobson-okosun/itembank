@@ -6,6 +6,8 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
+import { forkJoin } from "rxjs";
 import { AssessmentSettings, ExamType } from "../model/assessment-settings";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AssessmentInstruction } from "../model/assessment-instruction";
@@ -33,6 +35,7 @@ import { TemplatesPage } from "../../templates/model/templates-page.model";
 import { ImportTemplate } from "../model/import-template";
 import { Publish } from "../model/publish";
 import { ItemServiceService } from "src/app/shared/item-services/item-service.service";
+import { ExamPreviewService } from "../../exam-preview/services/exam-preview.service";
 
 interface Card {
   title: string;
@@ -136,6 +139,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   enablePublishButton: boolean = true;
   incompleteSections: number = 0;
   loading: boolean = true;
+  fetchingPreview: boolean = false;
   existingItemIds: string[] = [];
   existingPassageIds: string[] = [];
   savingManualSelectedPassageItems: boolean = false;
@@ -161,6 +165,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   ];
 
   deliveryMethodsWithLabel: { label: string; value: string }[] = [];
+  previewUrl!: SafeResourceUrl;
 
   // @ViewChild('Pills') nav; */
 
@@ -176,7 +181,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     public itemService: ItemHttpService,
     private notifier: NotifierService,
     private templateService: TemplatesService,
-    private _itemService: ItemServiceService
+    private _itemService: ItemServiceService,
+    private sanitizer: DomSanitizer,
+    private examPreviewService: ExamPreviewService,
   ) {
     this.assessmentId = this.ar.snapshot.params['assessmentId'];
     this.currentAssessment = this.assessmentService.activeAssessment ?? this._itemService.getItem('activeAssessment');
@@ -402,6 +409,53 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
       size: 'xl',
       windowClass: 'modal-fullscreen',
     });
+  }
+
+  openOnPremisePreviewModal(content: any) {
+    this.fetchingPreview = true;
+    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl('http://localhost:4202/#/exam-preview');
+
+    this.examPreviewService
+      .fetchAssesmentPreviewDetails(this.assessmentId)
+      .subscribe({
+        next: (value) => {
+          const requests = value.assessmentSections.map((section) =>
+            this.examPreviewService.fetchAssessmentSectionPreview(this.assessmentId, section.id)
+          );
+
+          if (requests.length === 0) {
+            console.log('No sections to fetch.');
+            this.fetchingPreview = false;
+            return;
+          }
+
+          forkJoin(requests).subscribe({
+            next: (data) => {
+
+              localStorage.setItem('exam-preview-mode', JSON.stringify({
+                assessment: value,
+                sections: data
+              }));
+
+              this.fetchingPreview = false;
+              this.modalService.open(content, {
+                centered: true,
+                size: 'xl',
+                windowClass: 'modal-fullscreen',
+              });
+
+            },
+            error: (err) => {
+              console.error('Error fetching section previews:', err);
+              this.fetchingPreview = false;
+            },
+          });
+        },
+        error: (err) => {
+          console.error('Error fetching assessment preview details:', err);
+          this.fetchingPreview = false;
+        },
+      });
   }
 
   fetchAlreadyExistingPassageIds(manualPassageItemSelectionModal) {

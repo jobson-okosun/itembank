@@ -116,11 +116,12 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     this.currentUser = this.userService.getCurrentUser();
     this.subjectModerationStatus =
       this.itemService.currentSubjectModerationEnabled;
-    this.scoringType = Object.values(ScoringTypeEnum);
+    this.scoringType = Object.values(ScoringTypeEnum).filter( e => e !== ScoringTypeEnum.PARTIAL_MATCH_PER_RESPONSE);;
     this.moderationStatus = this.itemService.currentSubjectModerationEnabled;
     this.matchingRule = Object.values(MatchingRuleEnums);
     this.defaultItemProperties.scoringOption.matchingRule ==
       MatchingRuleEnums.EXACT_MATCH;
+    this.defaultItemProperties.difficultyLevel = 1;
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {

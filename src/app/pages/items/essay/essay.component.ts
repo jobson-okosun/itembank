@@ -61,7 +61,7 @@ export class EssayComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser = this.userService.getCurrentUser();
-    this.scoringType = Object.values(ScoringTypeEnum);
+    this.scoringType = Object.values(ScoringTypeEnum)
     this.matchingRule = Object.values(MatchingRuleEnums);
     // console.log("rich");
 
