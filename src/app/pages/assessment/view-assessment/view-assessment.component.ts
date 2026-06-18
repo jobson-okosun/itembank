@@ -422,7 +422,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   openOnPremisePreviewModal(content: any) {
     this.fetchingPreview = true;
-    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl('http://localhost:4202/#/exam-preview');
+    this.previewUrl = this.sanitizer.bypassSecurityTrustResourceUrl('https://onpremise.vercel.app/#/exam-preview');
 
     this.examPreviewService
       .fetchAssesmentPreviewDetails(this.assessmentId)
