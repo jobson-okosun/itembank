@@ -2252,7 +2252,7 @@
       overflow-y: auto;
       padding: 0px;
     ">
-    <iframe *ngIf="previewUrl" [src]="previewUrl" style="width: 100%; height: 100%; border: none;"></iframe>
+    <iframe *ngIf="previewUrl" id="previewIframe" [src]="previewUrl" (load)="onIframeLoad()" style="width: 100%; height: 100%; border: none;"></iframe>
   </div>
 </ng-template>
 

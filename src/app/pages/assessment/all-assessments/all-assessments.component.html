@@ -222,7 +222,7 @@
         </div>
 
         <div class="row mt-2">
-          <div class="col-6">
+          <div class="col-4">
             <label class="form-label">Exam Start Date and Time <span class="text-danger">*</span></label>
             <input class="form-control flatpickr-input" type="text" name="assessmentStartDate" required mwlFlatpickr
               name="calendar" data-id="datetime" [type]="'datetime-local'" [altInput]="false" [enableTime]="true"
@@ -232,25 +232,26 @@
           </div>
 
 
-          <div class="col-6">
+          <div class="col-4">
             <label class="form-label">Exam End Date and Time<span class="text-danger">*</span></label>
             <input class="form-control flatpickr-input" type="text" required name="assessmentEndDate" name="calendar"
               mwlFlatpickr [type]="'datetime-local'" [altInput]="false" [enableTime]="true" [convertModelValue]="true"
               [defaultHour]="currentUserTime.getHours()" [defaultMinute]="currentUserTime.getMinutes()" [altFormat]=""
               [dateFormat]="'Y-m-d H:i'" [(ngModel)]="newAssessment.endDate" />
           </div>
+
+            <div class="col-4">
+              <label for="subjectName" class="label">Exam Duration in Minute(s)<span class="text-danger">*</span></label>
+              <input type="number" min="5" name="duration" class="form-control mb-3"
+                placeholder="Exam duration in minute(s)" required [(ngModel)]="newAssessment.duration" required />
+            </div>
         </div>
 
-        <div class="row mt-2">
+        <!-- <div class="row mt-2">
           <div class="col-6">
             <label for="deliveryMethod" class="label">Exam Delivery Method <span class="text-danger">*</span></label>
             <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
               name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod" required>
-              <!-- <option
-                    *ngFor="let method of deliveryMethods"
-                    value="{{ method }}">
-                     {{ method }}
-                 </option> -->
               <option *ngFor="let method of deliveryMethodsWithLabel" value="{{ method.value }}">
                 {{ method.label }}
               </option>
@@ -267,81 +268,73 @@
             </div>
 
           </div>
-
-          <div class="col-6">
-            <label for="subjectName" class="label">Exam Duration in Minute(s)<span class="text-danger">*</span></label>
-            <input type="number" min="5" name="duration" class="form-control mb-3"
-              placeholder="Exam duration in minute(s)" required [(ngModel)]="newAssessment.duration" required />
-          </div>
-        </div>
-
-        <div class="my-4 ps-2">
-          <div
-            class="ml-2 mr-2 bg-soft-primary row border border-4 border-primary border-top-0 border-top-0 border-end-0 border-bottom-0 pt-2 pb-2">
-            <span class="text-black fw-bold text-capitalize">CATEGORIES</span>
-          </div>
-        </div>
-
-        <div class="row mt-2">
-          <div class="col-6">
-            <label for="proctorCategory" class="label">Proctored <span class="text-danger">*</span></label>
-            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
-              name="proctorCategory" [(ngModel)]="newAssessment.proctored" required>
-              <option *ngFor="let category of proctorCategoryWithLabel" value="{{ category.value }}">
-                {{ category.label }}
-              </option>
+        </div> -->
+        <div class="row">
+          <div [ngClass]="deliveryMode.value === 'Remote' ? 'col-6' : 'col-12'">
+            <label for="deliveryMethod" class="label"> Exam Delivery mode <span class="text-danger">*</span></label>
+            <select #deliveryMode class="form-select" (change)="setDeliveryMode(deliveryMode.value)" >
+              <option value=""> -- Select mode --</option>
+              <option value="Remote">Remote based</option>
+              <option value="Center">Center Based</option>
+              <option value="BYOD">Bring Your Own Device (BYOD)</option>
+              <option value="E-Paper">E-Paper</option>
             </select>
-            <div [ngSwitch]="newAssessment.proctored">
-              <small *ngSwitchCase="'LIVE_PROCTORING'"><em>A proctored with human supervision</em></small>
-              <small *ngSwitchCase="'AUTO_PROCTORING'"><em>A proctored exam with AI supervision</em></small>
+
+            <div [ngSwitch]="deliveryMode.value">
+              <small *ngSwitchCase="'Remote'"><em>Candidates will take the exam remotely</em></small>
+              <small *ngSwitchCase="'Center'"><em>Candidates will take the exam in a physical location</em></small>
+              <small *ngSwitchCase="'BYOD'"><em>Candidates will take the exam on their own devices with our secured lockdown browser</em></small>
+              <small *ngSwitchCase="'E-Paper'"><em>Candidates will take the exam with our dedicated e-paper </em></small>
             </div>
           </div>
 
-          <div class="col-6">
-            <label for="unsupervisedCategory" class="label">Unsupervised <span class="text-danger">*</span></label>
-            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
-              name="unsupervisedCategory" [(ngModel)]="newAssessment.unsupervised" required>
-              <option *ngFor="let category of unsupervisedCategoryWithLabel" value="{{ category.value }}">
-                {{ category.label }}
-              </option>
+          <div [ngClass]="deliveryMode.value === 'Remote' ? 'col-6' : 'd-none'">
+            <label for="proctoringMode" class="label"> Supervision type <span class="text-danger">*</span></label>
+            <select #proctoringMode class="form-select" >
+              <option value=""> -- Select type --</option>
+              <option value="Supervised">Supervised</option>
+              <option value="Unsupervised">Unsupervised</option>
             </select>
-            <div [ngSwitch]="newAssessment.unsupervised">
-              <small *ngSwitchCase="'ONLINE_SECURE_BROWSER'"><em>Unsupervised exam in physical location which the
-                  candidate use the lockdown browser to access the examination.</em></small>
-              <small *ngSwitchCase="'ONLINE_NO_SECURE_BROWSER'"><em>Unsupervised exam in physical location which the
-                  candidate use the regular browser to access the examination.</em></small>
+
+            <div [ngSwitch]="proctoringMode.value">
+              <small *ngSwitchCase="'Supervised'"><em>Candidates will be supervised during the exam</em></small>
+              <small *ngSwitchCase="'Unsupervised'"><em>Candidates will not be supervised during the exam</em></small>
             </div>
           </div>
         </div>
 
-        <div class="row mt-2">
-          <div class="col-6">
-            <label for="centreBasedCategory" class="label">Centre based <span class="text-danger">*</span></label>
-            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
-              name="centreBasedCategory" [(ngModel)]="newAssessment.centreBased" required>
-              <option *ngFor="let category of centerBasedCategoryWithLabel" value="{{ category.value }}">
-                {{ category.label }}
-              </option>
-            </select>
-            <div [ngSwitch]="newAssessment.centreBased">
-              <small *ngSwitchCase="'OFFLINE_SECURE_BROWSER'"><em>Supervised exam in physical location which the
-                  candidate use the lockdown browser to access the examination.</em></small>
-              <small *ngSwitchCase="'OFFLINE_NO_SECURE_BROWSER'"><em>Supervised exam in physical location which the
-                  candidate use the regular browser to access the examination.</em></small>
-              <small *ngSwitchCase="'BYOD'"><em>Candidates are allowed to bring there own device.</em></small>
+        <div class="row mt-3">
+          <div *ngIf="deliveryMode.value == 'Remote'">
+            <div *ngIf="proctoringMode.value == 'Supervised'">
+               <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2 mb-1" *ngFor="let item of [deliveryMethodsList.AUTO_PROCTORING, deliveryMethodsList.LIVE_PROCTORING]">
+                  <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
+                  <div>
+                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
+                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
+                  </div>
+               </div>
+            </div>
+            
+            <div *ngIf="proctoringMode.value == 'Unsupervised'">
+               <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2" *ngFor="let item of [deliveryMethodsList.ONLINE_NO_PROCTORING]">
+                 <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
+                  <div>
+                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
+                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
+                  </div>
+               </div>
             </div>
           </div>
 
-          <div class="col-6">
-            <label for="ePaperCategory" class="label">E-PAPER <span class="text-danger">*</span></label>
-            <select class="form-select" data-plugin="choices" data-choices data-choices-search-false
-              name="ePaperCategory" [(ngModel)]="newAssessment.ePaper" required>
-              <option *ngFor="let category of ePaperCategoryWithLabel" value="{{ category.value }}">
-                {{ category.label }}
-              </option>
-            </select>
+          <div *ngIf="deliveryMode.value == 'Center'">
+            <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2" *ngFor="let item of [deliveryMethodsList.ON_PREMISE_SECURE_BROWSER, deliveryMethodsList.ON_PREMISE_NO_SECURE_BROWSER]">
+             <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
+                  <div>
+                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
+                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
+                  </div>
+            </div>
           </div>
-          
         </div>
 
       </div>
@@ -354,6 +347,7 @@
         Close
       </button>
       <button type="button" *ngIf="!submitted" (click)="createNewAssessment(newAssessmentForm)" [disabled]="
+          !newAssessment.deliveryMethod ||
           newAssessmentForm.invalid ||
           newAssessment.startDate.toString().trim() === '' ||
           newAssessment.endDate.toString().trim() === ''

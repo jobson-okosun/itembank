@@ -140,6 +140,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   incompleteSections: number = 0;
   loading: boolean = true;
   fetchingPreview: boolean = false;
+  fetchedPreviewData: any;
   existingItemIds: string[] = [];
   existingPassageIds: string[] = [];
   savingManualSelectedPassageItems: boolean = false;
@@ -166,6 +167,13 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   deliveryMethodsWithLabel: { label: string; value: string }[] = [];
   previewUrl!: SafeResourceUrl;
+
+  onMessageReceived = (event: MessageEvent) => {
+    if (event.data && event.data.type === 'IFRAME_READY') {
+      console.log('Received IFRAME_READY from iframe, posting EXAM_PREVIEW_DATA...');
+      this.postPreviewDataToIframe();
+    }
+  };
 
   // @ViewChild('Pills') nav; */
 
@@ -213,6 +221,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // console.log(this.assessmentService.activeAssessment);
+    window.addEventListener('message', this.onMessageReceived);
 
     this.totalPassages = 0;
     this.itemService.assessmentActive = true;
@@ -431,11 +440,10 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
           forkJoin(requests).subscribe({
             next: (data) => {
-
-              localStorage.setItem('exam-preview-mode', JSON.stringify({
+              this.fetchedPreviewData = {
                 assessment: value,
                 sections: data
-              }));
+              };
 
               this.fetchingPreview = false;
               this.modalService.open(content, {
@@ -443,7 +451,6 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
                 size: 'xl',
                 windowClass: 'modal-fullscreen',
               });
-
             },
             error: (err) => {
               console.error('Error fetching section previews:', err);
@@ -456,6 +463,21 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           this.fetchingPreview = false;
         },
       });
+  }
+
+  postPreviewDataToIframe() {
+    const iframe = document.getElementById('previewIframe') as HTMLIFrameElement;
+    if (iframe && iframe.contentWindow && this.fetchedPreviewData) {
+      console.log('Posting EXAM_PREVIEW_DATA to iframe...');
+      iframe.contentWindow.postMessage({
+        type: 'EXAM_PREVIEW_DATA',
+        payload: this.fetchedPreviewData
+      }, '*');
+    }
+  }
+
+  onIframeLoad() {
+    this.postPreviewDataToIframe();
   }
 
   fetchAlreadyExistingPassageIds(manualPassageItemSelectionModal) {
@@ -1492,6 +1514,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.itemService.assessmentActive = false;
     this._itemService.clearItem('activeAssessmentDeliveryMethod');
     this._itemService.clearItem('activeAssessment');
+    window.removeEventListener('message', this.onMessageReceived);
   }
 
   openPublishExamConfirmationModal(publishAssessmentConfirmationModal: any) {

@@ -1183,18 +1183,18 @@
                           <td>{{ item.total_not_started }}</td>
                           <td>{{ item.downloaded_time | date: 'medium' }}</td>
                           <td>{{ item.upload_date_time | date: 'medium' }}</td>
-                          <!-- <td>
+                          <td>
                             <div class="dropdown" ngbDropdown>
                                 <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                                   <i class="pi pi pi-ellipsis-h align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
                                   <li>
-                                    <a routerLink="center/1" class="dropdown-item"> View </a>
+                                    <a [routerLink]="'center' + item.id" class="dropdown-item"> View </a>
                                   </li>
                                 </ul>
                               </div>
-                          </td> -->
+                          </td>
                       </tr>
                     </ng-container>
                 </tbody>

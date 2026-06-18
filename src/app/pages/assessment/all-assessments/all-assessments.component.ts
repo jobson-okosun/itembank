@@ -40,47 +40,17 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   ePaperCategory: any[] = [];
 
-  DELIVERY_METHOD_LABEL: string[] = [
-    'LIVE SUPERVISED', //'LIVE PROCTORING',
-    'AUTO SUPERVISED', //'AUTO PROCTORING',
-    'ONLINE UNSUPERVISED', //'ONLINE WITH NO PROCTORING',
-    'CENTER-BASED SECURE', //'ON PREMISE WITH LOCKDOWN BROWSER',
-    'CENTER-BASED STANDARD', //'ON PREMISE WITHOUT LOCKDOWN BROWSER',
-    'E-PAPER',
-    'BRING YOUR OWN DEVICE',
+  DELIVERY_METHOD_LABEL: {label:string, description:string}[] = [
+    { label: 'LIVE SUPERVISED', description: 'Exam will be supervised by live proctors.'},
+    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.'},
+    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.'},
+    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.'},
+    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.'},
+    { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
+    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.'},
   ];
 
-  // ======== CATEGORIES ===========
-
-  PROCTORED_CATEGORY_LABEL: string[] = [
-    'LIVE SUPERVISED',
-    'AUTO SUPERVISED',
-  ];
-
-  UNSUPERVISED_CATEGORY_LABEL: string[] = [
-    'ONLINE WITH LOCKDOWN BROWSER',
-    'ONLINE WITHOUT LOCKDOWN BROWSER'
-  ];
-
-  CENTRE_BASED_CATEGORY_LABEL: string[] = [
-    'OFFLINE WITH SECURE BROWSER',
-    'OFFLINE WITHOUT SECURE BROWSER',
-    'BRING YOUR OWN DEVICE'
-  ];
-
-  E_PAPER_CATEGORY_LABEL: string[] = [
-    'E-PAPER'
-  ];
-
-  deliveryMethodsWithLabel: { label: string; value: string }[] = [];
-
-  proctorCategoryWithLabel: { label: string; value: string }[] = [];
-
-  unsupervisedCategoryWithLabel: { label: string; value: string }[] = [];
-
-  centerBasedCategoryWithLabel: { label: string; value: string }[] = [];
-
-  ePaperCategoryWithLabel: { label: string; value: string }[] = [];
+  deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
 
   newAssessment: NewAssessment = new NewAssessment();
 
@@ -101,6 +71,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   currentUserTime = new Date();
   currentUser: Account;
   isCurrentUserMarker = false;
+  deliveryMethodsList = AssessmentDeliveryEnum
 
   constructor(
     private router: Router,
@@ -133,47 +104,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
     this.deliveryMethodsWithLabel = this.deliveryMethods.map((value: string, index: number) => ({
       value: value,
-      label: this.DELIVERY_METHOD_LABEL[index],
-    }));
-
-    // Proctored Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.proctoredCategory.push(method);
-    });
-
-    this.proctorCategoryWithLabel = Object.keys(ProctoredCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.PROCTORED_CATEGORY_LABEL[index],
-    }));
-
-    // Unsupervised Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.unsupervisedCategory.push(method);
-    });
-
-    this.unsupervisedCategoryWithLabel = Object.keys(UnsupervisedCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.UNSUPERVISED_CATEGORY_LABEL[index],
-    }));
-
-    // Centre based Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.centreBasedCategory.push(method);
-    });
-
-    this.centerBasedCategoryWithLabel = Object.keys(CentreBasedCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.CENTRE_BASED_CATEGORY_LABEL[index],
-    }));
-
-    // E-Paper Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.ePaperCategory.push(method);
-    });
-
-    this.ePaperCategoryWithLabel = Object.keys(E_PaperEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.E_PAPER_CATEGORY_LABEL[index],
+      label: this.DELIVERY_METHOD_LABEL[index].label,
+      description: this.DELIVERY_METHOD_LABEL[index].description,
     }));
 
     this.breadCrumbItems = [{ label: 'Exams', active: true }];
@@ -197,6 +129,20 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
         this.isCurrentUserMarker = true;
       }
 
+  }
+
+  getDeliveryMethod(method: string) {
+    return this.deliveryMethodsWithLabel.find(item => item.value == method)
+  }
+
+  setDeliveryMode(value: string) {
+    this.newAssessment.deliveryMethod = ''
+
+    if(value == 'BYOD') {
+      this.newAssessment.deliveryMethod = this.deliveryMethodsList.BYOD
+    } else if(value == 'E-Paper') {
+      this.newAssessment.deliveryMethod = this.deliveryMethodsList.E_PAPER
+    }
   }
 
   createNewAssessment(newAssessmentForm: any) {
