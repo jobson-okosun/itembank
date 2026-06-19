@@ -102,14 +102,14 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       this.deliveryMethods.push(method);
     });
 
-    this.deliveryMethodsWithLabel = this.deliveryMethods.map((value: string, index: number) => ({
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
       value: value,
-      label: this.DELIVERY_METHOD_LABEL[index].label,
-      description: this.DELIVERY_METHOD_LABEL[index].description,
+      label: this.DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: this.DELIVERY_METHOD_LABEL?.[index]?.description,
     }));
 
     this.breadCrumbItems = [{ label: 'Exams', active: true }];
-
+    this.loading = true;
     this.assessmentService
       .fetchAllAssessment(this.pageNo, this.pageSize)
       .subscribe(

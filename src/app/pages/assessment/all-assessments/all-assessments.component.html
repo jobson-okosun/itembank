@@ -1,6 +1,6 @@
 <app-breadcrumbs title="EXAMS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div *ngIf="!assessments" class="d-flex align-items-center justify-content-center" style="height: 60vh">
+<div *ngIf="!assessments || loading" class="d-flex align-items-center justify-content-center" style="height: 60vh">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading...</span>
@@ -187,7 +187,7 @@
   </div>
 </div>
 
-<div *ngIf="!loading && assessments?.totalElements > 0">
+<div [class.d-none]="loading || !assessments || assessments?.totalElements < 1">
   <p-paginator [totalRecords]="assessments.totalElements" (onPageChange)="onPageChange($event)" [first]="0"
     [rowsPerPageOptions]="[100, 150, 200, 300]" [rows]="100" [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
