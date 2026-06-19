@@ -241,7 +241,7 @@
           </div>
 
             <div class="col-4">
-              <label for="subjectName" class="label">Exam Duration in Minute(s)<span class="text-danger">*</span></label>
+              <label for="subjectName" class="form-label">Exam Duration in Minute(s)<span class="text-danger">*</span></label>
               <input type="number" min="5" name="duration" class="form-control mb-3"
                 placeholder="Exam duration in minute(s)" required [(ngModel)]="newAssessment.duration" required />
             </div>
@@ -271,7 +271,7 @@
         </div> -->
         <div class="row">
           <div [ngClass]="deliveryMode.value === 'Remote' ? 'col-6' : 'col-12'">
-            <label for="deliveryMethod" class="label"> Exam Delivery mode <span class="text-danger">*</span></label>
+            <label for="deliveryMethod" class="form-label"> Exam Delivery mode <span class="text-danger">*</span></label>
             <select #deliveryMode class="form-select" (change)="setDeliveryMode(deliveryMode.value)" >
               <option value=""> -- Select mode --</option>
               <option value="Remote">Remote based</option>
@@ -289,7 +289,7 @@
           </div>
 
           <div [ngClass]="deliveryMode.value === 'Remote' ? 'col-6' : 'd-none'">
-            <label for="proctoringMode" class="label"> Supervision type <span class="text-danger">*</span></label>
+            <label for="proctoringMode" class="form-label"> Supervision type <span class="text-danger">*</span></label>
             <select #proctoringMode class="form-select" >
               <option value=""> -- Select type --</option>
               <option value="Supervised">Supervised</option>
@@ -304,38 +304,70 @@
         </div>
 
         <div class="row mt-3">
-          <div *ngIf="deliveryMode.value == 'Remote'">
-            <div *ngIf="proctoringMode.value == 'Supervised'">
-               <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2 mb-1" *ngFor="let item of [deliveryMethodsList.AUTO_PROCTORING, deliveryMethodsList.LIVE_PROCTORING]">
-                  <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
-                  <div>
-                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
-                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
-                  </div>
-               </div>
+          <!-- Remote Delivery -->
+          <div *ngIf="deliveryMode.value === 'Remote'">
+            <!-- Supervised -->
+            <div *ngIf="proctoringMode.value === 'Supervised'">
+              <div 
+                *ngFor="let item of [deliveryMethodsList.AUTO_PROCTORING, deliveryMethodsList.LIVE_PROCTORING]" 
+                (click)="newAssessment.deliveryMethod = item" 
+                class="delivery-option"
+              >
+                <input 
+                  type="radio" 
+                  [value]="item" 
+                  name="deliveryMethod" 
+                  [(ngModel)]="newAssessment.deliveryMethod"
+                >
+                <div>
+                  <div class="label">{{ getDeliveryMethod(item).label }}</div>
+                  <div class="description">{{ getDeliveryMethod(item).description }}</div>
+                </div>
+              </div>
             </div>
-            
-            <div *ngIf="proctoringMode.value == 'Unsupervised'">
-               <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2" *ngFor="let item of [deliveryMethodsList.ONLINE_NO_PROCTORING]">
-                 <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
-                  <div>
-                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
-                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
-                  </div>
-               </div>
+
+            <!-- Unsupervised -->
+            <div *ngIf="proctoringMode.value === 'Unsupervised'">
+              <div 
+                *ngFor="let item of [deliveryMethodsList.ONLINE_NO_PROCTORING]" 
+                (click)="newAssessment.deliveryMethod = item" 
+                class="delivery-option"
+              >
+                <input 
+                  type="radio" 
+                  [value]="item" 
+                  name="deliveryMethod" 
+                  [(ngModel)]="newAssessment.deliveryMethod"
+                >
+                <div>
+                  <div class="label">{{ getDeliveryMethod(item).label }}</div>
+                  <div class="description">{{ getDeliveryMethod(item).description }}</div>
+                </div>
+              </div>
             </div>
           </div>
 
-          <div *ngIf="deliveryMode.value == 'Center'">
-            <div (click)="newAssessment.deliveryMethod = item" class="d-flex align-items-start gap-2" *ngFor="let item of [deliveryMethodsList.ON_PREMISE_SECURE_BROWSER, deliveryMethodsList.ON_PREMISE_NO_SECURE_BROWSER]">
-             <input style="margin-top: 5px" type="radio" value="{{item}}" name="deliveryMethod" [(ngModel)]="newAssessment.deliveryMethod">
-                  <div>
-                    <div class="label"> {{getDeliveryMethod(item).label}}</div>
-                    <div class="fs-12 text-muted">{{getDeliveryMethod(item).description}}</div>
-                  </div>
+          <!-- Center Delivery -->
+          <div *ngIf="deliveryMode.value === 'Center'">
+            <div 
+              *ngFor="let item of [deliveryMethodsList.ON_PREMISE_SECURE_BROWSER, deliveryMethodsList.ON_PREMISE_NO_SECURE_BROWSER]" 
+              (click)="newAssessment.deliveryMethod = item" 
+              class="delivery-option"
+            >
+              <input 
+                type="radio" 
+                [value]="item" 
+                name="deliveryMethod" 
+                [(ngModel)]="newAssessment.deliveryMethod"
+              >
+              <div>
+                <div class="label">{{ getDeliveryMethod(item).label }}</div>
+                <div class="description">{{ getDeliveryMethod(item).description }}</div>
+              </div>
             </div>
           </div>
         </div>
+
 
       </div>
     </form>
