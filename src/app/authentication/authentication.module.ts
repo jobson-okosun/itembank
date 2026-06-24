@@ -13,6 +13,7 @@ import { EditorModule } from '@tinymce/tinymce-angular';
 import { ItemOfflineComponent } from '../pages/items/item-offline/item-offline.component';
 import { ItemsModule } from '../pages/items/items.module';
 import { InvitationJoinComponent } from './invitation-join/invitation-join.component';
+import { NgOtpInputModule } from 'ng-otp-input';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { InvitationJoinComponent } from './invitation-join/invitation-join.compo
     AuthenticationRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgbCarouselModule,
+    NgbCarouselModule,    
+    NgOtpInputModule
     // EditorModule,
     // ItemsModule
   ],

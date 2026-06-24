@@ -9,7 +9,7 @@ import { NewAssessmentSettingsTemplate } from "../model/new-assessment-settings-
 import { AssessmentList, AssessmentListPage, ExaminerAppDownloadPage, ExaminerClearAppPage } from "../model/assessment-list";
 import { SingleAssessment } from "../model/single-assessment";
 import { NewAssessment } from "../model/new-assessment.model";
-import { AssessmentSettings } from "../model/assessment-settings";
+import { AssessmentSettings, EditAssessmentSettings } from "../model/assessment-settings";
 import { NewAssessmentSection } from "../model/new-assessment-section";
 import { BlockDetails, SectionDetails } from "../model/section-details";
 import { AssessmentSections } from "../model/assessment-sections";
@@ -332,10 +332,20 @@ export class AssessmentsService {
     );
   }
 
-  fetchSingleAssessmentSettings(
+  // fetchSingleAssessmentSettings(
+  //   assessmentId: string
+  // ): Observable<AssessmentSettings> {
+  //   return this.http.get<AssessmentSettings>(
+  //     `${environment.developmentIP}/itembank/assessments/${assessmentId}/assessment_settings`,
+  //     /* `${environment.developmentIP}/itembank/assessments/${assessmentId}/assessment_settings`, */
+  //     { withCredentials: true }
+  //   );
+  // }
+
+    fetchSingleAssessmentSettings(
     assessmentId: string
-  ): Observable<AssessmentSettings> {
-    return this.http.get<AssessmentSettings>(
+  ): Observable<EditAssessmentSettings> {
+    return this.http.get<EditAssessmentSettings>(
       `${environment.developmentIP}/itembank/assessments/${assessmentId}/assessment_settings`,
       /* `${environment.developmentIP}/itembank/assessments/${assessmentId}/assessment_settings`, */
       { withCredentials: true }
@@ -390,8 +400,20 @@ export class AssessmentsService {
     );
   }
 
-  saveAssessmentSettings(
-    assessment: AssessmentSettings,
+  // saveAssessmentSettings(
+  //   assessment: AssessmentSettings,
+  //   assessmentId: string
+  // ): Observable<AssessmentSettings> {
+  //   return this.http.put<AssessmentSettings>(
+  //     `${environment.developmentIP}/itembank/assessments/${assessmentId}/edit_assessment_settings`,
+  //     /* `${environment.developmentIP}/itembank/assessments/${assessmentId}/edit_assessment_settings`, */
+  //     assessment,
+  //     { withCredentials: true }
+  //   );
+  // }
+
+    saveAssessmentSettings(
+    assessment: EditAssessmentSettings,
     assessmentId: string
   ): Observable<AssessmentSettings> {
     return this.http.put<AssessmentSettings>(

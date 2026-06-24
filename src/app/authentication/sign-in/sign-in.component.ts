@@ -3,21 +3,25 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { AuthenticationService } from '../authentication.service';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   OnChanges,
   OnInit,
   QueryList,
   SimpleChanges,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 import { NotifierService } from 'angular-notifier';
 import { UserService } from 'src/app/shared/user.service';
 import { SchedulerAccountService } from '../services/scheduler-account.service';
+import { NgOtpInputComponent } from 'ng-otp-input';
+import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
 
 declare var tinymce: any;
 declare const MathJax: any;
@@ -33,11 +37,13 @@ export class SignInComponent implements OnInit, AfterViewInit {
   loginForm!: FormGroup;
   schedulerLoginForm!: FormGroup;
 
-  //OTP Form
-  otpForm!: FormGroup;
+  loginOtp: string = '';
+
+  isOtpProvided: boolean;
 
   submitted = false;
   fieldTextType!: boolean;
+  
   error_msg = '';
   returnUrl!: string;
   notification_error = '';
@@ -49,16 +55,18 @@ export class SignInComponent implements OnInit, AfterViewInit {
   itembankForm: boolean = true;
   showAppAssets = environment.showAppAssets;
 
-  @ViewChildren('otpInput') otpInputs!: QueryList<ElementRef>;
   isSubmittingOtp: boolean = false;
+
+    @ViewChild('otpInput', { static: false }) ngOtpInput!: NgOtpInputComponent;
 
   constructor(
     private formBuilder: FormBuilder,
-    private http: AuthenticationService,
+    public http: AuthenticationService,
     private notifierService: NotifierService,
     private router: Router,
     private userService: UserService,
     private schedulerAccountService: SchedulerAccountService,
+    private cdRef: ChangeDetectorRef
   ) {
     this.notifier = notifierService;
   }
@@ -78,20 +86,11 @@ export class SignInComponent implements OnInit, AfterViewInit {
       password: ['', Validators.required],
     });
 
-    /**
-     * OTP Form group
-     */
-    this.otpForm = this.formBuilder.group({
-      otp: ['', [Validators.required]],
-    });
   }
 
   ngAfterViewInit(): void {
     this.renderMath();
 
-    // Access elements as an array
-    const inputsArray = this.otpInputs.toArray();
-    // console.log('Total OTP inputs:', inputsArray.length);
   }
 
   // convenience getter for easy access to form fields
@@ -136,10 +135,21 @@ export class SignInComponent implements OnInit, AfterViewInit {
     } else {
       this.http.login(this.loginForm.value).subscribe(
         (value) => {
-          this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
+          // this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
+
+          this.http.provideOtpToProceed = true;
+
+          // this.loginOtp = value.otpRecordId 
+          // this.ngOtpInput.setValue(this.loginOtp);
+          this.cdRef.detectChanges();
+          console.log('LOGIN OTP: ', value);
+          
+          this.error = false;
         },
         (err: HttpErrorResponse) => {
           this.error = true;
+
+          this.http.provideOtpToProceed = false;
           
           if(err.error?.message?.includes('Authentication ')) {
             this.error_msg = 'Not authorized: Authentication failed'
@@ -204,39 +214,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
         },
       );
     }
-  }
-
-  moveFocus(event: KeyboardEvent, index: number) {
-    const inputs = this.otpInputs.toArray();
-
-    // Example: Move focus to next input if value is entered
-    if (event.key !== 'Backspace' && index < inputs.length - 1) {
-      inputs[index + 1].nativeElement.focus();
-    } else if (event.key === 'Backspace' && index > 0) {
-      inputs[index - 1]?.nativeElement.focus();
-    }
-  }
-
-  // Check if all OTP input has a value
-  isOtpComplete(): boolean {
-    if (!this.otpInputs) return false;
-    return this.otpInputs
-      .toArray()
-      .every((input) => input.nativeElement.value.length === 1);
-  }
-
-  // Get the combined string
-  getOtpValue(): string {
-    return this.otpInputs
-      .toArray()
-      .map((input) => input.nativeElement.value)
-      .join('');
-  }
-
-  submitOtp() {
-    this.isSubmittingOtp = true;
-    const otpValue = this.getOtpValue();
-    console.log('OTP: ', otpValue);
   }
 
   /**
@@ -397,4 +374,80 @@ export class SignInComponent implements OnInit, AfterViewInit {
       this.renderMath();
     }
   }
+
+  onOtpChange(value: string): void {
+    console.log('OTP TYPED: ', value);
+    this.loginOtp = value;
+  }
+
+  submitOtpForm(): void {
+
+    this.isOtpProvided = false;
+    this.error = false;
+    this.error_msg = '';
+
+    if(!this.loginOtp){
+      this.isOtpProvided = true;
+      this.error_msg = 'Sorry! Ensure you provide the sent OTP'
+      return;
+    }
+
+    if(this.loginOtp.length < 6) {
+      this.isOtpProvided = true;
+      this.error_msg = 'Provide complete OTP sent to you'
+      return;
+    }
+
+    this.isSubmittingOtp = true;
+
+    const payload = {
+      otp: this.loginOtp
+    }
+
+    console.log('OTP RECORD: ', payload.otp);
+
+       this.http.verifyOtp(payload).subscribe(
+        (value) => {
+          this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
+          this.loginOtp = '';
+          this.http.provideOtpToProceed = false;
+          this.isSubmittingOtp = false;
+          this.error = false;
+
+        },
+        (err: HttpErrorResponse) => {
+          this.error = true;
+          
+          if(err.error?.message?.includes('Authentication ')) {
+            this.error_msg = 'Not authorized: Authentication failed'
+          }
+
+          else if(err.error?.message?.includes('OTP ')) {
+            this.error_msg = err.error.message
+          }
+
+          else if (err.status === 401) {
+            this.error_msg = 'Invalid Login Credentials!';
+          }
+
+          else if (err?.error?.message) {
+            this.error_msg = err.error.message;
+          }
+
+          else {
+            this.error_msg = 'Sorry! Unable to verify OTP';
+          }
+
+          this.isSubmittingOtp = false;
+        }
+      );
+
+
+
+  }
+
+  resendOTP(): void {
+    console.log('RESEND OTP');
+  }
+
 }

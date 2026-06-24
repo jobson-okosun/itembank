@@ -1,3 +1,5 @@
+import { number } from "echarts";
+
 export class AssessmentSettings {
   name: string;
   status: string;
@@ -20,7 +22,7 @@ export class AssessmentSettings {
   endExamConfirmation: boolean = false;
   preserveSectionOrder: boolean = false;
   warnUnattemptedQuestions: boolean = false;
-  displayAllSectionsAtOnce: boolean  =false;  
+  displayAllSectionsAtOnce: boolean | string  = false;  
   instantResult: boolean = false;
   compensatoryTimeMins: number;
   passMark : number = 0
@@ -31,6 +33,77 @@ export class AssessmentSettings {
   earliestExamEndPeriod: number = 0
   useBiometrics: boolean = false
   examType = ExamType.EXAMALPHA
+}
+
+export class EditAssessmentSettings {
+
+    name: string;
+
+    assessmentId: string;
+
+    schedulerAssessmentId: string;
+
+    assessmentSettingsId: string;
+
+    startExamInstruction: string;
+
+    endExamInstruction: string;
+
+    description: string;
+
+    startDate: Date | string;
+
+    endDate: Date | string;
+
+    instantResult: boolean;
+
+    passMark: number;
+
+    displayAllSectionsAtOnce: boolean;
+
+    durationMinutes: number;
+
+    instructionReadTimeSec: number;
+
+    warnEndOfReadingTimeSec: number;
+
+    compensatoryTimeMins: number;
+
+    autoSaveSec: number;
+
+    inactivityWaringSec: number;
+
+    useBiometrics: boolean;
+
+    examGracePeriod: number;
+
+    candidateGracePeriod: number;
+
+    earliestExamEndPeriod: number;
+
+    allowBlockNavigation: boolean;
+
+    warnUnattemptedQuestions: boolean;
+
+    endExamConfirmation: boolean;
+
+    allowEndExamAfterXQuestions: number;
+
+    preserveSectionOrder: boolean;
+
+    fontSize: string;
+
+    deliveryMethod: string;
+
+    // private SectionNavigation sectionNavigation; // new
+    sectionNavigation: string;
+
+      allowRetake: boolean = false;
+
+  retakeCount: number = 0;
+
+    examType = ExamType.EXAMALPHA;
+
 }
 
 export enum ExamType {

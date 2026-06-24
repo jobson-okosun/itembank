@@ -825,22 +825,66 @@
             <div class="form-check mt-2">
               <input #displayAllSections class="form-check-input" type="checkbox" name="displayAllSections"
                 [(ngModel)]="assessmentSettings.displayAllSectionsAtOnce"
-                [checked]="assessmentSettings.displayAllSectionsAtOnce" />
+                [checked]="assessmentSettings.displayAllSectionsAtOnce" disabled />
               <label (click)="
                   assessmentSettings.displayAllSectionsAtOnce =
                     !assessmentSettings.displayAllSectionsAtOnce
                 " class="form-check-label" for="displayResult">
-                Candidate section's display
+                Display all sections (One at a time, All at once)?
               </label>
             </div>
 
             <div>
               <select #displayRef (change)="handleDispayAllSectionOption(displayRef.value)"
                 class="form-select form-select-md" [value]="assessmentSettings.displayAllSectionsAtOnce">
-                <option selected disabled>Select one</option>
+
+                <!-- <option selected disabled>Select one</option>
                 <option value="COMPOSITE_SECTIONS">Composite Sections</option>
                 <option value="MERGED_SECTIONS">Merged Sections</option>
-                <option value="ONE_AT_A_TIME" [selected]="!assessmentSettings.displayAllSectionsAtOnce">One at a time</option>
+                <option value="ONE_AT_A_TIME" [selected]="!assessmentSettings.displayAllSectionsAtOnce">One at a time</option> -->
+                
+                <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
+                  One at a time
+                </option>
+                <option value="allAtOnce" [selected]="assessmentSettings.displayAllSectionsAtOnce">
+                  All At Once
+                </option>
+              </select>
+
+            </div>
+          </div>
+
+                    <div class="d-flex gap-3 mt-2">
+            <div class="form-check mt-2">
+              <!-- <input #displayAllSections class="form-check-input" type="checkbox" name="displayAllSections"
+                [(ngModel)]="assessmentSettings.displayAllSectionsAtOnce"
+                [checked]="assessmentSettings.displayAllSectionsAtOnce" disabled /> -->
+
+              <!-- <label (click)="
+                  assessmentSettings.displayAllSectionsAtOnce =
+                    !assessmentSettings.displayAllSectionsAtOnce
+                " class="form-check-label" for="displayResult">
+                Candidate section's display
+              </label> -->
+
+              <label class="form-check-label" for="displayResult">
+                Candidate section's display
+              </label>
+            </div>
+
+            <div>
+              <select #sessionNavigationRef (change)="handleSessionNavigation(sessionNavigationRef.value)"
+                class="form-select form-select-md" [value]="assessmentSettings.sectionNavigation">
+
+                <option selected disabled>Select one</option>
+                <option value="FREE_NAVIGATION">Free Navigation</option>
+                <option value="CONTINUOUS_NAVIGATION">Continuous</option>
+                <option value="SEQUENTIAL_NAVIGATION">Sequential</option>
+
+                <!-- <option selected disabled>Select one</option>
+                <option value="COMPOSITE_SECTIONS">Composite Sections</option>
+                <option value="MERGED_SECTIONS">Merged Sections</option>
+                <option value="ONE_AT_A_TIME" [selected]="!assessmentSettings.displayAllSectionsAtOnce">One at a time</option> -->
                 
                 <!-- <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
                   One at a time
@@ -849,6 +893,13 @@
                   All At Once
                 </option> -->
               </select>
+
+              <div [ngSwitch]="assessmentSettings.sectionNavigation">
+                  <small *ngSwitchCase="'FREE_NAVIGATION'"><em>Candidate can select anyone at any time</em></small>
+                  <small *ngSwitchCase="'CONTINUOUS_NAVIGATION'"><em>Merged</em></small>
+                  <small *ngSwitchCase="'SEQUENTIAL_NAVIGATION'"><em>End one section to start the other</em></small>
+                </div>
+
             </div>
           </div>
 
@@ -863,7 +914,7 @@
             </label>
           </div> -->
 
-          <!-- <div class="form-check mt-2">
+          <div class="form-check mt-2">
             <input #retake class="form-check-input" type="checkbox" name="retake"
               [(ngModel)]="assessmentSettings.allowRetake" />
             <label (click)="
@@ -872,7 +923,7 @@
               " class="form-check-label" for="retake">
               Allow retake?
             </label>
-          </div> -->
+          </div>
 
           <div *ngIf="assessmentSettings.allowRetake" class="col-xl-2 col-md-2 col-sm-2">
             <label>Retake count</label>
