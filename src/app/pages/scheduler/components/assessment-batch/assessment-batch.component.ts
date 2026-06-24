@@ -127,21 +127,30 @@ export class AssessmentBatchComponent implements OnInit {
         },
       });
   }
+  parseDate(dateStr: any): Date | null {
+    if (!dateStr) return null;
+    if (dateStr instanceof Date) return dateStr;
+    let s = String(dateStr).trim();
+    if (s.includes(" ") && !s.includes("T")) {
+      s = s.replace(" ", "T");
+    }
+    if (!s.endsWith("Z")) {
+      s = s + "Z";
+    }
+    const date = new Date(s);
+    return isNaN(date.getTime()) ? new Date(dateStr) : date;
+  }
+
   getBatchForEdit(batchId: string) {
     this.selectedBatchId = batchId;
-    this.batchForEdit = this.batches.find((batch) => batch.id === batchId);
-    this.batchForEdit.end_date_time = this.batchForEdit.end_date_time.endsWith(
-      "Z"
-    )
-      ? this.batchForEdit.end_date_time + "Z"
-      : this.batchForEdit.end_date_time;
-
-    this.batchForEdit.start_date_time =
-      this.batchForEdit.start_date_time.endsWith("Z")
-        ? this.batchForEdit.start_date_time + "Z"
-        : this.batchForEdit.start_date_time;
-
-    // console.log(this.batchForEdit);
+    const batch = this.batches.find((b) => b.id === batchId);
+    if (batch) {
+      this.batchForEdit = {
+        ...batch,
+        start_date_time: batch.start_date_time ? this.parseDate(batch.start_date_time) : null,
+        end_date_time: batch.end_date_time ? this.parseDate(batch.end_date_time) : null,
+      } as any;
+    }
   }
 
   deleteBatch() {
@@ -171,18 +180,21 @@ export class AssessmentBatchComponent implements OnInit {
   editBatch(editBatch: NgForm) {
     this.processingBatchEdit = true;
 
-    // console.log(this.batchForEdit);
+    let startDate = typeof this.batchForEdit.start_date_time === 'string'
+      ? this.batchForEdit.start_date_time
+      : (this.batchForEdit.start_date_time as any as Date).toISOString();
+    startDate = !startDate.endsWith('Z') ? startDate + 'Z' : startDate;
+
+    let endDate = typeof this.batchForEdit.end_date_time === 'string'
+      ? this.batchForEdit.end_date_time
+      : (this.batchForEdit.end_date_time as any as Date).toISOString();
+    endDate = !endDate.endsWith('Z') ? endDate + 'Z' : endDate;
+
     let payload: IAssessmentBatchDTO = {
       id: this.selectedBatchId,
-      end_date_time: new Date(this.batchForEdit.end_date_time)
-        .toISOString()
-        .split("Z")
-        .join(""),
+      end_date_time: endDate,
       name: editBatch.form.value.batchName.trim(),
-      start_date_time: new Date(this.batchForEdit.start_date_time)
-        .toISOString()
-        .split("Z")
-        .join(""),
+      start_date_time: startDate,
     };
     this.schedulerService
       .editBatch(payload, this.assessmentId)

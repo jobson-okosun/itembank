@@ -54,8 +54,8 @@ export class AssessmentAdminComponent implements OnInit {
     name: "",
     email: "",
     centerId: "",
-    active: false,
-    suspended: false,
+    active: "" as any,
+    suspended: "" as any,
   };
   centerAdminDashboardData: ICenterAdminDashboard;
   unAssignedCenterAdmins: IUnassignedAdminList;
@@ -131,73 +131,64 @@ export class AssessmentAdminComponent implements OnInit {
   onCenterAdminFieldChange(selectedField: string) {
     this.selectedField = selectedField;
     this.searchValue = "";
-
-    // switch (selectedField) {
-    //   case "STATE":
-    //     this.payload.state = this.searchValue;
-    //     console.log(this.searchValue + "Search value");
-    //     // this.filterCenterByField();
-
-    //     break;
-    //   case "CENTER ID":
-    //     this.payload.centerId = this.searchValue;
-    //     // this.filterCenterByField();
-    //     break;
-
-    //   case "CENTER NAME":
-    //     this.payload.centerName = this.searchValue;
-    //     // this.filterCenterByField();
-    //     break;
-    // }
-    // this.searchParticipantPayload.searchField = selectedField;
-    // console.log(selectedField + " " + this.searchValue);
   }
+
+  canPerformSearch(): boolean {
+    const p = this.payload;
+    const hasName = !!(p.name && p.name.trim());
+    const hasEmail = !!(p.email && p.email.trim());
+    const hasCenter = !!(p.centerId && p.centerId.trim());
+    const hasActive = p.active !== undefined && p.active !== null && (p.active as any) !== '';
+    const hasSuspended = p.suspended !== undefined && p.suspended !== null && (p.suspended as any) !== '';
+    return hasName || hasEmail || hasCenter || hasActive || hasSuspended;
+  }
+
   clearSearch() {
     this.isFilter = false;
     this.searchValue = "";
     this.selectedField = "";
-    this.fetchCenterAdmins(0, 5);
+    this.payload = {
+      name: "",
+      email: "",
+      centerId: "",
+      active: "" as any,
+      suspended: "" as any,
+    };
+    this.fetchCenterAdmins(0, this.centerAdminSize || 5);
   }
 
   filterCenterAdminByField(page?: number, size?: number) {
     this.processingFetchCenterAdmin = true;
-    this.selectedField.toLowerCase();
-    if (this.selectedField === "email") {
-      const { active, centerId, name, suspended, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.email = this.searchValue.trim();
-      rest.email = this.searchValue;
-    } else if (this.selectedField === "centerId") {
-      const { active, email, name, suspended, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.centerId = this.searchValue.trim();
-    } else if (this.selectedField === "active") {
-      const { email, name, suspended, centerId, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.active = this.searchValue.toLowerCase() === "true";
-    } else if (this.selectedField === "suspended") {
-      const { active, centerId, email, name, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.suspended = this.searchValue.toLowerCase() === "true";
-    } else if (this.selectedField === "name") {
-      const { active, centerId, email, suspended, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.name = this.searchValue.trim();
-      rest.name = this.searchValue;
+
+    const cleanPayload: IFilterCenterAdmin = {};
+
+    if (this.payload.name && this.payload.name.trim() !== "") {
+      cleanPayload.name = this.payload.name.trim();
     }
-    // console.log(this.payload);
+    if (this.payload.email && this.payload.email.trim() !== "") {
+      cleanPayload.email = this.payload.email.trim();
+    }
+    if (this.payload.centerId && this.payload.centerId.trim() !== "") {
+      cleanPayload.centerId = this.payload.centerId.trim();
+    }
+    if (this.payload.active !== undefined && this.payload.active !== null && (this.payload.active as any) !== '') {
+      cleanPayload.active = this.payload.active === true || (this.payload.active as any) === 'true';
+    }
+    if (this.payload.suspended !== undefined && this.payload.suspended !== null && (this.payload.suspended as any) !== '') {
+      cleanPayload.suspended = this.payload.suspended === true || (this.payload.suspended as any) === 'true';
+    }
+
     this.schedulerService
-      .filterCenterAdminByField(this.payload, this.assessmentId, page, size)
+      .filterCenterAdminByField(cleanPayload, this.assessmentId, page, size)
       .subscribe({
         next: (value) => {
           this.isFilter = true;
           this.centerAdmins = value;
           this.processingFetchCenterAdmin = false;
-          // console.log(value);
         },
         error: (err: HttpErrorResponse) => {
           this.processingFetchCenterAdmin = false;
-          // console.log(err.error.message);
+          this.notifierService.notify("error", err.error.message || "Failed to filter admins");
         },
       });
   }

@@ -136,7 +136,7 @@
                       class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_centers }})</span>
                   <span
                     class="badge badge-soft-success rounded-pill fs-12"
-                    *ngIf="assessment.total_center_admins">Admins
+                    *ngIf="assessment.total_center_admins">Center Admin
                     <i
                       class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_center_admins }})</span>
                   <span
@@ -149,6 +149,11 @@
                     *ngIf="assessment.total_participants">Participants
                     <i
                       class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_participants }})</span>
+                  <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.total_proctors">Proctors
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_proctors }})</span>
                 </div>
               </li>
             </ul>

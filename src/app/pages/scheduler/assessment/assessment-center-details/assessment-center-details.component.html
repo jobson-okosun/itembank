@@ -19,6 +19,12 @@
       <div class="card mt-n4 mx-n4 border-0">
         <div class="bg-soft-primary">
           <div class="card-body pb-0 px-4">
+            <div class="pt-3 mb-2">
+              <button class="btn btn-primary" (click)="goBack()">
+                <i class="ri-arrow-left-s-line align-bottom"></i>
+                Go Back
+              </button>
+            </div>
             <div class="row mb-3">
               <div class="col-md">
                 <div class="row align-items-center g-3">
@@ -261,13 +267,13 @@
                            
                           </div>
                         </th> -->
-                                  <th pSortableColumn="institution">
+                                  <!-- <th pSortableColumn="institution">
                                     <div
                                       class="flex justify-content-between align-items-center"
                                     >
                                       ACTION
                                     </div>
-                                  </th>
+                                  </th> -->
                                 </tr>
                               </ng-template>
 
@@ -317,8 +323,8 @@
                         <td>{{ assessment.createdDate | date }}</td> -->
                                   <!-- <td>{{ assessment.startDate }}</td> -->
 
-                                  <td>
-                                    <div class="dropdown" ngbDropdown>
+                                  <!-- <td>
+                                    <div class="dropdown" ngbDropdown container="body">
                                       <button
                                         class="btn btn-soft-primary btn-sm dropdown arrow-none"
                                         type="button"
@@ -374,7 +380,7 @@
                                         <li class="dropdown-divider"></li>
                                       </ul>
                                     </div>
-                                  </td>
+                                  </td> -->
                                 </tr>
                               </ng-template>
                             </p-table>
@@ -434,125 +440,150 @@
                               <div
                                 class="d-flex gap-3 card-body align-items-center"
                               >
-                                <div class="input-group" style="width: 40%">
-                                  <select
-                                    (change)="
-                                      onSearchFieldChange(selectedField.value)
-                                    "
-                                    #selectedField
-                                    class="form-select form-select-sm"
-                                    name="searchField"
-                                  >
-                                    <option disabled [selected]="!isSearch">
-                                      Search by
-                                    </option>
-                                    <option
-                                      *ngFor="
-                                        let searchableField of searchableFields
-                                      "
-                                      value="{{ searchableField }}"
-                                      [selected]="
-                                        searchParticipantPayload.searchField ===
-                                        searchableField
-                                      "
+                                <div class="d-flex align-items-center gap-2">
+                                  <!-- Filter Dropdown -->
+                                  <div class="dropdown" ngbDropdown [autoClose]="'outside'" #participantFilterDrop="ngbDropdown" display="dynamic">
+                                    <button
+                                      class="btn btn-soft-primary dropdown-toggle btn-label waves-effect waves-light"
+                                      type="button"
+                                      id="participantFilterDropdown"
+                                      ngbDropdownToggle
                                     >
-                                      {{
-                                        searchableField
-                                          .replaceAll("_", " ")
-                                          .replaceAll("REG", "REGISTRATION")
-                                      }}
-                                    </option>
-                                  </select>
+                                      <i class="ri-filter-2-line label-icon align-bottom text-center"></i>
+                                      Filter Participants
+                                    </button>
+                                    <div #dropdownMenu ngbDropdownMenu style="min-width: 320px" class="border shadow-sm p-3 dropdown-menu-start">
+                                      <div class="px-2 py-1 small text-black fw-bold fs-13">Filter Participants</div>
+                                      <div class="dropdown-divider"></div>
+                                      <form class="px-2 py-1">
+                                        <!-- Search field type selector -->
+                                        <div class="mb-2">
+                                          <label class="form-label small fw-semibold">Search By</label>
+                                          <select
+                                            (change)="onSearchFieldChange(searchFieldRef.value)"
+                                            #searchFieldRef
+                                            class="form-select"
+                                            name="searchField"
+                                            [(ngModel)]="searchParticipantPayload.searchField"
+                                          >
+                                            <option [ngValue]="undefined" disabled>Search by</option>
+                                            <option
+                                              *ngFor="let searchableField of searchableFields"
+                                              [value]="searchableField"
+                                            >
+                                              {{
+                                                searchableField
+                                                  .replaceAll("_", " ")
+                                                  .replaceAll("REG", "REGISTRATION")
+                                              }}
+                                            </option>
+                                          </select>
+                                        </div>
 
-                                  <select
-                                    *ngIf="
-                                      searchParticipantPayload.searchField ===
-                                      'BATCH'
-                                    "
-                                    (change)="
-                                      searchParticipantPayload.batchId =
-                                        batchRef.value;
-                                      searchParticipant()
-                                    "
-                                    class="form-select form-select-md"
-                                    #batchRef
-                                  >
-                                    <option selected disabled>
-                                      Select Batch
-                                    </option>
-                                    <option
-                                      *ngFor="let batch of batches"
-                                      [selected]="
-                                        searchParticipantPayload.batchId ===
-                                        batch.id
-                                      "
-                                      value="{{ batch.id }}"
-                                    >
-                                      {{ batch.name }}
-                                    </option>
-                                  </select>
+                                        <!-- Conditional Inputs based on Selected Search Field -->
+                                        <!-- 1. BATCH Option -->
+                                        <div class="mb-2" *ngIf="searchParticipantPayload.searchField === 'BATCH'">
+                                          <label class="form-label small fw-semibold">Batch</label>
+                                          <select
+                                            class="form-select"
+                                            name="batchId"
+                                            [(ngModel)]="searchParticipantPayload.batchId"
+                                          >
+                                            <option value="" disabled selected>Select Batch</option>
+                                            <option
+                                              *ngFor="let batch of batches"
+                                              [value]="batch.id"
+                                            >
+                                              {{ batch.name }}
+                                            </option>
+                                          </select>
+                                        </div>
 
-                                  <input
-                                    *ngIf="
-                                      searchParticipantPayload.searchField !=
-                                        'REG_DATE' &&
-                                      searchParticipantPayload.searchField !=
-                                        'REG_FIELD_DATE' &&
-                                      searchParticipantPayload.searchField !=
-                                        'BATCH'
-                                    "
-                                    [(ngModel)]="
-                                      searchParticipantPayload.searchValue
-                                    "
-                                    type="text"
-                                    class="form-control"
-                                    placeholder="Search value.."
-                                    name="searchValue"
-                                  />
-                                  <input
-                                    *ngIf="
-                                      searchParticipantPayload.searchField ===
-                                        'REG_DATE' ||
-                                      searchParticipantPayload.searchField ===
-                                        'REG_FIELD_DATE'
-                                    "
-                                    class="form-control flatpickr-input"
-                                    [placeholder]="'Select Date Range'"
-                                    type="text"
-                                    name="calendar"
-                                    required
-                                    mwlFlatpickr
-                                    data-id="datetime"
-                                    [type]="'date'"
-                                    [altInput]="false"
-                                    [enableTime]="false"
-                                    [convertModelValue]="false"
-                                    [altFormat]=""
-                                    [dateFormat]="'Y-m-d'"
-                                    [(ngModel)]="dateRange"
-                                    [mode]="'range'"
-                                  />
+                                        <!-- 2. Date Range options: REG_DATE or REG_FIELD_DATE -->
+                                        <div class="row mb-2" *ngIf="searchParticipantPayload.searchField === 'REG_DATE' || searchParticipantPayload.searchField === 'REG_FIELD_DATE'">
+                                          <div class="col-6">
+                                            <label class="form-label small fw-semibold">Start Date</label>
+                                            <input
+                                              class="form-control flatpickr-input"
+                                              placeholder="Start Date"
+                                              type="text"
+                                              name="startDate"
+                                              required
+                                              mwlFlatpickr
+                                              data-id="datetime-start"
+                                              [type]="'date'"
+                                              [altInput]="false"
+                                              [enableTime]="false"
+                                              [convertModelValue]="false"
+                                              [dateFormat]="'Y-m-d'"
+                                              [(ngModel)]="searchParticipantPayload.dateRange.start_date"
+                                              (flatpickrReady)="onFlatpickrReady($event)"
+                                            />
+                                          </div>
+                                          <div class="col-6">
+                                            <label class="form-label small fw-semibold">End Date</label>
+                                            <input
+                                              class="form-control flatpickr-input"
+                                              placeholder="End Date"
+                                              type="text"
+                                              name="endDate"
+                                              required
+                                              mwlFlatpickr
+                                              data-id="datetime-end"
+                                              [type]="'date'"
+                                              [altInput]="false"
+                                              [enableTime]="false"
+                                              [convertModelValue]="false"
+                                              [dateFormat]="'Y-m-d'"
+                                              [(ngModel)]="searchParticipantPayload.dateRange.end_date"
+                                              (flatpickrReady)="onFlatpickrReady($event)"
+                                            />
+                                          </div>
+                                        </div>
+
+                                        <!-- 3. Standard Text input for other options -->
+                                        <div class="mb-2" *ngIf="searchParticipantPayload.searchField && searchParticipantPayload.searchField !== 'BATCH' && searchParticipantPayload.searchField !== 'REG_DATE' && searchParticipantPayload.searchField !== 'REG_FIELD_DATE'">
+                                          <label class="form-label small fw-semibold">Search Value</label>
+                                          <input
+                                            type="text"
+                                            class="form-control"
+                                            placeholder="Enter search value"
+                                            name="searchValue"
+                                            [(ngModel)]="searchParticipantPayload.searchValue"
+                                          />
+                                        </div>
+                                      </form>
+                                      <div class="dropdown-divider"></div>
+                                      <div class="px-2 pb-1 d-flex gap-2">
+                                        <button
+                                          type="button"
+                                          (click)="clearSearch(); participantFilterDrop.close()"
+                                          class="btn btn-secondary w-100"
+                                        >
+                                          Clear
+                                        </button>
+                                        <button
+                                          type="button"
+                                          (click)="searchParticipant(); participantFilterDrop.close()"
+                                          class="btn btn-primary w-100"
+                                          [disabled]="!canPerformSearch()"
+                                        >
+                                          Apply
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <!-- Clear Filter Button -->
                                   <button
-                                    class="btn btn-sm btn-success"
-                                    (click)="searchParticipant()"
-                                    [disabled]="!canPerformSearch()"
+                                    *ngIf="isSearch"
+                                    class="btn btn-soft-danger waves-effect waves-light"
+                                    type="button"
+                                    (click)="clearSearch()"
                                   >
-                                    Search
+                                    <i class="ri-close-fill me-1 align-middle"></i> Clear Filter
                                   </button>
                                 </div>
-
-                                <button
-                                  *ngIf="isSearch"
-                                  class="btn btn-danger"
-                                  type="button"
-                                  (click)="clearSearch()"
-                                  style="width: 13%"
-                                >
-                                  <i
-                                    class="ri-close-fill me-2 align-middle"
-                                  ></i>
-                                  Clear Filter
-                                </button>
 
                                 <!-- <div>
                   <button class="btn btn-primary btn-sm">Move selected</button>

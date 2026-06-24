@@ -192,7 +192,7 @@
                         <td>{{ batch.end_date_time | date : "medium" }}</td>
 
                         <td>
-                          <div class="dropdown" ngbDropdown>
+                          <div class="dropdown" ngbDropdown container="body">
                             <button
                               class="btn btn-soft-secondary btn-sm dropdown arrow-none"
                               type="button"
@@ -305,7 +305,7 @@
                     class="form-control flatpickr-input"
                     placeholder="Start Date"
                     type="text"
-                    name="calendar"
+                    name="startDate"
                     required
                     mwlFlatpickr
                     data-id="datetime"
@@ -327,7 +327,7 @@
                     class="form-control flatpickr-input"
                     placeholder="End Date"
                     type="text"
-                    name="calendar"
+                    name="endDate"
                     required
                     mwlFlatpickr
                     data-id="datetime"
@@ -410,7 +410,7 @@
                     class="form-control flatpickr-input"
                     placeholder="Start Date"
                     type="text"
-                    name="calendar"
+                    name="startDate"
                     required
                     mwlFlatpickr
                     data-id="datetime"
@@ -420,7 +420,6 @@
                     [convertModelValue]="true"
                     [altFormat]=""
                     [(ngModel)]="batchForEdit.start_date_time"
-                    minDate="today"
                     [dateFormat]="'Y-m-d H:i'"
                   />
                 </div>
@@ -432,7 +431,7 @@
                     class="form-control flatpickr-input"
                     placeholder="End Date"
                     type="text"
-                    name="calendar"
+                    name="endDate"
                     required
                     mwlFlatpickr
                     data-id="datetime"
@@ -442,7 +441,6 @@
                     [convertModelValue]="true"
                     [altFormat]=""
                     [(ngModel)]="batchForEdit.end_date_time"
-                    minDate="today"
                     [dateFormat]="'Y-m-d H:i'"
                   />
                 </div>

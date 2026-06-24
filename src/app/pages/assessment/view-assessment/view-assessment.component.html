@@ -48,6 +48,7 @@
       class="btn btn-outline-primary btn-label waves-effect waves-light">
       <i class="ri-eye-line label-icon align-middle me-2"></i>Preview
     </button>
+    
     <button *ngIf="fetchingPreview" type="button" class="btn btn-outline-primary btn-load" [disabled]="true">
       <span class="d-flex align-items-center">
         <span class="spinner-border flex-shrink-0" role="status" style="width: 1rem; height: 1rem;">
@@ -55,6 +56,11 @@
         </span>
         <span class="flex-grow-1 ms-2"> Loading Preview... </span>
       </span>
+    </button>
+
+    <button (click)="openAssessmentSettingsModal(assessmentSettingsModal)" type="button"
+      class="btn btn-outline-success btn-label waves-effect waves-light">
+      <i class="ri-settings-2-line label-icon align-middle me-2"></i>Edit exam settings
     </button>
 
     <!-- for testing only -->
@@ -68,15 +74,16 @@
       <button type="button"
         class="btn btn-soft-info btn-label waves-effect right waves-light dropdown-toggle arrow-none"
         data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-        <i class="ri-arrow-down-s-fill label-icon align-middle me-2" style="cursor: pointer"></i>Advanced Options
+        <i class="ri-arrow-down-s-fill label-icon align-middle me-2" style="cursor: pointer"></i>Template options
       </button>
+
       <ul class="dropdown-menu" ngbDropdownMenu>
-        <li style="cursor: pointer">
+        <!-- <li style="cursor: pointer">
           <a (click)="openAssessmentSettingsModal(assessmentSettingsModal)"
             class="dropdown-item d-flex gap-2 align-items-center"><i style="cursor: pointer"
               class="ri ri-settings-2-line"></i>Exam
             Settings</a>
-        </li>
+        </li> -->
         <li *ngIf="
             assessment &&
             assessment.status !== 'PUBLISHED' &&
@@ -823,7 +830,7 @@
                   assessmentSettings.displayAllSectionsAtOnce =
                     !assessmentSettings.displayAllSectionsAtOnce
                 " class="form-check-label" for="displayResult">
-                Display all sections (One at a time, All at once)?
+                Candidate section's display
               </label>
             </div>
 
@@ -831,16 +838,14 @@
               <select #displayRef (change)="handleDispayAllSectionOption(displayRef.value)"
                 class="form-select form-select-md" [value]="assessmentSettings.displayAllSectionsAtOnce">
                 <option selected disabled>Select one</option>
-                <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
+                <option value="COMPOSITE_SECTIONS">Composite Sections</option>
+                <option value="MERGED_SECTIONS">Merged Sections</option>
+                <option value="ONE_AT_A_TIME" [selected]="!assessmentSettings.displayAllSectionsAtOnce">One at a time</option>
+                
+                <!-- <option value="oneAtTime" [selected]="!assessmentSettings.displayAllSectionsAtOnce">
                   One at a time
                 </option>
                 <option value="allAtOnce" [selected]="assessmentSettings.displayAllSectionsAtOnce">
-                  All At Once
-                </option>
-                <!-- <option value="oneAtTime" [selected]="true">
-                  One at a time
-                </option>
-                <option value="allAtOnce">
                   All At Once
                 </option> -->
               </select>
@@ -1070,7 +1075,7 @@
             Shuffle blocks
           </label>
         </div>
-        <div class="form-check mb-2">
+        <!-- <div class="form-check mb-2">
           <input class="form-check-input" type="checkbox" name="allowCalculator"
             [(ngModel)]="editSection.sectionSettings.allowCalculator" />
           <label class="form-check-label" for="allowCalculator">
@@ -1084,7 +1089,7 @@
           <label class="form-check-label" for="preventNavigationToAttemptedItems">
             Prevent navigation to attempted questions
           </label>
-        </div>
+        </div> -->
       </div>
     </form>
   </div>

@@ -166,4 +166,12 @@ export class DataService {
       credentials: 'include'
     });
   }
+
+  fetchExamGroups(): Observable<any> {
+    const url = `/examalpha/api/v1/sch_mon_grd/reports/result/exam_groups`;
+    return this._http.get<any>(
+      environment.schedulerIP + url,
+      { withCredentials: true }
+    );
+  }
 }

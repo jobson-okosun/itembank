@@ -19,6 +19,24 @@
           class="ri-pages-line align-bottom me-1"></i>Exam Templates</a>
       <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i
           class="ri-add-line align-bottom me-1"></i> Create New Exam</a>
+      
+      <div class="dropdown" ngbDropdown>
+        <button class="btn btn-soft-info dropdown-toggle" type="button" ngbDropdownToggle>
+          <i class="ri-folder-zip-line align-bottom me-1"></i> Exam Group
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" (click)="openCreateGroupModal(createGroupModal)">
+              <i class="ri-add-circle-line align-bottom me-2 text-muted"></i> Create Group
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" (click)="openViewGroupsModal(viewGroupsModal)">
+              <i class="ri-eye-line align-bottom me-2 text-muted"></i> View Groups
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
@@ -42,6 +60,12 @@
                   routerLink="/examalpha/exams/{{ assessment.id }}"><i
                     class="bx bxs-edit align-bottom me-2 text-muted"></i>
                   Manage Exam</a>
+              </li>
+              <li *ngIf="!isCurrentUserMarker">
+                <a class="dropdown-item" style="cursor: pointer" (click)="openAddToGroupModal(addToGroupModal, assessment)">
+                  <i class="ri-add-circle-line align-bottom me-2 text-muted"></i>
+                  Add to Group
+                </a>
               </li>
               <!-- <li>
                 <a class="dropdown-item" href="javascript:void(0);"><i
@@ -140,7 +164,7 @@
                 <span class="text-primary"><i class="ri-calendar-event-line align-bottom"></i>
                   {{ assessment.createdDate | date : "medium" }}</span>
               </li>
-              <li>
+              <!-- <li>
                 <div class="d-flex gap-2">
                   <span class="badge badge-soft-success rounded-pill fs-12" *ngIf="assessment.totalCenters">Centers
                     <i class="ri-check-double-line text-success me-2 align-middle"></i></span>
@@ -153,6 +177,35 @@
                     *ngIf="assessment.totalParticipants">Participants
                     <i class="ri-check-double-line text-success me-2 align-middle"></i></span>
                 </div>
+              </li> -->
+                <li>
+                  <div class="d-flex gap-2">
+                    <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.totalCenters">Centers
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalCenters }})</span>
+                    <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.totalCenterAdmins">Center Admin
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalCenterAdmins }})</span>
+                    <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.totalSectionsGroup">Section Groups
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalSectionsGroup }})</span>
+                    <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.totalParticipants">Participants
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.totalParticipants }})</span>
+                    <span
+                      class="badge badge-soft-success rounded-pill fs-12"
+                      *ngIf="assessment.totalProctors">Proctors
+                      <i
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.totalProctors }})</span>
+                  </div>
               </li>
             </ul>
           </div>
@@ -427,6 +480,246 @@
           </span>
           <span class="flex-grow-1 ms-2"> Publishing... </span>
         </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #createGroupModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">CREATE EXAM GROUP</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <form #createGroupForm="ngForm" (ngSubmit)="createGroupForm.valid && submitCreateGroup(createGroupForm)">
+      <div class="mb-3">
+        <label for="groupName" class="form-label">Group Name <span class="text-danger">*</span></label>
+        <input type="text" name="name" id="groupName" class="form-control text-uppercase" placeholder="Enter group name" required
+          [(ngModel)]="newGroupName" />
+      </div>
+    </form>
+  </div>
+  <div class="card-footer py-2">
+    <div class="hstack gap-2 justify-content-end">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+        Close
+      </button>
+      <button type="button" *ngIf="!processingCreateGroup" (click)="submitCreateGroup(createGroupForm)" [disabled]="createGroupForm.invalid || !newGroupName || newGroupName.trim() === ''" class="btn btn-primary">
+        Save
+      </button>
+      <button *ngIf="processingCreateGroup" class="btn btn-outline-primary btn-load" disabled>
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Saving...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Saving... </span>
+        </span>
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewGroupsModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">EXAM GROUPS</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <div *ngIf="processingGroupsList" class="d-flex align-items-center justify-content-center py-4">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="ms-2 text-info">Loading Groups...</span>
+    </div>
+
+    <div *ngIf="!processingGroupsList">
+      <div *ngIf="examGroups?.length === 0" class="text-center py-4 text-muted">
+        No exam groups found.
+      </div>
+
+      <div *ngIf="examGroups && examGroups.length > 0" class="table-responsive table-card">
+        <table class="table align-middle table-nowrap mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Group Name</th>
+              <th scope="col">Date Created</th>
+              <th scope="col">Number of Exams</th>
+              <th scope="col" style="width: 80px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let group of examGroups">
+              <td>{{ group.name }}</td>
+              <td>{{ group.createdDate | date: 'medium' }}</td>
+              <td>{{ group.examsCount }}</td>
+              <td>
+                <div class="dropdown" ngbDropdown>
+                  <button class="btn btn-soft-secondary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                    <i class="ri-more-fill align-middle"></i>
+                  </button>
+                  <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+                    <li>
+                      <a class="dropdown-item" style="cursor: pointer" (click)="modal.close('Close click'); openViewExamsModal(viewExamsModal, group)">
+                        <i class="ri-eye-fill align-bottom me-2 text-muted"></i> View Exams
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item remove-item-btn" style="cursor: pointer" (click)="deleteGroup(group.id)">
+                        <i class="ri-delete-bin-fill align-bottom me-2 text-muted"></i> Delete Group
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="mt-3">
+          <p-paginator [totalRecords]="totalGroups" (onPageChange)="onGroupsPageChange($event)" [first]="groupsPage * groupsPageSize"
+            [rows]="groupsPageSize" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          </p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer py-2">
+    <div class="hstack gap-2 justify-content-end">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #viewExamsModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">EXAMS IN GROUP: {{ selectedGroupName | uppercase }}</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <div *ngIf="processingExamsList" class="d-flex align-items-center justify-content-center py-4">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="ms-2 text-info">Loading Exams...</span>
+    </div>
+
+    <div *ngIf="!processingExamsList">
+      <div *ngIf="examsInGroup?.length === 0" class="text-center py-4 text-muted">
+        No exams in this group.
+      </div>
+
+      <div *ngIf="examsInGroup && examsInGroup.length > 0" class="table-responsive table-card">
+        <table class="table align-middle table-nowrap mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Exam Name</th>
+              <th scope="col">Date Created</th>
+              <th scope="col" style="width: 120px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let exam of examsInGroup">
+              <td>{{ exam.name }}</td>
+              <td>{{ exam.createdDate | date: 'medium' }}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-soft-danger" (click)="removeExamFromGroup(exam.id)">
+                  <i class="ri-delete-bin-line align-bottom me-1"></i> Remove Exam
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="mt-3">
+          <p-paginator [totalRecords]="totalExams" (onPageChange)="onExamsPageChange($event)" [first]="examsPage * examsPageSize"
+            [rows]="examsPageSize" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          </p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer py-2">
+    <div class="d-flex justify-content-between">
+      <button type="button" class="btn btn-outline-primary" (click)="modal.close('Close click'); openViewGroupsModal(viewGroupsModal)">
+        <i class="ri-arrow-left-line align-middle me-1"></i> Back to Groups
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+        Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #addToGroupModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">ADD EXAM TO GROUP</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <!-- <div class="mb-3">
+      <h5>Exam: <span class="text-primary">{{ selectedExamForGroup?.name }}</span></h5>
+    </div> -->
+    <div *ngIf="processingGroupsList" class="d-flex align-items-center justify-content-center py-4">
+      <div class="spinner-border text-info" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <span class="ms-2 text-info">Loading Groups...</span>
+    </div>
+
+    <div *ngIf="!processingGroupsList">
+      <div *ngIf="examGroups?.length === 0" class="text-center py-4 text-muted">
+        No exam groups found. Create a group first.
+      </div>
+
+      <div *ngIf="examGroups && examGroups.length > 0" class="table-responsive table-card">
+        <table class="table align-middle table-nowrap mb-0">
+          <thead>
+            <tr>
+              <th scope="col">Group Name</th>
+              <th scope="col">Date Created</th>
+              <th scope="col">Number of Exams</th>
+              <th scope="col" style="width: 120px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let group of examGroups">
+              <td>{{ group.name }}</td>
+              <td>{{ group.createdDate | date: 'medium' }}</td>
+              <td>{{ group.examsCount }}</td>
+              <td>
+                <button type="button" class="btn btn-sm btn-soft-primary" [disabled]="processingAddToGroup" (click)="addExamToSelectedGroup(group)">
+                  <i class="ri-add-line align-bottom me-1"></i> Add to Group
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="mt-3">
+          <p-paginator [totalRecords]="totalGroups" (onPageChange)="onGroupsPageChange($event)" [first]="groupsPage * groupsPageSize"
+            [rows]="groupsPageSize" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+          </p-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card-footer py-2">
+    <div class="hstack gap-2 justify-content-end">
+      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+        Close
       </button>
     </div>
   </div>

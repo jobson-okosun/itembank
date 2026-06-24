@@ -76,6 +76,7 @@ export class DashboardComponent implements OnInit {
   isLoadingParticipants: boolean = false;
   participantList: ParticipantsScoreList | null = null;
   participants: any[] = [];
+  examGroups: any[] = [];
   participantFilterParams: ParticipantsParams = {
     page: 0,
     size: 10,
@@ -132,6 +133,12 @@ export class DashboardComponent implements OnInit {
         this.assessmentId,
         this.participantFilterParams
       ),
+      examGroups: this.dataService.fetchExamGroups().pipe(
+        catchError((err: any) => {
+          console.log('Error fetching exam groups for dashboard', err);
+          return of([]);
+        })
+      ),
     };
 
     forkJoin(requests)
@@ -148,6 +155,7 @@ export class DashboardComponent implements OnInit {
             scoreAnalysis: [],
             scoreDistribution: [],
             participants: [],
+            examGroups: [],
           });
         })
       )
@@ -157,11 +165,22 @@ export class DashboardComponent implements OnInit {
           scoreAnalysis,
           scoreDistribution,
           participants,
+          examGroups,
         }) => {
           this.assessmentSummary = assessmentSummary as any;
           this.scoreDistribution = scoreDistribution as any;
           this.scoreAnalysis = scoreAnalysis as any;
           this.updateParticipantsData(participants as any);
+          
+          const groups = examGroups as any;
+          if (Array.isArray(groups)) {
+            this.examGroups = groups;
+          } else if (groups && Array.isArray(groups.content)) {
+            this.examGroups = groups.content;
+          } else {
+            this.examGroups = [];
+          }
+
           this.initializeBreadCrumbs();
           this.initalizeScoreDistributionChart();
           this.loadingDashboardResources = false;
@@ -174,22 +193,26 @@ export class DashboardComponent implements OnInit {
     this.assessmentFilterForm = new FormGroup({
       center_id: new FormControl(''),
       batch_id: new FormControl(''),
+      exam_group: new FormControl(''),
     });
 
     this.scoreDistributionFilterForm = new FormGroup({
       center_id: new FormControl(''),
       section_id: new FormControl(''),
+      exam_group: new FormControl(''),
     });
 
     this.scoreAnalysisFilterForm = new FormGroup({
       center_id: new FormControl(''),
       section_id: new FormControl(''),
+      exam_group: new FormControl(''),
     });
 
     this.transcriptFilterForm = new FormGroup({
       section: new FormControl('', Validators.required),
       center: new FormControl(''),
       loginField: new FormControl(''),
+      exam_group: new FormControl(''),
     });
 
     this.participantsListFilterForm = new FormGroup({
@@ -209,6 +232,7 @@ export class DashboardComponent implements OnInit {
       suspended_: new FormControl(''),
       login_field_value: new FormControl(''),
       comp_time_added: new FormControl(''),
+      exam_group: new FormControl(''),
     });
   }
 
@@ -221,7 +245,7 @@ export class DashboardComponent implements OnInit {
 
     this.transcriptData = null;
 
-    const { section, center, loginField } = this.transcriptFilterForm.value;
+    const { section, center, loginField, exam_group } = this.transcriptFilterForm.value;
     const params: TranscriptListParams = {
       ...this.transcriptFilterParams,
       section_id: section,
@@ -233,6 +257,10 @@ export class DashboardComponent implements OnInit {
 
     if (loginField) {
       params.login_field_value = loginField;
+    }
+
+    if (exam_group) {
+      params.exam_group = exam_group;
     }
     
     this.dataService
@@ -413,7 +441,7 @@ export class DashboardComponent implements OnInit {
     if (this.assessmentFilterForm.invalid)
       return this.assessmentFilterForm.markAllAsTouched();
 
-    const { center_id, batch_id } = this.assessmentFilterForm.value;
+    const { center_id, batch_id, exam_group } = this.assessmentFilterForm.value;
     const params: ResultSummaryParams = {};
 
     if (center_id) {
@@ -422,6 +450,10 @@ export class DashboardComponent implements OnInit {
 
     if (batch_id) {
       params.batch_id = batch_id;
+    }
+
+    if (exam_group) {
+      params.exam_group = exam_group;
     }
 
     this.isLoadingAssessment = true;
@@ -442,7 +474,7 @@ export class DashboardComponent implements OnInit {
     if (this.scoreAnalysisFilterForm.invalid)
       return this.scoreAnalysisFilterForm.markAllAsTouched();
 
-    const { center_id, section_id } = this.scoreAnalysisFilterForm.value;
+    const { center_id, section_id, exam_group } = this.scoreAnalysisFilterForm.value;
     this.scoreAnalysisFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
 
     const params: ScoreAnalysisParams = {};
@@ -453,6 +485,10 @@ export class DashboardComponent implements OnInit {
 
     if (section_id) {
       params.section_id = section_id;
+    }
+
+    if (exam_group) {
+      params.exam_group = exam_group;
     }
 
     this.isLoadingAnalysis = true;
@@ -470,7 +506,7 @@ export class DashboardComponent implements OnInit {
   applyDistributionFilter() {
     if (this.scoreDistributionFilterForm.invalid) return this.scoreDistributionFilterForm.markAllAsTouched();
 
-    const { center_id, section_id } = this.scoreDistributionFilterForm.value;
+    const { center_id, section_id, exam_group } = this.scoreDistributionFilterForm.value;
     this.scoreDistributionFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
     
     const params: ScoreDistributionParams = {};
@@ -481,6 +517,10 @@ export class DashboardComponent implements OnInit {
 
     if (section_id) {
       params.section_id = section_id;
+    }
+
+    if (exam_group) {
+      params.exam_group = exam_group;
     }
 
     this.dataService
@@ -640,7 +680,7 @@ export class DashboardComponent implements OnInit {
     try {
       this.downloadingTranscript = true;
 
-      const { section, center, loginField } = this.transcriptFilterForm.value;
+      const { section, center, loginField, exam_group } = this.transcriptFilterForm.value;
       const params: TranscriptListParams = {
         ...this.transcriptFilterParams,
         section_id: section,
@@ -652,6 +692,10 @@ export class DashboardComponent implements OnInit {
 
       if (loginField) {
         params.login_field_value = loginField;
+      }
+
+      if (exam_group) {
+        params.exam_group = exam_group;
       }
 
       const selectedSection = this.assessmentSummary?.sections.find(

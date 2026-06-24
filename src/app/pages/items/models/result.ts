@@ -5,6 +5,7 @@ import { ContextMenuGradingForm } from "../../results/grading-item-types/drawing
 export class ResultSummaryParams {
   center_id?: string;
   batch_id?: string;
+  exam_group?: string;
 }
 
 export class AssessmentResultSummary {
@@ -43,6 +44,7 @@ export class AssessmentResultSummary {
 export class ScoreDistributionParams {
   center_id?: string;
   section_id?: string;
+  exam_group?: string;
 }
 
 export class ScoreDistributionScaledScore {
@@ -52,6 +54,7 @@ export class ScoreDistributionScaledScore {
 export class ScoreAnalysisParams {
   center_id?: string;
   section_id?: string;
+  exam_group?: string;
 }
 
 export class ScoreAnalysisScaledScore {
@@ -90,6 +93,7 @@ export class ParticipantsParams {
   comp_time_added?: boolean;
   page?: number;
   size?: number;
+  exam_group?: string;
 }
 
 export class ParticipantsScoreList {
@@ -165,6 +169,7 @@ export class TranscriptListParams {
   login_field_value?: string
   page?: number
   size?: number
+  exam_group?: string
 }
 
 export class TranscriptParticipantsScoreList {

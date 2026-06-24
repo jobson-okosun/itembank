@@ -218,10 +218,10 @@ export interface IMoveAdminToCenter {
 }
 
 export interface ISearchParticipant {
-  searchField: IParticipantSearchEnum;
-  searchValue: string;
-  dateRange: ISearchDateRange | null;
-  batchId: string
+  searchField: IParticipantSearchEnum | null;
+  searchValue?: string | null;
+  dateRange?: ISearchDateRange | null;
+  batchId?: string
 }
 
 export interface ISearchDateRange {

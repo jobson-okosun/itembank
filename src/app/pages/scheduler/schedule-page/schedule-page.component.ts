@@ -55,9 +55,12 @@ export class SchedulePageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    if(!!localStorage.getItem('abandon-reset')) {
+      return
+    }
+
     localStorage.removeItem('deliveryMethod')
     localStorage.removeItem('assessmentId')
     localStorage.removeItem('assessmentName')
-
   }
 }

@@ -150,6 +150,14 @@ export class AssessmentCenterDetailsComponent implements OnInit {
     this.modalService.open(content, { size: "md", centered: true });
   }
 
+  onFlatpickrReady(event: any) {
+    if (event && event.instance && event.instance.calendarContainer) {
+      const container = event.instance.calendarContainer;
+      container.addEventListener("click", (e: Event) => e.stopPropagation());
+      container.addEventListener("mousedown", (e: Event) => e.stopPropagation());
+    }
+  }
+
   openParticipantsGroupImportModal(content: any) {
     this.submitted = false;
     this.modalService.open(content, { size: "md", centered: true });
@@ -206,40 +214,35 @@ export class AssessmentCenterDetailsComponent implements OnInit {
     this.fetchingCenterParticipants = true;
     this.isSearch = true;
 
+    const cleanPayload: ISearchParticipant = {
+      searchField: this.searchParticipantPayload.searchField || null,
+      searchValue: ''
+    };
+
     if (
-      this.searchParticipantPayload.searchField !==
-        IParticipantSearchEnum.REG_DATE &&
-      this.searchParticipantPayload.searchField !==
-        IParticipantSearchEnum.REG_FIELD_DATE
+      this.searchParticipantPayload.searchField === IParticipantSearchEnum.REG_DATE ||
+      this.searchParticipantPayload.searchField === IParticipantSearchEnum.REG_FIELD_DATE
     ) {
-      // console.log("i got here center");
-      this.searchParticipantPayload.dateRange = null;
-    }
-    switch (this.searchParticipantPayload.searchField) {
-      case IParticipantSearchEnum.REG_DATE:
-        this.searchParticipantPayload.dateRange.start_date =
-          this.seperateDateRange(this.dateRange)[0];
-        this.searchParticipantPayload.dateRange.end_date =
-          this.seperateDateRange(this.dateRange)[1];
-        // console.log(this.searchParticipantPayload);
-
-        break;
-
-      case IParticipantSearchEnum.REG_FIELD_DATE:
-        this.searchParticipantPayload.dateRange.start_date =
-          this.seperateDateRange(this.dateRange)[0];
-        this.searchParticipantPayload.dateRange.end_date =
-          this.seperateDateRange(this.dateRange)[1];
-
-        break;
-      default:
-        break;
+      cleanPayload.dateRange = {
+        start_date: this.searchParticipantPayload.dateRange?.start_date || "",
+        end_date: this.searchParticipantPayload.dateRange?.end_date || ""
+      };
+    } else if (this.searchParticipantPayload.searchField === IParticipantSearchEnum.BATCH) {
+      if (this.searchParticipantPayload.batchId) {
+        cleanPayload.batchId = this.searchParticipantPayload.batchId;
+      }
+      cleanPayload.dateRange = null;
+    } else {
+      if (this.searchParticipantPayload.searchValue && this.searchParticipantPayload.searchValue.trim() !== "") {
+        cleanPayload.searchValue = this.searchParticipantPayload.searchValue.trim();
+      }
+      cleanPayload.dateRange = null;
     }
 
     this.schedulerService
       .searchForParticipant(
         this.assessmentId,
-        this.searchParticipantPayload,
+        cleanPayload,
         page ? page : 0,
         size ? size : 250
       )
@@ -251,15 +254,13 @@ export class AssessmentCenterDetailsComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           this.fetchingCenterParticipants = false;
-          this.notifierService.notify("error", err.error.message);
+          this.notifierService.notify("error", err.error.message || "Search failed");
         },
       });
   }
 
   seperateDateRange(range: string): Array<string> {
     const seperatedRange = range.toUpperCase().split("TO");
-    // console.log(seperatedRange);
-    // console.log(range);
     return seperatedRange.map((item) => item.trimStart().trimEnd());
   }
   stopPropagation(event: Event) {
@@ -282,25 +283,25 @@ export class AssessmentCenterDetailsComponent implements OnInit {
       selectedField as IParticipantSearchEnum;
     this.searchParticipantPayload.searchValue = "";
     this.dateRange = "";
-    if (selectedField !== IParticipantSearchEnum.BATCH) {
-      delete this.searchParticipantPayload.batchId;
-    }
-    if (this.searchParticipantPayload.dateRange !== null) {
+    this.searchParticipantPayload.batchId = "";
+    if (this.searchParticipantPayload.dateRange) {
       this.searchParticipantPayload.dateRange.start_date = "";
       this.searchParticipantPayload.dateRange.end_date = "";
     }
-    // console.log(selectedField);
   }
 
   clearSearch() {
     this.isSearch = false;
-    this.searchParticipantPayload.searchField = null;
-    this.searchParticipantPayload.searchValue = "";
-    if (this.searchParticipantPayload.dateRange !== null) {
-      this.searchParticipantPayload.dateRange.end_date = "";
-      this.searchParticipantPayload.dateRange.start_date = "";
-    }
-
+    this.searchParticipantPayload = {
+      searchField: undefined,
+      searchValue: "",
+      dateRange: {
+        end_date: "",
+        start_date: "",
+      },
+      batchId: ""
+    };
+    this.dateRange = "";
     this.fetchParticipantsInCenter(this.assessmentId, this.centerId, 0, 250);
   }
 
@@ -620,21 +621,23 @@ export class AssessmentCenterDetailsComponent implements OnInit {
   }
 
   canPerformSearch(): boolean {
-    if (
-      this.searchParticipantPayload.searchField ===
-        IParticipantSearchEnum.REG_DATE ||
-      this.searchParticipantPayload.searchField ===
-        IParticipantSearchEnum.REG_FIELD_DATE
-    ) {
-      if (this.dateRange.toUpperCase().split("TO").length !== 2) {
-        return false;
-      } else {
-        return true;
-      }
-    } else if (this.searchParticipantPayload.searchValue === "") {
+    const field = this.searchParticipantPayload.searchField;
+    if (!field) {
       return false;
+    }
+    if (
+      field === IParticipantSearchEnum.REG_DATE ||
+      field === IParticipantSearchEnum.REG_FIELD_DATE
+    ) {
+      return !!(
+        this.searchParticipantPayload.dateRange &&
+        this.searchParticipantPayload.dateRange.start_date &&
+        this.searchParticipantPayload.dateRange.end_date
+      );
+    } else if (field === IParticipantSearchEnum.BATCH) {
+      return !!this.searchParticipantPayload.batchId;
     } else {
-      return true;
+      return !!(this.searchParticipantPayload.searchValue && this.searchParticipantPayload.searchValue.trim());
     }
   }
 
@@ -700,5 +703,9 @@ export class AssessmentCenterDetailsComponent implements OnInit {
   }
   keys(obj: any): Array<string> {
     return Object.keys(obj);
+  }
+
+  goBack() {
+    history.back()
   }
 }

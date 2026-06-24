@@ -67,6 +67,15 @@
                         </option>
                       </select>
                     </div>
+                    <div class="mb-2">
+                      <label for="examGroup" class="small">Exam Group</label>
+                      <select formControlName="exam_group" class="form-control control-input">
+                        <option value="">-- Select group --</option>
+                        <option *ngFor="let item of examGroups" [value]="item.id">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                    </div>
                   </form>
 
                   <div class="dropdown-divider"></div>
@@ -310,6 +319,15 @@
                       </option>
                     </select>
                   </div>
+                  <div class="mb-2">
+                    <label for="examGroup" class="small">Exam Group</label>
+                    <select formControlName="exam_group" class="form-control control-input">
+                      <option value="">-- Select group --</option>
+                      <option *ngFor="let item of examGroups" [value]="item.id">
+                        {{ item.name }}
+                      </option>
+                    </select>
+                  </div>
                 </form>
 
                 <div class="dropdown-divider"></div>
@@ -514,6 +532,15 @@
                     </option>
                   </select>
                 </div>
+                <div class="mb-2">
+                  <label for="examGroup" class="small">Exam Group</label>
+                  <select formControlName="exam_group" class="form-control control-input">
+                    <option value="">-- Select group --</option>
+                    <option *ngFor="let item of examGroups" [value]="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
               </form>
 
               <div class="dropdown-divider"></div>
@@ -589,6 +616,15 @@
                 <div class="mb-2">
                   <label for="center" class="small">Login Field</label>
                   <input formControlName="loginField" type="text" class="form-control control-input" />
+                </div>
+                <div class="mb-2">
+                  <label for="examGroup" class="small">Exam Group</label>
+                  <select formControlName="exam_group" class="form-control control-input">
+                    <option value="">-- Select group --</option>
+                    <option *ngFor="let item of examGroups" [value]="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
                 </div>
               </form>
 
@@ -943,6 +979,15 @@
                   <label for="duration_less_than" class="small">Assessment Duration lesser than</label>
                   <input formControlName="duration_less_than" type="number" class="form-control control-input" />
                 </div>
+                <div class="col-lg-6 mb-2">
+                  <label for="exam_group" class="small">Exam Group</label>
+                  <select formControlName="exam_group" class="form-control control-input">
+                    <option value="">-- Select group --</option>
+                    <option *ngFor="let item of examGroups" [value]="item.id">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
               </div>
 
               <div class="mb-2 d-flex flex-column gap-y-2">
@@ -1163,7 +1208,7 @@
                 </ng-template>
               </td>
               <td>
-                <div class="dropdown" ngbDropdown>
+                <div class="dropdown" ngbDropdown container="body">
                   <button class="btn btn-soft-primary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown"
                     aria-expanded="false" ngbDropdownToggle>
                     <i class="ri-more-fill"></i>

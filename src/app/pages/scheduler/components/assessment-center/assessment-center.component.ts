@@ -34,15 +34,12 @@ export class AssessmentCenterComponent implements OnInit{
   centerSize: number = 0;
   centerPage: number = 0;
   processingFetchAssessmentCenters: boolean = false;
-  filterFields: Array<string> = ["CENTER ID", "CENTER NAME", "STATE"];
   payload: IFilterCenter = {
     assessmentId: "",
     centerId: "",
     centerName: "",
     state: "",
   };
-  searchValue: string = "";
-  selectedField: string = "";
   isFilter: boolean = false;
   dashboardCenterData: ICenterDashboard;
   centerStates: Array<String> = states;
@@ -91,9 +88,18 @@ export class AssessmentCenterComponent implements OnInit{
   }
 
   viewCenterDetails(centerId: string) {
-    this.router.navigate([
+    // this.router.navigate([
+    //   `schedule/center/${this.assessmentId}/${centerId}/details`,
+    // ]);
+
+    new Promise((resolve) => {
+      localStorage.setItem('abandon-reset', 'true')
+      resolve(true)
+    }).then(() => {
+      this.router.navigate([
       `schedule/center/${this.assessmentId}/${centerId}/details`,
     ]);
+    });
   }
 
   addNewAssessmentCenter(
@@ -149,34 +155,18 @@ export class AssessmentCenterComponent implements OnInit{
 
   clearFilter() {
     this.isFilter = false;
-    this.searchValue = "";
-    this.selectedField = "";
-
-    this.fetchAssessmentCenters(0, 50);
+    this.payload = {
+      assessmentId: this.assessmentId,
+      centerId: "",
+      centerName: "",
+      state: "",
+    };
+    this.fetchAssessmentCenters(0, this.centerSize || 50);
   }
 
-  onCenterFieldChange(selectedField: string) {
-    this.selectedField = selectedField;
-
-    // switch (selectedField) {
-    //   case "STATE":
-    //     this.payload.state = this.searchValue;
-    //     console.log(this.searchValue + "Search value");
-    //     // this.filterCenterByField();
-
-    //     break;
-    //   case "CENTER ID":
-    //     this.payload.centerId = this.searchValue;
-    //     // this.filterCenterByField();
-    //     break;
-
-    //   case "CENTER NAME":
-    //     this.payload.centerName = this.searchValue;
-    //     // this.filterCenterByField();
-    //     break;
-    // }
-    // this.searchParticipantPayload.searchField = selectedField;
-    // console.log(selectedField + " " + this.searchValue);
+  applyFilter() {
+    this.centerPage = 0;
+    this.filterCenterByField(this.centerPage, this.centerSize || 50);
   }
 
   importCenters() {
@@ -243,33 +233,31 @@ export class AssessmentCenterComponent implements OnInit{
     this.processingFetchAssessmentCenters = true;
     this.payload.assessmentId = this.assessmentId;
 
-    if (this.selectedField === "CENTER ID") {
-      const { centerName, state, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.centerId = this.searchValue;
-      rest.centerId = this.searchValue.trim();
-    } else if (this.selectedField === "CENTER NAME") {
-      const { centerId, state, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.centerName = this.searchValue.trim();
-    } else if (this.selectedField === "STATE") {
-      const { centerName, centerId, ...rest } = this.payload;
-      this.payload = rest;
-      this.payload.state = this.searchValue.trim();
+    const cleanPayload: IFilterCenter = {
+      assessmentId: this.assessmentId
+    };
+
+    if (this.payload.centerId && this.payload.centerId.trim() !== '') {
+      cleanPayload.centerId = this.payload.centerId.trim();
     }
-    // console.log(this.payload);
+    if (this.payload.centerName && this.payload.centerName.trim() !== '') {
+      cleanPayload.centerName = this.payload.centerName.trim();
+    }
+    if (this.payload.state && this.payload.state.trim() !== '') {
+      cleanPayload.state = this.payload.state.trim();
+    }
+
     this.schedulerService
-      .filterCenterByField(this.payload, centerPage, centerSize)
+      .filterCenterByField(cleanPayload, centerPage, centerSize)
       .subscribe({
         next: (value) => {
           this.processingFetchAssessmentCenters = false;
           this.isFilter = true;
           this.centers = value;
-          // console.log(value);
         },
         error: (err: HttpErrorResponse) => {
           this.processingFetchAssessmentCenters = false;
-          // console.log(err.error.message);
+          this.notifierService.notify("error", err.error.message || "Failed to filter centers");
         },
       });
   }

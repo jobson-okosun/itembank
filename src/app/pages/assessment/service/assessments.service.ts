@@ -557,4 +557,133 @@ export class AssessmentsService {
       return this.http.get<ExaminerClearAppPage>(url, { withCredentials: true})
   }
 
+  // In-memory Mock Data Store for Exam Groups
+  private mockExamGroups: any[] = [
+    {
+      id: "group-1",
+      name: "Standard Recruitment 2026",
+      dateCreated: new Date("2026-01-15T09:00:00Z").toISOString(),
+      exams: [
+        { id: "exam-1", name: "Aptitude Test Phase 1", createdDate: new Date("2026-01-15T09:00:00Z").toISOString() },
+        { id: "exam-2", name: "Critical Thinking Exam", createdDate: new Date("2026-01-16T10:30:00Z").toISOString() }
+      ]
+    },
+    {
+      id: "group-2",
+      name: "Management Trainee Selection",
+      dateCreated: new Date("2026-03-10T14:30:00Z").toISOString(),
+      exams: [
+        { id: "exam-3", name: "Numerical Reasoning", createdDate: new Date("2026-03-10T14:30:00Z").toISOString() },
+        { id: "exam-4", name: "Verbal Reasoning Test", createdDate: new Date("2026-03-11T11:00:00Z").toISOString() },
+        { id: "exam-5", name: "Leadership Competency Assessment", createdDate: new Date("2026-03-12T15:00:00Z").toISOString() }
+      ]
+    },
+    {
+      id: "group-3",
+      name: "Technical Internship Evaluation",
+      dateCreated: new Date("2026-05-01T08:15:00Z").toISOString(),
+      exams: []
+    }
+  ];
+
+  createExamGroup(name: string): Observable<any> {
+    const newGroup = {
+      id: 'group-' + Math.random().toString(36).substring(2, 9),
+      name: name,
+      dateCreated: new Date().toISOString(),
+      exams: []
+    };
+    this.mockExamGroups.unshift(newGroup);
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({ success: true, data: newGroup });
+        observer.complete();
+      }, 500);
+    });
+  }
+
+  fetchExamGroups(page: number, size: number): Observable<any> {
+    const start = page * size;
+    const end = start + size;
+    const content = this.mockExamGroups.slice(start, end).map(g => ({
+      id: g.id,
+      name: g.name,
+      dateCreated: g.dateCreated,
+      examsCount: g.exams.length
+    }));
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({
+          content: content,
+          total: this.mockExamGroups.length,
+          size: size,
+          number: page
+        });
+        observer.complete();
+      }, 400);
+    });
+  }
+
+  deleteExamGroup(groupId: string): Observable<any> {
+    this.mockExamGroups = this.mockExamGroups.filter(g => g.id !== groupId);
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({ success: true });
+        observer.complete();
+      }, 300);
+    });
+  }
+
+  fetchExamsInGroup(groupId: string, page: number, size: number): Observable<any> {
+    const group = this.mockExamGroups.find(g => g.id === groupId);
+    const exams = group ? group.exams : [];
+    const start = page * size;
+    const end = start + size;
+    const content = exams.slice(start, end);
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({
+          content: content,
+          total: exams.length,
+          size: size,
+          number: page,
+          groupName: group ? group.name : ''
+        });
+        observer.complete();
+      }, 400);
+    });
+  }
+
+  removeExamFromGroup(groupId: string, examId: string): Observable<any> {
+    const group = this.mockExamGroups.find(g => g.id === groupId);
+    if (group) {
+      group.exams = group.exams.filter(e => e.id !== examId);
+    }
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({ success: true });
+        observer.complete();
+      }, 300);
+    });
+  }
+
+  addExamToGroup(groupId: string, exam: any): Observable<any> {
+    const group = this.mockExamGroups.find(g => g.id === groupId);
+    if (group) {
+      const exists = group.exams.some(e => e.id === exam.id);
+      if (!exists) {
+        group.exams.push({
+          id: exam.id,
+          name: exam.name,
+          createdDate: exam.createdDate || new Date().toISOString()
+        });
+      }
+    }
+    return new Observable(observer => {
+      setTimeout(() => {
+        observer.next({ success: true });
+        observer.complete();
+      }, 300);
+    });
+  }
 }

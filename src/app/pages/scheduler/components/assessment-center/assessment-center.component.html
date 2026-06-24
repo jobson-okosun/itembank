@@ -33,65 +33,91 @@
     </div>
   </div>
 
-  <div class="d-flex align-items-center gap-3 mb-1">
-    <!-- <h5 *ngIf="centers">Centers({{ centers.total }})</h5> -->
-    <!-- <div class="d-flex gap-3"> -->
-
-    <div class="input-group" style="width: 35%">
-      <select
-        (change)="onCenterFieldChange(selectedFieldRef.value);searchValueInput.value = ''"
-        #selectedFieldRef
-        class="form-select form-select-sm"
-        name="searchField"
-      >
-        <option disabled [selected]="!isFilter">Filter by</option>
-        <option
-          *ngFor="let searchableField of filterFields"
-          value="{{ searchableField }}"
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="d-flex align-items-center gap-2">
+      <!-- Filter Dropdown -->
+      <div class="dropdown" ngbDropdown #centerFilterDrop="ngbDropdown" display="dynamic">
+        <button
+          class="btn btn-soft-primary dropdown-toggle btn-label waves-effect waves-light"
+          type="button"
+          id="centerFilterDropdown"
+          ngbDropdownToggle
         >
-          {{ searchableField }}
-        </option>
-      </select>
+          <i class="ri-filter-2-line label-icon align-bottom text-center"></i>
+          Filter Centers
+        </button>
+        <div ngbDropdownMenu style="min-width: 320px" class="border shadow-sm p-3 dropdown-menu-start">
+          <div class="px-2 py-1 small text-black fw-bold fs-13">Filter Centers</div>
+          <div class="dropdown-divider"></div>
+          <form class="px-2 py-1">
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Center ID</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Center ID"
+                name="centerId"
+                [(ngModel)]="payload.centerId"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">Center Name</label>
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Enter Center Name"
+                name="centerName"
+                [(ngModel)]="payload.centerName"
+              />
+            </div>
+            <div class="mb-2">
+              <label class="form-label small fw-semibold">State</label>
+              <select
+                class="form-select"
+                name="state"
+                [(ngModel)]="payload.state"
+              >
+                <option value="">Select state</option>
+                <option *ngFor="let state of centerStates" [value]="state">
+                  {{ state }}
+                </option>
+              </select>
+            </div>
+          </form>
+          <div class="dropdown-divider"></div>
+          <div class="px-2 pb-1 d-flex gap-2">
+            <button
+              type="button"
+              (click)="clearFilter(); centerFilterDrop.close()"
+              class="btn btn-secondary w-100"
+            >
+              Clear
+            </button>
+            <button
+              type="button"
+              (click)="applyFilter(); centerFilterDrop.close()"
+              class="btn btn-primary w-100"
+              [disabled]="!payload.centerId?.trim() && !payload.centerName?.trim() && !payload.state"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      </div>
 
-      <input
-        #searchValueInput
-        [(ngModel)]="searchValue"
-        type="text"
-        class="form-control"
-        placeholder="Search value.."
-        name="searchValue"
-      />
+      <!-- Clear Filter Button -->
       <button
-        [disabled]="!selectedField || !searchValue"
-        class="btn btn-sm btn-success"
-        (click)="filterCenterByField()"
-        [disabled]="!searchValueInput.value?.trim()?.length"
+        *ngIf="isFilter"
+        class="btn btn-soft-danger waves-effect waves-light"
+        type="button"
+        (click)="clearFilter()"
       >
-        Search
+        <i class="ri-close-fill me-1 align-middle"></i> Clear Filter
       </button>
     </div>
 
-    <!-- <button
-      *ngIf="selectedField || searchValue || isFilter"
-      class="btn btn-sm btn-primary"
-      style="cursor: pointer; width: 10%"
-      (click)=""
-    >
-      <i class="ri-eraser-line"></i>
-      Clear Filter
-    </button> -->
-
-    <button
-      *ngIf="selectedField || searchValue || isFilter"
-      class="btn btn-danger"
-      type="button"
-      (click)="clearFilter()"
-    >
-      <i class="ri-close-fill me-2 align-middle"></i> Clear Filter
-    </button>
-    <!-- </div> -->
-
-    <div class="d-flex card-body gap-2 justify-content-end">
+    <!-- Action Buttons -->
+    <div class="d-flex gap-2 justify-content-end">
       <button
         class="btn btn-soft-primary waves-effect waves-light btn-label"
         (click)="openAddCenterModal(addCenterModal)"
@@ -107,16 +133,8 @@
         <i class="ri-file-download-line label-icon align-bottom"></i>
         Import centers
       </button>
-
-      <!-- <button
-        type="button"
-        class="btn btn-light btn-sm"
-        placement="left"
-        ngbPopover="This are all the centers taking this assessment"
-      >
-        <i class="ri-information-line text-primary"></i>
-      </button> -->
     </div>
+  </div>
 
     <!-- <div class="btn-group d-flex" ngbDropdown>
       <button
@@ -145,7 +163,6 @@
         </li>
       </ul>
     </div> -->
-  </div>
   <h5>List of All Centers</h5>
   <ngx-simplebar>
     <div class="card-body">
@@ -280,7 +297,7 @@
                           </td> -->
 
                 <td>
-                  <div class="dropdown" ngbDropdown>
+                  <div class="dropdown" ngbDropdown container="body">
                     <button
                       class="btn btn-soft-secondary btn-sm dropdown arrow-none"
                       type="button"

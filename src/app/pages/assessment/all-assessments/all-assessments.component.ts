@@ -71,7 +71,27 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   currentUserTime = new Date();
   currentUser: Account;
   isCurrentUserMarker = false;
-  deliveryMethodsList = AssessmentDeliveryEnum
+  deliveryMethodsList = AssessmentDeliveryEnum;
+
+  // Exam Groups state properties
+  newGroupName: string = "";
+  processingCreateGroup: boolean = false;
+  processingGroupsList: boolean = false;
+  processingExamsList: boolean = false;
+  examGroups: any[] = [];
+  examsInGroup: any[] = [];
+  selectedGroupId: string = "";
+  selectedGroupName: string = "";
+
+  // Group pagination
+  groupsPage: number = 0;
+  groupsPageSize: number = 5;
+  totalGroups: number = 0;
+
+  // Exams pagination
+  examsPage: number = 0;
+  examsPageSize: number = 5;
+  totalExams: number = 0;
 
   constructor(
     private router: Router,
@@ -301,5 +321,167 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
         },
       });
     }
+  }
+
+  // Exam Groups handlers
+  openCreateGroupModal(content: any) {
+    this.newGroupName = "";
+    this.modalService.open(content, { centered: true, size: "md" });
+  }
+
+  submitCreateGroup(form: any) {
+    if (!this.newGroupName || this.newGroupName.trim() === "") {
+      this.notifier.notify("error", "Group name is required");
+      return;
+    }
+    this.processingCreateGroup = true;
+    this.assessmentService.createExamGroup(this.newGroupName.trim()).subscribe({
+      next: (res) => {
+        this.processingCreateGroup = false;
+        this.notifier.notify("success", "Exam group created successfully");
+        this.modalService.dismissAll();
+      },
+      error: (err) => {
+        this.processingCreateGroup = false;
+        this.notifier.notify("error", err?.message || "Failed to create group");
+      }
+    });
+  }
+
+  openViewGroupsModal(content: any) {
+    this.groupsPage = 0;
+    this.groupsPageSize = 5;
+    this.totalGroups = 0;
+    this.examGroups = [];
+    this.modalService.open(content, { centered: true, size: "lg" });
+    this.loadExamGroupsPage();
+  }
+
+  loadExamGroupsPage() {
+    this.processingGroupsList = true;
+    this.assessmentService.fetchExamGroups(this.groupsPage, this.groupsPageSize).subscribe({
+      next: (res) => {
+        this.processingGroupsList = false;
+        this.examGroups = res.content;
+        this.totalGroups = res.total;
+      },
+      error: (err) => {
+        this.processingGroupsList = false;
+        this.notifier.notify("error", "Failed to fetch groups");
+      }
+    });
+  }
+
+  onGroupsPageChange(event: any) {
+    this.groupsPageSize = event.rows;
+    this.groupsPage = event.page;
+    this.loadExamGroupsPage();
+  }
+
+  deleteGroup(groupId: string) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to delete this exam group?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.assessmentService.deleteExamGroup(groupId).subscribe({
+          next: () => {
+            this.notifier.notify("success", "Group deleted successfully");
+            if (this.examGroups.length === 1 && this.groupsPage > 0) {
+              this.groupsPage--;
+            }
+            this.loadExamGroupsPage();
+          },
+          error: () => {
+            this.notifier.notify("error", "Failed to delete group");
+          }
+        });
+      }
+    });
+  }
+
+  openViewExamsModal(content: any, group: any) {
+    this.selectedGroupId = group.id;
+    this.selectedGroupName = group.name;
+    this.examsPage = 0;
+    this.examsPageSize = 5;
+    this.totalExams = 0;
+    this.examsInGroup = [];
+    
+    this.modalService.open(content, { centered: true, size: "lg" });
+    this.loadExamsInGroupPage();
+  }
+
+  loadExamsInGroupPage() {
+    this.processingExamsList = true;
+    this.assessmentService.fetchExamsInGroup(this.selectedGroupId, this.examsPage, this.examsPageSize).subscribe({
+      next: (res) => {
+        this.processingExamsList = false;
+        this.examsInGroup = res.content;
+        this.totalExams = res.total;
+      },
+      error: (err) => {
+        this.processingExamsList = false;
+        this.notifier.notify("error", "Failed to fetch group exams");
+      }
+    });
+  }
+
+  onExamsPageChange(event: any) {
+    this.examsPageSize = event.rows;
+    this.examsPage = event.page;
+    this.loadExamsInGroupPage();
+  }
+
+  removeExamFromGroup(examId: string) {
+    this.assessmentService.removeExamFromGroup(this.selectedGroupId, examId).subscribe({
+      next: () => {
+        this.notifier.notify("success", "Exam removed from group");
+        if (this.examsInGroup.length === 1 && this.examsPage > 0) {
+          this.examsPage--;
+        }
+        this.loadExamsInGroupPage();
+        this.loadExamGroupsPage();
+      },
+      error: () => {
+        this.notifier.notify("error", "Failed to remove exam");
+      }
+    });
+  }
+
+  // Add exam to group modal state & handlers
+  selectedExamForGroup: any = null;
+  processingAddToGroup: boolean = false;
+
+  openAddToGroupModal(content: any, exam: any) {
+    this.selectedExamForGroup = exam;
+    this.groupsPage = 0;
+    this.groupsPageSize = 5;
+    this.totalGroups = 0;
+    this.examGroups = [];
+    this.modalService.open(content, { centered: true, size: "lg" });
+    this.loadExamGroupsPage();
+  }
+
+  addExamToSelectedGroup(group: any) {
+    if (!this.selectedExamForGroup) return;
+    this.processingAddToGroup = true;
+    this.assessmentService.addExamToGroup(group.id, this.selectedExamForGroup).subscribe({
+      next: () => {
+        this.processingAddToGroup = false;
+        this.notifier.notify("success", `Exam added to group "${group.name}" successfully`);
+        this.modalService.dismissAll();
+        this.selectedExamForGroup = null;
+      },
+      error: (err) => {
+        this.processingAddToGroup = false;
+        this.notifier.notify("error", "Failed to add exam to group");
+      }
+    });
   }
 }

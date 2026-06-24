@@ -15,6 +15,7 @@ export class SingleAssessment {
   totalParticipants: number;
   totalCenterAdmins: number;
   totalActiveAdmins: number;
+  totalProctors?: number
 }
 
 export class AssessmentList {
@@ -59,6 +60,7 @@ export interface AssessmentListItemDTO {
   total_centers: number;
   total_center_admins: number;
   total_participants: number;
+  total_proctors: number
   created_at: string;
   total_sections: number
 }
