@@ -45,19 +45,24 @@ export class SignInComponent implements OnInit, AfterViewInit {
   fieldTextType!: boolean;
   
   error_msg = '';
+  success_msg = '';
+
   returnUrl!: string;
   notification_error = '';
   // set the current year
   year: number = new Date().getFullYear();
   checkSubmit: boolean = false;
   error: boolean = false;
+  success: boolean = false;
 
   itembankForm: boolean = true;
   showAppAssets = environment.showAppAssets;
 
   isSubmittingOtp: boolean = false;
 
-    @ViewChild('otpInput', { static: false }) ngOtpInput!: NgOtpInputComponent;
+  isResendingOtp: boolean = false;
+
+ @ViewChild(NgOtpInputComponent, { static: false }) ngOtpInput: NgOtpInputComponent;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -66,7 +71,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
     private router: Router,
     private userService: UserService,
     private schedulerAccountService: SchedulerAccountService,
-    private cdRef: ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {
     this.notifier = notifierService;
   }
@@ -90,7 +95,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     this.renderMath();
-
   }
 
   // convenience getter for easy access to form fields
@@ -139,9 +143,10 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
           this.http.provideOtpToProceed = true;
 
-          // this.loginOtp = value.otpRecordId 
+          this.loginOtp = value.otpRecordId 
+              this.setOtpValue(this.loginOtp);
+this.cdr.detectChanges();
           // this.ngOtpInput.setValue(this.loginOtp);
-          this.cdRef.detectChanges();
           console.log('LOGIN OTP: ', value);
           
           this.error = false;
@@ -174,6 +179,12 @@ export class SignInComponent implements OnInit, AfterViewInit {
           this.submitted = false;
         }
       );
+    }
+  }
+
+    setOtpValue(value: string) {
+    if (this.ngOtpInput) {
+      this.ngOtpInput.setValue(value);
     }
   }
 
@@ -447,7 +458,54 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   resendOTP(): void {
-    console.log('RESEND OTP');
+
+        this.isOtpProvided = false;
+    this.error = false;
+    this.error_msg = '';
+    this.isResendingOtp = true;
+    this.success = false;
+
+           this.http.resendOtp({ "method": "email" }).subscribe(
+        (value) => {
+
+          console.log('RESENDED: ', value);
+
+          this.isResendingOtp = false;
+
+          this.success = true;
+          this.success_msg = value.message
+
+        },
+        (err: HttpErrorResponse) => {
+          this.error = true;
+          
+          if(err.error?.message?.includes('Authentication ')) {
+            this.error_msg = 'Not authorized: Authentication failed'
+          }
+
+          else if(err.error?.message?.includes('OTP ')) {
+            this.error_msg = err.error.message
+          }
+
+          else if (err.status === 401) {
+            this.error_msg = 'Invalid Login Credentials!';
+          }
+
+          else if (err.error && err.error.error) {
+            this.error_msg = err.error.error;
+          }
+
+          else if (err.message) {
+            this.error_msg = err.message;
+          }
+
+          else {
+            this.error_msg = 'Sorry! Unable to verify OTP';
+          }
+
+          this.isResendingOtp = false;
+        }
+      );
   }
 
 }
