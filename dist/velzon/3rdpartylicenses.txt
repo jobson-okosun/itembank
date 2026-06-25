@@ -2246,6 +2246,9 @@ DEALINGS IN THE SOFTWARE.
 ng-apexcharts
 MIT
 
+ng-otp-input
+MIT
+
 ng2-charts
 ISC
 
