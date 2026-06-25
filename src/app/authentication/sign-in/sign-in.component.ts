@@ -62,8 +62,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   isResendingOtp: boolean = false;
 
- @ViewChild(NgOtpInputComponent, { static: false }) ngOtpInput: NgOtpInputComponent;
-
   constructor(
     private formBuilder: FormBuilder,
     public http: AuthenticationService,
@@ -143,10 +141,8 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
           this.http.provideOtpToProceed = true;
 
-          this.loginOtp = value.otpRecordId 
-              this.setOtpValue(this.loginOtp);
-this.cdr.detectChanges();
-          // this.ngOtpInput.setValue(this.loginOtp);
+          this.loginOtp = value.otpRecordId;
+
           console.log('LOGIN OTP: ', value);
           
           this.error = false;
@@ -179,12 +175,6 @@ this.cdr.detectChanges();
           this.submitted = false;
         }
       );
-    }
-  }
-
-    setOtpValue(value: string) {
-    if (this.ngOtpInput) {
-      this.ngOtpInput.setValue(value);
     }
   }
 
@@ -452,9 +442,6 @@ this.cdr.detectChanges();
           this.isSubmittingOtp = false;
         }
       );
-
-
-
   }
 
   resendOTP(): void {

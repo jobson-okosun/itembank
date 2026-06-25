@@ -357,6 +357,7 @@
                               <div class="mb-2">
                                 <label for="center" class="small">Type</label>
                                 <select #select class="form-select form-select w-100" name="type">
+                                  <option value="EVENTS">EVENTS</option>
                                   <option value="ATTENDANCE">ATTENDANCE</option>
                                   <!-- <option value="STATUS">STATUS</option> -->
                                   <option value="DURATION">DURATION</option>
@@ -364,7 +365,7 @@
                                   <option value="BIOMETRICS">BIOMETRICS</option>
                                   <option value="RESCHEDULE">RESCHEDULE</option>
                                   <option value="MALPRACTICE">MALPRACTICE</option>
-                                  <option value="EVENTS">EVENTS</option>
+                                  
                                   <option value="ALL">ALL</option>
                                 </select>
                               </div>
@@ -376,9 +377,9 @@
                             <div class="dropdown-divider"></div>
                             <div class="px-3 pb-2 d-flex gap-1">
                               <button type="button" (click)="
-                                  select.value = 'ATTENDANCE'; 
+                                  select.value = 'EVENTS'; 
                                   participantSummaryParams.center_id = '';
-                                  applyParticipantsSummaryFilter('ATTENDANCE');
+                                  applyParticipantsSummaryFilter('EVENTS');
                                   summaryDrop.close()" 
                                   
                                   class="btn btn-secondary w-100">
