@@ -51,6 +51,7 @@ export class CenterComponent implements OnInit {
   constructor(private monitorService: MonitorService) { }
 
   ngOnInit(): void {
+    window.scrollTo(0, 0);
     this._DoughnutChart();
     this.fetchNotificationsFromBackend();
   }
