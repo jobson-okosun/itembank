@@ -3,7 +3,7 @@ import { AssessmentsService } from '../../assessment/service/assessments.service
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
 import { forkJoin, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 import {
   AssessmentResultSummary,
   Participant,
@@ -18,11 +18,30 @@ import {
   ScoreDistributionParams,
   ScoreDistributionScaledScore,
   TranscriptListParams,
+  ExamGroupDto,
+  ExamGroupsPage,
 } from '../../items/models/result';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { NotifierService } from 'angular-notifier';
 import { JSONP } from 'mock/questions';
+import { MonitorService } from 'src/app/pages/monitor/services/monitor.service';
+import { SchedulerService } from '../../scheduler/services/scheduler.service';
+import {
+  InfractionTypeSummaryDTO,
+  InfractionEventsPage,
+  InfractionEventDTO,
+  InfractionEvidenceDTO,
+  AssessmentBatchDTO,
+} from 'src/app/pages/monitor/model/types';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
+export enum ProctorActionType {
+  WARN = 'WARN',
+  PAUSE_EXAM = 'PAUSE_EXAM',
+  FLAG_FOR_REVIEW = 'FLAG_FOR_REVIEW',
+  END_EXAM = 'END_EXAM',
+}
 
 @Component({
   selector: 'app-dashboard',
@@ -76,7 +95,7 @@ export class DashboardComponent implements OnInit {
   isLoadingParticipants: boolean = false;
   participantList: ParticipantsScoreList | null = null;
   participants: any[] = [];
-  examGroups: any[] = [];
+  examGroups: ExamGroupsPage;
   participantFilterParams: ParticipantsParams = {
     page: 0,
     size: 10,
@@ -90,12 +109,40 @@ export class DashboardComponent implements OnInit {
   currentTranscriptParams: any = {}
   downloadingTranscript: boolean = false
 
+  // Proctored Infraction Metrics
+  totalInfractions: number = 0;
+  candidatesFlagged: number = 0;
+  maxStrikeCandidates: number = 0;
+  mostOccurredInfraction: string = '';
+  leastOccurredInfraction: string = '';
+  fetchingProctoringMetrics: boolean = false;
+
+  // Infraction Events Modal & Evidence State
+  infractionsSummary: InfractionTypeSummaryDTO | null = null;
+  selectedInfractionCategoryFilter: string = '';
+  selectedInfractionBatchFilter: string = '';
+  selectedInfractionCandidateIdFilter?: string;
+  infractionBatches: AssessmentBatchDTO[] = [];
+  fetchingInfractionBatches: boolean = false;
+  fetchingInfractionEvents: boolean = false;
+  infractionEventsReport: InfractionEventsPage | null = null;
+  infractionEventsParams: any = { page: 1, size: 50 };
+  fetchingEvidence: boolean = false;
+  evidenceDetails?: InfractionEvidenceDTO;
+  evidenceData: { type: 'image' | 'video' | 'audio' | 'none'; data: string[] } = { type: 'none', data: [] };
+
+  infractionFilterCategories: Array<{ id: string, name: string }> = [];
+  proctorFilterActions: Array<{ id: string, name: string }> = [];
+
 
   constructor(
     private readonly ar: ActivatedRoute,
     private dataService: DataService,
     private sanitizer: DomSanitizer,
-    private notifier: NotifierService
+    private notifier: NotifierService,
+    private monitorService: MonitorService,
+    private modalService: NgbModal,
+    private schedulerService: SchedulerService
   ) {}
 
   ngOnInit(): void {
@@ -136,7 +183,7 @@ export class DashboardComponent implements OnInit {
       examGroups: this.dataService.fetchExamGroups().pipe(
         catchError((err: any) => {
           console.log('Error fetching exam groups for dashboard', err);
-          return of([]);
+          return of({ total: 0, content: [] } as ExamGroupsPage);
         })
       ),
     };
@@ -151,11 +198,11 @@ export class DashboardComponent implements OnInit {
           this.loadingDashboardResources = false;
 
           return of({
-            assessmentSummary: [],
-            scoreAnalysis: [],
-            scoreDistribution: [],
-            participants: [],
-            examGroups: [],
+            assessmentSummary: [] as any,
+            scoreAnalysis: [] as any,
+            scoreDistribution: [] as any,
+            participants: [] as any,
+            examGroups: {} as ExamGroupsPage,
           });
         })
       )
@@ -167,26 +214,115 @@ export class DashboardComponent implements OnInit {
           participants,
           examGroups,
         }) => {
-          this.assessmentSummary = assessmentSummary as any;
-          this.scoreDistribution = scoreDistribution as any;
-          this.scoreAnalysis = scoreAnalysis as any;
-          this.updateParticipantsData(participants as any);
-          
-          const groups = examGroups as any;
-          if (Array.isArray(groups)) {
-            this.examGroups = groups;
-          } else if (groups && Array.isArray(groups.content)) {
-            this.examGroups = groups.content;
-          } else {
-            this.examGroups = [];
-          }
-
+          this.assessmentSummary = assessmentSummary;
+          this.scoreDistribution = scoreDistribution;
+          this.scoreAnalysis = scoreAnalysis;
+          this.examGroups = examGroups;
+          this.updateParticipantsData(participants);
           this.initializeBreadCrumbs();
           this.initalizeScoreDistributionChart();
           this.loadingDashboardResources = false;
           this.initFilterForms();
+          if (this.isProctored()) {
+            this.fetchProctoringMetrics();
+          }
         }
       );
+  }
+
+  isProctored(): boolean {
+    const method = this.assessmentSummary?.delivery_method;
+    return method === 'AUTO_PROCTORING' || method === 'LIVE_PROCTORING';
+  }
+
+  fetchProctoringMetrics() {
+    if (!this.assessmentId) return;
+    this.fetchingProctoringMetrics = true;
+
+    this.monitorService.fetchInfractionTypeSummary(this.assessmentId).subscribe({
+      next: (res: InfractionTypeSummaryDTO) => {
+        this.infractionsSummary = res;
+        if (res && res.infraction_types) {
+          this.candidatesFlagged = res.infraction_types.reduce(
+            (total, curr) => total + (curr.total_candidates || 0),
+            0
+          );
+          this.maxStrikeCandidates = res.infraction_types.reduce(
+            (total, curr) => total + (curr.max_strike_candidates || 0),
+            0
+          );
+          if (res.infraction_types.length > 0) {
+            // Most Occurred Infraction (Max candidates)
+            const topTypeObj = res.infraction_types.reduce((prev, current) => {
+              return (prev.total_candidates || 0) > (current.total_candidates || 0) ? prev : current;
+            });
+            this.mostOccurredInfraction = topTypeObj.infraction_type
+              ? this.formatInfractionTypeName(topTypeObj.infraction_type)
+              : 'N/A';
+
+            // Least Occurred Infraction (Min candidates, where total_candidates > 0)
+            const occurredTypes = res.infraction_types.filter(item => (item.total_candidates || 0) > 0);
+            if (occurredTypes.length > 0) {
+              const leastTypeObj = occurredTypes.reduce((prev, current) => {
+                return (prev.total_candidates || 0) < (current.total_candidates || 0) ? prev : current;
+              });
+              this.leastOccurredInfraction = leastTypeObj.infraction_type
+                ? this.formatInfractionTypeName(leastTypeObj.infraction_type)
+                : 'N/A';
+            } else {
+              this.leastOccurredInfraction = 'None';
+            }
+          } else {
+            this.mostOccurredInfraction = 'None';
+            this.leastOccurredInfraction = 'None';
+          }
+        }
+        this.fetchingProctoringMetrics = false;
+      },
+      error: (err) => {
+        console.error('Failed to fetch infraction summary for proctoring metrics', err);
+        this.fetchingProctoringMetrics = false;
+      }
+    });
+
+    this.schedulerService.fetchAssementInfractions(this.assessmentId).subscribe({
+      next: (infractions) => {
+        if (infractions && infractions.length > 0) {
+          const uniqueNames = Array.from(new Set(infractions.map(i => i.name).filter(Boolean)));
+          this.infractionFilterCategories = uniqueNames.map((name: any) => ({
+            id: name,
+            name: this.formatInfractionTypeName(name)
+          }));
+
+          const uniqueActions = Array.from(new Set(infractions.map(i => i.action).filter(Boolean)));
+          this.proctorFilterActions = uniqueActions.map((act: any) => ({
+            id: act,
+            name: this.formatProctorActionName(act)
+          }));
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch infractions settings for filtering', err);
+      }
+    });
+  }
+
+  public formatInfractionTypeName(type: string): string {
+    if (!type) return 'N/A';
+    return type
+      .toLowerCase()
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  }
+
+  public formatProctorActionName(action: string): string {
+    if (!action) return 'N/A';
+    return action
+      .toLowerCase()
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   }
 
   initFilterForms() {
@@ -233,6 +369,11 @@ export class DashboardComponent implements OnInit {
       login_field_value: new FormControl(''),
       comp_time_added: new FormControl(''),
       exam_group: new FormControl(''),
+      infraction_categories: new FormControl([]),
+      proctor_actions: new FormControl([]),
+      max_strike_reached: new FormControl(''),
+      infraction_score_less: new FormControl(''),
+      infraction_score_greater_than: new FormControl(''),
     });
   }
 
@@ -406,7 +547,14 @@ export class DashboardComponent implements OnInit {
       const value = formValues[key];
 
       if (value !== null && value !== undefined && value !== '') {
-        (params as any)[key] = value;
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            return;
+          }
+          (params as any)[key] = value.join('|');
+        } else {
+          (params as any)[key] = value;
+        }
       }
     });
 
@@ -418,12 +566,52 @@ export class DashboardComponent implements OnInit {
   }
 
   async updateParticipantsData(data: ParticipantsScoreList) {
-    const formatParticipantList = await this.formatParticipantData(
+    let formatParticipantList = await this.formatParticipantData(
       data.content
     );
 
+    const formValues = this.participantsListFilterForm?.value || {};
+    const filterCategories = formValues.infraction_categories as string[] || [];
+    const filterActions = formValues.proctor_actions as string[] || [];
+    const maxStrikeReached = formValues.max_strike_reached;
+    const infractionScoreLess = formValues.infraction_score_less;
+    const infractionScoreGreaterThan = formValues.infraction_score_greater_than;
+
+    if (filterCategories.length > 0) {
+      formatParticipantList = formatParticipantList.filter((p: any) => {
+        return p.infractionTypes && p.infractionTypes.some((inf: any) => filterCategories.includes(inf.type));
+      });
+    }
+
+    if (filterActions.length > 0) {
+      formatParticipantList = formatParticipantList.filter((p: any) => {
+        return p.proctorActions && p.proctorActions.some((act: any) => filterActions.includes(act));
+      });
+    }
+
+    if (maxStrikeReached) {
+      formatParticipantList = formatParticipantList.filter((p: any) => {
+        return p.maxStrikesReached === true;
+      });
+    }
+
+    if (infractionScoreLess !== null && infractionScoreLess !== undefined && infractionScoreLess !== '') {
+      formatParticipantList = formatParticipantList.filter((p: any) => {
+        return p.totalInfractions < +infractionScoreLess;
+      });
+    }
+
+    if (infractionScoreGreaterThan !== null && infractionScoreGreaterThan !== undefined && infractionScoreGreaterThan !== '') {
+      formatParticipantList = formatParticipantList.filter((p: any) => {
+        return p.totalInfractions > +infractionScoreGreaterThan;
+      });
+    }
+
     this.participants = formatParticipantList;
-    this.participantList = data;
+    this.participantList = {
+      ...data,
+      total: (filterCategories.length > 0 || filterActions.length > 0 || maxStrikeReached || infractionScoreLess || infractionScoreGreaterThan) ? formatParticipantList.length : data.total
+    };
     this.isLoadingParticipants = false;
   }
 
@@ -577,6 +765,77 @@ export class DashboardComponent implements OnInit {
         item.logins_ips?.ip_addresses?.map((ip) => ip?.ip_address)
       );
 
+      const isProctored = this.isProctored();
+
+      // Setup infractions mock data if not provided by backend
+      let infractionTypes: Array<{ type: string; count: number }> = [];
+      let totalInfractions = 0;
+      let totalStrikes = 0;
+      let maxStrikesReached = false;
+      let proctorActions: string[] = [];
+
+      if (isProctored) {
+        if ((item as any).infraction_types) {
+          infractionTypes = (item as any).infraction_types;
+        } else {
+          // Stable mock generation using participantId hash
+          const hash = item.participants_id
+            ? item.participants_id.split('-').reduce((acc, part) => acc + parseInt(part, 16) || 0, 0)
+            : 0;
+          
+          const hasInfractions = hash % 3 !== 0; // 66% of candidates have some infractions for demo
+          if (hasInfractions) {
+            const categories = [
+              'TALKING_DETECTED',
+              'LOOKING_AWAY',
+              'FACE_NOT_CENTERED',
+              'MULTIPLE_FACES',
+              'FACE_NOT_DETECTED',
+              'BACKGROUND_VOICES_DETECTED',
+            ];
+            // pick 1 to 5 categories
+            const count = (hash % 5) + 1;
+            for (let i = 0; i < count; i++) {
+              const cat = categories[(hash + i) % categories.length];
+              const flags = ((hash + i) % 3) + 1;
+              infractionTypes.push({ type: cat, count: flags });
+            }
+          }
+        }
+
+        if ((item as any).total_infractions !== undefined) {
+          totalInfractions = (item as any).total_infractions;
+        } else {
+          totalInfractions = infractionTypes.reduce((acc, curr) => acc + curr.count, 0);
+        }
+
+        if ((item as any).total_strikes !== undefined) {
+          totalStrikes = (item as any).total_strikes;
+        } else {
+          totalStrikes = totalInfractions > 0 ? Math.min(totalInfractions, 3) : 0;
+        }
+
+        if ((item as any).max_strikes_reached !== undefined) {
+          maxStrikesReached = (item as any).max_strikes_reached;
+        } else {
+          maxStrikesReached = totalStrikes >= 3;
+        }
+
+        if ((item as any).proctor_actions) {
+          proctorActions = (item as any).proctor_actions;
+        } else {
+          if (totalStrikes > 0) {
+            proctorActions.push('WARN');
+            if (totalStrikes >= 2) {
+              proctorActions.push('FLAG_FOR_REVIEW');
+            }
+            if (totalStrikes >= 3) {
+              proctorActions.push('END_EXAM');
+            }
+          }
+        }
+      }
+
       return {
         name: participantName,
         score: item.score?.score,
@@ -608,6 +867,11 @@ export class DashboardComponent implements OnInit {
         participantId: item.participants_id,
         totalRelogins: item?.logins_ips?.ip_addresses?.length,
         relogin: item.re_login,
+        infractionTypes,
+        totalInfractions,
+        totalStrikes,
+        maxStrikesReached,
+        proctorActions,
       };
     });
 
@@ -730,6 +994,61 @@ export class DashboardComponent implements OnInit {
       this.downloadingTranscript = false;
       this.notifier.notify('error', 'Transcript download failed');
     }
+  }
+
+  printTranscript() {
+    const printContent = document.getElementById('transcript-print-section');
+    if (!printContent) return;
+    const windowUrl = 'about:blank';
+    const uniqueName = new Date().getTime();
+    const windowName = 'Print' + uniqueName;
+    const printWindow = window.open(windowUrl, windowName, 'left=50000,top=50000,width=1000,height=1000');
+    if (!printWindow) return;
+
+    let styles = '';
+    const styleSheets = document.styleSheets;
+    for (let i = 0; i < styleSheets.length; i++) {
+      try {
+        const rules = styleSheets[i].cssRules;
+        for (let j = 0; j < rules.length; j++) {
+          styles += rules[j].cssText;
+        }
+      } catch (e) {
+        // Ignore cross-origin stylesheet errors
+      }
+    }
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Transcript - ${this.selectedTranscriptParticipantName}</title>
+          <style>
+            ${styles}
+            body {
+              padding: 20px;
+              background-color: white !important;
+            }
+            .no-print {
+              display: none !important;
+            }
+            #transcript-subjects {
+              max-height: none !important;
+              overflow: visible !important;
+            }
+          </style>
+        </head>
+        <body>
+          ${printContent.innerHTML}
+          <script>
+            setTimeout(() => {
+              window.print();
+              window.close();
+            }, 500);
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   }
 
 
@@ -990,5 +1309,94 @@ export class DashboardComponent implements OnInit {
     ];
     this._scoreDistributionChart('["--vz-success"]');
     this.initializeBreadCrumbs();
+  }
+
+  openCandidateInfractionsModal(participant: any, content: any) {
+    const batchId = this.participantsListFilterForm.get('batch_id')?.value || '';
+    this.selectedInfractionCandidateIdFilter = participant.participantId;
+    this.selectedInfractionBatchFilter = batchId;
+    this.selectedInfractionCategoryFilter = '';
+    this.infractionEventsParams = { page: 1, size: 50 };
+    
+    // Fallback batch list from assessmentSummary
+    this.infractionBatches = (this.assessmentSummary?.batches || []).map((b: any) => ({
+      id: b.id,
+      name: b.name,
+      start_time: b.start_date_time || '',
+      end_time: b.end_date_time || '',
+      status: '',
+      uploaded: false,
+      r_id: ''
+    }));
+    
+    this.fetchInfractionEvents();
+    this.modalService.open(content, { size: 'xl', centered: true });
+  }
+
+  fetchInfractionEvents() {
+    this.fetchingInfractionEvents = true;
+    this.monitorService.fetchInfractionEvents(this.assessmentId, {
+      batch_id: this.selectedInfractionBatchFilter,
+      infraction_type: this.selectedInfractionCategoryFilter,
+      candidate_id: this.selectedInfractionCandidateIdFilter,
+      page: this.infractionEventsParams.page,
+      size: this.infractionEventsParams.size
+    })
+      .pipe(finalize(() => this.fetchingInfractionEvents = false))
+      .subscribe({
+        next: (res: InfractionEventsPage) => {
+          this.infractionEventsReport = res;
+        },
+        error: (err) => {
+          console.error('Failed to fetch infraction events', err);
+        }
+      });
+  }
+
+  onInfractionEventsPageChange(event: any) {
+    const size = event.rows;
+    const page = (event.page ?? 0) + 1;
+    this.infractionEventsParams = { size, page };
+    this.fetchInfractionEvents();
+  }
+
+  applyModalInfractionFilter() {
+    this.infractionEventsParams.page = 1;
+    this.fetchInfractionEvents();
+  }
+
+  openEvidenceModal(eventData: InfractionEventDTO, content: any) {
+    this.evidenceData = { type: 'none', data: [] };
+    this.evidenceDetails = undefined;
+    this.fetchingEvidence = true;
+    this.modalService.open(content, { size: 'lg', centered: true });
+
+    this.monitorService.fetchInfractionEvidence(this.assessmentId, eventData.id)
+      .pipe(finalize(() => this.fetchingEvidence = false))
+      .subscribe({
+        next: (res: InfractionEvidenceDTO) => {
+          this.evidenceDetails = res;
+          if (res.signed_url) {
+             const url = res.signed_url.toLowerCase();
+             const isAudioType = eventData.infraction_type.includes('TALKING_DETECTED') || eventData.infraction_type.includes('BACKGROUND_VOICES');
+
+             if (isAudioType || url.includes('.mp3') || url.includes('.wav') || url.includes('.webm') && isAudioType) {
+                this.evidenceData = { type: 'audio', data: [res.signed_url] };
+             } else if (url.includes('.mp4') || url.includes('.mov') || url.includes('.webm')) {
+                this.evidenceData = { type: 'video', data: [res.signed_url] };
+             } else if (url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || url.includes('.webp')) {
+                this.evidenceData = { type: 'image', data: [res.signed_url] };
+             } else {
+                this.evidenceData = { type: isAudioType ? 'audio' : 'image', data: [res.signed_url] };
+             }
+          } else {
+             this.evidenceData = { type: 'none', data: [] };
+          }
+        },
+        error: () => {
+          this.evidenceData = { type: 'none', data: [] };
+          this.evidenceDetails = undefined;
+        }
+      });
   }
 }

@@ -71,7 +71,7 @@
                       <label for="examGroup" class="small">Exam Group</label>
                       <select formControlName="exam_group" class="form-control control-input">
                         <option value="">-- Select group --</option>
-                        <option *ngFor="let item of examGroups" [value]="item.id">
+                        <option *ngFor="let item of examGroups?.content" [value]="item.id">
                           {{ item.name }}
                         </option>
                       </select>
@@ -265,6 +265,207 @@
             </div>
           </div>
         </div>
+
+        <!-- Proctoring Infractions Cards -->
+        <!-- - `[x]` Define `formatProctorActionName` helper and make `formatInfractionTypeName` public in `dashboard.component.ts`
+- `[x]` Add conditional table headers for Infraction Types, Total Infractions, Total Strikes, Max Strikes Reached, and Proctor Actions in `dashboard.component.html`
+- `[x]` Add corresponding conditional table cells displaying infractions details with `+N` popover overflow badges in `dashboard.component.html`
+- `[x]` Inject NgbModal service and import finalize operator and proctoring model types in `dashboard.component.ts`
+- `[x]` Store infraction summary response in `infractionsSummary` inside `fetchProctoringMetrics` to enable modal category filter selection
+- `[x]` Implement `openCandidateInfractionsModal`, `fetchInfractionEvents`, `onInfractionEventsPageChange`, `applyModalInfractionFilter`, and `openEvidenceModal` inside `dashboard.component.ts`
+- `[x]` Add "View infractions" row action dropdown item in `dashboard.component.html`
+- `[x]` Append `#infractionEventsModal` and `#evidenceViewerModal` templates in `dashboard.component.html`
+- `[x]` Verify successful compilation and layout render -->
+        <ng-container *ngIf="isProctored()">
+          <!-- Candidates Flagged -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
+                    <i class="ri-user-unfollow-fill text-warning"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14 text-nowrap">
+                    Candidates Flagged<br />
+                    <span class="fs-14 fw-bold">
+                      {{ candidatesFlagged }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Total Infractions -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
+                    <i class="ri-error-warning-fill text-info"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14 text-nowrap">
+                    Total Infractions<br />
+                    <span class="fs-14 fw-bold">
+                      {{ 0 }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Max Strikes Reached -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
+                    <i class="ri-alarm-warning-fill text-danger"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14 text-nowrap">
+                    Max Strikes Reached<br />
+                    <span class="fs-14 fw-bold">
+                      {{ maxStrikeCandidates }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Most Occurred Infraction -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-secondary rounded-2 fs-4">
+                    <i class="ri-spam-2-fill text-secondary"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14 text-nowrap text-nowrap">
+                    Most Occurred Infraction<br />
+                    <span class="fs-14 fw-bold text-truncate d-block" [title]="mostOccurredInfraction">
+                      {{ mostOccurredInfraction }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Least Occurred Infraction -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-success rounded-2 fs-4">
+                    <i class="ri-shield-check-fill text-success"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14 text-nowrap">
+                    Least Occurred Infraction<br />
+                    <span class="fs-14 fw-bold text-truncate d-block" [title]="leastOccurredInfraction">
+                      {{ leastOccurredInfraction }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Candidates Warned -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
+                    <i class="ri-alert-fill text-warning"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Candidates Warned<br />
+                    <span class="fs-14 fw-bold">
+                      {{ 0 }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exams Paused -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
+                    <i class="ri-pause-circle-fill text-info"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Exams Paused<br />
+                    <span class="fs-14 fw-bold">
+                      {{ 0 }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Flagged for Review -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-primary rounded-2 fs-4">
+                    <i class="ri-flag-fill text-primary"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Flagged for Review<br />
+                    <span class="fs-14 fw-bold">
+                      {{ 0 }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exams Ended -->
+          <div class="col-lg-3 col-md-3 col-sm-12">
+            <div class="card">
+              <div class="d-flex p-2 align-items-center">
+                <div class="me-3 flex-shrink-0">
+                  <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
+                    <i class="ri-stop-circle-fill text-danger"></i>
+                  </span>
+                </div>
+                <div class="flex-grow-1 overflow-hidden">
+                  <span class="fs-14">
+                    Exams Ended<br />
+                    <span class="fs-14 fw-bold">
+                      {{ 0 }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -323,7 +524,7 @@
                     <label for="examGroup" class="small">Exam Group</label>
                     <select formControlName="exam_group" class="form-control control-input">
                       <option value="">-- Select group --</option>
-                      <option *ngFor="let item of examGroups" [value]="item.id">
+                      <option *ngFor="let item of examGroups?.content" [value]="item.id">
                         {{ item.name }}
                       </option>
                     </select>
@@ -536,7 +737,7 @@
                   <label for="examGroup" class="small">Exam Group</label>
                   <select formControlName="exam_group" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups" [value]="item.id">
+                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -576,7 +777,7 @@
         </button>
           <button *ngIf="transcriptData && !downloadingTranscript" type="button" (click)="downloadTranscript()" rel="noopener"  title="Download Transcript" type="button" class="btn border rounded-circle p-1 d-flex align-items-center justify-content-center" style="width: 30px; height: 30px;">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linejoin="round" stroke-width="2" d="M16.444 18H19a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h2.556M17 11V5a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v6h10ZM7 15h10v4a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-4Z"/>
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01"/>
               </svg>
           </button>
 
@@ -621,7 +822,7 @@
                   <label for="examGroup" class="small">Exam Group</label>
                   <select formControlName="exam_group" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups" [value]="item.id">
+                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -710,7 +911,7 @@
       </div>
 
       <!-- section questions -->
-      <div *ngIf="showTranscriptQuestion" class="col-6 border rounded" >
+      <div *ngIf="showTranscriptQuestion" class="col-6 border rounded" id="transcript-print-section">
 
 
         <!-- <div *ngIf="isViewingTranscript" class="text-center text-secondary p-3">
@@ -732,7 +933,7 @@
             <div><b>{{ selectedTranscriptSection }}</b></div>
           </div>
           
-          <div class="d-flex gap-2 align-items-center">
+          <div class="d-flex gap-2 align-items-center no-print">
             <ng-container *ngIf="transcriptMode === 'ONE'">
               <button [disabled]="isPreviousDisabled()"
                 class="btn p-2 bg-transparent border small d-flex align-items-center gap-2"
@@ -753,6 +954,7 @@
               <div ngbDropdownMenu class="border shadow-sm">
                 <button *ngIf="transcriptMode === 'ONE'" ngbDropdownItem type="button" (click)="transcriptMode = 'ALL'">Show all questions</button>
                 <button *ngIf="transcriptMode !== 'ONE'" ngbDropdownItem type="button" (click)="transcriptMode = 'ONE'">Show one question</button>
+                <button ngbDropdownItem type="button" (click)="printTranscript()">Print Transcript</button>
               </div>
             </div>
           </div>
@@ -918,13 +1120,13 @@
             ngbDropdownToggle>
             <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
           </a>
-          <div ngbDropdownMenu style="min-width: 400px; overflow: hidden; z-index: 99999" class="border shadow-sm">
+          <div ngbDropdownMenu style="min-width: 750px; overflow: visible; z-index: 99999" class="border shadow-sm">
             <div class="px-3 py-2 small text-black">Filter Participants</div>
             <div class="dropdown-divider"></div>
 
             <form [formGroup]="participantsListFilterForm" class="px-3 py-1">
               <div class="row mb-2">
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="center" class="small">Center</label>
                   <select formControlName="center_id" class="form-control control-input">
                     <option value="">--Select center --</option>
@@ -933,7 +1135,7 @@
                     </option>
                   </select>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="batch" class="small">Batch</label>
                   <select formControlName="batch_id" class="form-control control-input">
                     <option value="">-- Select batch --</option>
@@ -942,7 +1144,7 @@
                     </option>
                   </select>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="status" class="small">Status</label>
                   <select formControlName="status" class="form-control control-input">
                     <option value="">-- Select status --</option>
@@ -951,69 +1153,130 @@
                     </option>
                   </select>
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="login_field_value" class="small">Login field</label>
                   <input formControlName="login_field_value" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="score_scaled_greater_than" class="small">Score(%) greater than</label>
                   <input formControlName="score_scaled_greater_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="score_scaled_less_than" class="small">Score(%) lesser than</label>
                   <input formControlName="score_scaled_less_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="attempts_greater_than" class="small">Questions attempted greater than</label>
                   <input formControlName="attempts_greater_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="attempts_less_than" class="small">Questions attempted lesser than</label>
                   <input formControlName="attempts_less_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label  for="duration_greater_than" class="small">Assessment Duration greater than</label>
                   <input formControlName="duration_greater_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="duration_less_than" class="small">Assessment Duration lesser than</label>
                   <input formControlName="duration_less_than" type="number" class="form-control control-input" />
                 </div>
-                <div class="col-lg-6 mb-2">
+                <div class="col-lg-4 mb-2">
                   <label for="exam_group" class="small">Exam Group</label>
                   <select formControlName="exam_group" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups" [value]="item.id">
+                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
                 </div>
+                <div class="col-lg-4 mb-2" *ngIf="isProctored()">
+                  <label class="small text-nowrap">Infraction Categories</label>
+                  <ng-select
+                    [items]="infractionFilterCategories"
+                    [multiple]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="infraction_categories"
+                    placeholder="Select categories"
+                    class="control-input"
+                  >
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                      <ng-container *ngIf="items.length <= 2">
+                        <div class="ng-value" *ngFor="let item of items">
+                          <span class="ng-value-label">{{item.name}}</span>
+                          <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+                        </div>
+                      </ng-container>
+                      <div class="ng-value" *ngIf="items.length > 2">
+                        <span class="ng-value-label font-weight-bold">{{items.length}} items selected</span>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="col-lg-4 mb-2" *ngIf="isProctored()">
+                  <label class="small text-nowrap">Proctor Actions</label>
+                  <ng-select
+                    [items]="proctorFilterActions"
+                    [multiple]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="proctor_actions"
+                    placeholder="Select actions"
+                    class="control-input"
+                  >
+                    <ng-template ng-multi-label-tmp let-items="items" let-clear="clear">
+                      <ng-container *ngIf="items.length <= 2">
+                        <div class="ng-value" *ngFor="let item of items">
+                          <span class="ng-value-label">{{item.name}}</span>
+                          <span class="ng-value-icon right" (click)="clear(item)" aria-hidden="true">×</span>
+                        </div>
+                      </ng-container>
+                      <div class="ng-value" *ngIf="items.length > 2">
+                        <span class="ng-value-label font-weight-bold">{{items.length}} items selected</span>
+                      </div>
+                    </ng-template>
+                  </ng-select>
+                </div>
+                <div class="col-lg-4 mb-2" *ngIf="isProctored()">
+                  <label for="infraction_score_greater_than" class="small">Infraction score greater than</label>
+                  <input formControlName="infraction_score_greater_than" type="number" class="form-control control-input" />
+                </div>
+                <div class="col-lg-4 mb-2" *ngIf="isProctored()">
+                  <label for="infraction_score_less" class="small">Infraction score lesser than</label>
+                  <input formControlName="infraction_score_less" type="number" class="form-control control-input" />
+                </div>
               </div>
 
-              <div class="mb-2 d-flex flex-column gap-y-2">
-                <div class="form-check">
+              <div class="mb-3 d-flex flex-row flex-wrap gap-3 py-2 border-top border-bottom">
+                <div class="form-check col-auto">
                   <label class="form-check-label">
                     <input formControlName="present" type="checkbox" class="form-check-input" value="" />Present
                   </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check col-auto">
                   <label class="form-check-label">
                     <input formControlName="re_login" type="checkbox" class="form-check-input" value="" />Relogin
                   </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check col-auto">
                   <label class="form-check-label">
                     <input formControlName="time_out" type="checkbox" class="form-check-input" value="" />Timed Out
                   </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check col-auto">
                   <label class="form-check-label">
                     <input formControlName="suspended_" type="checkbox" class="form-check-input" value="" />Suspended
                   </label>
                 </div>
-                <div class="form-check">
+                <div class="form-check col-auto">
                   <label class="form-check-label">
-                    <input formControlName="comp_time_added" type="checkbox" class="form-check-input" value="" />Compasatory Time Added
+                    <input formControlName="comp_time_added" type="checkbox" class="form-check-input" value="" />Compensatory Time Added
+                  </label>
+                </div>
+                <div class="form-check col-auto" *ngIf="isProctored()">
+                  <label class="form-check-label">
+                    <input formControlName="max_strike_reached" type="checkbox" class="form-check-input" value="" />Max Strike Reached
                   </label>
                 </div>
               </div>
@@ -1043,26 +1306,32 @@
 
     <div>
       <div *ngIf="participantList && !isLoadingParticipants">
-        <p-table  #dt [value]="participants" dataKpy="id" responsiveLayout="scroll">
+        <p-table  #dt [value]="participants" dataKpy="id" responsiveLayout="scroll" [scrollable]="true">
           <ng-template pTemplate="header">
             <tr class="small">
-              <th pFrozenColumn pSortableColumn="name" style="min-width: 300px" class="small">
+              <th pFrozenColumn pSortableColumn="name" style="min-width: 250px" class="small">
                 Information<p-sortIcon field="name"></p-sortIcon>
                 <p-columnFilter type="text" field="name" display="menu"></p-columnFilter>
               </th>
               <th pFrozenColumn style="min-width: 200px">Score</th>
-              <th pFrozenColumn style="min-width: 200px">Sections</th>
-              <th>Duration&nbsp;</th>
-              <th pFrozenColumn>&nbsp;Timed&nbsp;Out</th>
-              <th pFrozenColumn>Comp.&nbsp;Time</th>
+              <th style="min-width: 200px">Sections</th>
+              <th style="min-width: 200px;">Duration</th>
+              <th>&nbsp;Timed&nbsp;Out</th>
+              <th>Comp.&nbsp;Time</th>
               <th>System&nbsp;Swap</th>
               <th>Login&nbsp;Ips</th>
+              <th *ngIf="isProctored()" style="min-width: 180px" class="text-nowrap">Infraction Types</th>
+              <th *ngIf="isProctored()" style="min-width: 120px" class="text-nowrap">Total Infractions</th>
+              <th *ngIf="isProctored()" style="min-width: 100px" class="text-nowrap">Total Strikes</th>
+              <th *ngIf="isProctored()" style="min-width: 140px" class="text-nowrap">Max Strikes Reached</th>
+              <th *ngIf="isProctored()" style="min-width: 120px" class="text-nowrap">Infraction Score</th>
+              <th *ngIf="isProctored()" style="min-width: 180px" class="text-nowrap">Proctor Actions</th>
               <th style="min-width: 100px">Actions</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-participant>
             <tr class="smaller"> 
-              <td pFrozenColumn style="min-width: 300px">
+              <td pFrozenColumn style="min-width: 250px">
                 <div class="d-flex flex-column">
                   <div class="text-black">{{ participant.name | titlecase }}</div>
                   <div  style="font-size: 11px">{{ participant.loginField }}: {{ participant.loginFieldValue}} </div>
@@ -1112,7 +1381,7 @@
                     </div>
                   </div>
               </td>
-              <td pFrozenColumn style="min-width: 200px">
+              <td style="min-width: 200px">
                   <div>
                     <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-2">
                       <div triggers="mouseenter:mouseleave" [ngbPopover]="SectionPopOver" popoverTitle="Section: {{ section.section_name }}"  *ngFor="let section of participant.sectionItems" class="rounded border smaller tag" style="padding: 1px 4px">
@@ -1150,21 +1419,30 @@
                     </div>
                   </div>
               </td>
-              <td>
-                <span triggers="mouseenter:mouseleave" class="badge badge-soft-primary fs-12" style="cursor: pointer"
-                  [ngbPopover]="timerPopOver" popoverTitle="Start to Finish">
-                  {{ participant.duration }}
-                </span>
-                <ng-template #timerPopOver>
-                  <div class="d-flex justify-content-between">
-                    <span class="badge badge-soft-success fs-10">{{
-                      participant.startTime
-                      }}</span>
-                    <span class="badge badge-soft-danger fs-10">{{
-                      participant.endTime
-                      }}</span>
+              <td style="min-width: 200px; max-width: 200px;">
+                <div class="d-flex flex-column" style="gap: 3px; font-size: 10.5px; line-height: 1.2;">
+                  <!-- Duration -->
+                  <div class="d-flex align-items-center" style="gap: 4px;">
+                    <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-primary" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 14px;">
+                      <i class="ri-history-line"></i>
+                    </span>
+                    <span class="fw-semibold text-dark">{{ participant.duration }}</span>
                   </div>
-                </ng-template>
+                  <!-- Start Time -->
+                  <div class="d-flex align-items-center" style="gap: 4px;">
+                    <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-success" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
+                      <i class="ri-play-fill"></i>
+                    </span>
+                    <span style="font-size: 14px;">{{ participant.startTime }}</span>
+                  </div>
+                  <!-- End Time -->
+                  <div class="d-flex align-items-center" style="gap: 4px;">
+                    <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-danger" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
+                      <i class="ri-stop-fill"></i>
+                    </span>
+                    <span  style="font-size: 14px;">{{ participant.endTime }}</span>
+                  </div>
+                </div>
               </td>
               <td>
                 <span [ngClass]="{'text-danger': participant.timeout == 'YES', 'text-success': participant.timeout == 'NO'}">{{ participant.timeout }}</span>
@@ -1177,8 +1455,17 @@
                 <span>{{ participant.computerSwaped }} &nbsp;<span *ngIf="participant.systemSwaps > 1" class="badge bg-secondary">{{ participant.systemSwaps }} Times </span></span>
               </td>
               <td>
-                <div *ngIf="participant?.loginIps" triggers="mouseenter:mouseleave" [ngbPopover]="loginIPPopOver" popoverTitle="Login IP Addresses"  > {{ participant?.loginIps[0]?.ip_address }} </div>
-                <div *ngIf="participant.relogin" class="smaller bg-soft-danger badge text-danger" style="font-size: 10px;">Relogins: {{ participant.totalRelogins }}</div>
+                <div *ngIf="participant?.loginIps" triggers="mouseenter:mouseleave" [ngbPopover]="loginIPPopOver" popoverTitle="Login IP Addresses" class="d-flex flex-column" style="gap: 3px; font-size: 11px; line-height: 1.2; cursor: pointer; min-width: 110px;">
+                  <ng-container *ngFor="let ip of participant.loginIps; let i = index">
+                    <div *ngIf="i < 3" class="d-flex align-items-center justify-content-between">
+                      <span>{{ ip.ip_address }}</span>
+                      <span *ngIf="i === 2 && participant.loginIps.length > 3" class="badge rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white p-0 ms-1" style="width: 16px; height: 16px; font-size: 9px; flex-shrink: 0;">
+                        +{{ participant.loginIps.length - 3 }}
+                      </span>
+                    </div>
+                  </ng-container>
+                </div>
+                <div *ngIf="participant.relogin" class="smaller bg-soft-danger badge text-danger mt-1" style="font-size: 10px;">Relogins: {{ participant.totalRelogins }}</div>
 
                 <ng-template #loginIPPopOver >
                   <div class="p-1 smaller" *ngIf="participant?.loginIps?.length > 1">
@@ -1207,6 +1494,107 @@
                   </div>
                 </ng-template>
               </td>
+
+              <!-- Infraction Types -->
+              <td *ngIf="isProctored()" style="min-width: 250px">
+                <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-1">
+                  <ng-container *ngFor="let inf of participant.infractionTypes; let i = index">
+                    <div *ngIf="i < 4" class="rounded border tag bg-light" style="padding: 3px 6px; font-size: 11px; line-height: 1.3;">
+                      <div class="text-black" style="font-size: 11px; font-weight: 500;">
+                        {{ formatInfractionTypeName(inf.type) }}
+                      </div>
+                      <div class="text-center text-danger" style="font-size: 10.5px; font-weight: bold;">
+                        Flags: {{ inf.count }}
+                      </div>
+                    </div>
+                  </ng-container>
+                  
+                  <span *ngIf="participant.infractionTypes?.length > 4" 
+                        triggers="mouseenter:mouseleave" 
+                        [ngbPopover]="infractionsPopOver" 
+                        popoverTitle="All Infractions"
+                        class="badge rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white p-0 cursor-pointer" 
+                        style="width: 20px; height: 20px; font-size: 10px; flex-shrink: 0;">
+                    +{{ participant.infractionTypes.length - 4 }}
+                  </span>
+
+                  <span *ngIf="participant.infractionTypes?.length === 0" class="text-muted" style="font-size: 12px;">None</span>
+                </div>
+
+                <ng-template #infractionsPopOver>
+                  <div class="p-1" style="font-size: 12px;">
+                    <div *ngFor="let inf of participant.infractionTypes" class="border-bottom py-1">
+                      <div class="d-flex justify-content-between gap-3">
+                        <span>{{ formatInfractionTypeName(inf.type) }}</span>
+                        <span class="text-danger fw-bold">Flags: {{ inf.count }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </td>
+
+              <!-- Total Infractions -->
+              <td *ngIf="isProctored()" style="min-width: 120px" class="text-center">
+                <span style="font-size: 13px; font-weight: 500;">{{ participant.totalInfractions }}</span>
+              </td>
+
+              <!-- Total Strikes -->
+              <td *ngIf="isProctored()" style="min-width: 100px" class="text-center">
+                <span style="font-size: 13px; font-weight: 500;">{{ participant.totalStrikes }}</span>
+              </td>
+
+              <!-- Max Strikes Reached -->
+              <td *ngIf="isProctored()" style="min-width: 140px" class="text-center fw-bold">
+                <span class="badge" 
+                      style="font-size: 12px; padding: 4px 8px;"
+                      [ngClass]="{
+                        'bg-danger text-white': participant.maxStrikesReached,
+                        'bg-success text-white': !participant.maxStrikesReached
+                      }">
+                  {{ participant.maxStrikesReached ? 'YES' : 'NO' }}
+                </span>
+              </td>
+
+              <!-- Infraction Score -->
+              <td *ngIf="isProctored()" style="min-width: 120px" class="text-center">
+                <span style="font-size: 13px; font-weight: 500;">0</span>
+              </td>
+
+              <!-- Proctor Actions -->
+              <td *ngIf="isProctored()" style="min-width: 180px">
+                <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-1">
+                  <ng-container *ngFor="let act of participant.proctorActions; let i = index">
+                    <div *ngIf="i < 4" class="rounded border tag bg-light" style="padding: 3px 6px; font-size: 11px; line-height: 1.3;">
+                      <div class="text-black" style="font-size: 11px; font-weight: 500;">
+                        {{ formatProctorActionName(act) }}
+                      </div>
+                    </div>
+                  </ng-container>
+
+                  <span *ngIf="participant.proctorActions?.length > 4" 
+                        triggers="mouseenter:mouseleave" 
+                        [ngbPopover]="actionsPopOver" 
+                        popoverTitle="All Proctor Actions"
+                        class="badge rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white p-0 cursor-pointer" 
+                        style="width: 20px; height: 20px; font-size: 10px; flex-shrink: 0;">
+                    +{{ participant.proctorActions.length - 4 }}
+                  </span>
+
+                  <span *ngIf="participant.proctorActions?.length === 0" class="text-muted" style="font-size: 12px;">None</span>
+                </div>
+
+                <ng-template #actionsPopOver>
+                  <div class="p-1 d-flex flex-column gap-1" style="font-size: 12px;">
+                    <div *ngFor="let act of participant.proctorActions">
+                      <div class="rounded border tag bg-light text-center" style="padding: 3px 6px; font-size: 11px; line-height: 1.3;">
+                        <span class="text-black" style="font-size: 11px; font-weight: 500;">
+                          {{ formatProctorActionName(act) }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </ng-template>
+              </td>
               <td>
                 <div class="dropdown" ngbDropdown container="body">
                   <button class="btn btn-soft-primary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown"
@@ -1228,6 +1616,12 @@
                       <a class="dropdown-item"><i class="ri-download-cloud-fill align-bottom me-2 text-muted"></i>
                         Download transcript</a>
                     </li>
+                    <li *ngIf="isProctored()">
+                      <a class="dropdown-item" (click)="openCandidateInfractionsModal(participant, infractionEventsModal)" style="cursor: pointer;">
+                        <i class="ri-error-warning-fill align-bottom me-2 text-muted"></i>
+                        View infractions
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </td>
@@ -1240,4 +1634,162 @@
           [rows]="10" [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"></p-paginator>
     </div>
   </div>
+
+  <ng-template #infractionEventsModal role="document" let-modal>
+    <div class="modal-header d-flex flex-column gap-3 border-bottom pb-3">
+        <div class="d-flex justify-content-between align-items-center w-100">
+          <h3 class="modal-title m-0">Infraction Events</h3>
+          <button type="button" class="close text-dark border-0 bg-transparent fs-24" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+              <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="d-flex gap-3 w-100 align-items-end">
+          <div>
+            <label class="small text-muted mb-1">Batch Filter</label>
+            <select class="form-select w-auto" [(ngModel)]="selectedInfractionBatchFilter" (change)="applyModalInfractionFilter()" [disabled]="fetchingInfractionBatches">
+              <option value="">All Batches</option>
+              <option *ngFor="let batch of infractionBatches" [value]="batch.id">{{ batch.name }}</option>
+            </select>
+          </div>
+          <div>
+            <label class="small text-muted mb-1">Category Filter</label>
+            <select class="form-select w-auto" [(ngModel)]="selectedInfractionCategoryFilter" (change)="applyModalInfractionFilter()">
+              <option value="">All Categories</option>
+              <option *ngFor="let cat of infractionsSummary?.infraction_types" [value]="cat.infraction_type">{{ formatInfractionTypeName(cat.infraction_type) }}</option>
+            </select>
+          </div>
+        </div>
+    </div>
+
+    <div *ngIf="fetchingInfractionEvents" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+      <div class="d-flex align-items-center gap-2">
+        <div class="spinner-border text-info fs-18" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!fetchingInfractionEvents && infractionEventsReport" class="modal-body" style="height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+       <div class="d-flex flex-column gap-3">
+           <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                  <thead class="table-light">
+                      <tr>
+                          <th>S/N</th>
+                          <th>Candidate Info</th>
+                          <th>Infraction Type</th>
+                          <th>Detection Time</th>
+                          <th>Strikes</th>
+                          <th>Max Reached?</th>
+                          <th>Evidence</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <ng-container *ngFor="let item of infractionEventsReport?.content; let i = index;">
+                        <tr>
+                            <td>{{ i + 1 + (infractionEventsParams.page - 1) * infractionEventsParams.size }}</td>
+                            <td>
+                                <div>
+                                    <div class="fw-bold">{{ item.candidate_name || 'Unknown' }}</div>
+                                    <div>{{ item.candidate_login_field_value || 'N/A' }}</div>
+                                </div>
+                            </td>
+                            <td>{{ formatInfractionTypeName(item.infraction_type) }}</td>
+                            <td>{{ item.detection_timestamp | date: 'medium' }}</td>
+                            <td>{{ item.infraction_strikes }}</td>
+                            <td>
+                              <span class="badge" [ngClass]="item.max_strike_reached ? 'bg-danger' : 'bg-success'">
+                                {{ item.max_strike_reached ? 'YES' : 'NO' }}
+                              </span>
+                            </td>
+                            <td>
+                              <button class="btn btn-sm btn-outline-primary" (click)="openEvidenceModal(item, evidenceViewerModal)">
+                                View Evidence
+                              </button>
+                            </td>
+                        </tr>
+                      </ng-container>
+                  </tbody>
+              </table>
+          </div>
+       </div>
+    </div>
+    
+    <div class="card-footer">
+      <div class="d-flex justify-content-between align-items-center gap-3">
+          <div>
+              <p-paginator [ngClass]="{ 'd-none': !infractionEventsReport }"
+              [first]="0" [totalRecords]="infractionEventsReport?.total ?? 0" [rowsPerPageOptions]="[10, 50, 100, 200]"
+              [rows]="infractionEventsParams.size" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onInfractionEventsPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}"></p-paginator>
+          </div>
+          <div class="d-flex justify-content-end gap-2">
+              <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                  <i class="ri-close-line align-middle fs-16"></i> Close
+              </button>
+          </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #evidenceViewerModal role="document" let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title">Evidence</h3>
+        <button type="button" class="close text-dark border-0 bg-transparent fs-24" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body text-center p-4">
+      <div *ngIf="fetchingEvidence" class="d-flex align-items-center justify-content-center" style="height: 20vh">
+        <div class="spinner-border text-info fs-18" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <ng-container *ngIf="!fetchingEvidence">
+        <div *ngIf="evidenceDetails" class="row text-start mb-4 bg-light p-3 rounded mx-0">
+          <div class="col-6 mb-3">
+             <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Candidate</small>
+             <div class="fw-bold">{{ evidenceDetails.candidate_name || 'Unknown' }}</div>
+             <div class="fs-12 text-muted">{{ evidenceDetails.login_field_value || 'N/A' }}</div>
+          </div>
+          <div class="col-6 mb-3">
+             <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Type</small>
+             <div class="fw-bold text-muted">{{ formatInfractionTypeName(evidenceDetails.infraction_type) }}</div>
+          </div>
+          <div class="col-6">
+             <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Detected At</small>
+             <div class="fw-bold">{{ evidenceDetails.detection_timestamp | date:'medium' }}</div>
+          </div>
+          <div class="col-6">
+             <small class="text-muted text-uppercase fw-semibold" style="font-size: 11px;">Strikes</small>
+             <div class="fw-bold d-flex align-items-center">
+               <span class="fs-14">{{ evidenceDetails.infraction_strikes }}</span>
+               <span *ngIf="evidenceDetails.max_strike_reached" class="badge bg-danger ms-2">Max Reached</span>
+             </div>
+          </div>
+        </div>
+
+        <div *ngIf="evidenceData.type === 'image'" class="d-flex flex-column gap-3" style="max-height: 60vh; overflow-y: auto; overflow-x: hidden;">
+          <img *ngFor="let imgUrl of evidenceData.data" [src]="imgUrl" class="img-fluid border rounded" style="max-height: 400px; object-fit: contain;">
+          <div *ngIf="evidenceData.data.length === 0" class="text-muted py-4">No evidence image available.</div>
+        </div>
+        <div *ngIf="evidenceData.type === 'video'">
+          <video *ngIf="evidenceData.data?.length" controls class="w-100 border rounded" style="max-height: 400px;">
+            <source [src]="evidenceData.data[0]" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          <div *ngIf="!evidenceData.data?.length" class="text-muted py-4">No evidence video available.</div>
+        </div>
+        <div *ngIf="evidenceData.type === 'audio'" class="py-4">
+          <audio *ngIf="evidenceData.data?.length" controls class="w-100">
+            <source [src]="evidenceData.data[0]" type="audio/mpeg">
+            Your browser does not support the audio element.
+          </audio>
+          <div *ngIf="!evidenceData.data?.length" class="text-muted py-4">No evidence audio available.</div>
+        </div>
+        <div *ngIf="evidenceData.type === 'none'" class="text-muted py-4">
+          No evidence available for this infraction.
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
 </ng-container>

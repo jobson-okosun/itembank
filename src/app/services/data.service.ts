@@ -14,6 +14,8 @@ import {
   ScoreDistributionParams,
   ScoreDistributionScaledScore,
   TranscriptListParams,
+  ExamGroupDto,
+  ExamGroupsPage,
 } from '../pages/items/models/result';
 
 @Injectable({
@@ -167,9 +169,9 @@ export class DataService {
     });
   }
 
-  fetchExamGroups(): Observable<any> {
+  fetchExamGroups(): Observable<ExamGroupsPage | ExamGroupDto[]> {
     const url = `/examalpha/api/v1/sch_mon_grd/reports/result/exam_groups`;
-    return this._http.get<any>(
+    return this._http.get<ExamGroupsPage | ExamGroupDto[]>(
       environment.schedulerIP + url,
       { withCredentials: true }
     );

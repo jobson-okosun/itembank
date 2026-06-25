@@ -1008,7 +1008,7 @@ export class ItemHttpService {
 
   edit_cloze_radio(itemId: string, item: any): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
-      `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_DROPDOWN`,
+      `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_RADIO`,
       item,
       { withCredentials: true }
     );

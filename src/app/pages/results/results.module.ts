@@ -17,6 +17,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
 import { SharedModule } from "src/app/shared/shared.module";
 import { EditorModule, TINYMCE_SCRIPT_SRC } from "@tinymce/tinymce-angular";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { NgSelectModule } from "@ng-select/ng-select";
 
 import { ResultsRoutingModule } from "./results-routing.module";
 import { DashboardComponent } from "./dashboard/dashboard.component";
@@ -95,7 +96,8 @@ import { ItemsModule } from "../items/items.module";
     NgbModule,
     NgbProgressbarModule,
     PaginatorModule,
-    ItemsModule
+    ItemsModule,
+    NgSelectModule
 ],
   exports: [],
   providers: [

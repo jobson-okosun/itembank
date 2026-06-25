@@ -94,6 +94,11 @@ export class ParticipantsParams {
   page?: number;
   size?: number;
   exam_group?: string;
+  infraction_categories?: string | string[];
+  proctor_actions?: string | string[];
+  max_strike_reached?: boolean;
+  infraction_score_less?: number;
+  infraction_score_greater_than?: number;
 }
 
 export class ParticipantsScoreList {
@@ -345,4 +350,18 @@ export class Participant_Result_Data_DTO {
   percentile: number;
   attempt_summary: Section_Attempt_Summary[];
   login_field: string
+}
+
+export class ExamGroupDto {
+  id: string;
+  name: string;
+  dateCreated?: string;
+  examsCount?: number;
+}
+
+export class ExamGroupsPage {
+  total: number;
+  content: ExamGroupDto[];
+  size?: number;
+  number?: number;
 }
