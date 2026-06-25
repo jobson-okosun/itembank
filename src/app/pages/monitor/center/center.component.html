@@ -13,74 +13,110 @@
             <!-- exam overview -->
             <div class="col-sm-6 col-lg-4 col-md-6">
                 <div>
-                    <div class="border rounded">
-                        <div class="border-bottom py-3 d-flex justify-content-between">
-                            <div></div>
-                            <h5>Exam overview</h5>
-                            <div></div>
+                    <div class="border rounded bg-white  d-flex flex-column" style="height: 648px !important;">
+                        <div class="card-header border-bottom py-3 d-flex justify-content-center align-items-center">
+                            <h5 class="card-title mb-0 fw-bold text-center py-1" style="font-size: 15px;">
+                                 Exam Overview
+                            </h5>
                         </div>
-                        <div style="height: 590px;overflow-y: auto;" class="p-3 no-scrollbar">
-                            <div class="rounded border p-3 pt-0">
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span class="mb-0">Time remaining</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>60 min</span>
+                        <div style="height: 590px; overflow-y: auto;" class="p-3 no-scrollbar flex-grow-1">
+                            <div class="p-3 bg-light rounded border mb-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <span style="width: 38px; height: 38px;" class="bg-primary rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
+                                            <i class="pi pi-clock fs-18"></i>
+                                        </span>
+                                        <div>
+                                            <p class="text-muted mb-0 fs-10 text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.5px;">Time Remaining</p>
+                                            <h4 class="fw-bold mb-0 text-dark" style="font-size: 16px;">60 min</h4>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-danger px-2 py-1 fs-11">Ended</span>
+                                        <span class="d-block text-success fw-bold mt-1" style="font-size: 11px;">
+                                            <i class="pi pi-shield me-1" style="font-size: 10px;"></i> Biometrics enabled
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Status</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="badge bg-danger">Ended</span>
-                                        <span class="badge bg-success">Biometric enabled</span>
+                            </div>
+
+                            <div class="d-flex flex-column gap-3 mb-4 ps-1">
+                                <div class="d-flex gap-3 align-items-center">
+                                    <span style="width: 38px; height: 38px;" class="bg-warning rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
+                                        <i class="pi pi-users fs-16"></i>
+                                    </span>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Candidates</h6>
+                                        <span class="text-secondary" style="font-size: 12px;">250 Candidates</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Total candidates</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>250</span>
+
+                                <div class="d-flex gap-3 align-items-center">
+                                    <span style="width: 38px; height: 38px;" class="bg-primary rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
+                                        <i class="pi pi-sign-in fs-16"></i>
+                                    </span>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Login Field</h6>
+                                        <span class="text-secondary" style="font-size: 12px;">Email</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Exam Start time</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Mar 3, 2026 - 4:40pm</span>
+
+                                <div class="d-flex gap-3 align-items-center">
+                                    <span style="width: 38px; height: 38px;" class="bg-success rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
+                                        <i class="pi pi-shield fs-16"></i>
+                                    </span>
+                                    <div>
+                                        <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Delivery Method</h6>
+                                        <span class="text-secondary" style="font-size: 12px;">Secure Browser</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Exam Started time</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Mar 3, 2026 - 4:40pm</span>
+                            </div>
+
+                            <hr class="my-3 text-secondary">
+                            
+                            <div class="d-flex flex-column gap-3 mb-4 px-2">
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="d-inline-block rounded bg-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
+                                        <i class="pi pi-play text-white" style="font-size: 9px;"></i>
+                                    </span>
+                                    <div>
+                                        <div class="fw-bold text-black small" style="font-size: 11px;">Start Time</div>
+                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Exam End-time</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Mar 3, 2026 - 4:40pm</span>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="d-inline-block rounded bg-info d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
+                                        <i class="pi pi-spin pi-spinner text-white" style="font-size: 9px;"></i>
+                                    </span>
+                                    <div>
+                                        <div class="fw-bold text-black small" style="font-size: 11px;">Started Time</div>
+                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Login Field</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Email</span>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="d-inline-block rounded bg-danger d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
+                                        <i class="pi pi-history text-white" style="font-size: 9px;"></i>
+                                    </span>
+                                    <div>
+                                        <div class="fw-bold text-black small" style="font-size: 11px;">End Time</div>
+                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Exam Delivery method</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Secure browser</span>
-                                    </div>
+                            </div>
+
+                            <hr class="my-3 text-secondary">
+                            
+                            <div class="d-flex flex-column gap-3 px-1">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-muted fs-11 text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Close Browser</span>
+                                    <span class="text-secondary" style="font-size: 12px;">Secure browser</span>
                                 </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Close browser password</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Secure browser</span>
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between align-items-center p-3">
-                                    <span>Early end exam password</span>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>Secure browser</span>
-                                    </div>
+
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-muted fs-11 text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Early End Exam</span>
+                                    <span class="text-secondary" style="font-size: 12px;">Secure browser</span>
                                 </div>
                             </div>
                         </div>
@@ -224,35 +260,66 @@
                     <div class="border rounded">
                         <div class="border-bottom py-3 d-flex justify-content-between">
                             <div></div>
-                            <h5>Technical issues</h5>
+                            <h5>Notifications</h5>
                             <div>
                                 <div class="dropdown" ngbDropdown>
                                     <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                                         <i class="pi pi pi-ellipsis-v align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
                                     </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
-                                        <li>
-                                            <a routerLink="center/1" class="dropdown-item"> Technical Issues </a>
-                                        </li>
-                                        <li>
-                                            <a routerLink="center/1" class="dropdown-item"> Technical report </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu style="max-height: 250px; overflow-y: auto;">
+                                        <li><h6 class="dropdown-header text-uppercase">Filter Events</h6></li>
+                                        <li *ngFor="let filter of notifFilters">
+                                            <a (click)="setNotifFilter(filter)" class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0);" [ngClass]="{'active text-white bg-primary': notifSelectedFilter === filter}">
+                                                <span>{{ filter }}</span>
+                                                <i *ngIf="notifSelectedFilter === filter" class="pi pi-check ms-2" style="font-size: 8px;"></i>
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-                        <div style="height: 590px;overflow-y: auto;" class="p-3 no-scrollbar">
-                            <div class="accordion-wrapper">
-                                <div *ngFor="let item of technicalIssues" class="accordion-section mb-2">
-                                    <div class="accordion-header border rounded" (click)="item.open = !item.open">
-                                        {{ item.title }} - {{ 'June 3, 2025 - 4:30pm' }}
-                                        <span class="arrow">{{ item.open ? '▲' : '▼' }}</span>
-                                    </div>
+                        <div style="height: 590px;" class="d-flex flex-column">
+                            <!-- Scrollable Notifications Area -->
+                            <div class="flex-grow-1 overflow-auto p-3 no-scrollbar">
+                                <!-- Filter Indicator Alert -->
+                                <div *ngIf="notifSelectedFilter !== 'ALL'" class="alert alert-soft-primary alert-dismissible fade show p-2 mb-3 fs-11 d-flex align-items-center justify-content-between">
+                                    <span>Filter: <strong>{{ notifSelectedFilter }}</strong></span>
+                                    <button (click)="setNotifFilter('ALL')" type="button" class="btn-close p-2" style="font-size: 8px;"></button>
+                                </div>
 
-                                    <div class="border rounded p-3 border-top-0 rounded-top-0" *ngIf="item.open">
-                                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Optio quaerat totam neque voluptatum consectetur, deserunt dicta consequuntur cum enim nesciunt blanditiis impedit odio architecto eveniet. Dignissimos ipsa consequatur voluptates vitae repudiandae, ullam officiis culpa dolor placeat quasi nobis esse recusandae pariatur et voluptatem distinctio soluta. Ab sed numquam iure ea quis rem quos quibusdam tempora corporis optio repellat ut impedit labore commodi fuga ipsa quasi mollitia ipsum, veritatis facere aliquid. Dolores omnis id deserunt. Dignissimos sunt eum rerum, in quasi cumque ea, nam necessitatibus nihil consequuntur laboriosam sed fugiat! Repellendus magnam, nulla ab delectus culpa sunt quia enim quos recusandae!
+                                <!-- Empty State -->
+                                <div *ngIf="pagedNotifications.length === 0" class="text-center py-5">
+                                    <i class="pi pi-bell-slash text-muted fs-24 mb-2 d-block"></i>
+                                    <span class="text-muted small">No notifications</span>
+                                </div>
+
+                                <!-- Notification Tiles -->
+                                <div *ngFor="let item of pagedNotifications" class="pb-3 pt-2 mb-2 border-bottom">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <span class="rounded-circle bg-soft-primary text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 28px; height: 28px;">
+                                            <i class="pi pi-bell" style="font-size: 11px;"></i>
+                                        </span>
+                                        <div class="flex-grow-1">
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <span class="text-uppercase fs-12 fw-semibold" style="letter-spacing: 0.5px;">{{ item.type }}</span>
+                                                <span class="text-muted fs-10">{{ item.time }}</span>
+                                            </div>
+                                            <p class="text-dark mb-0 mt-1 fs-12 fw-medium">{{ item.message }}</p>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+
+                            <!-- Pagination Stuck at Bottom -->
+                            <div class="border-top p-2 bg-white text-center">
+                                <p-paginator 
+                                    [first]="notifFirst" 
+                                    [rows]="notifRows" 
+                                    [totalRecords]="notifTotalRecords" 
+                                    (onPageChange)="onNotifPageChange($event)"
+                                    [showCurrentPageReport]="false"
+                                    styleClass="p-paginator-sm border-0 bg-transparent justify-content-center py-1">
+                                </p-paginator>
                             </div>
                         </div>
                     </div>

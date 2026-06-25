@@ -247,4 +247,9 @@ export class MonitorService {
       const url = this.baseURL + `/infraction_evidence/exam/${assessmentId}/event/${eventId}`;
       return this._http.get<any>(url, { withCredentials: true });
     }
+
+    fetchNotifications(assessmentId: string, params?: { page?: number, size?: number, filter?: string }): Observable<any> {
+      const url = this.baseURL + `/notifications/assessment/${assessmentId}` + this.buildQuery(params);
+      return this._http.get<any>(url, { withCredentials: true });
+    }
 }

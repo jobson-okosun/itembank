@@ -14,4 +14,7 @@ export class Account {
   roles: Array<string>;
 
   authority: Role;
+
 }
+
+

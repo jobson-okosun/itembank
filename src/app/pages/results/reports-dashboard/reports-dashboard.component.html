@@ -424,7 +424,7 @@
 
 <div *ngIf="assessments">
   <p-paginator
-    [totalRecords]="assessments.totalElements"
+    [totalRecords]="assessments?.totalElements ?? 0"
     (onPageChange)="onPageChange($event)"
     [first]="1"
     [rowsPerPageOptions]="[20, 30, 50]"

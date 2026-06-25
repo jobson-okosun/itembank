@@ -18,11 +18,15 @@ import {
   IResourceCreated,
 } from '../pages/scheduler/models/resource-created';
 import { SecureStorageService } from '../services/secure-storage.service';
+import { ItemServiceService } from '../shared/item-services/item-service.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
+
+  provideOtpToProceed: boolean = false;
+
   constructor(
     private http: HttpClient,
     private userService: UserService,
@@ -36,7 +40,43 @@ export class AuthenticationService {
     );
   }
 
-  login(signInModel: SignIn): Observable<Account> {
+    verifyOtp(payload: { otp: string }): Observable<Account> {
+
+       const headers = new HttpHeaders().set(
+      'Content-Type',
+      'application/json'
+    );
+
+    return this.http.post<Account>(
+      `${environment.developmentIP}/otp/verify`,
+      payload,  {
+        headers,
+        responseType: 'json',
+        withCredentials: true,
+      }
+    ).pipe(mergeMap(() => this.getLoggedInAccount()));;
+  }
+
+      resendOtp(payload: { method: string }): Observable<any> {
+
+           const headers = new HttpHeaders().set(
+      'Content-Type',
+      'application/json'
+    );
+
+    return this.http.post<any>(
+      `${environment.developmentIP}/otp/resend`,
+      payload , {
+        headers,
+        responseType: 'json',
+        withCredentials: true,
+      }
+    );
+  }
+
+  login(signInModel: SignIn): Observable<{
+        otpRequired: boolean, message: string, otpRecordId?: string
+}> {
     const data =
       `username=${encodeURIComponent(signInModel.username)}` +
       `&password=${encodeURIComponent(signInModel.password)}` +
@@ -51,12 +91,14 @@ export class AuthenticationService {
     );
 
     return this.http
-      .post(`${environment.developmentIP}/authentication`, data, {
+      .post<{
+        otpRequired: boolean, message: string, otpRecordId?: string
+}>(`${environment.developmentIP}/authentication`, data, {
         headers,
         responseType: 'json',
         withCredentials: true,
       })
-      .pipe(mergeMap(() => this.getLoggedInAccount()));
+      
   }
 
   authorizeItembank(data: any): Observable<any> {
@@ -104,7 +146,7 @@ export class AuthenticationService {
       .pipe(
         map((value) => {
           value.authority = Role[value.authorities[0]];
-
+          
           this.userService.setCurrentUser(value);
 
           this.secureStorage.setItem(environment.secureStorageId, value);

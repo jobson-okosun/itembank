@@ -34,7 +34,7 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     size: 50
   }
   fetchingParticipantSummary: boolean = false
-  participantSummaryReportType: string = 'ATTENDANCE'
+  participantSummaryReportType: string = 'EVENTS'
   participantSummaryParams: participantSummaryFilter = {
     center_id: ''
   }

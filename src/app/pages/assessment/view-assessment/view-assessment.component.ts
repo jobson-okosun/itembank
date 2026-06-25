@@ -8,7 +8,7 @@ import {
 import { ActivatedRoute } from "@angular/router";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 import { forkJoin } from "rxjs";
-import { AssessmentSettings, ExamType } from "../model/assessment-settings";
+import { AssessmentSettings, EditAssessmentSettings, ExamType } from "../model/assessment-settings";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AssessmentInstruction } from "../model/assessment-instruction";
 import { SectionSettings } from "../model/new-assessment-section-template.model";
@@ -54,7 +54,8 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   editSection: AssessmentSections = new AssessmentSections();
   editBlock: BlockDetails = new BlockDetails();
   submitted: boolean = false;
-  assessmentSettings: AssessmentSettings = new AssessmentSettings();
+  // assessmentSettings: AssessmentSettings = new AssessmentSettings();
+  assessmentSettings: EditAssessmentSettings = new EditAssessmentSettings();
   startExamInstruction: string = `
   <ol>
   <li>
@@ -1100,7 +1101,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     // console.log(this.assessmentSettings, "assessment seetings");
 
     this.submitted = true;
+
     console.log('SAVING ASSESSMENT SETTING: ', this.assessmentSettings);
+
     this.assessmentService
       .saveAssessmentSettings(this.assessmentSettings, this.assessmentId)
       .subscribe(
@@ -1603,11 +1606,17 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   handleDispayAllSectionOption(value: string) {
+    
     if (value === 'allAtOnce') {
       this.assessmentSettings.displayAllSectionsAtOnce = true;
     } else {
       this.assessmentSettings.displayAllSectionsAtOnce = false;
     }
+  }
+
+    handleSessionNavigation(value: string) {    
+   this.assessmentSettings.sectionNavigation = value;
+   console.log('SELECTED: ', this.assessmentSettings.sectionNavigation);
   }
 
   back(): void {

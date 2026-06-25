@@ -128,7 +128,7 @@
                   {{ assessment.created_at | date : "medium" }}</span>
               </li>
               <li>
-                <div class="d-flex gap-2">
+                <div class="d-flex flex-wrap gap-2">
                   <span
                     class="badge badge-soft-success rounded-pill fs-12"
                     *ngIf="assessment.total_centers">Centers
@@ -149,11 +149,12 @@
                     *ngIf="assessment.total_participants">Participants
                     <i
                       class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_participants }})</span>
+                  <!-- *ngIf="assessment.total_proctors" -->
                   <span
                       class="badge badge-soft-success rounded-pill fs-12"
-                      *ngIf="assessment.total_proctors">Proctors
+                      >Proctors
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_proctors }})</span>
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment?.total_proctors ?? 0 }})</span>
                 </div>
               </li>
             </ul>

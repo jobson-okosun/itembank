@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MonitorService } from '../services/monitor.service';
+import { of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-center',
@@ -7,21 +10,100 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CenterComponent implements OnInit {
   DoughnutChart: any;
-  technicalIssues = [
-    { title: 'BVM', content: 'Content for section 1', open: false },
-    { title: 'EXAM SOFTWARE', content: 'Content for section 2', open: false },
-    { title: 'EXAM SERVER', content: 'Content for section 3', open: false }
+  notifications = [
+    { id: 1, message: 'Rufai Ahmed deedat (20253893444FH) requested a Computer swap due to system freeze.', time: 'June 25, 2026 - 12:15pm', type: 'Computer swap', actionable: true, status: 'pending' },
+    { id: 2, message: 'BVM verification succeeded for Sarah Jenkins (20258839221AJ).', time: 'June 25, 2026 - 12:10pm', type: 'BVM verified', actionable: false },
+    { id: 3, message: 'Malpractice detected: Multiple faces identified in candidate room for John Doe.', time: 'June 25, 2026 - 11:58am', type: 'Malpractice', actionable: true, status: 'pending' },
+    { id: 4, message: 'Network disconnected for candidate Rufai Ahmed deedat.', time: 'June 25, 2026 - 11:45am', type: 'Network disconnected', actionable: false },
+    { id: 5, message: 'Compensatory time request: +15 minutes requested by center proctor for David King.', time: 'June 25, 2026 - 11:30am', type: 'Compensatory time', actionable: true, status: 'pending' },
+    { id: 6, message: 'Relogin attempt successful for Mary Sani (20253849111AA).', time: 'June 25, 2026 - 11:15am', type: 'Relogin', actionable: false },
+    { id: 7, message: 'Candidate Musa Ibrahim has timed out.', time: 'June 25, 2026 - 11:00am', type: 'Timed out', actionable: false },
+    { id: 8, message: 'Assessment started for candidate Blessing Udoh.', time: 'June 25, 2026 - 10:45am', type: 'Started', actionable: false },
+    { id: 9, message: 'Suspended: Proctor suspended candidate Rufus Thomas due to suspicious objects.', time: 'June 25, 2026 - 10:30am', type: 'Suspended', actionable: true, status: 'pending' },
+    { id: 10, message: 'Assessment ended for candidate Rufai Ahmed deedat.', time: 'June 25, 2026 - 10:15am', type: 'Ended', actionable: false },
+    { id: 11, message: 'Candidate Chinonso Eke has been rescheduled to tomorrow.', time: 'June 25, 2026 - 10:00am', type: 'Rescheduled', actionable: false },
+    { id: 12, message: 'Candidate Paul Smith has not started the exam yet.', time: 'June 25, 2026 - 09:45am', type: 'Not started', actionable: false }
   ];
 
-  constructor() { }
+  filteredNotifications: any[] = [];
+  pagedNotifications: any[] = [];
+  notifTotalRecords = 0;
+  notifFirst = 0;
+  notifRows = 4;
+  notifSelectedFilter = 'ALL';
+
+  notifFilters = [
+    'ALL',
+    'Not started',
+    'Started',
+    'Network disconnected',
+    'Compensatory time',
+    'Relogin',
+    'Computer swap',
+    'Suspended',
+    'Timed out',
+    'Ended',
+    'Malpractice',
+    'Rescheduled',
+    'BVM verified'
+  ];
+
+  constructor(private monitorService: MonitorService) { }
 
   ngOnInit(): void {
-    this._DoughnutChart()
+    this._DoughnutChart();
+    this.fetchNotificationsFromBackend();
   }
 
   goBack() {
     history.back()
   }
+
+  fetchNotificationsFromBackend() {
+    const page = this.notifFirst / this.notifRows;
+    const params: any = {
+      page: page,
+      size: this.notifRows
+    };
+    if (this.notifSelectedFilter !== 'ALL') {
+      params.filter = this.notifSelectedFilter;
+    }
+
+    this.monitorService.fetchNotifications('10001', params).pipe(
+      catchError(err => {
+        console.warn('Backend notifications endpoint not found, falling back to mock pagination/filtering');
+        let mockList = [...this.notifications];
+        if (this.notifSelectedFilter !== 'ALL') {
+          mockList = mockList.filter(n => n.type === this.notifSelectedFilter);
+        }
+        const total = mockList.length;
+        const startIndex = this.notifFirst;
+        const content = mockList.slice(startIndex, startIndex + this.notifRows);
+        return of({
+          total: total,
+          content: content
+        });
+      })
+    ).subscribe(res => {
+      if (res) {
+        this.pagedNotifications = res.content || [];
+        this.notifTotalRecords = res.total || 0;
+      }
+    });
+  }
+
+  setNotifFilter(filter: string) {
+    this.notifSelectedFilter = filter;
+    this.notifFirst = 0;
+    this.fetchNotificationsFromBackend();
+  }
+
+  onNotifPageChange(event: any) {
+    this.notifFirst = event.first;
+    this.fetchNotificationsFromBackend();
+  }
+
+
 
   private getChartColorsArray(colors: any) {
     colors = JSON.parse(colors);

@@ -342,6 +342,8 @@ export class AssessmentParticipantsComponent implements OnInit {
           );
           this.fetchParticipants(0, 250);
           this.modalService.dismissAll();
+
+          this.fetchParticipantsDashboard(this.assessmentId); // Refetch dashboard to receive updated value
         },
         error: (err: HttpErrorResponse) => {
           this.processingAddParticipant = false;
