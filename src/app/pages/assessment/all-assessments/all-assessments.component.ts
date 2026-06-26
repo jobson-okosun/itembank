@@ -452,7 +452,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
         this.notifier.notify("error", "Failed to remove exam");
       }
     });
-  }
+  } 
 
   // Add exam to group modal state & handlers
   selectedExamForGroup: any = null;
