@@ -65,6 +65,7 @@ export class ClozeRadioSelectComponent implements OnInit {
   tags: ItemTagsDtos[] = [];
 
   @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  
   pendingSaveAction: any;
 
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
@@ -835,6 +836,10 @@ export class ClozeRadioSelectComponent implements OnInit {
   }
 
   saveFunction(item: any, type: string) {
+
+        this.publishingItem = true;
+    this.publishLoader();
+
     let msg: string;
 
     if (type == "save" || type === "save_and_new") {

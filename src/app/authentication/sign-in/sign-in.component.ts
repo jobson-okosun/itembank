@@ -411,7 +411,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
         (value) => {
           this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
           this.loginOtp = '';
-          this.http.provideOtpToProceed = false;
+          // this.http.provideOtpToProceed = false;
           this.isSubmittingOtp = false;
           this.error = false;
 

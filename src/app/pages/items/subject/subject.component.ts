@@ -1746,6 +1746,9 @@ export class SubjectComponent implements OnInit, OnChanges {
   preview(item: any, i: number) {
     item.showingPreviewLoader = true;
 
+    console.log('PREVIEW ITEMSSS: ', item);
+    console.log('I: ', i);
+
     if (this.previewData) {
       this.itemsPage.content[this.activePreviewItem].showFullItem = false;
       item.showingPreviewLoader = false;
