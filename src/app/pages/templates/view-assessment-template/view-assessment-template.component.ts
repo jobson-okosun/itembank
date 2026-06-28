@@ -31,57 +31,26 @@ export class ViewAssessmentTemplateComponent implements OnInit, OnDestroy {
     new AssessmentFromTemplateRequest();
   submitted: boolean = false;
 
-   deliveryMethods: any[] = [];
+  deliveryMethodsList = AssessmentDeliveryEnum;
+  selectedDeliveryMode: string = "";
+  selectedProctoringMode: string = "";
+  
+  allExamGroupsForDropdown: any[] = [];
+  loadingExamGroupsDropdown: boolean = false;
 
-  proctoredCategory: any[] = [];
+  deliveryMethods: any[] = [];
 
-  unsupervisedCategory: any[] = [];
-
-  centreBasedCategory: any[] = [];
-
-  ePaperCategory: any[] = [];
-
-  DELIVERY_METHOD_LABEL: string[] = [
-    'LIVE SUPERVISED', //'LIVE PROCTORING',
-    'AUTO SUPERVISED', //'AUTO PROCTORING',
-    'ONLINE UNSUPERVISED', //'ONLINE WITH NO PROCTORING',
-    'CENTER-BASED SECURE', //'ON PREMISE WITH LOCKDOWN BROWSER',
-    'CENTER-BASED STANDARD', //'ON PREMISE WITHOUT LOCKDOWN BROWSER',
-    'E-PAPER',
-    'BRING YOUR OWN DEVICE',
+  DELIVERY_METHOD_LABEL: { label: string, description: string }[] = [
+    { label: 'PROCTOR SUPERVISED', description: 'Exam will be supervised by live proctors.' },
+    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.' },
+    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.' },
+    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.' },
+    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.' },
+    { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
+    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
   ];
 
-  // ======== CATEGORIES ===========
-
-  PROCTORED_CATEGORY_LABEL: string[] = [
-    'LIVE SUPERVISED',
-    'AUTO SUPERVISED',
-  ];
-
-  UNSUPERVISED_CATEGORY_LABEL: string[] = [
-    'ONLINE WITH LOCKDOWN BROWSER',
-    'ONLINE WITHOUT LOCKDOWN BROWSER'
-  ];
-
-  CENTRE_BASED_CATEGORY_LABEL: string[] = [
-    'OFFLINE WITH SECURE BROWSER',
-    'OFFLINE WITHOUT SECURE BROWSER',
-    'BRING YOUR OWN DEVICE'
-  ];
-
-  E_PAPER_CATEGORY_LABEL: string[] = [
-    'E-PAPER'
-  ];
-
-  deliveryMethodsWithLabel: { label: string; value: string }[] = [];
-
-  proctorCategoryWithLabel: { label: string; value: string }[] = [];
-
-  unsupervisedCategoryWithLabel: { label: string; value: string }[] = [];
-
-  centerBasedCategoryWithLabel: { label: string; value: string }[] = [];
-
-  ePaperCategoryWithLabel: { label: string; value: string }[] = [];
+  deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
 
   constructor(
     private ar: ActivatedRoute,
@@ -93,7 +62,7 @@ export class ViewAssessmentTemplateComponent implements OnInit, OnDestroy {
   ) {
     this.template_name = this.templateService.currentTemplate || this.itemService.getItem('TEMPLATE_NAME');
     this.templateId = this.ar.snapshot.params["template_id"];
-    console.log('THIS.TEMPLATEID: ', this.ar.snapshot.params["template_id"]);
+    // console.log('THIS.TEMPLATEID: ', this.ar.snapshot.params["template_id"]);
   }
 
   ngOnDestroy(): void {
@@ -105,49 +74,10 @@ export class ViewAssessmentTemplateComponent implements OnInit, OnDestroy {
       this.deliveryMethods.push(method);
     });
 
-    this.deliveryMethodsWithLabel = this.deliveryMethods.map((value: string, index: number) => ({
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
       value: value,
-      label: this.DELIVERY_METHOD_LABEL[index],
-    }));
-
-    // Proctored Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.proctoredCategory.push(method);
-    });
-
-    this.proctorCategoryWithLabel = Object.keys(ProctoredCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.PROCTORED_CATEGORY_LABEL[index],
-    }));
-
-    // Unsupervised Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.unsupervisedCategory.push(method);
-    });
-
-    this.unsupervisedCategoryWithLabel = Object.keys(UnsupervisedCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.UNSUPERVISED_CATEGORY_LABEL[index],
-    }));
-
-    // Centre based Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.centreBasedCategory.push(method);
-    });
-
-    this.centerBasedCategoryWithLabel = Object.keys(CentreBasedCategoryEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.CENTRE_BASED_CATEGORY_LABEL[index],
-    }));
-
-    // E-Paper Categories
-    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
-      this.ePaperCategory.push(method);
-    });
-
-    this.ePaperCategoryWithLabel = Object.keys(E_PaperEnum).map((value: string, index: number) => ({
-      value: value,
-      label: this.E_PAPER_CATEGORY_LABEL[index],
+      label: this.DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: this.DELIVERY_METHOD_LABEL?.[index]?.description,
     }));
 
     this.breadCrumbItems = [
@@ -155,13 +85,14 @@ export class ViewAssessmentTemplateComponent implements OnInit, OnDestroy {
       { label: this.template_name.toLowerCase(), active: true },
     ];
 
-    console.log('TEMPLATE ID: ', this.templateId);
+    // console.log('TEMPLATE ID: ', this.templateId);
 
     this.templateService
       .fetchSingleAssessmentTemplate(this.templateId)
       .subscribe(
         (value) => {
           this.assessment_template = value;
+          // console.log('assessment_template: ', this.assessment_template);
 
           this.assessment_template.sectionDetails.reduce(
             (sum, item) => sum + item.totalQuestions,
@@ -173,12 +104,65 @@ export class ViewAssessmentTemplateComponent implements OnInit, OnDestroy {
   }
 
   openReuseModal(assessmentSettingsModal: any) {
+    this.selectedDeliveryMode = '';
+    this.selectedProctoringMode = '';
+    this.newAssessment = new AssessmentFromTemplateRequest();
+
+    // const method = (this.assessment_template as any).deliveryMethod;
+    // this.newAssessment.deliveryMethod = method;
+
+    // if (method === AssessmentDeliveryEnum.LIVE_PROCTORING || method === AssessmentDeliveryEnum.AUTO_PROCTORING) {
+    //   this.selectedDeliveryMode = 'Remote';
+    //   this.selectedProctoringMode = 'Supervised';
+    // } else if (method === AssessmentDeliveryEnum.ONLINE_NO_PROCTORING) {
+    //   this.selectedDeliveryMode = 'Remote';
+    //   this.selectedProctoringMode = 'Unsupervised';
+    // } else if (method === AssessmentDeliveryEnum.ON_PREMISE_SECURE_BROWSER || method === AssessmentDeliveryEnum.ON_PREMISE_NO_SECURE_BROWSER) {
+    //   this.selectedDeliveryMode = 'Center';
+    //   this.selectedProctoringMode = '';
+    // } else if (method === AssessmentDeliveryEnum.BYOD) {
+    //   this.selectedDeliveryMode = 'BYOD';
+    //   this.selectedProctoringMode = '';
+    // } else if (method === AssessmentDeliveryEnum.E_PAPER) {
+    //   this.selectedDeliveryMode = 'E-Paper';
+    //   this.selectedProctoringMode = '';
+    // } else {
+    //   this.selectedDeliveryMode = '';
+    //   this.selectedProctoringMode = '';
+    // }
+
+    this.loadingExamGroupsDropdown = true;
+    this.assessmentService.fetchExamGroups(0, 1000).subscribe({
+      next: (res) => {
+        this.loadingExamGroupsDropdown = false;
+        this.allExamGroupsForDropdown = res.data || [];
+      },
+      error: () => {
+        this.loadingExamGroupsDropdown = false;
+      }
+    });
+
     this.modalService.open(assessmentSettingsModal, {
       centered: true,
       size: "lg",
       backdrop: "static",
       keyboard: false,
     });
+  }
+
+  getDeliveryMethod(method: string) {
+    return this.deliveryMethodsWithLabel.find(item => item.value == method);
+  }
+
+  setDeliveryMode(value: string) {
+    this.newAssessment.deliveryMethod = null as any;
+    this.selectedProctoringMode = '';
+
+    if (value == 'BYOD') {
+      this.newAssessment.deliveryMethod = this.deliveryMethodsList.BYOD as any;
+    } else if (value == 'E-Paper') {
+      this.newAssessment.deliveryMethod = this.deliveryMethodsList.E_PAPER as any;
+    }
   }
 
   createExamFromTemplate(newAssesmentForm: any) {

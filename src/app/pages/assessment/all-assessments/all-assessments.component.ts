@@ -1,14 +1,17 @@
 import { AllAssessmentsService, Assessment } from './all-assessments.service';
 import { Router } from '@angular/router';
-import { AfterViewInit, Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 
 import Swal from 'sweetalert2';
 import { NewAssessment } from '../model/new-assessment.model';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AssessmentsService } from '../service/assessments.service';
+import { ExamGroupDto, GroupAssessmentDto } from '../model/exam-group';
 import { HttpErrorResponse } from '@angular/common/http';
-import { AssessmentList, SingleAssessment } from '../model/assessment-list';
+import { AssessmentList, AssessmentListPage, SingleAssessment } from '../model/assessment-list';
 import { AssessmentDeliveryEnum, CentreBasedCategoryEnum, E_PaperEnum, ProctoredCategoryEnum, UnsupervisedCategoryEnum } from '../model/assessment-delivery-enum';
 import { NotifierService } from 'angular-notifier';
 import { Publish } from '../model/publish';
@@ -24,9 +27,11 @@ import { Role } from 'src/app/shared/enum/role';
   providers: [DecimalPipe],
 })
 export class AllAssessmentsComponent implements OnInit, OnDestroy {
+  @ViewChild('viewGroupsModal') viewGroupsModal: any;
   breadCrumbItems!: any;
 
-  assessments: AssessmentList;
+  // assessments: AssessmentList;
+  assessments: AssessmentListPage; // AssessmentListPage from v2 API
 
   submitted: boolean = false;
 
@@ -40,14 +45,14 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   ePaperCategory: any[] = [];
 
-  DELIVERY_METHOD_LABEL: {label:string, description:string}[] = [
-    { label: 'LIVE SUPERVISED', description: 'Exam will be supervised by live proctors.'},
-    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.'},
-    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.'},
-    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.'},
-    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.'},
+  DELIVERY_METHOD_LABEL: { label: string, description: string }[] = [
+    { label: 'PROCTOR SUPERVISED', description: 'Exam will be supervised by live proctors.' },
+    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.' },
+    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.' },
+    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.' },
+    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.' },
     { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
-    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.'},
+    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
   ];
 
   deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
@@ -60,9 +65,10 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   pageNo: number = 0;
 
-  pageSize: number = 100;
+  pageSize: number = 20;
 
-  selectedAssessment: SingleAssessment;
+  // selectedAssessment: SingleAssessment;
+  selectedAssessment: any;
 
   publishingAssessment: boolean = false;
 
@@ -78,10 +84,13 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   processingCreateGroup: boolean = false;
   processingGroupsList: boolean = false;
   processingExamsList: boolean = false;
-  examGroups: any[] = [];
+  examGroups: ExamGroupDto[] = [];
   examsInGroup: any[] = [];
   selectedGroupId: string = "";
   selectedGroupName: string = "";
+  editingGroup: ExamGroupDto | null = null;
+  editingGroupName: string = "";
+  processingEditGroup: boolean = false;
 
   // Group pagination
   groupsPage: number = 0;
@@ -92,6 +101,28 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   examsPage: number = 0;
   examsPageSize: number = 5;
   totalExams: number = 0;
+  removingExamId: string | null = null;
+
+  // Add exam to group modal state & handlers
+  selectedExamForGroup: any = null;
+  processingAddToGroup: boolean = false;
+
+  allExamGroupsForDropdown: ExamGroupDto[] = [];
+  loadingExamGroupsDropdown: boolean = false;
+
+  filters: any = {
+    name: null,
+    status: null,
+    exam_delivery_method: null,
+    exam_group_id: null,
+    progress_status: null,
+    start_date_from: null,
+    start_date_to: null,
+    end_date_from: null,
+    end_date_to: null,
+  };
+  isFilterOpen: boolean = false;
+  searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
     private router: Router,
@@ -101,10 +132,11 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     private notifier: NotifierService,
     private _itemService: ItemServiceService,
     private userService: UserService,
-  ) {}
+  ) { }
 
   ngOnDestroy(): void {
     console.log(this.assessmentService.activeAssessment);
+    this.searchSubject.complete();
   }
 
   onSettingsButtonClicked() {
@@ -130,25 +162,90 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
     this.breadCrumbItems = [{ label: 'Exams', active: true }];
     this.loading = true;
+
+    this.loadingExamGroupsDropdown = true;
+    this.assessmentService.fetchExamGroups(0, 1000).subscribe({
+      next: (res) => {
+        this.allExamGroupsForDropdown = res.data;
+        this.loadingExamGroupsDropdown = false;
+      },
+      error: () => {
+        this.loadingExamGroupsDropdown = false;
+      }
+    });
+
+    this.fetchAssessments();
+
+    this.searchSubject
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(() => {
+        this.applyFilters();
+      });
+
+    this.currentUser = this.userService.getCurrentUser();
+
+    if (this.currentUser.authorities[0] == Role.MARKER) {
+      this.isCurrentUserMarker = true;
+    }
+
+  }
+
+  onSearchChange() {
+    this.searchSubject.next(this.filters.name);
+  }
+
+  fetchAssessments() {
+    this.loading = true;
+
+    // Create a copy of filters to format dates
+    const apiFilters = { ...this.filters };
+    
+    if (apiFilters.start_date_from) {
+      apiFilters.start_date_from = apiFilters.start_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.start_date_to) {
+      apiFilters.start_date_to = apiFilters.start_date_to + 'T23:59:59Z';
+    }
+    if (apiFilters.end_date_from) {
+      apiFilters.end_date_from = apiFilters.end_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.end_date_to) {
+      apiFilters.end_date_to = apiFilters.end_date_to + 'T23:59:59Z';
+    }
+
     this.assessmentService
-      .fetchAllAssessment(this.pageNo, this.pageSize)
+      .fetchAllAssessmentV2(this.pageNo, this.pageSize, apiFilters)
       .subscribe(
         (value) => {
           this.assessments = value;
           this.loading = false;
         },
         (error: HttpErrorResponse) => {
-          // console.log(error);
+          this.assessments = null;
           this.loading = false;
-        },
+        }
       );
+  }
 
-      this.currentUser = this.userService.getCurrentUser();
-      
-      if(this.currentUser.authorities[0] == Role.MARKER) {
-        this.isCurrentUserMarker = true;
-      }
+  applyFilters() {
+    this.pageNo = 1; // reset page to 1 on filter
+    this.fetchAssessments();
+  }
 
+  resetFilters() {
+    this.filters = {
+      name: null,
+      status: null,
+      exam_delivery_method: null,
+      exam_group_id: null,
+      progress_status: null,
+      start_date_from: null,
+      start_date_to: null,
+      end_date_from: null,
+      end_date_to: null,
+    };
+    this.pageNo = 1;
+    this.fetchAssessments();
   }
 
   getDeliveryMethod(method: string) {
@@ -158,9 +255,9 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   setDeliveryMode(value: string) {
     this.newAssessment.deliveryMethod = ''
 
-    if(value == 'BYOD') {
+    if (value == 'BYOD') {
       this.newAssessment.deliveryMethod = this.deliveryMethodsList.BYOD
-    } else if(value == 'E-Paper') {
+    } else if (value == 'E-Paper') {
       this.newAssessment.deliveryMethod = this.deliveryMethodsList.E_PAPER
     }
   }
@@ -219,6 +316,16 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   openNewAssessmentModal(newAssessmentModal: any) {
     this.newAssessment = new NewAssessment();
+    this.loadingExamGroupsDropdown = true;
+    this.assessmentService.fetchExamGroups(0, 1000).subscribe({
+      next: (res) => {
+        this.loadingExamGroupsDropdown = false;
+        this.allExamGroupsForDropdown = res.data || [];
+      },
+      error: () => {
+        this.loadingExamGroupsDropdown = false;
+      }
+    });
     this.modalService.open(newAssessmentModal, { centered: true, size: 'lg' });
   }
 
@@ -240,14 +347,24 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     } */
   }
 
-  setCurrentAssessment(assessment: SingleAssessment) {
+  // setCurrentAssessment(assessment: SingleAssessment) {
+  //   this.assessmentService.activeAssessment = assessment.name;
+  //   this._itemService.setItem('activeAssessment', assessment.name);
+  //   this.assessmentService.activeAssessmentId = assessment.id;
+  //   this.assessmentService.schedulerAssessmentId = assessment.schId;
+  //   this.assessmentService.activeAssessmentDeliveryMethod =
+  //     assessment.deliveryMethod;
+  //   this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
+  // }
+
+  setCurrentAssessment(assessment: any) {
     this.assessmentService.activeAssessment = assessment.name;
     this._itemService.setItem('activeAssessment', assessment.name);
-    this.assessmentService.activeAssessmentId = assessment.id;
-    this.assessmentService.schedulerAssessmentId = assessment.schId;
-    this.assessmentService.activeAssessmentDeliveryMethod =
-      assessment.deliveryMethod;
-    this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.deliveryMethod);
+    // In v2 API, bank_id is the item bank ID (previously id), and id is the schedule ID (previously schId)
+    this.assessmentService.activeAssessmentId = assessment.bank_id;
+    this.assessmentService.schedulerAssessmentId = assessment.id;
+    this.assessmentService.activeAssessmentDeliveryMethod = assessment.delivery_method;
+    this._itemService.setItem('activeAssessmentDeliveryMethod', assessment.delivery_method);
   }
 
   confirm() {
@@ -268,9 +385,9 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   onPageChange(event: any) {
     this.pageSize = event.rows;
-    this.pageNo = event.page;
+    this.pageNo = event.page + 1; // Use event.page + 1 because v2 API is 1-indexed for page
     //this.fetchAssessmentCenters(this.centerPage, this.centerSize);
-    this.ngOnInit();
+    this.fetchAssessments();
   }
 
   publishAssessment(assessment?: any) {
@@ -335,7 +452,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       return;
     }
     this.processingCreateGroup = true;
-    this.assessmentService.createExamGroup(this.newGroupName.trim()).subscribe({
+    this.assessmentService.createExamGroup(this.newGroupName.trim()?.toUpperCase()).subscribe({
       next: (res) => {
         this.processingCreateGroup = false;
         this.notifier.notify("success", "Exam group created successfully");
@@ -362,12 +479,12 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.assessmentService.fetchExamGroups(this.groupsPage, this.groupsPageSize).subscribe({
       next: (res) => {
         this.processingGroupsList = false;
-        this.examGroups = res.content;
-        this.totalGroups = res.total;
+        this.examGroups = res.data || [];
+        this.totalGroups = res.total || 0;
       },
       error: (err) => {
         this.processingGroupsList = false;
-        this.notifier.notify("error", "Failed to fetch groups");
+        this.notifier.notify("error", err?.error?.error ?? "Failed to fetch groups");
       }
     });
   }
@@ -397,8 +514,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
             }
             this.loadExamGroupsPage();
           },
-          error: () => {
-            this.notifier.notify("error", "Failed to delete group");
+          error: (err) => {
+            this.notifier.notify("error", err?.error?.error ?? "Failed to delete group");
           }
         });
       }
@@ -412,7 +529,7 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.examsPageSize = 5;
     this.totalExams = 0;
     this.examsInGroup = [];
-    
+
     this.modalService.open(content, { centered: true, size: "lg" });
     this.loadExamsInGroupPage();
   }
@@ -422,12 +539,16 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.assessmentService.fetchExamsInGroup(this.selectedGroupId, this.examsPage, this.examsPageSize).subscribe({
       next: (res) => {
         this.processingExamsList = false;
-        this.examsInGroup = res.content;
-        this.totalExams = res.total;
+        this.examsInGroup = (res.data || []).map((item: any) => ({
+          id: item.assessment_id,
+          name: item.assessment_name,
+          createdDate: item.assessment_start_date || item.assessment_end_date || null
+        }));
+        this.totalExams = res.total || 0;
       },
       error: (err) => {
         this.processingExamsList = false;
-        this.notifier.notify("error", "Failed to fetch group exams");
+        this.notifier.notify("error", err?.error?.error ?? "Failed to fetch group exams");
       }
     });
   }
@@ -439,8 +560,10 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   }
 
   removeExamFromGroup(examId: string) {
+    this.removingExamId = examId;
     this.assessmentService.removeExamFromGroup(this.selectedGroupId, examId).subscribe({
       next: () => {
+        this.removingExamId = null;
         this.notifier.notify("success", "Exam removed from group");
         if (this.examsInGroup.length === 1 && this.examsPage > 0) {
           this.examsPage--;
@@ -448,15 +571,13 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
         this.loadExamsInGroupPage();
         this.loadExamGroupsPage();
       },
-      error: () => {
-        this.notifier.notify("error", "Failed to remove exam");
+      error: (err) => {
+        this.removingExamId = null;
+        this.notifier.notify("error", err?.error?.error ?? "Failed to remove exam");
       }
     });
-  } 
+  }
 
-  // Add exam to group modal state & handlers
-  selectedExamForGroup: any = null;
-  processingAddToGroup: boolean = false;
 
   openAddToGroupModal(content: any, exam: any) {
     this.selectedExamForGroup = exam;
@@ -468,10 +589,11 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.loadExamGroupsPage();
   }
 
-  addExamToSelectedGroup(group: any) {
+  addExamToSelectedGroup(group: ExamGroupDto) {
     if (!this.selectedExamForGroup) return;
     this.processingAddToGroup = true;
-    this.assessmentService.addExamToGroup(group.id, this.selectedExamForGroup).subscribe({
+    const examSchId = this.selectedExamForGroup.schId || this.selectedExamForGroup.id;
+    this.assessmentService.addExamToGroup(group.id, examSchId).subscribe({
       next: () => {
         this.processingAddToGroup = false;
         this.notifier.notify("success", `Exam added to group "${group.name}" successfully`);
@@ -480,7 +602,36 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         this.processingAddToGroup = false;
-        this.notifier.notify("error", "Failed to add exam to group");
+        this.notifier.notify("error", err?.error?.error ?? "Failed to add exam to group");
+      }
+    });
+  }
+
+  openEditGroupModal(content: any, group: ExamGroupDto) {
+    this.editingGroup = group;
+    this.editingGroupName = group.name;
+    this.modalService.open(content, { centered: true, size: "md" });
+  }
+
+  submitEditGroup(form: any) {
+    if (!this.editingGroup) return;
+    if (!this.editingGroupName || this.editingGroupName.trim() === "") {
+      this.notifier.notify("error", "Group name is required");
+      return;
+    }
+    this.processingEditGroup = true;
+    this.assessmentService.editExamGroup(this.editingGroup.id, this.editingGroupName.trim()?.toUpperCase()).subscribe({
+      next: () => {
+        this.processingEditGroup = false;
+        this.notifier.notify("success", "Exam group renamed successfully");
+        this.modalService.dismissAll();
+        this.editingGroup = null;
+        this.editingGroupName = "";
+        this.openViewGroupsModal(this.viewGroupsModal);
+      },
+      error: (err) => {
+        this.processingEditGroup = false;
+        this.notifier.notify("error", err?.error?.message || "Failed to rename group");
       }
     });
   }

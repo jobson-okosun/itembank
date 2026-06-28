@@ -34,6 +34,7 @@ import { AssessmentCenterDetailsComponent } from "./assessment/assessment-center
 import { CustomFieldSettingsComponent } from "./bank/group/custom-field-settings/custom-field-settings.component";
 import { AddAssessmentGroupSectionComponent } from "./assessment/add-assessment-group-section/add-assessment-group-section.component";
 import { RegFieldSettingsComponent } from "./components/reg-field-settings/reg-field-settings.component";
+import { GroupRegFieldSettingsComponent } from "./components/group-reg-field-settings/group-reg-field-settings.component";
 import { TableModule } from "primeng/table";
 import { EditAssessmentCenterComponent } from "./assessment/edit-assessment-center/edit-assessment-center.component";
 import { EditAssessmentGroupSectionComponent } from "./assessment/edit-assessment-group-section/edit-assessment-group-section.component";
@@ -73,6 +74,7 @@ import { ProctoringComponent } from './components/proctoring/proctoring.componen
     CustomFieldSettingsComponent,
     AddAssessmentGroupSectionComponent,
     RegFieldSettingsComponent,
+    GroupRegFieldSettingsComponent,
     EditAssessmentCenterComponent,
     EditAssessmentGroupSectionComponent,
     AssessmentSectionGroupDetailsComponent,

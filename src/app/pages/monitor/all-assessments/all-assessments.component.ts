@@ -1,4 +1,6 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import { Router } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { AssessmentsService } from "../../assessment/service/assessments.service";
@@ -19,7 +21,7 @@ import { HttpErrorResponse } from "@angular/common/http";
   templateUrl: "./all-assessments.component.html",
   styleUrls: ["./all-assessments.component.scss"],
 })
-export class AllAssessmentsComponent implements OnInit {
+export class AllAssessmentsComponent implements OnInit, OnDestroy {
   breadCrumbItems!: any;
   deliveryMethods: any[] = [];
   assessments: AssessmentListPage;
@@ -42,6 +44,25 @@ export class AllAssessmentsComponent implements OnInit {
   appClearsPage: number = 1;
   appClearsSize: number = 50;
 
+  filters: any = {
+    name: null,
+    status: null,
+    exam_delivery_method: null,
+    exam_group_id: null,
+    progress_status: null,
+    start_date_from: null,
+    start_date_to: null,
+    end_date_from: null,
+    end_date_to: null,
+  };
+
+  allExamGroupsForDropdown: any[] = [];
+  loadingExamGroupsDropdown: boolean = false;
+
+  isFilterOpen: boolean = false;
+
+  searchSubject: Subject<string> = new Subject<string>();
+
   constructor(
     private router: Router,
     public assessmentList: AllAssessmentsService,
@@ -50,25 +71,92 @@ export class AllAssessmentsComponent implements OnInit {
     private notifier: NotifierService
   ) {}
 
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
+  }
+
   ngOnInit(): void {
     let m = Object.keys(AssessmentDeliveryEnum);
     m.forEach((method) => {
       this.deliveryMethods.push(method);
     });
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
-    this.fetchingAssessment = true
+    this.loadingExamGroupsDropdown = true;
+    this.assessmentService.fetchExamGroups(0, 1000).subscribe({
+      next: (res) => {
+        this.allExamGroupsForDropdown = res.data;
+        this.loadingExamGroupsDropdown = false;
+      },
+      error: () => {
+        this.loadingExamGroupsDropdown = false;
+      }
+    });
+
+    this.fetchAssessments();
+
+    this.searchSubject
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(() => {
+        this.applyFilters();
+      });
+  }
+
+  onSearchChange() {
+    this.searchSubject.next(this.filters.name);
+  }
+
+  fetchAssessments() {
+    this.fetchingAssessment = true;
+
+    // Create a copy of filters to format dates
+    const apiFilters = { ...this.filters };
+    
+    if (apiFilters.start_date_from) {
+      apiFilters.start_date_from = apiFilters.start_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.start_date_to) {
+      apiFilters.start_date_to = apiFilters.start_date_to + 'T23:59:59Z';
+    }
+    if (apiFilters.end_date_from) {
+      apiFilters.end_date_from = apiFilters.end_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.end_date_to) {
+      apiFilters.end_date_to = apiFilters.end_date_to + 'T23:59:59Z';
+    }
+
     this.assessmentService
-      .fetchAllAssessmentV2(this.pageNo, this.pageSize)
+      .fetchAllAssessmentV2(this.pageNo, this.pageSize, apiFilters)
       .subscribe(
         (value) => {
           this.assessments = value;
-          this.fetchingAssessment = false
+          this.fetchingAssessment = false;
         },
         (error: HttpErrorResponse) => {
           this.assessments = null;
-          this.fetchingAssessment = false
+          this.fetchingAssessment = false;
         }
       );
+  }
+
+  applyFilters() {
+    this.pageNo = 1; // page is 1-indexed in monitor? Wait, earlier it was 1. But in monitor, onPageChange sets `this.pageNo = event.page + 1`. So page is 1-indexed. Wait, let me check ngOninit original code.
+    this.fetchAssessments();
+  }
+
+  resetFilters() {
+    this.filters = {
+      name: null,
+      status: null,
+      exam_delivery_method: null,
+      exam_group_id: null,
+      progress_status: null,
+      start_date_from: null,
+      start_date_to: null,
+      end_date_from: null,
+      end_date_to: null,
+    };
+    this.pageNo = 1;
+    this.fetchAssessments();
   }
 
   setCurrentAssessment(assessment: AssessmentListItemDTO) {
@@ -82,7 +170,7 @@ export class AllAssessmentsComponent implements OnInit {
   onPageChange(event: any) {
     this.pageSize = event.rows;
     this.pageNo = event.page + 1;
-    this.ngOnInit();
+    this.fetchAssessments();
   }
 
   fetchAppDownloadReport() {

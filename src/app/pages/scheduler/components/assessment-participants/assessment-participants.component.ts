@@ -29,6 +29,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { IRegField } from "../../models/registration-fileds";
 import * as saveAs from "file-saver";
 import { AssessmentsService } from "src/app/pages/assessment/service/assessments.service";
+import { GroupRegFieldSettingsComponent } from "../group-reg-field-settings/group-reg-field-settings.component";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import { UserService } from "src/app/shared/user.service";
 
@@ -98,6 +99,9 @@ export class AssessmentParticipantsComponent implements OnInit {
   batches: Array<IAssessmentBatchDTO>;
   selectedBatchToAddParticipant: string = "";
   processingMoveToAnotherBatch: boolean;
+  checkingGroupMembership: boolean = false;
+  belongsToGroup: boolean = false;
+  groupName: string = "";
 
   constructor(
     private schedulerService: SchedulerService,
@@ -124,6 +128,14 @@ export class AssessmentParticipantsComponent implements OnInit {
 
     this.fetchParticipantsDashboard(this.assessmentId);
     this.fetchBatches(this.assessmentId);
+    this.itembankAssessmentService.getAssessmentGroupMembership(this.assessmentId).subscribe({
+      next: (res) => {
+        if (res) {
+          this.belongsToGroup = res.belongs_to_group;
+          this.groupName = res.group_name || "";
+        }
+      }
+    });
   }
   stopPropagation(event: Event) {
     event.stopPropagation();
@@ -593,9 +605,36 @@ export class AssessmentParticipantsComponent implements OnInit {
   }
 
   goToRegFieldSettingsPage() {
-    this.router.navigate([
-      `schedule/participants/details/${this.assessmentId}/reg-field-settings`,
-    ]);
+    this.checkingGroupMembership = true;
+    this.itembankAssessmentService.getAssessmentGroupMembership(this.assessmentId).subscribe({
+      next: (res) => {
+        this.checkingGroupMembership = false;
+        if (res) {
+          this.belongsToGroup = res.belongs_to_group;
+          this.groupName = res.group_name || "";
+        }
+        if (res && res.belongs_to_group) {
+          const modalRef = this.modalService.open(GroupRegFieldSettingsComponent, {
+            size: "xl",
+            scrollable: true,
+            backdrop: "static"
+          });
+          modalRef.componentInstance.groupId = res.group_id;
+          modalRef.componentInstance.groupName = res.group_name;
+        } else {
+          this.router.navigate([
+            `schedule/participants/details/${this.assessmentId}/reg-field-settings`,
+          ]);
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.checkingGroupMembership = false;
+        this.notifierService.notify(
+          "error",
+          err.error?.message || err.error?.error || "Failed to check assessment group membership"
+        );
+      }
+    });
   }
 
   fetchAssessmentSectionGroups(assessmentId: string) {

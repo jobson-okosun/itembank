@@ -11,6 +11,7 @@ import { AssessmentTemplateComponent } from './assessment-template/assessment-te
 import { ViewAssessmentTemplateComponent } from './view-assessment-template/view-assessment-template.component';
 import { FlatpickrModule } from 'angularx-flatpickr';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     NgbTooltipModule,
     FlatpickrModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgSelectModule
   ],
   exports: [AssessmentTemplateComponent],
 })

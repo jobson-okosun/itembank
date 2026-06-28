@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import {
   AssessmentResultSummary,
@@ -169,9 +170,9 @@ export class DataService {
     });
   }
 
-  fetchExamGroups(): Observable<ExamGroupsPage | ExamGroupDto[]> {
-    const url = `/examalpha/api/v1/sch_mon_grd/reports/result/exam_groups`;
-    return this._http.get<ExamGroupsPage | ExamGroupDto[]>(
+  fetchExamGroups(): Observable<ExamGroupsPage> {
+    const url = `/examalpha/api/v1/sch_mon_grd/exam_groups?page=1&size=1000`;
+    return this._http.get<ExamGroupsPage>(
       environment.schedulerIP + url,
       { withCredentials: true }
     );

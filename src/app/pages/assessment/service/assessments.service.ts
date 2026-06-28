@@ -1,6 +1,6 @@
 import { NewAssessmentSectionTemplate } from "./../model/new-assessment-section-template.model";
 import { Observable } from "rxjs";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ResourceCreated } from "src/app/shared/model/resource-created";
 import { environment } from "src/environments/environment";
@@ -25,6 +25,17 @@ import { SectionItemCount } from "../model/section-item-count";
 import { ImportTemplate } from "../model/import-template";
 import { NotifierService } from "angular-notifier";
 import { AssessmentFromTemplateRequest } from "../model/assessment-template.model";
+import {
+  CreateExamGroupRequest,
+  EditExamGroupRequest,
+  ExamGroupDto,
+  ExamGroupPage,
+  AddAssessmentToGroupRequest,
+  GroupAssessmentDto,
+  GroupAssessmentsPage,
+  AssessmentGroupMembershipDto
+} from "../model/exam-group";
+import { IRegField } from "src/app/pages/scheduler/models/registration-fileds";
 
 @Injectable({
   providedIn: "root",
@@ -324,13 +335,28 @@ export class AssessmentsService {
 
   fetchAllAssessmentV2(
     page?: number,
-    pageSize?: number
+    pageSize?: number,
+    filters?: any
   ): Observable<AssessmentListPage> {
+    let params = new HttpParams();
+    if (page !== undefined && page !== null) params = params.set('page', page);
+    if (pageSize) params = params.set('size', pageSize);
+    
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+          params = params.set(key, value as string | number | boolean);
+        }
+      });
+    }
+
     return this.http.get<AssessmentListPage>(
-      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/list_assessments_v2?page=${page}&size=${pageSize}`,
-      { withCredentials: true }
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/list_assessments_v2`,
+      { params, withCredentials: true }
     );
   }
+
+
 
   // fetchSingleAssessmentSettings(
   //   assessmentId: string
@@ -579,133 +605,110 @@ export class AssessmentsService {
       return this.http.get<ExaminerClearAppPage>(url, { withCredentials: true})
   }
 
-  // In-memory Mock Data Store for Exam Groups
-  private mockExamGroups: any[] = [
-    {
-      id: "group-1",
-      name: "Standard Recruitment 2026",
-      dateCreated: new Date("2026-01-15T09:00:00Z").toISOString(),
-      exams: [
-        { id: "exam-1", name: "Aptitude Test Phase 1", createdDate: new Date("2026-01-15T09:00:00Z").toISOString() },
-        { id: "exam-2", name: "Critical Thinking Exam", createdDate: new Date("2026-01-16T10:30:00Z").toISOString() }
-      ]
-    },
-    {
-      id: "group-2",
-      name: "Management Trainee Selection",
-      dateCreated: new Date("2026-03-10T14:30:00Z").toISOString(),
-      exams: [
-        { id: "exam-3", name: "Numerical Reasoning", createdDate: new Date("2026-03-10T14:30:00Z").toISOString() },
-        { id: "exam-4", name: "Verbal Reasoning Test", createdDate: new Date("2026-03-11T11:00:00Z").toISOString() },
-        { id: "exam-5", name: "Leadership Competency Assessment", createdDate: new Date("2026-03-12T15:00:00Z").toISOString() }
-      ]
-    },
-    {
-      id: "group-3",
-      name: "Technical Internship Evaluation",
-      dateCreated: new Date("2026-05-01T08:15:00Z").toISOString(),
-      exams: []
-    }
-  ];
-
-  createExamGroup(name: string): Observable<any> {
-    const newGroup = {
-      id: 'group-' + Math.random().toString(36).substring(2, 9),
-      name: name,
-      dateCreated: new Date().toISOString(),
-      exams: []
-    };
-    this.mockExamGroups.unshift(newGroup);
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true, data: newGroup });
-        observer.complete();
-      }, 500);
-    });
+  createExamGroup(name: string): Observable<{ id: string }> {
+    const payload: CreateExamGroupRequest = { name };
+    return this.http.post<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups`,
+      payload,
+      { withCredentials: true }
+    );
   }
 
-  fetchExamGroups(page: number, size: number): Observable<any> {
-    const start = page * size;
-    const end = start + size;
-    const content = this.mockExamGroups.slice(start, end).map(g => ({
-      id: g.id,
-      name: g.name,
-      dateCreated: g.dateCreated,
-      examsCount: g.exams.length
-    }));
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({
-          content: content,
-          total: this.mockExamGroups.length,
-          size: size,
-          number: page
-        });
-        observer.complete();
-      }, 400);
-    });
+  fetchExamGroups(page: number, size: number): Observable<ExamGroupPage> {
+    return this.http.get<ExamGroupPage>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups?page=${page + 1}&size=${size}`,
+      { withCredentials: true }
+    );
   }
 
-  deleteExamGroup(groupId: string): Observable<any> {
-    this.mockExamGroups = this.mockExamGroups.filter(g => g.id !== groupId);
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true });
-        observer.complete();
-      }, 300);
-    });
+  editExamGroup(groupId: string, name: string): Observable<{ id: string }> {
+    const payload: EditExamGroupRequest = { name };
+    return this.http.put<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}`,
+      payload,
+      { withCredentials: true }
+    );
   }
 
-  fetchExamsInGroup(groupId: string, page: number, size: number): Observable<any> {
-    const group = this.mockExamGroups.find(g => g.id === groupId);
-    const exams = group ? group.exams : [];
-    const start = page * size;
-    const end = start + size;
-    const content = exams.slice(start, end);
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({
-          content: content,
-          total: exams.length,
-          size: size,
-          number: page,
-          groupName: group ? group.name : ''
-        });
-        observer.complete();
-      }, 400);
-    });
+  deleteExamGroup(groupId: string): Observable<{ id: string }> {
+    return this.http.delete<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}`,
+      { withCredentials: true }
+    );
   }
 
-  removeExamFromGroup(groupId: string, examId: string): Observable<any> {
-    const group = this.mockExamGroups.find(g => g.id === groupId);
-    if (group) {
-      group.exams = group.exams.filter(e => e.id !== examId);
-    }
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true });
-        observer.complete();
-      }, 300);
-    });
+  fetchExamsInGroup(groupId: string, page: number, size: number): Observable<GroupAssessmentsPage> {
+    return this.http.get<GroupAssessmentsPage>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/assessments?page=${page + 1}&size=${size}`,
+      { withCredentials: true }
+    );
   }
 
-  addExamToGroup(groupId: string, exam: any): Observable<any> {
-    const group = this.mockExamGroups.find(g => g.id === groupId);
-    if (group) {
-      const exists = group.exams.some(e => e.id === exam.id);
-      if (!exists) {
-        group.exams.push({
-          id: exam.id,
-          name: exam.name,
-          createdDate: exam.createdDate || new Date().toISOString()
-        });
-      }
-    }
-    return new Observable(observer => {
-      setTimeout(() => {
-        observer.next({ success: true });
-        observer.complete();
-      }, 300);
-    });
+  removeExamFromGroup(groupId: string, examId: string): Observable<{ id: string }> {
+    return this.http.delete<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/assessments/${examId}`,
+      { withCredentials: true }
+    );
+  }
+
+  addExamToGroup(groupId: string, examId: string): Observable<{ id: string }> {
+    const payload: AddAssessmentToGroupRequest = { assessment_id: examId };
+    return this.http.post<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/assessments`,
+      payload,
+      { withCredentials: true }
+    );
+  }
+
+  getAssessmentGroupMembership(assessmentId: string): Observable<AssessmentGroupMembershipDto> {
+    return this.http.get<AssessmentGroupMembershipDto>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/group_membership`,
+      { withCredentials: true }
+    );
+  }
+
+  fetchGroupRegFields(groupId: string): Observable<IRegField[]> {
+    return this.http.get<IRegField[]>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields`,
+      { withCredentials: true }
+    );
+  }
+
+  addGroupRegField(groupId: string, payload: any): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields`,
+      payload,
+      { withCredentials: true }
+    );
+  }
+
+  editGroupRegField(groupId: string, fieldId: string, payload: any): Observable<{ id: string }> {
+    return this.http.put<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields/${fieldId}`,
+      payload,
+      { withCredentials: true }
+    );
+  }
+
+  deleteGroupRegField(groupId: string, fieldId: string): Observable<{ id: string }> {
+    return this.http.delete<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields/${fieldId}`,
+      { withCredentials: true }
+    );
+  }
+
+  setGroupRegFieldLogin(groupId: string, fieldId: string): Observable<{ id: string }> {
+    return this.http.post<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields/${fieldId}/login`,
+      {},
+      { withCredentials: true }
+    );
+  }
+
+  removeGroupRegFieldLogin(groupId: string, fieldId: string): Observable<{ id: string }> {
+    return this.http.delete<{ id: string }>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/reg-fields/${fieldId}/login`,
+      { withCredentials: true }
+    );
   }
 }

@@ -69,9 +69,9 @@
                     </div>
                     <div class="mb-2">
                       <label for="examGroup" class="small">Exam Group</label>
-                      <select formControlName="exam_group" class="form-control control-input">
+                      <select formControlName="exam_group_id" class="form-control control-input">
                         <option value="">-- Select group --</option>
-                        <option *ngFor="let item of examGroups?.content" [value]="item.id">
+                        <option *ngFor="let item of examGroups" [value]="item.id">
                           {{ item.name }}
                         </option>
                       </select>
@@ -522,9 +522,9 @@
                   </div>
                   <div class="mb-2">
                     <label for="examGroup" class="small">Exam Group</label>
-                    <select formControlName="exam_group" class="form-control control-input">
+                    <select formControlName="exam_group_id" class="form-control control-input">
                       <option value="">-- Select group --</option>
-                      <option *ngFor="let item of examGroups?.content" [value]="item.id">
+                      <option *ngFor="let item of examGroups" [value]="item.id">
                         {{ item.name }}
                       </option>
                     </select>
@@ -735,9 +735,9 @@
                 </div>
                 <div class="mb-2">
                   <label for="examGroup" class="small">Exam Group</label>
-                  <select formControlName="exam_group" class="form-control control-input">
+                  <select formControlName="exam_group_id" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
+                    <option *ngFor="let item of examGroups" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -820,9 +820,9 @@
                 </div>
                 <div class="mb-2">
                   <label for="examGroup" class="small">Exam Group</label>
-                  <select formControlName="exam_group" class="form-control control-input">
+                  <select formControlName="exam_group_id" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
+                    <option *ngFor="let item of examGroups" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -1182,10 +1182,10 @@
                   <input formControlName="duration_less_than" type="number" class="form-control control-input" />
                 </div>
                 <div class="col-lg-4 mb-2">
-                  <label for="exam_group" class="small">Exam Group</label>
-                  <select formControlName="exam_group" class="form-control control-input">
+                  <label for="exam_group_id" class="small">Exam Group</label>
+                  <select formControlName="exam_group_id" class="form-control control-input">
                     <option value="">-- Select group --</option>
-                    <option *ngFor="let item of examGroups?.content" [value]="item.id">
+                    <option *ngFor="let item of examGroups" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -1433,14 +1433,14 @@
                     <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-success" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
                       <i class="ri-play-fill"></i>
                     </span>
-                    <span style="font-size: 14px;">{{ participant.startTime }}</span>
+                    <span style="font-size: 12px;">{{ participant.startTime }}</span>
                   </div>
                   <!-- End Time -->
                   <div class="d-flex align-items-center" style="gap: 4px;">
                     <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-danger" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
                       <i class="ri-stop-fill"></i>
                     </span>
-                    <span  style="font-size: 14px;">{{ participant.endTime }}</span>
+                    <span  style="font-size: 12px;">{{ participant.endTime }}</span>
                   </div>
                 </div>
               </td>
@@ -1458,7 +1458,7 @@
                 <div *ngIf="participant?.loginIps" triggers="mouseenter:mouseleave" [ngbPopover]="loginIPPopOver" popoverTitle="Login IP Addresses" class="d-flex flex-column" style="gap: 3px; font-size: 11px; line-height: 1.2; cursor: pointer; min-width: 110px;">
                   <ng-container *ngFor="let ip of participant.loginIps; let i = index">
                     <div *ngIf="i < 3" class="d-flex align-items-center justify-content-between">
-                      <span>{{ ip.ip_address }}</span>
+                      <span><b>{{ ip.ip_address }}</b>  - <span>{{ ip?.time | date: 'medium'}}</span></span>
                       <span *ngIf="i === 2 && participant.loginIps.length > 3" class="badge rounded-circle bg-info d-inline-flex align-items-center justify-content-center text-white p-0 ms-1" style="width: 16px; height: 16px; font-size: 9px; flex-shrink: 0;">
                         +{{ participant.loginIps.length - 3 }}
                       </span>

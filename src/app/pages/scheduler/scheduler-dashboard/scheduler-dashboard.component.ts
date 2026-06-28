@@ -1,4 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subject } from "rxjs";
+import { debounceTime, distinctUntilChanged } from "rxjs/operators";
 import {
   AllAssessmentsService,
   Assessment,
@@ -47,7 +49,26 @@ export class SchedulerDashboardComponent implements OnInit {
   selectedAssessment: SingleAssessment;
 
   publishingAssessment: boolean = false;
-  loading: boolean = false
+  loading: boolean = false;
+
+  filters: any = {
+    name: null,
+    status: null,
+    exam_delivery_method: null,
+    exam_group_id: null,
+    progress_status: null,
+    start_date_from: null,
+    start_date_to: null,
+    end_date_from: null,
+    end_date_to: null,
+  };
+
+  allExamGroupsForDropdown: any[] = [];
+  loadingExamGroupsDropdown: boolean = false;
+
+  isFilterOpen: boolean = false;
+
+  searchSubject: Subject<string> = new Subject<string>();
 
   constructor(
     private router: Router,
@@ -57,7 +78,9 @@ export class SchedulerDashboardComponent implements OnInit {
     private notifier: NotifierService
   ) { }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    this.searchSubject.complete();
+  }
 
   onSettingsButtonClicked() {
     document.body.classList.toggle("right-bar-enabled");
@@ -74,40 +97,89 @@ export class SchedulerDashboardComponent implements OnInit {
       this.deliveryMethods.push(method);
     });
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
-    this.loading = true
+
+    this.loadingExamGroupsDropdown = true;
+    this.assessmentService.fetchExamGroups(0, 1000).subscribe({
+      next: (res) => {
+        this.allExamGroupsForDropdown = res.data;
+        this.loadingExamGroupsDropdown = false;
+      },
+      error: () => {
+        this.loadingExamGroupsDropdown = false;
+      }
+    });
+
+    this.fetchAssessments();
+
+    this.searchSubject
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe(() => {
+        this.applyFilters();
+      });
+  }
+
+  onSearchChange() {
+    this.searchSubject.next(this.filters.name);
+  }
+
+  fetchAssessments() {
+    this.loading = true;
+
+    // Create a copy of filters to format dates
+    const apiFilters = { ...this.filters };
+    
+    if (apiFilters.start_date_from) {
+      apiFilters.start_date_from = apiFilters.start_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.start_date_to) {
+      apiFilters.start_date_to = apiFilters.start_date_to + 'T23:59:59Z';
+    }
+    if (apiFilters.end_date_from) {
+      apiFilters.end_date_from = apiFilters.end_date_from + 'T00:00:00Z';
+    }
+    if (apiFilters.end_date_to) {
+      apiFilters.end_date_to = apiFilters.end_date_to + 'T23:59:59Z';
+    }
+
     this.assessmentService
-      .fetchAllAssessmentV2(this.pageNo, this.pageSize)
+      .fetchAllAssessmentV2(this.pageNo, this.pageSize, apiFilters)
       .subscribe(
         (value) => {
           this.assessments = value;
-          this.loading = false
+          this.loading = false;
         },
         (error: HttpErrorResponse) => {
-          this.loading = false
+          this.loading = false;
           // console.log(error);
         }
       );
   }
 
+  applyFilters() {
+    this.pageNo = 1;
+    this.fetchAssessments();
+  }
+
+  resetFilters() {
+    this.filters = {
+      name: null,
+      status: null,
+      exam_delivery_method: null,
+      exam_group_id: null,
+      progress_status: null,
+      start_date_from: null,
+      start_date_to: null,
+      end_date_from: null,
+      end_date_to: null,
+    };
+    this.pageNo = 1;
+    this.fetchAssessments();
+  }
+
   onScheduleExamListPageChange(event: any) {
     this.pageSize = event.rows;
-    this.pageNo = event.page * event.rows
-    // console.log(this.pageNo, this.pageSize)
-    // this.loading = true
-
-    this.loading = false;
-    this.assessmentService
-      .fetchAllAssessmentV2(this.pageNo, this.pageSize)
-      .subscribe(
-        (value) => {
-          this.assessments = value;
-          this.loading = false;
-        },
-        (error: HttpErrorResponse) => {
-          this.loading = false;
-          // console.log(error);
-        }
-      );
+    this.pageNo = event.page * event.rows;
+    this.fetchAssessments();
   }
 
   createNewAssessment(newAssessmentForm: any) {

@@ -1,27 +1,132 @@
 <app-breadcrumbs title="EXAMS" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs>
 
-<div *ngIf="!assessments || loading" class="d-flex align-items-center justify-content-center" style="height: 60vh">
-  <div class="d-flex align-items-center gap-2">
-    <div class="spinner-border text-info fs-18" role="status">
-      <span class="visually-hidden">Loading...</span>
-    </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading Exams...</span>
-  </div>
-</div>
-
-<div *ngIf="assessments" class="row">
-  <div class="d-flex justify-content-between mb-2">
+<div *ngIf="assessments" class="row align-items-center mb-3">
+  <div class="col-sm">
     <h5 class="card-title mb-0 flex-grow-1">
-      List of all Exams({{ assessments.content.length }})
+      List of all Exams ({{ assessments ? assessments.total : 0}})
     </h5>
-    <div class="d-flex gap-2" *ngIf="!isCurrentUserMarker">
-      <a routerLink="/examalpha/exams/templates" class="btn btn-soft-success"><i
-          class="ri-pages-line align-bottom me-1"></i>Exam Templates</a>
-      <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i
-          class="ri-add-line align-bottom me-1"></i> Create New Exam</a>
+  </div>
+  <div class="col-sm-auto mt-3 mt-sm-0">
+    <div class="d-flex gap-2 align-items-center" *ngIf="!isCurrentUserMarker">
+      
+      <!-- Search Input -->
+      <div class="search-box">
+        <input type="text" class="form-control search" placeholder="Search for exam..." [(ngModel)]="filters.name" (ngModelChange)="onSearchChange()">
+        <i class="ri-search-line search-icon"></i>
+      </div>
+
+      <!-- More Filters Dropdown -->
+      <div class="dropdown" ngbDropdown #filterDrop="ngbDropdown" [autoClose]="'outside'">
+        <button class="btn btn-soft-primary" id="advancedFiltersDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+          <i class="ri-filter-3-line align-bottom me-1"></i> More Filters
+        </button>
+        <div ngbDropdownMenu style="min-width: 600px; max-width: 90vw;" class="border shadow-sm p-3 dropdown-menu-end">
+          <div class="row g-3">
+            <!-- Status Select -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Status</label>
+                <select class="form-select" [(ngModel)]="filters.status">
+                  <option [ngValue]="null">All Status</option>
+                  <option value="DRAFT">DRAFT</option>
+                  <option value="PUBLISHED">PUBLISHED</option>
+                  <option value="CLOSED">CLOSED</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Progress Status -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Progress</label>
+                <select class="form-select" [(ngModel)]="filters.progress_status">
+                  <option [ngValue]="null">All Progress</option>
+                  <option value="TAKEN">TAKEN</option>
+                  <option value="NOT_TAKEN">NOT_TAKEN</option>
+                  <option value="IN_PROGRESS">IN_PROGRESS</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Delivery Method -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Delivery Method</label>
+                <select class="form-select" [(ngModel)]="filters.exam_delivery_method">
+                  <option [ngValue]="null">All Delivery</option>
+                  <option *ngFor="let m of deliveryMethods" [value]="m">{{m}}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Exam Group -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Exam Group</label>
+                <ng-select
+                  [items]="allExamGroupsForDropdown"
+                  [loading]="loadingExamGroupsDropdown"
+                  bindLabel="name"
+                  bindValue="id"
+                  placeholder="Select Exam Group"
+                  [(ngModel)]="filters.exam_group_id"
+                  [clearable]="true"
+                  [searchable]="true"
+                >
+                </ng-select>
+              </div>
+            </div>
+
+            <!-- Start Date From -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Start Date (From)</label>
+                <input type="date" class="form-control" [(ngModel)]="filters.start_date_from" />
+              </div>
+            </div>
+
+            <!-- Start Date To -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Start Date (To)</label>
+                <input type="date" class="form-control" [(ngModel)]="filters.start_date_to" />
+              </div>
+            </div>
+            
+            <!-- End Date From -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">End Date (From)</label>
+                <input type="date" class="form-control" [(ngModel)]="filters.end_date_from" />
+              </div>
+            </div>
+
+            <!-- End Date To -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">End Date (To)</label>
+                <input type="date" class="form-control" [(ngModel)]="filters.end_date_to" />
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-12 d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+              <button type="button" class="btn btn-soft-danger" (click)="resetFilters(); filterDrop.close()">
+                <i class="ri-refresh-line me-1 align-bottom"></i> Reset
+              </button>
+              <button type="button" class="btn btn-primary" (click)="applyFilters(); filterDrop.close()">
+                <i class="ri-equalizer-fill me-1 align-bottom"></i> Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/examalpha/exams/templates" class="btn btn-soft-primary"><i class="ri-pages-line align-bottom me-1"></i>Exam Templates</a>
+      <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a>
       
       <div class="dropdown" ngbDropdown>
-        <button class="btn btn-soft-info dropdown-toggle" type="button" ngbDropdownToggle>
+        <button class="btn btn-soft-primary dropdown-toggle" type="button" ngbDropdownToggle>
           <i class="ri-folder-zip-line align-bottom me-1"></i> Exam Group
         </button>
         <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
@@ -41,14 +146,23 @@
   </div>
 </div>
 
+<div *ngIf="loading" class="d-flex align-items-center justify-content-center py-5">
+  <div class="d-flex align-items-center gap-2">
+    <div class="spinner-border text-info fs-18" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading Exams...</span>
+  </div>
+</div>
+
 <div *ngIf="!loading && assessments?.content?.length > 0" class="row">
   <ng-container *ngFor="let assessment of assessments.content">
     <div class="col-sm-12 col-lg-6">
       <div class="card">
         <div class="card-header d-flex mb-0 align-items-center">
           <h6 class="fs-15 text-truncate flex-grow-1">
-            <a (click)="setCurrentAssessment(assessment)" routerLink="/examalpha/exams/{{ assessment.id }}">{{
-              assessment.name }}</a>
+            <a (click)="setCurrentAssessment(assessment)" routerLink="/examalpha/exams/{{ assessment.bank_id }}">{{
+              assessment.name?.toUpperCase() }}</a>
           </h6>
           <div class="dropdown" ngbDropdown>
             <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
@@ -57,7 +171,7 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
               <li *ngIf="!isCurrentUserMarker">
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/exams/{{ assessment.id }}"><i
+                  routerLink="/examalpha/exams/{{ assessment.bank_id }}"><i
                     class="bx bxs-edit align-bottom me-2 text-muted"></i>
                   Manage Exam</a>
               </li>
@@ -85,7 +199,7 @@
                 </li> -->
               <li *ngIf="!isCurrentUserMarker">
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/reports/{{ assessment.schId }}/results" data-bs-toggle="modal">
+                  routerLink="/examalpha/reports/{{ assessment.id }}/results" data-bs-toggle="modal">
                   <i class="ri-survey-line align-bottom me-2 text-muted"></i>
                   Results
                 </a>
@@ -98,13 +212,13 @@
               </li> -->
               <li>
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/exams/{{ assessment.schId }}/grading" data-bs-toggle="modal">
+                  routerLink="/examalpha/exams/{{ assessment.id }}/grading" data-bs-toggle="modal">
                   <i class="ri-check-double-line align-bottom me-2 text-muted"></i>
                   Grading
                 </a>
               </li>
               <li>
-                <a class="dropdown-item" routerLink="/examalpha/exams/{{ assessment.id }}/marking-guide/sections"
+                <a class="dropdown-item" routerLink="/examalpha/exams/{{ assessment.bank_id }}/marking-guide/sections"
                   [queryParams]="{ assessmentName: assessment.name }"><i
                     class="ri-check-double-line align-bottom me-2 text-muted"></i>
                   Marking Guide</a>
@@ -141,13 +255,13 @@
               </li>
               <li>
                 Delivery Method:
-                <span class="text-capitalize text-info"><i *ngIf="assessment.deliveryMethod.includes('OFFLINE')"
+                <span class="text-capitalize text-info"><i *ngIf="assessment.delivery_method.includes('OFFLINE')"
                     class="ri-cloud-off-line align-bottom"></i>
-                  <i *ngIf="assessment.deliveryMethod == 'ONLINE'" class="ri-rss-line align-bottom"></i>
+                  <i *ngIf="assessment.delivery_method == 'ONLINE'" class="ri-rss-line align-bottom"></i>
                   <i *ngIf="
-                      assessment.deliveryMethod == 'ONLINE_WITH_HUMAN_PROCTOR'
+                      assessment.delivery_method == 'ONLINE_WITH_HUMAN_PROCTOR'
                     " class="ri-user-shared-line align-bottom"></i>
-                  {{ assessment.deliveryMethod }}</span>
+                  {{ assessment.delivery_method }}</span>
               </li>
               <li>
                 Duration:
@@ -157,12 +271,12 @@
               <li>
                 Total Sections:
                 <span class="text-primary"><i class="ri-layout-grid-line align-bottom"></i>
-                  {{ assessment.totalSections }}</span>
+                  {{ assessment.total_sections }}</span>
               </li>
               <li>
                 Created At:
                 <span class="text-primary"><i class="ri-calendar-event-line align-bottom"></i>
-                  {{ assessment.createdDate | date : "medium" }}</span>
+                  {{ assessment.created_at | date : "medium" }}</span>
               </li>
               <!-- <li>
                 <div class="d-flex gap-2">
@@ -182,30 +296,30 @@
                   <div class="d-flex flex-wrap gap-2">
                     <span
                       class="badge badge-soft-success rounded-pill fs-12"
-                      *ngIf="assessment.totalCenters">Centers
+                      *ngIf="assessment.total_centers">Centers
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalCenters }})</span>
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_centers }})</span>
                     <span
                       class="badge badge-soft-success rounded-pill fs-12"
-                      *ngIf="assessment.totalCenterAdmins">Center Admin
+                      *ngIf="assessment.total_center_admins">Center Admin
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalCenterAdmins }})</span>
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_center_admins }})</span>
                     <span
                       class="badge badge-soft-success rounded-pill fs-12"
-                      *ngIf="assessment.totalSectionsGroup">Section Groups
+                      *ngIf="assessment.total_section_groups">Section Groups
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.totalSectionsGroup }})</span>
+                        class="ri-check-double-line text-success me-2 align-middle"></i> ({{ assessment.total_section_groups }})</span>
                     <span
                       class="badge badge-soft-success rounded-pill fs-12"
-                      *ngIf="assessment.totalParticipants">Participants
+                      *ngIf="assessment.total_participants">Participants
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.totalParticipants }})</span>
-                    <!-- *ngIf="assessment.totalProctors" -->
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment.total_participants }})</span>
+                    <!-- *ngIf="assessment.total_proctors" -->
                     <span
                       class="badge badge-soft-success rounded-pill fs-12"
                       >Proctors
                       <i
-                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment?.totalProctors ?? 0 }})</span>
+                        class="ri-check-double-line text-success me-2 align-middle"></i>  ({{ assessment?.total_proctors ?? 0 }})</span>
                   </div>
               </li>
             </ul>
@@ -216,12 +330,12 @@
             <div class="fs-12 flex-grow-1">
               Start Date:
               <span class="fs-12 text-secondary"><i class="ri-time-line align-bottom"></i>
-                {{ assessment.startDateTime | date : "medium" }}</span>
+                {{ assessment.start_date | date : "medium" }}</span>
             </div>
             <div class="fs-12 flex-grow-1">
               End Date:
               <span class="fs-12 text-secondary"><i class="ri-time-line align-bottom"></i>
-                {{ assessment.endDateTime | date : "medium" }}</span>
+                {{ assessment.end_date | date : "medium" }}</span>
             </div>
           </div>
         </div>
@@ -241,9 +355,9 @@
   </div>
 </div>
 
-<div [class.d-none]="loading || !assessments || assessments?.totalElements < 1">
-  <p-paginator [totalRecords]="assessments?.totalElements ?? 0" (onPageChange)="onPageChange($event)" [first]="0"
-    [rowsPerPageOptions]="[100, 150, 200, 300]" [rows]="100" [showCurrentPageReport]="true"
+<div [class.d-none]="loading || !assessments || assessments?.total < 1">
+  <p-paginator [totalRecords]="assessments?.total ?? 0" (onPageChange)="onPageChange($event)" [first]="0"
+    [rowsPerPageOptions]="[20, 50, 100, 150, 200, 300]" [rows]="20" [showCurrentPageReport]="true"
     currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
   </p-paginator>
 </div>
@@ -344,7 +458,7 @@
 
           <div [ngClass]="deliveryMode.value === 'Remote' ? 'col-6' : 'd-none'">
             <label for="proctoringMode" class="form-label"> Supervision type <span class="text-danger">*</span></label>
-            <select #proctoringMode class="form-select" >
+            <select #proctoringMode class="form-select" (change)="newAssessment.deliveryMethod = ''">
               <option value=""> -- Select type --</option>
               <option value="Supervised">Supervised</option>
               <option value="Unsupervised">Unsupervised</option>
@@ -422,16 +536,25 @@
           </div>
         </div>
 
-        <div class="row mt-3">
+        <div class="row mt-0">
           <div class="col-12">
-            <div class="form-check form-switch form-switch-lg">
-              <input type="checkbox" class="form-check-input" id="compositeExamCheckbox" name="composite" [(ngModel)]="newAssessment.composite" />
-              <label class="form-check-label fw-semibold" for="compositeExamCheckbox">Composite Exam</label>
-            </div>
-            <div *ngIf="newAssessment.composite" class="mt-2 text-muted small alert alert-info py-2 px-3">
+            <label class="form-label">Exam Group (Optional)</label>
+            <ng-select
+              [items]="allExamGroupsForDropdown"
+              [loading]="loadingExamGroupsDropdown"
+              bindLabel="name"
+              bindValue="id"
+              placeholder="Select Exam Group"
+              name="examGroupId"
+              [(ngModel)]="newAssessment.examGroupId"
+              [clearable]="true"
+              [searchable]="true"
+            >
+            </ng-select>
+            <!-- <div class="mt-2 text-muted small alert alert-info py-2 px-3">
               <i class="ri-information-line me-1 align-middle"></i>
-              A composite exam allows combining multiple sections or subjects into a single comprehensive test.
-            </div>
+              You can optionally link this exam to an existing exam group.
+            </div> -->
           </div>
         </div>
       </div>
@@ -566,8 +689,8 @@
           <tbody>
             <tr *ngFor="let group of examGroups">
               <td>{{ group.name }}</td>
-              <td>{{ group.createdDate | date: 'medium' }}</td>
-              <td>{{ group.examsCount }}</td>
+              <td>{{ group.date_created | date: 'medium' }}</td>
+              <td>{{ group.assessment_count }}</td>
               <td>
                 <div class="dropdown" ngbDropdown>
                   <button class="btn btn-soft-secondary btn-sm dropdown arrow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
@@ -577,6 +700,11 @@
                     <li>
                       <a class="dropdown-item" style="cursor: pointer" (click)="modal.close('Close click'); openViewExamsModal(viewExamsModal, group)">
                         <i class="ri-eye-fill align-bottom me-2 text-muted"></i> View Exams
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" style="cursor: pointer" (click)="modal.close('Close click'); openEditGroupModal(editGroupModal, group)">
+                        <i class="ri-pencil-fill align-bottom me-2 text-muted"></i> Rename Group
                       </a>
                     </li>
                     <li>
@@ -643,8 +771,10 @@
               <td>{{ exam.name }}</td>
               <td>{{ exam.createdDate | date: 'medium' }}</td>
               <td>
-                <button type="button" class="btn btn-sm btn-soft-danger" (click)="removeExamFromGroup(exam.id)">
-                  <i class="ri-delete-bin-line align-bottom me-1"></i> Remove Exam
+                <button type="button" class="btn btn-sm btn-soft-danger" [disabled]="removingExamId === exam.id" (click)="removeExamFromGroup(exam.id)">
+                  <i class="ri-delete-bin-line align-bottom me-1" *ngIf="removingExamId !== exam.id"></i>
+                  <i class="spinner-border spinner-border-sm me-1" *ngIf="removingExamId === exam.id"></i>
+                  {{ removingExamId === exam.id ? 'Removing...' : 'Remove Exam' }}
                 </button>
               </td>
             </tr>
@@ -708,8 +838,8 @@
           <tbody>
             <tr *ngFor="let group of examGroups">
               <td>{{ group.name }}</td>
-              <td>{{ group.createdDate | date: 'medium' }}</td>
-              <td>{{ group.examsCount }}</td>
+              <td>{{ group.date_created | date: 'medium' }}</td>
+              <td>{{ group.assessment_count }}</td>
               <td>
                 <button type="button" class="btn btn-sm btn-soft-primary" [disabled]="processingAddToGroup" (click)="addExamToSelectedGroup(group)">
                   <i class="ri-add-line align-bottom me-1"></i> Add to Group
@@ -732,6 +862,42 @@
     <div class="hstack gap-2 justify-content-end">
       <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
         Close
+      </button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editGroupModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">RENAME EXAM GROUP</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click'); openViewGroupsModal(viewGroupsModal)">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <form #editGroupForm="ngForm" (ngSubmit)="editGroupForm.valid && submitEditGroup(editGroupForm)">
+      <div class="mb-3">
+        <label for="editGroupName" class="form-label">Group Name <span class="text-danger">*</span></label>
+        <input type="text" name="name" id="editGroupName" class="form-control text-uppercase" placeholder="Enter group name" required
+          [(ngModel)]="editingGroupName" />
+      </div>
+    </form>
+  </div>
+  <div class="card-footer py-2">
+    <div class="hstack gap-2 justify-content-end">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click'); openViewGroupsModal(viewGroupsModal)">
+        Cancel
+      </button>
+      <button type="button" *ngIf="!processingEditGroup" (click)="submitEditGroup(editGroupForm)" [disabled]="editGroupForm.invalid || !editingGroupName || editingGroupName.trim() === ''" class="btn btn-primary">
+        Save
+      </button>
+      <button *ngIf="processingEditGroup" class="btn btn-outline-primary btn-load" disabled>
+        <span class="d-flex align-items-center">
+          <span class="spinner-border flex-shrink-0" role="status">
+            <span class="visually-hidden">Saving...</span>
+          </span>
+          <span class="flex-grow-1 ms-2"> Saving... </span>
+        </span>
       </button>
     </div>
   </div>

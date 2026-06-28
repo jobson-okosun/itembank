@@ -13,10 +13,5 @@ export class AssessmentFromTemplateRequest {
   endDate: string;
   deliveryMethod: AssessmentDeliveryEnum;
   description: string;
-
-  // Newly added properties
-  proctored?: string;
-  unsupervised?: string;
-  centreBased?: string;
-  ePaper?: string;
+  examGroupId?: string | null;
 }

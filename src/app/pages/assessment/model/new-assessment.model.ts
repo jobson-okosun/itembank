@@ -5,5 +5,5 @@ export class NewAssessment {
   duration: number;
   startDate: string = "";
   endDate: string = "";
-  composite?: boolean = false;
+  examGroupId: string | null = null;
 }

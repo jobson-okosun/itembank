@@ -3,21 +3,148 @@
   [breadcrumbItems]="breadCrumbItems"
 ></app-breadcrumbs>
 
-<div
-  *ngIf="!assessments || loading"
-  class="d-flex align-items-center justify-content-center"
-  style="height: 60vh"
->
+<div *ngIf="assessments" class="row align-items-center mb-3">
+  <div class="col-sm">
+    <h5 class="card-title mb-0 flex-grow-1">
+      List of all Exams ({{ assessments ? assessments.total : 0}})
+    </h5>
+  </div>
+  <div class="col-sm-auto mt-3 mt-sm-0">
+    <div class="d-flex gap-2">
+      <div class="search-box">
+        <input type="text" class="form-control search" placeholder="Search for exam..." [(ngModel)]="filters.name" (ngModelChange)="onSearchChange()">
+        <i class="ri-search-line search-icon"></i>
+      </div>
+      
+      <div class="dropdown" ngbDropdown #filterDrop="ngbDropdown" [autoClose]="'outside'">
+        <button class="btn btn-soft-primary" id="advancedFiltersDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+          <i class="ri-filter-3-line align-bottom me-1"></i> More Filters
+        </button>
+        <div ngbDropdownMenu style="min-width: 600px; max-width: 90vw;" class="border shadow-sm p-3 dropdown-menu-end">
+          <div class="row g-3">
+            <!-- Status Select -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Status</label>
+                <select class="form-select" [(ngModel)]="filters.status">
+                  <option [ngValue]="null">All Status</option>
+                  <option value="DRAFT">DRAFT</option>
+                  <option value="PUBLISHED">PUBLISHED</option>
+                  <option value="CLOSED">CLOSED</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Progress Status -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Progress</label>
+                <select class="form-select" [(ngModel)]="filters.progress_status">
+                  <option [ngValue]="null">All Progress</option>
+                  <option value="TAKEN">TAKEN</option>
+                  <option value="NOT_TAKEN">NOT_TAKEN</option>
+                  <option value="IN_PROGRESS">IN_PROGRESS</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Delivery Method -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Delivery Method</label>
+                <select class="form-select" [(ngModel)]="filters.exam_delivery_method">
+                  <option [ngValue]="null">All Delivery</option>
+                  <option *ngFor="let m of deliveryMethods" [value]="m">{{m}}</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Exam Group -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Exam Group</label>
+                <ng-select
+                  [items]="allExamGroupsForDropdown"
+                  [loading]="loadingExamGroupsDropdown"
+                  bindLabel="name"
+                  bindValue="id"
+                  placeholder="Select Exam Group"
+                  [(ngModel)]="filters.exam_group_id"
+                  [clearable]="true"
+                  [searchable]="true"
+                >
+                </ng-select>
+              </div>
+            </div>
+
+            <!-- Start Date From -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Start Date (From)</label>
+                <input type="date"
+                  class="form-control"
+                  [(ngModel)]="filters.start_date_from"
+                />
+              </div>
+            </div>
+
+            <!-- Start Date To -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">Start Date (To)</label>
+                <input type="date"
+                  class="form-control"
+                  [(ngModel)]="filters.start_date_to"
+                />
+              </div>
+            </div>
+            
+            <!-- End Date From -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">End Date (From)</label>
+                <input type="date"
+                  class="form-control"
+                  [(ngModel)]="filters.end_date_from"
+                />
+              </div>
+            </div>
+
+            <!-- End Date To -->
+            <div class="col-sm-6">
+              <div>
+                <label class="form-label">End Date (To)</label>
+                <input type="date"
+                  class="form-control"
+                  [(ngModel)]="filters.end_date_to"
+                />
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="col-12 d-flex justify-content-end gap-2 mt-4 border-top pt-3">
+              <button type="button" class="btn btn-soft-danger" (click)="resetFilters(); filterDrop.close()">
+                <i class="ri-refresh-line me-1 align-bottom"></i> Reset
+              </button>
+              <button type="button" class="btn btn-primary" (click)="applyFilters(); filterDrop.close()">
+                <i class="ri-equalizer-fill me-1 align-bottom"></i> Apply Filters
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="loading" class="d-flex align-items-center justify-content-center py-5">
   <div class="d-flex align-items-center gap-2">
     <div class="spinner-border text-info fs-18" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
-    <span class="text-info text-center fs-16 flex-grow-1 ms-2"
-      >Loading Exams...</span
-    >
+    <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading Exams...</span>
   </div>
 </div>
-
 
 <div *ngIf="!loading && assessments?.content?.length > 0" class="row">
   <ng-container *ngFor="let assessment of assessments.content">
@@ -184,7 +311,7 @@
 
 <div [ngClass]="{ 'd-none': !assessments?.content?.length }">
   <p-paginator
-    [totalRecords]="assessments.total"
+    [totalRecords]="assessments?.total ?? 0"
     (onPageChange)="onPageChange($event)"
     [first]="0"
     [rowsPerPageOptions]="[10, 20, 50, 100]"

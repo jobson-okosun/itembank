@@ -60,9 +60,12 @@ export interface AssessmentListItemDTO {
   total_centers: number;
   total_center_admins: number;
   total_participants: number;
-  total_proctors: number
+  total_proctors: number;
   created_at: string;
-  total_sections: number
+  total_sections: number;
+  bank_id?: string;
+  exam_group_id?: string;
+  progress_status?: string;
 }
 
 export interface AssessmentListPage {
