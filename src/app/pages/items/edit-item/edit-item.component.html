@@ -132,6 +132,13 @@
       (savedItem)="saved($event)"
     ></app-cloze-dropdown>
 
+    <app-cloze-radio-select
+      [formType]="formType"
+      [editData]="item"
+      *ngIf="formType === 'Cloze with Radio Select'"
+      (savedItem)="saved($event)"
+    ></app-cloze-radio-select>
+
     <app-ordering
       [formType]="formType"
       [editData]="item"

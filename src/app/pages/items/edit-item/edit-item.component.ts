@@ -54,6 +54,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
     this.activatedRoute.queryParams.subscribe((params) => {
       this.itemId = params['id'];
       this.itemType = params['type'];
+      console.log('ITEM TYPE PASSED: ', this.itemType);
     });
 
     if (this.itemType === 'MCQ') {
@@ -67,6 +68,8 @@ export class EditItemComponent implements OnInit, OnDestroy {
       this.formType = 'Yes or No';
     } else if (this.itemType === 'CLOZE_TEXT') {
       this.formType = 'Cloze with Text';
+    } else if (this.itemType === 'CLOZERADIO') {
+      this.formType = 'Cloze with Radio Select';
     } else if (this.itemType === 'CLOZE_DROPDOWN') {
       this.formType = 'Cloze with dropdown';
     } else if (this.itemType === 'ESSAY_RICH_TEXT') {
@@ -112,6 +115,7 @@ export class EditItemComponent implements OnInit, OnDestroy {
 
     this.itemService.fetchIndividualItem(this.itemId).subscribe((item) => {
       this.item = item;
+      console.log('PASSED ITEM: ', this.item);
 
       // console.log(this.item);
     });

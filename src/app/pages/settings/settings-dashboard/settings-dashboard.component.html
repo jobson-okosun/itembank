@@ -488,12 +488,13 @@
                   class="form-control"
                   id="passwordInput"
                   placeholder="Enter your password"
-                  value="make@321654987"
+                  [value]="inputtedOrganizationNameToDelete"
+                  [(ngModel)]="inputtedOrganizationNameToDelete"
                   style="max-width: 265px"
                 />
               </div>
               <div class="hstack gap-2 mt-3">
-                <button type="button" class="btn btn-soft-danger">
+                <button type="button" class="btn btn-soft-danger" (click)="deleteAccount()" [disabled]="inputtedOrganizationNameToDelete !== organizationName">
                   Close & Delete This Account
                 </button>
                 <a
@@ -849,3 +850,48 @@
     </div>
   </div>
 </div>
+
+<ng-template #deleteAccountConfirmationModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm Account Delete</h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+        <div class="alert alert-info">
+      Are you sure you want to delete your account ? <br/> <strong>NOTE:</strong> You can send your complaints to us if any and we will get back to you to resolve any complaints you have.
+    </div>
+
+    <span>Complain</span>
+    <!-- <input #groupName type="text" class="form-control" id="firstnameInput" placeholder="Enter your group name"> -->
+    <textarea class="form-control" rows="5" placeholder="Enter your complain here..."></textarea>
+
+    <!-- <p class="mt-3 mb-0">Are you sure you want to delete your account ? <br/> Send your complaints to us and we will get back to you to resolve any complaints you have</p> -->
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 justify-content-between">
+      <!-- <button type="button" class="btn btn-secondary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="modal.close('Close click'); pendingAccountDelete = null">
+        <i class="ri-close-line"></i>Cancel
+      </button> -->
+
+       <button type="button" class="btn btn-secondary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="sendComplain()">
+        <i class="ri-close-line"></i>Send Complain
+      </button>
+
+      <div class="d-flex flex-row gap-2">
+              <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="proceedWithDelete()">
+        <i class="ri-delete-bin-line"></i>Delete Account
+      </button>
+      <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="proceedWithDelete()">
+        <i class="ri-delete-bin-line"></i>Proceed
+      </button>
+      </div>
+
+    </div>
+  </div>
+</ng-template>

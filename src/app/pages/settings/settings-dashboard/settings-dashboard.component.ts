@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotifierService } from 'angular-notifier';
 import { Subscription } from 'rxjs';
@@ -20,6 +20,8 @@ import { UsersService } from '../../users/user/users.service';
 import { ChangeUserDetails } from '../../users/model/change-user-details.model';
 import { UserDetail } from '../../users/model/user-detail';
 import { DefaultUserSubjects } from '../../users/model/default-user-subjects';
+import { number } from 'echarts';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-settings-dashboard',
@@ -27,6 +29,7 @@ import { DefaultUserSubjects } from '../../users/model/default-user-subjects';
   styleUrls: ['./settings-dashboard.component.scss'],
 })
 export class SettingsDashboardComponent implements OnInit, OnDestroy {
+
   countries: Country[] = [];
   states: string[] = [];
   submitted: boolean = false;
@@ -42,6 +45,12 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
   userDetail: UserDetail;
   userDefaultSubjects: Array<DefaultUserSubjects> = [];
   roles: any[] = [];
+  inputtedOrganizationNameToDelete: string = 'make@321654987';
+  organizationName: string = '';
+
+  @ViewChild('deleteAccountConfirmationModal') deleteAccountConfirmationModal: any;
+
+  pendingAccountDelete: () => void | null = null;
 
   changePasswordForm: FormGroup = this.formBuilder.group(
     {
@@ -90,7 +99,8 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
     private usersService: UsersService,
     private settingsService: SettingsService,
     private notifierService: NotifierService,
-    private location: Location
+    private location: Location,
+    private modalService: NgbModal
   ) {
     this.countries = Countries;
   }
@@ -318,6 +328,8 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
       .getOrganizationProfile()
       .subscribe({
         next: (org: Organization) => {
+          console.log('ORGANIZATION: ', org);
+          this.organizationName = org.organizationName;
           this.accountSettingsForm.setValue({
             organizationName: org.organizationName ?? '',
             industry: org.industry ?? '',
@@ -356,4 +368,30 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
       email: [''],
     });
   }
+
+  showConfirmationDeleteModal(action: () => void): void {
+    this.pendingAccountDelete = action;
+    this.modalService.open(this.deleteAccountConfirmationModal, { centered: true });
+  }
+
+  deleteAccount(showConfirmationModal: boolean = false): void {     
+    if(!showConfirmationModal) {
+      this.showConfirmationDeleteModal(() => this.deleteAccount(true));
+      return;
+    } 
+    console.log('THIS ACCOUNT HAS DELETED');  
+  }
+
+
+  proceedWithDelete(): void {
+    if(this.pendingAccountDelete){
+      this.pendingAccountDelete();
+      this.pendingAccountDelete = null;
+    }
+  }
+  
+  sendComplain(): void {
+    console.log('SEND COMPLAIN');
+  }
+
 }
