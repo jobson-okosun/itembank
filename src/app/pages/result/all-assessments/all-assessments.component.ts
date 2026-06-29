@@ -9,14 +9,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { AssessmentList, AssessmentListItemDTO, AssessmentListPage, SingleAssessment } from "src/app/pages/assessment/model/assessment-list";
 import { NewAssessment } from "src/app/pages/assessment/model/new-assessment.model";
 import { AssessmentsService } from "src/app/pages/assessment/service/assessments.service";
-
-enum AssessmentDeliveryEnum {
-  LIVE_PROCTORING = 'LIVE_PROCTORING',
-  AUTO_PROCTORING = 'AUTO_PROCTORING',
-  ONLINE_NO_PROCTORING = 'ONLINE_NO_PROCTORING',
-  ON_PREMISE_SECURE_BROWSER = 'ON_PREMISE_SECURE_BROWSER',
-  ON_PREMISE_NO_SECURE_BROWSER = 'ON_PREMISE_NO_SECURE_BROWSER',
-}
+import { DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
+import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
 
 @Component({
   selector: "app-result-all-assessments",
@@ -69,6 +63,8 @@ export class ResultsAllAssessmentsComponent implements OnInit, OnDestroy {
 
   searchSubject: Subject<string> = new Subject<string>();
 
+  deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
+
   constructor(
     private router: Router,
     public assessmentList: AllAssessmentsResultsService,
@@ -85,6 +81,12 @@ export class ResultsAllAssessmentsComponent implements OnInit, OnDestroy {
       this.deliveryMethods.push(method);
     });
     this.breadCrumbItems = [{ label: "Exams", active: true }];
+
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
+      value: value,
+      label: DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: DELIVERY_METHOD_LABEL?.[index]?.description,
+    }));
 
     this.loadingExamGroupsDropdown = true;
     this.assessmentService.fetchExamGroups(0, 1000).subscribe({
@@ -104,6 +106,10 @@ export class ResultsAllAssessmentsComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.applyFilters();
       });
+  }
+
+  getDeliveryMethod(method: string) {
+    return this.deliveryMethodsWithLabel.find(item => item.value == method)
   }
 
   onSearchChange() {

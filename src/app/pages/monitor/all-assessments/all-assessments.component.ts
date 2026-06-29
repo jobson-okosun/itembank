@@ -15,6 +15,7 @@ import {
 } from "../../assessment/model/assessment-list";
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
 import { HttpErrorResponse } from "@angular/common/http";
+import { DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
 
 @Component({
   selector: "app-all-assessments",
@@ -63,6 +64,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
   searchSubject: Subject<string> = new Subject<string>();
 
+  deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
+
   constructor(
     private router: Router,
     public assessmentList: AllAssessmentsService,
@@ -80,6 +83,13 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     m.forEach((method) => {
       this.deliveryMethods.push(method);
     });
+
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
+      value: value,
+      label: DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: DELIVERY_METHOD_LABEL?.[index]?.description,
+    }));
+
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
     this.loadingExamGroupsDropdown = true;
     this.assessmentService.fetchExamGroups(0, 1000).subscribe({
@@ -99,6 +109,10 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
       .subscribe(() => {
         this.applyFilters();
       });
+  }
+
+  getDeliveryMethod(method: string) {
+    return this.deliveryMethodsWithLabel.find(item => item.value == method)
   }
 
   onSearchChange() {

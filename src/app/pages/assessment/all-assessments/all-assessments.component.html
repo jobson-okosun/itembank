@@ -8,20 +8,43 @@
   </div>
   <div class="col-sm-auto mt-3 mt-sm-0">
     <div class="d-flex gap-2 align-items-center" *ngIf="!isCurrentUserMarker">
-      
-      <!-- Search Input -->
-      <div class="search-box">
-        <input type="text" class="form-control search" placeholder="Search for exam..." [(ngModel)]="filters.name" (ngModelChange)="onSearchChange()">
-        <i class="ri-search-line search-icon"></i>
+      <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a>
+
+      <div class="dropdown" ngbDropdown>
+        <button class="btn btn-soft-primary dropdown-toggle" type="button" ngbDropdownToggle>
+          <i class="ri-folder-zip-line align-bottom me-1"></i> Exam Options
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" (click)="openCreateGroupModal(createGroupModal)">
+              <i class="ri-add-circle-line align-bottom me-2 text-muted"></i> Create Exam Group
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" (click)="openViewGroupsModal(viewGroupsModal)">
+              <i class="ri-eye-line align-bottom me-2 text-muted"></i> View Exam Groups
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item" style="cursor: pointer" routerLink="/examalpha/exams/templates">
+              <i class="ri-pages-line align-bottom me-2 text-muted"></i> Exam Templates
+            </a>
+          </li>
+        </ul>
       </div>
 
-      <!-- More Filters Dropdown -->
+            <!-- More Filters Dropdown -->
       <div class="dropdown" ngbDropdown #filterDrop="ngbDropdown" [autoClose]="'outside'">
         <button class="btn btn-soft-primary" id="advancedFiltersDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-          <i class="ri-filter-3-line align-bottom me-1"></i> More Filters
+          <i class="ri-filter-3-line align-bottom me-1"></i> Filters
         </button>
         <div ngbDropdownMenu style="min-width: 600px; max-width: 90vw;" class="border shadow-sm p-3 dropdown-menu-end">
           <div class="row g-3">
+            <!-- Search Input -->
+            <div class="search-box col-12">
+              <input type="text" class="form-control search" placeholder="Search for exam..." [(ngModel)]="filters.name" (ngModelChange)="onSearchChange()">
+              <i class="ri-search-line search-icon"></i>
+            </div>
             <!-- Status Select -->
             <div class="col-sm-6">
               <div>
@@ -30,7 +53,7 @@
                   <option [ngValue]="null">All Status</option>
                   <option value="DRAFT">DRAFT</option>
                   <option value="PUBLISHED">PUBLISHED</option>
-                  <option value="CLOSED">CLOSED</option>
+                  <!-- <option value="CLOSED">CLOSED</option> -->
                 </select>
               </div>
             </div>
@@ -43,7 +66,7 @@
                   <option [ngValue]="null">All Progress</option>
                   <option value="TAKEN">TAKEN</option>
                   <option value="NOT_TAKEN">NOT_TAKEN</option>
-                  <option value="IN_PROGRESS">IN_PROGRESS</option>
+                  <!-- <option value="IN_PROGRESS">IN_PROGRESS</option> -->
                 </select>
               </div>
             </div>
@@ -54,7 +77,9 @@
                 <label class="form-label">Delivery Method</label>
                 <select class="form-select" [(ngModel)]="filters.exam_delivery_method">
                   <option [ngValue]="null">All Delivery</option>
-                  <option *ngFor="let m of deliveryMethods" [value]="m">{{m}}</option>
+                  <option *ngFor="let m of deliveryMethods" [value]="m">
+                    {{ getDeliveryMethod(m).label }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -121,27 +146,7 @@
           </div>
         </div>
       </div>
-
-      <a routerLink="/examalpha/exams/templates" class="btn btn-soft-primary"><i class="ri-pages-line align-bottom me-1"></i>Exam Templates</a>
-      <a (click)="openNewAssessmentModal(newAssessmentModal)" class="btn btn-primary"><i class="ri-add-line align-bottom me-1"></i> Create New Exam</a>
-      
-      <div class="dropdown" ngbDropdown>
-        <button class="btn btn-soft-primary dropdown-toggle" type="button" ngbDropdownToggle>
-          <i class="ri-folder-zip-line align-bottom me-1"></i> Exam Group
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" ngbDropdownMenu>
-          <li>
-            <a class="dropdown-item" style="cursor: pointer" (click)="openCreateGroupModal(createGroupModal)">
-              <i class="ri-add-circle-line align-bottom me-2 text-muted"></i> Create Group
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" style="cursor: pointer" (click)="openViewGroupsModal(viewGroupsModal)">
-              <i class="ri-eye-line align-bottom me-2 text-muted"></i> View Groups
-            </a>
-          </li>
-        </ul>
-      </div>
+            
     </div>
   </div>
 </div>
@@ -175,10 +180,16 @@
                     class="bx bxs-edit align-bottom me-2 text-muted"></i>
                   Manage Exam</a>
               </li>
-              <li *ngIf="!isCurrentUserMarker">
+              <li *ngIf="!isCurrentUserMarker && !assessment.exam_group_id">
                 <a class="dropdown-item" style="cursor: pointer" (click)="openAddToGroupModal(addToGroupModal, assessment)">
                   <i class="ri-add-circle-line align-bottom me-2 text-muted"></i>
                   Add to Group
+                </a>
+              </li>
+              <li *ngIf="!isCurrentUserMarker && assessment.exam_group_id">
+                <a class="dropdown-item" style="cursor: pointer" (click)="confirmRemoveFromGroup(assessment)">
+                  <i class="ri-delete-bin-line align-bottom me-2 text-muted"></i>
+                  Remove from Group
                 </a>
               </li>
               <!-- <li>
@@ -277,6 +288,12 @@
                 Created At:
                 <span class="text-primary"><i class="ri-calendar-event-line align-bottom"></i>
                   {{ assessment.created_at | date : "medium" }}</span>
+              </li>
+              <li >
+                Exam Group:
+                <span class="text-primary" *ngIf="assessment?.exam_group_name">
+                  {{ assessment.exam_group_name }}</span>
+                  <span class="text-primary" *ngIf="!assessment?.exam_group_name">-</span>
               </li>
               <!-- <li>
                 <div class="d-flex gap-2">
@@ -730,7 +747,7 @@
   </div>
   <div class="card-footer py-2">
     <div class="hstack gap-2 justify-content-end">
-      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         Close
       </button>
     </div>
@@ -795,7 +812,7 @@
       <button type="button" class="btn btn-outline-primary" (click)="modal.close('Close click'); openViewGroupsModal(viewGroupsModal)">
         <i class="ri-arrow-left-line align-middle me-1"></i> Back to Groups
       </button>
-      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         Close
       </button>
     </div>
@@ -860,7 +877,7 @@
   </div>
   <div class="card-footer py-2">
     <div class="hstack gap-2 justify-content-end">
-      <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">
+      <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         Close
       </button>
     </div>

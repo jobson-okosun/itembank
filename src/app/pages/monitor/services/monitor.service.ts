@@ -1,7 +1,8 @@
 import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO } from "../model/types";
+import { Observable, of } from "rxjs";
+import { delay } from "rxjs/operators";
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO, ProctorActionTypeSummaryDTO, ProctorActionEventDTO, ProctorActionEventsPage } from "../model/types";
 import { environment } from "src/environments/environment";
 import { AssessmentCenterListPage, AssessmentCenterListParams } from "../../assessment/model/assessment-list";
 
@@ -246,6 +247,59 @@ export class MonitorService {
     fetchInfractionEvidence(assessmentId: string, eventId: string): Observable<any> {
       const url = this.baseURL + `/infraction_evidence/exam/${assessmentId}/event/${eventId}`;
       return this._http.get<any>(url, { withCredentials: true });
+    }
+
+    fetchProctorActionsSummary(assessmentId: string, params?: { batch_id?: string, candidate_login_field_value?: string }): Observable<ProctorActionTypeSummaryDTO> {
+      // Temporary mock implementation
+      const mockData: ProctorActionTypeSummaryDTO = {
+        action_types: [
+          { action_type: 'LOG', total_participants: 12, total_applied: 15 },
+          { action_type: 'WARN', total_participants: 25, total_applied: 30 },
+          { action_type: 'PAUSE_EXAM', total_participants: 5, total_applied: 5 },
+          { action_type: 'FLAG_FOR_REVIEW', total_participants: 10, total_applied: 12 },
+          { action_type: 'END_EXAM', total_participants: 2, total_applied: 2 },
+          { action_type: 'CHAT', total_participants: 8, total_applied: 8 },
+          { action_type: 'SPEAK', total_participants: 3, total_applied: 4 },
+        ]
+      };
+      // If candidate is specified, reduce the numbers
+      if (params?.candidate_login_field_value) {
+        mockData.action_types.forEach(a => {
+          a.total_participants = Math.floor(a.total_participants / 3);
+          a.total_applied = Math.floor(a.total_applied / 3);
+        });
+      }
+      return of(mockData).pipe(delay(500));
+    }
+
+    fetchProctorActionEvents(assessmentId: string, params?: { batch_id?: string, action_type?: string, candidate_id?: string, page?: number, size?: number }): Observable<ProctorActionEventsPage> {
+      // Temporary mock implementation
+      const mockContent: ProctorActionEventDTO[] = [];
+      const total = 25;
+      const size = params?.size || 10;
+      for (let i = 0; i < size; i++) {
+        mockContent.push({
+          id: `pa-event-${Math.random()}`,
+          candidate_id: `cand-${Math.random()}`,
+          candidate_name: `Candidate ${Math.floor(Math.random() * 1000)}`,
+          candidate_login_field_value: `login_${Math.floor(Math.random() * 10000)}`,
+          action_type: params?.action_type || 'LOG',
+          applied_times: Math.floor(Math.random() * 5) + 1,
+          action_occurred_times: [
+            new Date().toISOString(),
+            new Date(Date.now() - 3600000).toISOString(),
+            new Date(Date.now() - 7200000).toISOString(),
+            new Date(Date.now() - 10800000).toISOString(),
+            new Date(Date.now() - 14400000).toISOString()
+          ].slice(0, Math.floor(Math.random() * 5) + 1)
+        });
+      }
+      return of({
+        total: total,
+        content: mockContent,
+        page: params?.page || 1,
+        size: size
+      }).pipe(delay(500));
     }
 
     fetchNotifications(assessmentId: string, params?: { page?: number, size?: number, filter?: string }): Observable<any> {

@@ -496,3 +496,28 @@ export interface InfractionEvidenceDTO {
   max_strike_reached: boolean;
   signed_url: string;
 }
+
+export interface ProctorActionTypeSummaryDTO {
+  action_types: Array<{
+    action_type: string;
+    total_participants: number;
+    total_applied: number;
+  }>
+}
+
+export interface ProctorActionEventDTO {
+  id: string;
+  candidate_id: string;
+  candidate_name: string | null;
+  candidate_login_field_value: string | null;
+  action_type: string;
+  applied_times: number;
+  action_occurred_times: string[];
+}
+
+export interface ProctorActionEventsPage {
+  total: number;
+  content: ProctorActionEventDTO[];
+  page: number;
+  size: number;
+}

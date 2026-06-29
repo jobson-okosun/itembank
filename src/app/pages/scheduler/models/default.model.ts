@@ -17,3 +17,13 @@ export const DEFAULT_PROCTOR_GUIDE = `
 <p><strong>Confidentiality</strong>: Protect candidate information and exam content. Consistency: Apply rules fairly and uniformly across all candidates.</p>
  
 `
+
+  export const DELIVERY_METHOD_LABEL: { label: string, description: string }[] = [
+    { label: 'PROCTOR SUPERVISED', description: 'Exam will be supervised by live proctors.' },
+    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.' },
+    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.' },
+    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.' },
+    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.' },
+    { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
+    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
+  ];

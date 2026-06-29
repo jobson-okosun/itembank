@@ -1051,34 +1051,76 @@
                 </div>
             </div>
         </div>
-        <div [ngClass]="isProctored() ? 'col-md-6' : 'col-md-12'">
+        <div class="col-md-6" *ngIf="isProctored()">
             <div class="border rounded h-100">
                 <div>
                     <div class="d-flex justify-content-between align-items-center border-bottom p-3">
                         <span>
-                          <h5 class="fw-bold mb-1">Technical issues</h5>
-                          <p class="small">Technical issues for all centers</p>
+                          <h5 class="fw-bold mb-1">Proctor actions summary</h5>
+                          <p class="small">Summary of proctor actions</p>
                         </span>
-                        <div class="d-flex gap-2">
-                           <input name="techissue" [(ngModel)]="technicalIssuesFilter.center_id" class="form-control w-auto" placeholder="Center ID" />
-                          <button (click)="fetchTechnicalIssuesCategories()" class="btn btn-primary btn">Search</button>
-                      </div>
-                    </div>
-                    <div class="p-4">
-                      <div class="row g-2">
-                        <div class="col-sm-3" (click)="openCentersTechnicalIssueReportModal(item.category, centerTechnicalIssuesModal, 'xl')" *ngFor="let item of technicalIssuesCategoriesList?.categories">
-                          <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
-                              <div class="me-3 shrink-0">
-                                <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
-                                  <i class="pi pi pi-info-circle text-white"></i>
-                                </span>
+                        <div class="dropdown" ngbDropdown #proctorActionDrop="ngbDropdown">
+                          <a class="text-muted arrow-none" id="proctorActionDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                            <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                          </a>
+                          <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm dropdown-menu-end">
+                            <div class="px-3 py-2 small text-black">Filter summary</div>
+                            <div class="dropdown-divider"></div>
+                            <form class="px-3 py-1">
+                              <div class="mb-2">
+                                <label class="small">Batch</label>
+                                <select class="form-select w-100" name="batch" [(ngModel)]="proctorActionBatchFilter" [disabled]="fetchingInfractionBatches">
+                                  <option value="">All Batches</option>
+                                  <option *ngFor="let batch of infractionBatches" [value]="batch.id">{{ batch.name }}</option>
+                                </select>
                               </div>
-                              <div class="grow overflow-hidden">
-                                  <span class="fs-14 text-truncate">{{ item.category }}<br>
-                                  <span class="fs-14">
-                                    <strong>Centers: {{ item.center_count }} - Total issues: {{ item.issue_count }}</strong>
-                                  </span>
-                                </span>
+                              <div class="mb-2">
+                                <label class="small">Candidate login</label>
+                                <input type="text" class="form-control w-100" name="candidateLogin" [(ngModel)]="proctorActionCandidateFilter" placeholder="Enter candidate login" (keyup.enter)="applyProctorActionsFilter(); proctorActionDrop.close()">
+                              </div>
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <div class="px-3 pb-2 d-flex gap-1">
+                              <button type="button" (click)="proctorActionBatchFilter = ''; proctorActionCandidateFilter = ''; applyProctorActionsFilter(); proctorActionDrop.close()" class="btn btn-secondary w-100">Clear</button>
+                              <button type="button" (click)="applyProctorActionsFilter(); proctorActionDrop.close()" class="btn btn-primary w-100">Apply</button>
+                            </div>
+                          </div>
+                        </div>
+                    </div>
+                    <div class="p-4 mt-2" style="position: relative;cursor: pointer;">
+                      <div class="d-flex justify-content-center" style="position: absolute; width: 100%;top: 0;left: 0;" >
+                        <div class="w-100">
+                          <div *ngIf="fetchingProctorActionsSummary;else proctorActionChart" class="d-flex align-items-center justify-content-center">
+                            <div class="d-flex align-items-center gap-2">
+                              <div class="spinner-border text-info fs-18" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                              </div>
+                            </div>
+                          </div>
+                          <ng-template #proctorActionChart>
+                            <div echarts [options]="proctorActionsDoughnutChart" class="demo-chart"></div>
+                          </ng-template>
+                        </div>
+                      </div>
+
+                      <div style="margin-top: 150px" class="w-100" *ngIf="!fetchingProctorActionsSummary">
+                        <div class="w-100 h-100 p-3" style="max-height: 250px; overflow-y: auto; overflow-x: hidden;">
+                          <div class="row g-3">
+                              <div (click)="openProctorActionEventsModal(item.action_type, proctorActionEventsModal)" class="col-4" *ngFor="let item of proctorActionsSummary?.action_types; let i = index">
+                                <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                                    <div class="me-3 shrink-0">
+                                      <span [ngStyle]="{ backgroundColor: defaultChartColors[i % defaultChartColors.length] }" class="avatar-title rounded-2 fs-4" style="padding: 11px">
+                                        <i class="pi pi-shield text-white"></i>
+                                      </span>
+                                    </div>
+                                    <div class="grow overflow-hidden">
+                                        <span class="fs-14">{{ item.action_type?.replaceAll('_', ' ') }}</span><br>
+                                        <div class="fs-12 text-muted mt-1">
+                                          <span>Total Participants: <strong class="text-dark">{{ item.total_participants }}</strong></span><br>
+                                          <span>Total Applied: <strong class="text-primary">{{ item.total_applied }}</strong></span>
+                                        </div>
+                                    </div>
+                                </div>
                               </div>
                           </div>
                         </div>
@@ -1129,6 +1171,45 @@
                 </div>
             </div>
         </div> -->
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-12">
+            <div class="border rounded h-100">
+                <div>
+                    <div class="d-flex justify-content-between align-items-center border-bottom p-3">
+                        <span>
+                          <h5 class="fw-bold mb-1">Technical issues</h5>
+                          <p class="small">Technical issues for all centers</p>
+                        </span>
+                        <div class="d-flex gap-2">
+                           <input name="techissue" [(ngModel)]="technicalIssuesFilter.center_id" class="form-control w-auto" placeholder="Center ID" />
+                          <button (click)="fetchTechnicalIssuesCategories()" class="btn btn-primary btn">Search</button>
+                      </div>
+                    </div>
+                    <div class="p-4">
+                      <div class="row g-2">
+                        <div class="col-sm-3" (click)="openCentersTechnicalIssueReportModal(item.category, centerTechnicalIssuesModal, 'xl')" *ngFor="let item of technicalIssuesCategoriesList?.categories">
+                          <div class="bg-white rounded border d-flex p-2 align-items-center center-tech-issue">
+                              <div class="me-3 shrink-0">
+                                <span class="avatar-title bg-primary rounded-2 fs-4" style="padding: 11px">
+                                  <i class="pi pi pi-info-circle text-white"></i>
+                                </span>
+                              </div>
+                              <div class="grow overflow-hidden">
+                                  <span class="fs-14 text-truncate">{{ item.category }}<br>
+                                  <span class="fs-14">
+                                    <strong>Centers: {{ item.center_count }} - Total issues: {{ item.issue_count }}</strong>
+                                  </span>
+                                </span>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div>
@@ -2252,5 +2333,111 @@
         No evidence available for this infraction.
       </div>
     </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #proctorActionEventsModal role="document" let-modal>
+  <div class="modal-header d-flex flex-column gap-3 border-bottom pb-3">
+      <div class="d-flex justify-content-between align-items-center w-100">
+        <h3 class="modal-title m-0">Proctor Action Events</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="d-flex gap-3 w-100 align-items-end">
+        <div>
+          <label class="small text-muted mb-1">Batch Filter</label>
+          <select class="form-select w-auto" [(ngModel)]="selectedProctorActionBatchFilter" (change)="applyProctorActionEventsFilter()" [disabled]="fetchingInfractionBatches">
+            <option value="">All Batches</option>
+            <option *ngFor="let batch of infractionBatches" [value]="batch.id">{{ batch.name }}</option>
+          </select>
+        </div>
+        <div>
+          <label class="small text-muted mb-1">Action Filter</label>
+          <select class="form-select w-auto" [(ngModel)]="selectedProctorActionCategoryFilter" (change)="applyProctorActionEventsFilter()">
+            <option value="">All Actions</option>
+            <option *ngFor="let act of proctorActionsSummary?.action_types" [value]="act.action_type">{{ act.action_type?.replaceAll('_', ' ') }}</option>
+          </select>
+        </div>
+      </div>
+  </div>
+
+  <div *ngIf="fetchingProctorActionEvents" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border text-info fs-18" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!fetchingProctorActionEvents && proctorActionEventsReport" class="modal-body" style="height: 500px; scroll-behavior: smooth; overflow-x: hidden; overflow-y: auto;">
+     <div class="d-flex flex-column gap-3">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>S/N</th>
+                        <th>Candidate Info</th>
+                        <th>Action Type</th>
+                        <th>Applied Times</th>
+                        <th>Action Occurred Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngFor="let event of proctorActionEventsReport?.content; let i = index;">
+                      <tr>
+                          <td>{{ i + 1 + (proctorActionEventsParams.page - 1) * proctorActionEventsParams.size }}</td>
+                          <td>
+                              <div>
+                                  <div class="fw-bold">{{ event.candidate_name || 'Unknown' }}</div>
+                                  <div>{{ event.candidate_login_field_value || 'N/A' }}</div>
+                              </div>
+                          </td>
+                          <td>{{ event.action_type?.replaceAll('_', ' ') }}</td>
+                          <td>{{ event.applied_times }}</td>
+                          <td>
+                            <div class="d-flex gap-1 flex-wrap align-items-center">
+                              <ng-container *ngFor="let time of event.action_occurred_times | slice:0:1">
+                                <span class="fs-12">{{ time | date:'medium' }}</span>
+                              </ng-container>
+                              <ng-container *ngIf="event.action_occurred_times.length > 1">
+                                <span class="badge rounded-circle bg-primary text-white fs-8" style="width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer" [ngbTooltip]="allTimesTooltip">
+                                  +{{ event.action_occurred_times.length - 1 }}
+                                </span>
+                                <ng-template #allTimesTooltip>
+                                  <div class="text-start">
+                                    <div *ngFor="let time of event.action_occurred_times">{{ time | date:'medium' }}</div>
+                                  </div>
+                                </ng-template>
+                              </ng-container>
+                            </div>
+                          </td>
+                          <td>
+                            <button class="btn btn-sm btn-outline-primary" (click)="viewProctorActionCandidateTimeline(event.candidate_id, infractionEventsModal)">
+                              Candidate Timeline
+                            </button>
+                          </td>
+                      </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+     </div>
+  </div>
+  
+  <div class="card-footer">
+    <div class="d-flex justify-content-between align-items-center gap-3">
+        <div>
+            <p-paginator [ngClass]="{ 'd-none': !proctorActionEventsReport }"
+            [first]="0" [totalRecords]="proctorActionEventsReport?.total ?? 0" [rowsPerPageOptions]="[10, 50, 100, 200]"
+            [rows]="proctorActionEventsParams.size" [pageLinkSize]="4" [showCurrentPageReport]="true" (onPageChange)="onProctorActionEventsPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
+        </div>
+        <div class="d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">
+                <i class="ri-close-line align-middle fs-16"></i> Close
+            </button>
+        </div>
+    </div>
   </div>
 </ng-template>

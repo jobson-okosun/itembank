@@ -38,7 +38,7 @@
                 </div>
                 <span class="text-secondary" *ngIf="assessmentSummary"> {{ assessmentSummary.end_date | date : "MMMM d, y 'at' h:mm a" }}</span>
               </div>
-              <div class="dropdown" ngbDropdown #assessmentDropdown="ngbDropdown">
+              <div class="dropdown" ngbDropdown #assessmentDropdown="ngbDropdown" [placement]="'bottom-right'">
                 <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
                   ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
                     style="cursor: pointer"></i></a>
@@ -267,200 +267,200 @@
         </div>
 
         <!-- Proctoring Infractions Cards -->
-        <!-- - `[x]` Define `formatProctorActionName` helper and make `formatInfractionTypeName` public in `dashboard.component.ts`
-- `[x]` Add conditional table headers for Infraction Types, Total Infractions, Total Strikes, Max Strikes Reached, and Proctor Actions in `dashboard.component.html`
-- `[x]` Add corresponding conditional table cells displaying infractions details with `+N` popover overflow badges in `dashboard.component.html`
-- `[x]` Inject NgbModal service and import finalize operator and proctoring model types in `dashboard.component.ts`
-- `[x]` Store infraction summary response in `infractionsSummary` inside `fetchProctoringMetrics` to enable modal category filter selection
-- `[x]` Implement `openCandidateInfractionsModal`, `fetchInfractionEvents`, `onInfractionEventsPageChange`, `applyModalInfractionFilter`, and `openEvidenceModal` inside `dashboard.component.ts`
-- `[x]` Add "View infractions" row action dropdown item in `dashboard.component.html`
-- `[x]` Append `#infractionEventsModal` and `#evidenceViewerModal` templates in `dashboard.component.html`
-- `[x]` Verify successful compilation and layout render -->
         <ng-container *ngIf="isProctored()">
-          <!-- Candidates Flagged -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
-                    <i class="ri-user-unfollow-fill text-warning"></i>
-                  </span>
+          <div class="col-12 mt-4">
+            <div class="border border-dashed rounded p-3 bg-light bg-opacity-50">
+              <h6 class="mb-3 fw-bold text-muted text-uppercase fs-12 d-flex align-items-center">
+                Proctoring Metrics
+              </h6>
+              <div class="row">
+                <!-- Candidates Flagged -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
+                          <i class="ri-user-unfollow-fill text-warning"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14 text-nowrap">
+                          Candidates Flagged<br />
+                          <span class="fs-14 fw-bold">
+                            {{ candidatesFlagged }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14 text-nowrap">
-                    Candidates Flagged<br />
-                    <span class="fs-14 fw-bold">
-                      {{ candidatesFlagged }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Total Infractions -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
-                    <i class="ri-error-warning-fill text-info"></i>
-                  </span>
+                <!-- Total Infractions -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
+                          <i class="ri-error-warning-fill text-info"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14 text-nowrap">
+                          Total Infractions<br />
+                          <span class="fs-14 fw-bold">
+                            {{ 0 }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14 text-nowrap">
-                    Total Infractions<br />
-                    <span class="fs-14 fw-bold">
-                      {{ 0 }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Max Strikes Reached -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
-                    <i class="ri-alarm-warning-fill text-danger"></i>
-                  </span>
+                <!-- Max Strikes Reached -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
+                          <i class="ri-alarm-warning-fill text-danger"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14 text-nowrap">
+                          Max Strikes Reached<br />
+                          <span class="fs-14 fw-bold">
+                            {{ maxStrikeCandidates }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14 text-nowrap">
-                    Max Strikes Reached<br />
-                    <span class="fs-14 fw-bold">
-                      {{ maxStrikeCandidates }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Most Occurred Infraction -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-secondary rounded-2 fs-4">
-                    <i class="ri-spam-2-fill text-secondary"></i>
-                  </span>
+                <!-- Most Occurred Infraction -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-secondary rounded-2 fs-4">
+                          <i class="ri-spam-2-fill text-secondary"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14 text-nowrap text-nowrap">
+                          Most Occurred Infraction<br />
+                          <span class="fs-14 fw-bold text-truncate d-block" [title]="mostOccurredInfraction">
+                            {{ mostOccurredInfraction }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14 text-nowrap text-nowrap">
-                    Most Occurred Infraction<br />
-                    <span class="fs-14 fw-bold text-truncate d-block" [title]="mostOccurredInfraction">
-                      {{ mostOccurredInfraction }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Least Occurred Infraction -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-success rounded-2 fs-4">
-                    <i class="ri-shield-check-fill text-success"></i>
-                  </span>
+                <!-- Least Occurred Infraction -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-success rounded-2 fs-4">
+                          <i class="ri-shield-check-fill text-success"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14 text-nowrap">
+                          Least Occurred Infraction<br />
+                          <span class="fs-14 fw-bold text-truncate d-block" [title]="leastOccurredInfraction">
+                            {{ leastOccurredInfraction }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14 text-nowrap">
-                    Least Occurred Infraction<br />
-                    <span class="fs-14 fw-bold text-truncate d-block" [title]="leastOccurredInfraction">
-                      {{ leastOccurredInfraction }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Candidates Warned -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
-                    <i class="ri-alert-fill text-warning"></i>
-                  </span>
+                <!-- Candidates Warned -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-warning rounded-2 fs-4">
+                          <i class="ri-alert-fill text-warning"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Candidates Warned<br />
+                          <span class="fs-14 fw-bold">
+                            {{ 0 }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14">
-                    Candidates Warned<br />
-                    <span class="fs-14 fw-bold">
-                      {{ 0 }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Exams Paused -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
-                    <i class="ri-pause-circle-fill text-info"></i>
-                  </span>
+                <!-- Exams Paused -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-info rounded-2 fs-4">
+                          <i class="ri-pause-circle-fill text-info"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Exams Paused<br />
+                          <span class="fs-14 fw-bold">
+                            {{ 0 }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14">
-                    Exams Paused<br />
-                    <span class="fs-14 fw-bold">
-                      {{ 0 }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Flagged for Review -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-primary rounded-2 fs-4">
-                    <i class="ri-flag-fill text-primary"></i>
-                  </span>
+                <!-- Flagged for Review -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-primary rounded-2 fs-4">
+                          <i class="ri-flag-fill text-primary"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Flagged for Review<br />
+                          <span class="fs-14 fw-bold">
+                            {{ 0 }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14">
-                    Flagged for Review<br />
-                    <span class="fs-14 fw-bold">
-                      {{ 0 }}
-                    </span>
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
 
-          <!-- Exams Ended -->
-          <div class="col-lg-3 col-md-3 col-sm-12">
-            <div class="card">
-              <div class="d-flex p-2 align-items-center">
-                <div class="me-3 flex-shrink-0">
-                  <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
-                    <i class="ri-stop-circle-fill text-danger"></i>
-                  </span>
-                </div>
-                <div class="flex-grow-1 overflow-hidden">
-                  <span class="fs-14">
-                    Exams Ended<br />
-                    <span class="fs-14 fw-bold">
-                      {{ 0 }}
-                    </span>
-                  </span>
+                <!-- Exams Ended -->
+                <div class="col-lg-3 col-md-3 col-sm-12">
+                  <div class="card bg-white shadow-none border">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="me-3 flex-shrink-0">
+                        <span class="px-2 py-1 avatar-title bg-soft-danger rounded-2 fs-4">
+                          <i class="ri-stop-circle-fill text-danger"></i>
+                        </span>
+                      </div>
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Exams Ended<br />
+                          <span class="fs-14 fw-bold">
+                            {{ 0 }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -704,7 +704,7 @@
       <div class="col-lg-6 border rounded p-3">
         <div class="d-flex justify-content-between">
           <span class="fw-bold text-black">Score Distribution ({{ scoreDistributionFilterSubjectName }}) </span>
-          <div class="dropdown" ngbDropdown #scoreDistributionDrop="ngbDropdown">
+          <div class="dropdown" ngbDropdown #scoreDistributionDrop="ngbDropdown" [placement]="'bottom-right'">
             <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
               ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
                 style="cursor: pointer"></i></a>
@@ -781,7 +781,7 @@
               </svg>
           </button>
 
-          <div class="dropdown" ngbDropdown #transcriptDrop="ngbDropdown" placement="left">
+          <div class="dropdown" ngbDropdown #transcriptDrop="ngbDropdown" [placement]="'bottom-right'">
             <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
               ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
                 style="cursor: pointer"></i></a>

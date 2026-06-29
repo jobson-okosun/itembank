@@ -21,6 +21,7 @@ import {
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
 import { NotifierService } from "angular-notifier";
 import { Publish } from "../../assessment/model/publish";
+import { DELIVERY_METHOD_LABEL } from "../models/default.model";
 
 @Component({
   selector: "app-scheduler-dashboard",
@@ -70,6 +71,8 @@ export class SchedulerDashboardComponent implements OnInit {
 
   searchSubject: Subject<string> = new Subject<string>();
 
+  deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
+
   constructor(
     private router: Router,
     public assessmentList: AllAssessmentsService,
@@ -98,6 +101,12 @@ export class SchedulerDashboardComponent implements OnInit {
     });
     this.breadCrumbItems = [{ label: "Schedule Exams", active: true }];
 
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
+      value: value,
+      label: DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: DELIVERY_METHOD_LABEL?.[index]?.description,
+    }));
+
     this.loadingExamGroupsDropdown = true;
     this.assessmentService.fetchExamGroups(0, 1000).subscribe({
       next: (res) => {
@@ -118,6 +127,10 @@ export class SchedulerDashboardComponent implements OnInit {
       });
   }
 
+  getDeliveryMethod(method: string) {
+    return this.deliveryMethodsWithLabel.find(item => item.value == method)
+  }
+
   onSearchChange() {
     this.searchSubject.next(this.filters.name);
   }
@@ -127,7 +140,7 @@ export class SchedulerDashboardComponent implements OnInit {
 
     // Create a copy of filters to format dates
     const apiFilters = { ...this.filters };
-    
+
     if (apiFilters.start_date_from) {
       apiFilters.start_date_from = apiFilters.start_date_from + 'T00:00:00Z';
     }

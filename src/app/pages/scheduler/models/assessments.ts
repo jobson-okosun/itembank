@@ -588,3 +588,4 @@ export interface ProctorDistributionResult {
   distributed: number,
   not_distributed: number,
 }
+

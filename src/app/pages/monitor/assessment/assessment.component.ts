@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MonitorService } from '../services/monitor.service';
 import { interval, pipe, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, AssessmentBatchDTO, InfractionTypeSummaryDTO, InfractionEventsPage, InfractionEventDTO, InfractionEvidenceDTO } from '../model/types';
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, AssessmentBatchDTO, InfractionTypeSummaryDTO, InfractionEventsPage, InfractionEventDTO, InfractionEvidenceDTO, ProctorActionTypeSummaryDTO, ProctorActionEventsPage } from '../model/types';
 import { finalize } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { HttpResponse } from '@angular/common/http';
@@ -172,7 +172,17 @@ export class AssessmentComponent implements OnInit, OnDestroy {
   evidenceDetails?: InfractionEvidenceDTO;
   fetchingEvidence: boolean = false;
 
+  proctorActionsDoughnutChart: any;
+  fetchingProctorActionsSummary: boolean = false;
+  proctorActionsSummary: ProctorActionTypeSummaryDTO;
+  proctorActionBatchFilter: string = '';
+  proctorActionCandidateFilter: string = '';
 
+  fetchingProctorActionEvents: boolean = false;
+  proctorActionEventsReport: ProctorActionEventsPage;
+  proctorActionEventsParams: PageParams = { page: 1, size: 50 };
+  selectedProctorActionCategoryFilter: string = '';
+  selectedProctorActionBatchFilter: string = '';
   constructor(
     private modalService: NgbModal,
     private monitorService: MonitorService,
@@ -216,7 +226,8 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     this.proctoringPoolSub = interval(30000).subscribe({
       next: () => {
         if (this.isProctored()) {
-          this.fetchInfractionsSummary()
+          this.fetchInfractionsSummary();
+          this.fetchProctorActionsSummary();
         }
       }
     })
@@ -244,8 +255,9 @@ export class AssessmentComponent implements OnInit, OnDestroy {
           this.assessmentOverview = res
           
           if (!this.pageInitialized && this.isProctored()) {
-             this.fetchInfractionBatches()
-             this.fetchInfractionsSummary()
+             this.fetchInfractionBatches();
+             this.fetchInfractionsSummary();
+             this.fetchProctorActionsSummary();
           }
 
           this.pageInitialized = true
@@ -1413,6 +1425,112 @@ export class AssessmentComponent implements OnInit, OnDestroy {
           this.evidenceDetails = undefined;
         }
       });
+  }
+
+  // --- PROCTOR ACTIONS METHODS ---
+  fetchProctorActionsSummary() {
+    this.fetchingProctorActionsSummary = true;
+    const params: any = {};
+    if (this.proctorActionBatchFilter) params.batch_id = this.proctorActionBatchFilter;
+    if (this.proctorActionCandidateFilter) params.candidate_login_field_value = this.proctorActionCandidateFilter;
+
+    this.monitorService.fetchProctorActionsSummary(this.assessmentId, params).subscribe({
+      next: (res) => {
+        this.proctorActionsSummary = res;
+        this.renderProctorActionsDoughnutChart();
+        this.fetchingProctorActionsSummary = false;
+      },
+      error: () => {
+        this.fetchingProctorActionsSummary = false;
+      }
+    });
+  }
+
+  applyProctorActionsFilter() {
+    this.fetchProctorActionsSummary();
+  }
+
+  renderProctorActionsDoughnutChart() {
+    const rawData = this.proctorActionsSummary?.action_types?.map(item => ({
+      value: item.total_applied,
+      name: item.action_type
+    })) || [];
+
+    const totalValue = rawData.reduce((acc, curr) => acc + curr.value, 0);
+
+    const mappedData = rawData.map((item, index) => ({
+      ...item,
+      itemStyle: {
+        color: this.defaultChartColors[index % this.defaultChartColors.length]
+      }
+    }));
+
+    this.proctorActionsDoughnutChart = {
+      tooltip: { trigger: 'item' },
+      series: [
+        {
+          name: 'Proctor Actions',
+          type: 'pie',
+          radius: ['40%', '70%'],
+          center: ['50%', '35%'],
+          startAngle: 180,
+          avoidLabelOverlap: false,
+          label: { show: false },
+          data: [
+            ...mappedData,
+            {
+              value: totalValue,
+              itemStyle: { color: 'none' },
+              label: { show: false }
+            }
+          ]
+        }
+      ],
+      textStyle: { fontFamily: "Poppins, sans-serif" }
+    };
+  }
+
+  openProctorActionEventsModal(actionType: string, content: any) {
+    this.selectedProctorActionCategoryFilter = actionType;
+    this.selectedProctorActionBatchFilter = this.proctorActionBatchFilter || '';
+    this.proctorActionEventsParams.page = 1;
+    this.fetchProctorActionEvents();
+    this.modalService.open(content, { centered: true, size: 'xl', scrollable: true, backdrop: 'static' });
+  }
+
+  fetchProctorActionEvents() {
+    this.fetchingProctorActionEvents = true;
+    const params: any = {
+      page: this.proctorActionEventsParams.page,
+      size: this.proctorActionEventsParams.size,
+      action_type: this.selectedProctorActionCategoryFilter
+    };
+    if (this.selectedProctorActionBatchFilter) params.batch_id = this.selectedProctorActionBatchFilter;
+
+    this.monitorService.fetchProctorActionEvents(this.assessmentId, params).subscribe({
+      next: (res) => {
+        this.proctorActionEventsReport = res;
+        this.fetchingProctorActionEvents = false;
+      },
+      error: () => {
+        this.fetchingProctorActionEvents = false;
+      }
+    });
+  }
+
+  applyProctorActionEventsFilter() {
+    this.proctorActionEventsParams.page = 1;
+    this.fetchProctorActionEvents();
+  }
+
+  onProctorActionEventsPageChange(event: any) {
+    this.proctorActionEventsParams.page = event.page + 1;
+    this.proctorActionEventsParams.size = event.rows;
+    this.fetchProctorActionEvents();
+  }
+
+  viewProctorActionCandidateTimeline(candidateId: string, infractionEventsModal: any) {
+    this.openInfractionEventsModal('', infractionEventsModal, candidateId);
   }
 
   goBack() {

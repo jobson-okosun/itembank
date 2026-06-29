@@ -29,7 +29,7 @@
                   <option [ngValue]="null">All Status</option>
                   <option value="DRAFT">DRAFT</option>
                   <option value="PUBLISHED">PUBLISHED</option>
-                  <option value="CLOSED">CLOSED</option>
+                  <!-- <option value="CLOSED">CLOSED</option> -->
                 </select>
               </div>
             </div>
@@ -42,7 +42,7 @@
                   <option [ngValue]="null">All Progress</option>
                   <option value="TAKEN">TAKEN</option>
                   <option value="NOT_TAKEN">NOT_TAKEN</option>
-                  <option value="IN_PROGRESS">IN_PROGRESS</option>
+                  <!-- <option value="IN_PROGRESS">IN_PROGRESS</option> -->
                 </select>
               </div>
             </div>
@@ -53,7 +53,9 @@
                 <label class="form-label">Delivery Method</label>
                 <select class="form-select" [(ngModel)]="filters.exam_delivery_method">
                   <option [ngValue]="null">All Delivery</option>
-                  <option *ngFor="let m of deliveryMethods" [value]="m">{{m}}</option>
+                  <option *ngFor="let m of deliveryMethods" [value]="m">
+                    {{getDeliveryMethod(m).label}}
+                  </option>
                 </select>
               </div>
             </div>
@@ -244,6 +246,12 @@
                 <span class="text-primary"><i
                     class="ri-calendar-event-line align-bottom"></i>
                   {{ assessment.created_at | date : "medium" }}</span>
+              </li>
+              <li >
+                Exam Group:
+                <span class="text-primary" *ngIf="assessment?.exam_group_name">
+                  {{ assessment.exam_group_name }}</span>
+                  <span class="text-primary" *ngIf="!assessment?.exam_group_name">-</span>
               </li>
               <li>
                 <div class="d-flex flex-wrap gap-2">

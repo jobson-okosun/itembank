@@ -66,6 +66,7 @@ export interface AssessmentListItemDTO {
   bank_id?: string;
   exam_group_id?: string;
   progress_status?: string;
+  exam_group_name?: string;
 }
 
 export interface AssessmentListPage {

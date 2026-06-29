@@ -19,6 +19,7 @@ import { ItemServiceService } from 'src/app/shared/item-services/item-service.se
 import { Account } from 'src/app/authentication/model/account.model';
 import { UserService } from 'src/app/shared/user.service';
 import { Role } from 'src/app/shared/enum/role';
+import { DELIVERY_METHOD_LABEL } from '../../scheduler/models/default.model';
 
 @Component({
   selector: 'app-all-assessments',
@@ -44,16 +45,6 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
   centreBasedCategory: any[] = [];
 
   ePaperCategory: any[] = [];
-
-  DELIVERY_METHOD_LABEL: { label: string, description: string }[] = [
-    { label: 'PROCTOR SUPERVISED', description: 'Exam will be supervised by live proctors.' },
-    { label: 'AUTO SUPERVISED', description: 'Exam will be supervised by AI.' },
-    { label: 'ONLINE UNSUPERVISED', description: 'Exam will be taken without supervision.' },
-    { label: 'CENTER-BASED SECURE', description: 'Exam will be taken in a physical location with the lockdown browser.' },
-    { label: 'CENTER-BASED STANDARD', description: 'Exam will be taken in a physical location without the lockdown browser.' },
-    { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
-    { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
-  ];
 
   deliveryMethodsWithLabel: { label: string; value: string, description: string }[] = [];
 
@@ -156,8 +147,8 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
 
     this.deliveryMethodsWithLabel = this.deliveryMethods?.map((value: string, index: number) => ({
       value: value,
-      label: this.DELIVERY_METHOD_LABEL?.[index]?.label,
-      description: this.DELIVERY_METHOD_LABEL?.[index]?.description,
+      label: DELIVERY_METHOD_LABEL?.[index]?.label,
+      description: DELIVERY_METHOD_LABEL?.[index]?.description,
     }));
 
     this.breadCrumbItems = [{ label: 'Exams', active: true }];
@@ -587,6 +578,30 @@ export class AllAssessmentsComponent implements OnInit, OnDestroy {
     this.examGroups = [];
     this.modalService.open(content, { centered: true, size: "lg" });
     this.loadExamGroupsPage();
+  }
+
+  confirmRemoveFromGroup(assessment: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      html: `Do you want to remove <b>${assessment.name}</b> from its group?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, remove it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.assessmentService.removeExamFromGroup(assessment.exam_group_id, assessment.id).subscribe({
+          next: () => {
+            this.notifier.notify("success", "Exam removed from group successfully");
+            this.fetchAssessments();
+          },
+          error: (err) => {
+            this.notifier.notify("error", err?.error?.error ?? "Failed to remove exam");
+          }
+        });
+      }
+    });
   }
 
   addExamToSelectedGroup(group: ExamGroupDto) {
