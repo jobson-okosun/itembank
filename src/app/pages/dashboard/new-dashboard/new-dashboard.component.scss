@@ -1,0 +1,140 @@
+/* Base Layout Styles */
+.dashboard-container {
+    padding: 1.5rem;
+    background-color: #f8f9fc;
+    min-height: 100vh;
+}
+
+/* Custom Card Styling */
+.premium-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.premium-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.premium-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a1d20;
+    margin-bottom: 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* KPI Cards with Green Borders */
+.kpi-card {
+    border: 2px solid #28c76f;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.kpi-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1a1d20;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.kpi-subtext {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Calendar Heatmap Styling */
+.calendar-heatmap {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.calendar-header-day {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    padding-bottom: 0.5rem;
+}
+
+.calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.calendar-cell:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Heatmap Colors based on mockup */
+.heat-empty { background-color: transparent; }
+.heat-0 { background-color: #f1f3f4; color: #6c757d; }
+.heat-1 { background-color: #d1f2eb; color: #1a1d20; }
+.heat-2 { background-color: #a3e4d7; color: #1a1d20; }
+.heat-3 { background-color: #48c9b0; color: #ffffff; }
+.heat-4 { background-color: #1abc9c; color: #ffffff; }
+
+/* Customizing the Global Filter */
+.global-filter-bar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-select {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    background-color: #f8f9fc;
+}
+
+/* Modernizing the Breakdown Table */
+.modern-table th {
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f1f3f4;
+    padding: 1rem;
+}
+
+.modern-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fc;
+}
