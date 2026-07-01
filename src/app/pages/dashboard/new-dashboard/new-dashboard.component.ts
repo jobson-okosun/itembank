@@ -99,12 +99,14 @@ export class NewDashboardComponent implements OnInit {
     if (this.selectedDeliveryMethod) {
       params['delivery_method'] = this.selectedDeliveryMethod;
     }
+    console.log('PARAMS: ', params);
     return params;
   }
 
   fetchExamsForTheDay() {
     this.dashboardService.fetchExamsForTheDay(this.buildParams({ page: 1, size: 20 })).subscribe(res => {
       this.examsForTheDay = res;
+      console.log('EXAM FOR THE DAY: ', res);
     });
   }
 
@@ -310,4 +312,15 @@ export class NewDashboardComponent implements OnInit {
     }
   }
 
+
+    //pagination for "Exam for the day"
+    itemsExamPageChange(event: any) {
+      // this.loading_items = true;
+      const size = event.rows + 1;
+      const page = event.page;
+
+      this.buildParams({ page: page, size: size });
+
+      this.fetchDashboardData();
+    }
 }

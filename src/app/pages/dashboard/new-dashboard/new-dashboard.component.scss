@@ -12,7 +12,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
-    height: 100%;
+    // height: 100%;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -22,7 +22,7 @@
 
 .premium-card-title {
     font-size: 1.1rem;
-    font-weight: 600;
+    // font-weight: 600;
     color: #1a1d20;
     margin-bottom: 1.5rem;
     font-family: 'Inter', sans-serif;
@@ -30,7 +30,8 @@
 
 /* KPI Cards with Green Borders */
 .kpi-card {
-    border: 2px solid #28c76f;
+    // border: 2px solid #28c76f;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-radius: 12px;
     background: #ffffff;
     padding: 1.25rem 1.5rem;
@@ -90,16 +91,38 @@
 
 .calendar-cell:hover {
     transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Heatmap Colors based on mockup */
-.heat-empty { background-color: transparent; }
-.heat-0 { background-color: #f1f3f4; color: #6c757d; }
-.heat-1 { background-color: #d1f2eb; color: #1a1d20; }
-.heat-2 { background-color: #a3e4d7; color: #1a1d20; }
-.heat-3 { background-color: #48c9b0; color: #ffffff; }
-.heat-4 { background-color: #1abc9c; color: #ffffff; }
+.heat-empty {
+    background-color: transparent;
+}
+
+.heat-0 {
+    background-color: #f1f3f4;
+    color: #6c757d;
+}
+
+.heat-1 {
+    background-color: #d1f2eb;
+    color: #1a1d20;
+}
+
+.heat-2 {
+    background-color: #a3e4d7;
+    color: #1a1d20;
+}
+
+.heat-3 {
+    background-color: #48c9b0;
+    color: #ffffff;
+}
+
+.heat-4 {
+    background-color: #1abc9c;
+    color: #ffffff;
+}
 
 /* Customizing the Global Filter */
 .global-filter-bar {
@@ -120,6 +143,11 @@
     padding: 0.4rem 1rem;
     font-size: 0.9rem;
     background-color: #f8f9fc;
+}
+
+.has-selection {
+    border: 2px solid #28a745;
+    /* Success green border */
 }
 
 /* Modernizing the Breakdown Table */

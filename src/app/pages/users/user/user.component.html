@@ -564,7 +564,8 @@
       <div class="col-12" *ngIf="
           role?.role == 'AUTHOR' ||
           role?.role == 'MODERATOR' ||
-          role?.role == 'MARKER'
+          role?.role == 'MARKER' || 
+          role?.role == 'GROUP_ADMIN'
         ">
         <div class="mb-3">
           <app-item-topic [label]="'Subject'" (sendSubjects)="receiveSubjects($event)"></app-item-topic>

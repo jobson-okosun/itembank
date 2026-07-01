@@ -1,78 +1,42 @@
 <div class="row">
   <div class="card">
     <div class="card-header">
-      <ul
-        ngbNav
-        #customNav="ngbNav"
-        [activeId]="1"
-        class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
-        role="tablist"
-      >
-        <li
-          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 1"
-          class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')"
-        >
+      <ul ngbNav #customNav="ngbNav" [activeId]="1" class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
+        role="tablist">
+        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 1" class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-user-settings-fill align-middle me-2 fs-4"></i>
             Account Settings
           </a>
           <ng-template ngbNavContent>
-            <form
-              action="javascript:void(0);"
-              [formGroup]="accountSettingsForm"
-              (ngSubmit)="submitAccountSetting()"
-            >
+            <form action="javascript:void(0);" [formGroup]="accountSettingsForm" (ngSubmit)="submitAccountSetting()">
               <div class="row">
                 <div class="col-lg-6">
                   <div class="mb-3">
-                    <label
-                      for="organizationName"
-                      class="form-label d-flex flex-row gap-1"
-                      >Organization Name
-                      <span class="text-danger fs-6">*</span></label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="organizationName"
-                      [ngClass]="{
+                    <label for="organizationName" class="form-label d-flex flex-row gap-1">Organization Name
+                      <span class="text-danger fs-6">*</span></label>
+                    <input type="text" class="form-control" id="organizationName" [ngClass]="{
                         'border border-danger':
                           accountSettingsForm.get('organizationName').invalid &&
                           accountSettingsForm.get('organizationName').touched
-                      }"
-                      formControlName="organizationName"
-                      placeholder="Enter your organization name"
-                      value=""
-                    />
+                      }" formControlName="organizationName" placeholder="Enter your organization name" value="" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label d-flex flex-row gap-1" for="country"
-                    >Country <span class="text-danger fs-6">*</span></label
-                  >
-                  <select
-                    class="form-select form-select-md"
-                    id="country"
-                    (change)="setStates()"
-                    formControlName="country"
-                    [ngClass]="{
+                  <label class="form-label d-flex flex-row gap-1" for="country">Country <span
+                      class="text-danger fs-6">*</span></label>
+                  <select class="form-select form-select-md" id="country" (change)="setStates()"
+                    formControlName="country" [ngClass]="{
                       'is-invalid': submitted && f['country'].errors
-                    }"
-                    [ngClass]="{
+                    }" [ngClass]="{
                       'border border-danger':
                         accountSettingsForm.get('country').invalid &&
                         accountSettingsForm.get('country').touched
-                    }"
-                    required
-                  >
+                    }" required>
                     <option disabled value="">Select Country</option>
-                    <option
-                      class="text-uppercase"
-                      *ngFor="let country of countries"
-                      value="{{ country.country }}"
-                    >
+                    <option class="text-uppercase" *ngFor="let country of countries" value="{{ country.country }}">
                       {{ country.country }}
                     </option>
                     <!-- <option value="">Istanbul</option>
@@ -157,29 +121,17 @@
                 </div> -->
                 <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label d-flex flex-row gap-1" for="state"
-                    >State <span class="text-danger fs-6">*</span></label
-                  >
-                  <select
-                    class="form-select form-select-md"
-                    id="state"
-                    formControlName="state"
-                    [ngClass]="{
+                  <label class="form-label d-flex flex-row gap-1" for="state">State <span
+                      class="text-danger fs-6">*</span></label>
+                  <select class="form-select form-select-md" id="state" formControlName="state" [ngClass]="{
                       'is-invalid': submitted && f['state'].errors
-                    }"
-                    [ngClass]="{
+                    }" [ngClass]="{
                       'border border-danger':
                         accountSettingsForm.get('state').invalid &&
                         accountSettingsForm.get('state').touched
-                    }"
-                    required
-                  >
+                    }" required>
                     <option disabled value="">Select State</option>
-                    <option
-                      class="text-uppercase"
-                      *ngFor="let state of states"
-                      value="{{ state | uppercase }}"
-                    >
+                    <option class="text-uppercase" *ngFor="let state of states" value="{{ state | uppercase }}">
                       {{ state }}
                     </option>
                     <!-- <option value="">Istanbul</option>
@@ -192,28 +144,18 @@
                 </div>
                 <!--end col-->
                 <div class="mb-4 col-6">
-                  <label class="form-label d-flex flex-row gap-1" for="industry"
-                    >Industry <span class="text-danger fs-6">*</span></label
-                  >
-                  <select
-                    class="form-select form-select-md"
-                    formControlName="industry"
-                    id="industry"
-                    required
+                  <label class="form-label d-flex flex-row gap-1" for="industry">Industry <span
+                      class="text-danger fs-6">*</span></label>
+                  <select class="form-select form-select-md" formControlName="industry" id="industry" required
                     [ngClass]="{
                       'is-invalid': submitted && f['industry'].errors
-                    }"
-                    [ngClass]="{
+                    }" [ngClass]="{
                       'border border-danger':
                         accountSettingsForm.get('industry').invalid &&
                         accountSettingsForm.get('industry').touched
-                    }"
-                  >
+                    }">
                     <option disabled value="">Select Industry</option>
-                    <option
-                      *ngFor="let industry of industries"
-                      value="{{ industry }}"
-                    >
+                    <option *ngFor="let industry of industries" value="{{ industry }}">
                       {{ industry }}
                     </option>
                     <!-- <option value="">Istanbul</option>
@@ -228,31 +170,17 @@
 
                 <div class="col-lg-6">
                   <div class="mb-3">
-                    <label for="addressLine1" class="form-label"
-                      >Address Line 1</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="addressLine1"
-                      placeholder="Address Line1"
-                      formControlName="addressLine1"
-                    />
+                    <label for="addressLine1" class="form-label">Address Line 1</label>
+                    <input type="text" class="form-control" id="addressLine1" placeholder="Address Line1"
+                      formControlName="addressLine1" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-6">
                   <div class="mb-3">
-                    <label for="addressLine2" class="form-label"
-                      >Address Line 2</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="addressLine2"
-                      placeholder="addressLine2"
-                      formControlName="addressLine1"
-                    />
+                    <label for="addressLine2" class="form-label">Address Line 2</label>
+                    <input type="text" class="form-control" id="addressLine2" placeholder="addressLine2"
+                      formControlName="addressLine1" />
                   </div>
                 </div>
                 <!-- <div class="col-lg-6">
@@ -277,35 +205,20 @@
 
                 <div class="col-lg-12">
                   <div class="hstack gap-2 justify-content-end">
-                    <button
-                      type="submit"
-                      *ngIf="!isSubmittingAccountSetting"
-                      [disabled]="
+                    <button type="submit" *ngIf="!isSubmittingAccountSetting" [disabled]="
                         accountSettingsForm.invalid ||
                         isSubmittingAccountSetting
-                      "
-                      class="btn btn-primary"
-                    >
+                      " class="btn btn-primary">
                       Update
                     </button>
-                    <button
-                      type="submit"
-                      *ngIf="isSubmittingAccountSetting"
-                      [disabled]="
+                    <button type="submit" *ngIf="isSubmittingAccountSetting" [disabled]="
                         accountSettingsForm.invalid ||
                         isSubmittingAccountSetting
-                      "
-                      class="btn btn-primary"
-                    >
+                      " class="btn btn-primary">
                       Updating...
                     </button>
-                    <button
-                      type="button"
-                      class="btn btn-soft-danger"
-                      (click)="resetAccountSettingForm()"
-                      [routerLink]="['/examalpha/dashboard']"
-                      [disabled]="isSubmittingAccountSetting"
-                    >
+                    <button type="button" class="btn btn-soft-danger" (click)="resetAccountSettingForm()"
+                      [routerLink]="['/examalpha/dashboard']" [disabled]="isSubmittingAccountSetting">
                       Cancel
                     </button>
                   </div>
@@ -316,11 +229,8 @@
             </form>
           </ng-template>
         </li>
-        <li
-          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 2"
-          class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')"
-        >
+        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 2" class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-palette-fill me-2 align-middle fs-4"></i>
             Branding
@@ -329,11 +239,8 @@
             <app-branding></app-branding>
           </ng-template>
         </li>
-        <li
-          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 3"
-          class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')"
-        >
+        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 3" class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-shield-fill me-2 align-middle fs-4"></i>
             Security
@@ -354,9 +261,7 @@
                   </p>
                 </div>
                 <div class="flex-shrink-0 ms-sm-3">
-                  <a href="javascript:void(0);" class="btn btn-sm btn-primary"
-                    >Enable Two-facor Authentication</a
-                  >
+                  <a href="javascript:void(0);" class="btn btn-sm btn-primary">Enable Two-facor Authentication</a>
                 </div>
               </div>
 
@@ -483,118 +388,68 @@
                 click the button. A mail will be sent to you verify your action.
               </p>
               <div>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="passwordInput"
-                  placeholder="Enter your password"
-                  [value]="inputtedOrganizationNameToDelete"
-                  [(ngModel)]="inputtedOrganizationNameToDelete"
-                  style="max-width: 265px"
-                />
+                <input type="text" class="form-control" id="passwordInput" placeholder="Enter your password"
+                  [value]="inputtedOrganizationNameToDelete" [(ngModel)]="inputtedOrganizationNameToDelete"
+                  style="max-width: 265px" />
               </div>
               <div class="hstack gap-2 mt-3">
-                <button type="button" class="btn btn-soft-danger" (click)="deleteAccount()" [disabled]="inputtedOrganizationNameToDelete !== organizationName">
+                <button type="button" class="btn btn-soft-danger" (click)="deleteAccount()"
+                  [disabled]="inputtedOrganizationNameToDelete !== organizationName">
                   Close & Delete This Account
                 </button>
-                <a
-                  href="javascript:void(0);"
-                  class="btn btn-light"
-                  [routerLink]="['/examalpha/dashboard']"
-                  >Cancel</a
-                >
+                <a href="javascript:void(0);" class="btn btn-light" [routerLink]="['/examalpha/dashboard']">Cancel</a>
               </div>
             </div>
           </ng-template>
         </li>
-        <li
-          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 4 : 1"
-          class="nav-item"
-          *ngIf="!currentUser.authorities.includes(Role.CENTER_ADMIN)"
-        >
+        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 4 : 1" class="nav-item"
+          *ngIf="!currentUser.authorities.includes(Role.CENTER_ADMIN)">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-key-fill align-middle me-2 fs-4"></i>
             Change Password Application Notifications:
           </a>
           <ng-template ngbNavContent>
-            <form
-              [formGroup]="changePasswordForm"
-              action="javascript:void(0);"
-              (ngSubmit)="submitChangePassword()"
-            >
+            <form [formGroup]="changePasswordForm" action="javascript:void(0);" (ngSubmit)="submitChangePassword()">
               <div class="row g-2">
                 <div class="col-lg-4">
                   <div>
-                    <label
-                      for="oldpasswordInput"
-                      class="form-label d-flex flex-row gap-1"
-                      >Old Password<span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      id="oldpasswordInput"
-                      formControlName="oldPassword"
+                    <label for="oldpasswordInput" class="form-label d-flex flex-row gap-1">Old Password<span
+                        class="text-danger">*</span></label>
+                    <input type="password" class="form-control" id="oldpasswordInput" formControlName="oldPassword"
                       [ngClass]="{
                         'border border-danger':
                           changePasswordForm.get('oldPassword').touched &&
                           changePasswordForm.get('oldPassword').invalid
-                      }"
-                      placeholder="Enter current password"
-                    />
+                      }" placeholder="Enter current password" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-4">
                   <div>
-                    <label
-                      for="newpasswordInput"
-                      class="form-label d-flex flex-row gap-1"
-                      >New Password<span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      [ngClass]="{
+                    <label for="newpasswordInput" class="form-label d-flex flex-row gap-1">New Password<span
+                        class="text-danger">*</span></label>
+                    <input type="password" class="form-control" [ngClass]="{
                         'border border-danger':
                           changePasswordForm.get('newPassword').touched &&
                           changePasswordForm.get('newPassword').invalid
-                      }"
-                      id="newpasswordInput"
-                      formControlName="newPassword"
-                      placeholder="Enter new password"
-                    />
+                      }" id="newpasswordInput" formControlName="newPassword" placeholder="Enter new password" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-4">
                   <div>
-                    <label
-                      for="confirmpasswordInput"
-                      class="form-label d-flex flex-row gap-1"
-                      >Confirm Password<span class="text-danger">*</span></label
-                    >
-                    <input
-                      type="password"
-                      class="form-control"
-                      formControlName="confirmPassword"
-                      [ngClass]="{
+                    <label for="confirmpasswordInput" class="form-label d-flex flex-row gap-1">Confirm Password<span
+                        class="text-danger">*</span></label>
+                    <input type="password" class="form-control" formControlName="confirmPassword" [ngClass]="{
                         'border border-danger':
                           (changePasswordForm.get('confirmPassword').touched &&
                           changePasswordForm.get('confirmPassword').invalid) || (changePasswordForm.errors?.['passwordMismatch'] &&
                         changePasswordForm.get('confirmPassword').touched)
-                      }"
-                      id="confirmpasswordInput"
-                      placeholder="Confirm password"
-                    />
-                    <span
-                      *ngIf="
+                      }" id="confirmpasswordInput" placeholder="Confirm password" />
+                    <span *ngIf="
                         changePasswordForm.errors?.['passwordMismatch'] &&
                         changePasswordForm.get('confirmPassword').touched
-                      "
-                      class="fs-6 text-danger"
-                      >Password does not match</span
-                    >
+                      " class="fs-6 text-danger">Password does not match</span>
                   </div>
                 </div>
                 <!--end col-->
@@ -610,20 +465,12 @@
                 <!--end col-->
                 <div class="col-lg-12">
                   <div class="text-end">
-                    <button
-                      type="submit"
-                      class="btn btn-success"
-                      [disabled]="changePasswordForm.invalid"
-                      *ngIf="!isChangingPassword"
-                    >
+                    <button type="submit" class="btn btn-success" [disabled]="changePasswordForm.invalid"
+                      *ngIf="!isChangingPassword">
                       Change Password
                     </button>
-                    <button
-                      type="submit"
-                      class="btn btn-success"
-                      [disabled]="isChangingPassword"
-                      *ngIf="isChangingPassword"
-                    >
+                    <button type="submit" class="btn btn-success" [disabled]="isChangingPassword"
+                      *ngIf="isChangingPassword">
                       Updating Password...
                     </button>
                   </div>
@@ -714,10 +561,7 @@
             </div> -->
           </ng-template>
         </li>
-        <li
-          [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 5 : 2"
-          class="nav-item"
-        >
+        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) ? 5 : 2" class="nav-item">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-user-line align-middle me-2 fs-4"></i>
             Personal Info
@@ -728,109 +572,62 @@
                 <div *ngIf="userDetail.username" class="col-12">
                   <div class="mb-3">
                     <label for="email" class="form-label">Username</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="username"
-                      id="username"
-                      placeholder="Enter username"
-                      value="{{ userDetail.username }}"
-                      [(ngModel)]="userDetail.username"
-                      [disabled]="!currentUser.authorities.includes('ADMIN')"
-                    />
+                    <input type="text" class="form-control" name="username" id="username" placeholder="Enter username"
+                      value="{{ userDetail.username }}" [(ngModel)]="userDetail.username"
+                      [disabled]="!currentUser.authorities.includes('ADMIN')" />
                   </div>
                 </div>
                 <div class="col-lg-6">
                   <div class="mb-3">
                     <label for="firstName" class="form-label">First Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="firstnameInput"
-                      name="firstName"
-                      placeholder="Enter your firstname"
-                      value="{{ userDetail.firstName }}"
-                      [(ngModel)]="userDetail.firstName"
-                    />
+                    <input type="text" class="form-control" id="firstnameInput" name="firstName"
+                      placeholder="Enter your firstname" value="{{ userDetail.firstName }}"
+                      [(ngModel)]="userDetail.firstName" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-6">
                   <div class="mb-3">
                     <label for="lastName" class="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="lastnameInput"
-                      name="lastName"
-                      placeholder="Enter your lastname"
-                      value="{{ userDetail.lastName }}"
-                      [(ngModel)]="userDetail.lastName"
-                    />
+                    <input type="text" class="form-control" id="lastnameInput" name="lastName"
+                      placeholder="Enter your lastname" value="{{ userDetail.lastName }}"
+                      [(ngModel)]="userDetail.lastName" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-6">
                   <div class="mb-3">
                     <label for="phone" class="form-label">Phone Number</label>
-                    <input
-                      type="text"
-                      class="form-control"
-                      name="phone"
-                      id="phone"
-                      placeholder="Enter your phone number"
-                      value="{{ userDetail.phone }}"
-                      [(ngModel)]="userDetail.phone"
-                    />
+                    <input type="text" class="form-control" name="phone" id="phone"
+                      placeholder="Enter your phone number" value="{{ userDetail.phone }}"
+                      [(ngModel)]="userDetail.phone" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-6">
                   <div class="mb-3">
                     <label for="email" class="form-label">Email Address</label>
-                    <input
-                      type="email"
-                      class="form-control"
-                      name="email"
-                      id="email"
-                      placeholder="Enter your email"
-                      value="{{ userDetail.email }}"
-                      [(ngModel)]="userDetail.email"
-                    />
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter your email"
+                      value="{{ userDetail.email }}" [(ngModel)]="userDetail.email" />
                   </div>
                 </div>
                 <!--end col-->
                 <div class="col-lg-12">
                   <div class="hstack gap-2 justify-content-end">
-                    <button
-                      *ngIf="!updatingPersonalInfo"
-                      type="button"
-                      (click)="updateUserDetails()"
-                      class="btn btn-primary"
-                    >
+                    <button *ngIf="!updatingPersonalInfo" type="button" (click)="updateUserDetails()"
+                      class="btn btn-primary">
                       Update
                     </button>
-                    <button
-                      *ngIf="updatingPersonalInfo"
-                      class="btn btn-outline-primary btn-load"
-                      [disabled]="updatingPersonalInfo"
-                    >
+                    <button *ngIf="updatingPersonalInfo" class="btn btn-outline-primary btn-load"
+                      [disabled]="updatingPersonalInfo">
                       <span class="d-flex align-items-center">
-                        <span
-                          class="spinner-border flex-shrink-0"
-                          role="status"
-                        >
+                        <span class="spinner-border flex-shrink-0" role="status">
                           <span class="visually-hidden">Saving...</span>
                         </span>
                         <span class="flex-grow-1 ms-2"> Saving... </span>
                       </span>
                     </button>
-                    <button
-                      type="button"
-                      (click)="cancel()"
-                      class="btn btn-danger"
-                      [disabled]="updatingPersonalInfo"
-                    >
+                    <button type="button" (click)="cancel()" class="btn btn-danger" [disabled]="updatingPersonalInfo">
                       Cancel
                     </button>
                   </div>
@@ -859,8 +656,9 @@
     </button>
   </div>
   <div class="modal-body px-4">
-        <div class="alert alert-info">
-      Are you sure you want to delete your account ? <br/> <strong>NOTE:</strong> You can send your complaints to us if any and we will get back to you to resolve any complaints you have.
+    <div class="alert alert-info">
+      Are you sure you want to delete your account ? <br /> <strong>NOTE:</strong> You can send your complaints to us if
+      any and we will get back to you to resolve any complaints you have.
     </div>
 
     <span>Complain</span>
@@ -876,20 +674,20 @@
         <i class="ri-close-line"></i>Cancel
       </button> -->
 
-       <button type="button" class="btn btn-secondary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+      <button type="button" class="btn btn-secondary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
         (click)="sendComplain()">
         <i class="ri-close-line"></i>Send Complain
       </button>
 
       <div class="d-flex flex-row gap-2">
-              <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
-        (click)="proceedWithDelete()">
-        <i class="ri-delete-bin-line"></i>Delete Account
-      </button>
-      <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
-        (click)="proceedWithDelete()">
-        <i class="ri-delete-bin-line"></i>Proceed
-      </button>
+        <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="proceedWithDelete()">
+          <i class="ri-delete-bin-line"></i>Delete Account
+        </button>
+        <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+          (click)="proceedWithDelete()">
+          <i class="ri-delete-bin-line"></i>Proceed
+        </button>
       </div>
 
     </div>

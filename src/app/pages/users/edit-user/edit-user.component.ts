@@ -106,6 +106,7 @@ export class EditUserComponent implements OnInit {
       (value) => {
         // console.log(value);
         this.userDetail = value;
+        console.log('USER DETAIL: ', this.userDetail);
         this.userDetail.userSubjectsDTOS.forEach((subject) => {
           this.userDefaultSubjects.push(subject);
         });
@@ -184,7 +185,7 @@ export class EditUserComponent implements OnInit {
       return;
     }
 
-    // this.updating = true;
+    this.updating = true;
     //console.log(updateDetailForm.value);
     this.newUserDetails.firstName = this.userDetail.firstName.trim();
     this.newUserDetails.lastName = this.userDetail.lastName.trim();
