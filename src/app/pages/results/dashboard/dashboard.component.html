@@ -18,7 +18,7 @@
           <h3 class="modal-title" *ngIf="assessmentSummary">{{ assessmentSummary.exam_name | uppercase }}</h3>
           <div class="d-flex text-secondary fs-12" style="cursor: pointer">
             Exam Delivery:&nbsp;
-            <span class="fs-12">ON_PREMISE_WITH SECURE_BROWSER</span>
+            <span class="fs-12">{{ assessmentSummary?.delivery_method }}</span>
           </div>
       </div>
       <div class="col-lg-6 px-3">
@@ -53,7 +53,7 @@
                       <label for="center" class="small">Center</label>
                       <select formControlName="center_id" class="form-control control-input">
                         <option value="">--Select center --</option>
-                        <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                        <option *ngFor="let item of centers" [value]="item.id">
                           {{ item.center_id }}
                         </option>
                       </select>
@@ -62,7 +62,7 @@
                       <label for="batch" class="small">Batch</label>
                       <select formControlName="batch_id" class="form-control control-input">
                         <option value="">-- Select batch --</option>
-                        <option *ngFor="let item of assessmentSummary?.batches" [value]="item.id">
+                        <option *ngFor="let item of batches" [value]="item.id">
                           {{ item.name }}
                         </option>
                       </select>
@@ -506,7 +506,7 @@
                     <label for="center" class="small">Center</label>
                     <select formControlName="center_id" class="form-control control-input">
                       <option value="">--Select center --</option>
-                      <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                      <option *ngFor="let item of centers" [value]="item.id">
                         {{ item.center_id }}
                       </option>
                     </select>
@@ -515,7 +515,7 @@
                     <label for="batch" class="small">Section*</label>
                     <select #scoreSectionInput formControlName="section_id" class="form-control control-input">
                       <option value="">--Select section --</option>
-                      <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                      <option *ngFor="let item of sections" [value]="item.id">
                         {{ item.name }}
                       </option>
                     </select>
@@ -719,7 +719,7 @@
                   <label for="center" class="small">Center</label>
                   <select formControlName="center_id" class="form-control control-input">
                     <option value="">--Select center --</option>
-                    <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                    <option *ngFor="let item of centers" [value]="item.id">
                       {{ item.center_id }}
                     </option>
                   </select>
@@ -728,7 +728,7 @@
                   <label for="batch" class="small">Section*</label>
                   <select formControlName="section_id" class="form-control control-input">
                     <option value="">--Select section --</option>
-                    <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                    <option *ngFor="let item of sections" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -795,7 +795,7 @@
                   <label for="batch" class="small">Section*</label>
                   <select formControlName="section" class="form-control control-input">
                     <option value="">--Select section --</option>
-                    <option *ngFor="let item of assessmentSummary?.sections" [value]="item.id">
+                    <option *ngFor="let item of sections" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>
@@ -809,7 +809,7 @@
                   <label for="center" class="small">Center</label>
                   <select formControlName="center" class="form-control control-input">
                     <option value="">--Select center --</option>
-                    <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                    <option *ngFor="let item of centers" [value]="item.id">
                       {{ item.center_id }}
                     </option>
                   </select>
@@ -1130,7 +1130,7 @@
                   <label for="center" class="small">Center</label>
                   <select formControlName="center_id" class="form-control control-input">
                     <option value="">--Select center --</option>
-                    <option *ngFor="let item of assessmentSummary?.centers" [value]="item.id">
+                    <option *ngFor="let item of centers" [value]="item.id">
                       {{ item.center_id }}
                     </option>
                   </select>
@@ -1139,7 +1139,7 @@
                   <label for="batch" class="small">Batch</label>
                   <select formControlName="batch_id" class="form-control control-input">
                     <option value="">-- Select batch --</option>
-                    <option *ngFor="let item of assessmentSummary?.batches" [value]="item.id">
+                    <option *ngFor="let item of batches" [value]="item.id">
                       {{ item.name }}
                     </option>
                   </select>

@@ -67,6 +67,9 @@ export class DashboardComponent implements OnInit {
   loadingDashboardResources: boolean = false;
 
   assessmentSummary: AssessmentResultSummary | null = null;
+  centers: any[] = [];
+  sections: any[] = [];
+  batches: any[] = [];
   assessmentFilterForm: FormGroup;
   scoreDistributionFilterForm: FormGroup;
   scoreAnalysisFilterForm: FormGroup;
@@ -215,6 +218,16 @@ export class DashboardComponent implements OnInit {
           examGroups,
         }) => {
           this.assessmentSummary = assessmentSummary;
+          
+          if (!this.centers.length && assessmentSummary?.centers) {
+            this.centers = assessmentSummary.centers;
+          }
+          if (!this.sections.length && assessmentSummary?.sections) {
+            this.sections = assessmentSummary.sections;
+          }
+          if (!this.batches.length && assessmentSummary?.batches) {
+            this.batches = assessmentSummary.batches;
+          }
           this.scoreDistribution = scoreDistribution;
           this.scoreAnalysis = scoreAnalysis;
           
@@ -672,7 +685,7 @@ export class DashboardComponent implements OnInit {
       return this.scoreAnalysisFilterForm.markAllAsTouched();
 
     const { center_id, section_id, exam_group_id } = this.scoreAnalysisFilterForm.value;
-    this.scoreAnalysisFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
+    this.scoreAnalysisFilterSubjectName = section_id ? (this.sections.find( item => item.id == section_id))?.name || 'ALL' : 'ALL'
 
     const params: ScoreAnalysisParams = {};
 
@@ -705,7 +718,7 @@ export class DashboardComponent implements OnInit {
     if (this.scoreDistributionFilterForm.invalid) return this.scoreDistributionFilterForm.markAllAsTouched();
 
     const { center_id, section_id, exam_group_id } = this.scoreDistributionFilterForm.value;
-    this.scoreDistributionFilterSubjectName = section_id ? (this.assessmentSummary?.sections.find( item => item.id == section_id)).name : 'ALL'
+    this.scoreDistributionFilterSubjectName = section_id ? (this.sections.find( item => item.id == section_id))?.name || 'ALL' : 'ALL'
     
     const params: ScoreDistributionParams = {};
 
@@ -972,7 +985,7 @@ export class DashboardComponent implements OnInit {
         params.exam_group_id = exam_group_id;
       }
 
-      const selectedSection = this.assessmentSummary?.sections.find(
+      const selectedSection = this.sections.find(
         item => item.id === section
       );
 
@@ -1329,7 +1342,7 @@ export class DashboardComponent implements OnInit {
     this.infractionEventsParams = { page: 1, size: 50 };
     
     // Fallback batch list from assessmentSummary
-    this.infractionBatches = (this.assessmentSummary?.batches || []).map((b: any) => ({
+    this.infractionBatches = (this.batches || []).map((b: any) => ({
       id: b.id,
       name: b.name,
       start_time: b.start_date_time || '',
