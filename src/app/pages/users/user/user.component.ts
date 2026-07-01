@@ -506,6 +506,7 @@ export class UserComponent implements OnInit {
 
   sendUserToServer(user: NewUserModel): ResourceCreated {
     let success: ResourceCreated;
+    console.log('USERS RECORD: ', user);
     this.userService.addNewUser(user).subscribe(
       (value) => {
         // todo: display success
@@ -691,6 +692,7 @@ export class UserComponent implements OnInit {
   }
 
   onRoleSelectChange() {
+    console.log(this.role);
     if(this.role && ['AUTHOR', 'MODERATOR', 'MARKER'].includes(this.role.role)) {
        this.disableSubmit = true
        return

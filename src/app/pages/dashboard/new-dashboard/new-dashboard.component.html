@@ -1,53 +1,4 @@
-<div class="rounded bg-light p-4">
-  <div class="row g-4">
-    <div class="col-8 bg-white">
-      <div class="row">
-        <div class="rounded p-3 border">
-          <h5 class="fw-bold mb-3 fs-14 text-uppercase">Exams for the day</h5>
-
-          <!-- loop of the exams -->
-          <!-- <div class="border bg-white rounded d-flex p-2 align-items-center">
-            <div class="me-3 shrink-0">
-                <span class="avatar-title bg-exam-blue rounded-2 fs-4" style="padding: 11px">
-                  <i class="pi pi-cloud-download text-white"></i>
-                </span>
-            </div>
-            <div class="grow overflow-hidden">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="fs-14 text-uppercase">IPC RECRUITMENT</span>
-                  <div class="btn btn-sm btn-outline-primary"></div>
-                </div>
-            </div>
-          </div> -->
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- <app-breadcrumbs title="DASHBOARD" [breadcrumbItems]="breadCrumbItems"></app-breadcrumbs> -->
-
-<div *ngIf="false" class="dashboard-container">
-
-  <!-- Global Filter -->
-  <div class="global-filter-bar">
-    <div class="d-flex align-items-center gap-2">
-      <i class="ri-dashboard-2-line text-primary fs-20"></i>
-      <h5 class="mb-0 fw-bold" style="color: #2c3e50;">Monitoring Dashboard</h5>
-    </div>
-    <div class="d-flex align-items-center gap-3">
-      <label class="mb-0 text-muted fw-medium">Delivery Method:</label>
-      <select class="filter-select" 
-              [(ngModel)]="selectedDeliveryMethod" 
-              (change)="onDeliveryMethodChange()"
-              [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
-        <option value="">All Methods</option>
-        <option value="COMPUTER_BASED">Computer Based</option>
-        <option value="PAPER_BASED">Paper Based</option>
-        <option value="LIVE_PROCTORING">Live Proctoring</option>
-      </select>
-    </div>
-  </div>
+<div *ngIf="true" class="dashboard-container">
 
   <div *ngIf="!examsForTheDay" class="d-flex justify-content-center align-items-center" style="height: 40vh;">
     <div class="spinner-border text-success" role="status"></div>
@@ -55,168 +6,288 @@
 
   <div *ngIf="examsForTheDay">
 
-    <!-- KPI Row -->
-    <div class="row g-4 mb-4">
-      <div class="col-xl-3 col-md-6">
-        <div class="kpi-card">
-          <div class="kpi-title">Active Exams</div>
-          <div class="kpi-value">{{ examsForTheDay.total }}</div>
-          <div class="kpi-subtext">Currently Live</div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-        <div class="kpi-card">
-          <div class="kpi-title">Total Students</div>
-          <div class="kpi-value">{{ examsForTheDay.total_candidates_scheduled | number }}</div>
-          <div class="kpi-subtext">Registered</div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-        <div class="kpi-card">
-          <div class="kpi-title">Avg. Present</div>
-          <div class="kpi-value">{{ examsForTheDay.total_candidates_present | number }}</div>
-          <div class="kpi-subtext">Candidates Today</div>
-        </div>
-      </div>
-      <div class="col-xl-3 col-md-6">
-        <div class="kpi-card">
-          <div class="kpi-title">Active Centers</div>
-          <div class="kpi-value">{{ examsForTheDay.day_total_centers }}</div>
-          <div class="kpi-subtext">Operating Today</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Charts Row -->
-    <div class="row g-4 mb-4">
-      <div class="col-xl-7">
-        <div class="premium-card">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="premium-card-title mb-0">Upcoming Exam Volume</h5>
-            <div class="d-flex gap-2">
-              <input type="date" class="form-control form-control-sm border-0 bg-light" [(ngModel)]="upcomingStartDateFrom" (change)="fetchUpcomingExams()">
-              <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="upcomingExamStatus" (change)="fetchUpcomingExams()">
-                <option value="">All Statuses</option>
-                <option value="DRAFT">Draft</option>
-                <option value="PUBLISHED">Published</option>
-              </select>
-            </div>
-          </div>
-          <div echarts [options]="upcomingExamsChartOptions" style="height: 300px;"></div>
-        </div>
-      </div>
-
-      <div class="col-xl-5">
-        <div class="premium-card">
-          <h5 class="premium-card-title">Infraction Breakdown</h5>
-          <div *ngIf="aiInfractions?.length > 0" echarts [options]="aiInfractionsChartOptions" style="height: 300px;"></div>
-          <div *ngIf="aiInfractions?.length === 0" class="d-flex justify-content-center align-items-center text-muted h-100 pb-5">
-            No infractions detected.
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Calendar & Workload Row -->
-    <div class="row g-4 mb-4">
-      
-      <!-- True Calendar Heatmap -->
-      <div class="col-xl-6">
-        <div class="premium-card">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <h5 class="premium-card-title mb-0">Proctor Activity Heatmap</h5>
-            <div class="d-flex gap-2 align-items-center">
-              <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="calendarMonth" (change)="fetchExamCalendar()">
-                <option *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]" [value]="m">Month {{m}}</option>
-              </select>
-              <input type="number" class="form-control form-control-sm border-0 bg-light" style="width: 70px;" [(ngModel)]="calendarYear" (change)="fetchExamCalendar()">
-            </div>
-          </div>
-          
-          <div class="calendar-heatmap">
-            <!-- Headers -->
-            <div class="calendar-header-day">Mon</div>
-            <div class="calendar-header-day">Tue</div>
-            <div class="calendar-header-day">Wed</div>
-            <div class="calendar-header-day">Thu</div>
-            <div class="calendar-header-day">Fri</div>
-            <div class="calendar-header-day">Sat</div>
-            <div class="calendar-header-day">Sun</div>
-
-            <!-- Days -->
-            <div *ngFor="let cell of calendarDays" 
-                 class="calendar-cell" 
-                 [ngClass]="cell.heatClass"
-                 [ngbTooltip]="cell.day ? (cell.exams.length + ' Exams (' + cell.dateStr + ')') : ''"
-                 container="body">
-              {{ cell.day }}
-            </div>
-          </div>
-          <div class="d-flex justify-content-end gap-2 mt-3 text-muted" style="font-size: 0.75rem;">
-            <span class="d-flex align-items-center gap-1"><div style="width:12px;height:12px;background:#f1f3f4;border-radius:2px;"></div> 0</span>
-            <span class="d-flex align-items-center gap-1"><div style="width:12px;height:12px;background:#d1f2eb;border-radius:2px;"></div> 1-50</span>
-            <span class="d-flex align-items-center gap-1"><div style="width:12px;height:12px;background:#48c9b0;border-radius:2px;"></div> 200+</span>
-            <span class="d-flex align-items-center gap-1"><div style="width:12px;height:12px;background:#1abc9c;border-radius:2px;"></div> 500+</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Horizontal Proctor Workload -->
-      <div class="col-xl-6">
-        <div class="premium-card">
-          <div class="d-flex justify-content-between align-items-center mb-4">
-            <h5 class="premium-card-title mb-0">Proctor Workload</h5>
-            <input type="date" class="form-control form-control-sm border-0 bg-light w-auto" [(ngModel)]="proctorWeekStart" (change)="fetchProctorWeekly()">
-          </div>
-          <div *ngIf="proctorWeekly?.length > 0" echarts [options]="proctorWeeklyChartOptions" style="height: 300px;"></div>
-          <div *ngIf="proctorWeekly?.length === 0" class="d-flex justify-content-center align-items-center text-muted h-100 pb-5">
-            No workload assigned for this week.
-          </div>
-        </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-grow-1">
+        <!-- premium-card-title -->
+        <span class="mb-0 fs-5 fw-semibold text-gray-800 text-uppercase">exam for the day</span>
       </div>
     </div>
 
     <!-- Data Table -->
-    <div class="row g-4">
-      <div class="col-12">
+    <div class="row g-3">
+      <div class="col-sm-12 col-lg-8">
         <div class="premium-card p-0 overflow-hidden">
-          <div class="p-4 border-bottom border-light">
-            <h5 class="premium-card-title mb-0">Today's Exams Breakdown</h5>
+          <div
+            class="p-4 border-bottom border-light border border-primary d-flex justify-content-between align-item-center">
+            <h5 class="mb-0">Today's Exams Breakdown</h5>
+            <select class="filter-select" [(ngModel)]="selectedDeliveryMethod" (change)="onDeliveryMethodChange();"
+              [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+              <option value="">All Methods</option>
+              <option value="COMPUTER_BASED">COMPUTER BASED</option>
+              <option value="PAPER_BASED">PAPER BASED</option>
+              <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
+            </select>
           </div>
-          <div class="table-responsive">
+          <div class="table-responsive overflow-auto" style="max-height: 320px;">
             <table class="table modern-table table-borderless table-nowrap mb-0 w-100">
               <thead class="bg-light">
                 <tr>
-                  <th>Exam Name</th>
-                  <th>Method</th>
-                  <th>Participants (Pres/Abs/Onl)</th>
-                  <th>Centers (Dn/Up/Pass)</th>
+                  <th style="text-align: center;">Exam Name</th>
+                  <th style="text-align: center;">Method</th>
+                  <th style="text-align: center;">Total Center(s) <br /> (Dow. Exam/Uploaded Exam/Dow. Passport)</th>
+                  <th style="text-align: center;">Participant(s) <br /> (Online/Present/Absent) </th>
+                  <th style="text-align: center;">Total Centers </th>
+                  <th style="text-align: center;">Total Participants </th>
                 </tr>
               </thead>
               <tbody>
                 <tr *ngFor="let ex of examsForTheDay?.content">
-                  <td><div class="fw-semibold text-dark">{{ ex.exam_name }}</div></td>
-                  <td><span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{ ex.delivery_method?.replaceAll('_', ' ') }}</span></td>
                   <td>
-                    <span class="text-success fw-medium">{{ ex.total_participants_present }}</span> <span class="text-muted mx-1">/</span> 
-                    <span class="text-danger fw-medium">{{ ex.total_participants_absent }}</span> <span class="text-muted mx-1">/</span> 
-                    <span class="text-info fw-medium">{{ ex.total_participants_online }}</span>
+                    <div class="d-flex justify-content-center items-center">
+                      <div>{{ ex.exam_name }}</div>
+
+                    </div>
                   </td>
                   <td>
-                    <span class="text-primary fw-medium" [ngbTooltip]="'Downloaded'">{{ ex.total_centers_downloaded_exam }}</span> <span class="text-muted mx-1">/</span> 
-                    <span class="text-success fw-medium" [ngbTooltip]="'Uploaded'">{{ ex.total_centers_uploaded_exam }}</span> <span class="text-muted mx-1">/</span> 
-                    <span class="text-warning fw-medium" [ngbTooltip]="'Passport Dn'">{{ ex.total_centers_downloaded_passport }}</span>
+                    <div class="d-flex justify-content-center items-center">
+
+                      <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{
+                        ex.delivery_method?.replaceAll('_', ' ') }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+
+                      <div class="avatar-group">
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center uploaded exam" placement="top"
+                          ngbTooltip="downloaded exam">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-success">
+                              {{ ex.total_centers_downloaded_exam }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center uploaded exam" placement="top"
+                          ngbTooltip="uploaded exam">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-info">
+                              {{ ex.total_centers_uploaded_exam }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center downloaded passport" placement="top"
+                          ngbTooltip="downloaded passport">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-primary">
+                              {{ ex.total_centers_downloaded_passport }}
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+
+                      <div class="avatar-group d-flex justify-contents-center items-center">
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total participant online" placement="top" ngbTooltip="online">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-success">
+                              {{ ex.total_participants_online }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center participant present" placement="top"
+                          ngbTooltip="present">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-info">
+                              {{ ex.total_participants_present }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total participant absent" placement="top" ngbTooltip="absent">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-danger">
+                              {{ ex.total_participants_absent }}
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+                      {{ ex.total_centers }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+                      {{ ex.total_participants }}
+                    </div>
                   </td>
                 </tr>
                 <tr *ngIf="examsForTheDay?.content?.length === 0">
-                  <td colspan="4" class="text-center py-5 text-muted">No exams scheduled for today.</td>
+                  <td colspan="6" class="text-center py-4 text-muted">No exams scheduled for today.</td>
                 </tr>
               </tbody>
+
             </table>
+
+          </div>
+
+          <div class="d-flex justify-content-end align-item-center">
+            <p-paginator *ngIf="examsForTheDay && examsForTheDay.content.length > 0"
+              [totalRecords]="examsForTheDay.total" (onPageChange)="itemsExamPageChange($event)" [first]="0"
+              [rowsPerPageOptions]="[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]" [rows]="20"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            </p-paginator>
           </div>
         </div>
       </div>
+
+      <div class="col-sm-12 col-lg-4">
+        <div class="row overflow-auto" style="max-height: 500px;">
+
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex">
+
+                  <div class="flex-grow-1">
+                    <div class="d-flex">
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1 card-title">Exam Overview</h5>
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Total Exams</p>
+                          <h5 class="mb-0">{{examsForTheDay.total | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Passport Downloaded</p>
+                          <h5 class="mb-0">{{examsForTheDay.day_total_centers_downloaded_passport | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Currently Online</p>
+                          <h5 class="mb-0">{{examsForTheDay.total_candidates_online | number}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--end col-->
+
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex">
+
+                  <div class="flex-grow-1">
+                    <div class="d-flex">
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1 card-title">Candidate Attandance</h5>
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Sched. Candidates</p>
+                          <h5 class="mb-0">{{examsForTheDay.total_candidates_scheduled | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Present</p>
+                          <h5 class="mb-0">{{examsForTheDay.total_candidates_present | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Abscent</p>
+                          <h5 class="mb-0">{{examsForTheDay.total_candidates_absent | number}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--end col-->
+
+          <div class="col-xl-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex">
+
+                  <div class="flex-grow-1">
+                    <div class="d-flex">
+                      <div class="flex-grow-1">
+                        <h5 class="mb-1 card-title">Center Synchronization (Today)</h5>
+                      </div>
+                    </div>
+                    <div class="row mt-3">
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Total Centers</p>
+                          <h5 class="mb-0">{{examsForTheDay.day_total_centers | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Downloaded Centers</p>
+                          <h5 class="mb-0">{{examsForTheDay.day_total_centers_downloaded | number}}</h5>
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <div class="border p-2 rounded border-dashed">
+                          <p class="text-muted text-truncate mb-2">Uploaded centers</p>
+                          <h5 class="mb-0">{{examsForTheDay.day_total_centers_uploaded | number}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--end col-->
+
+        </div>
+      </div>
+
     </div>
+
+    <!-- <div class="card-footer mt-4 d-flex justify-content-end">
+      <p-paginator  *ngIf="examsForTheDay && examsForTheDay.content.length > 0" [totalRecords]="examsForTheDay.total" (onPageChange)="itemsExamPageChange($event)" [first]="0"
+        [rowsPerPageOptions]="[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]" [rows]="20" [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+      </p-paginator>
+    </div> -->
 
   </div>
 </div>

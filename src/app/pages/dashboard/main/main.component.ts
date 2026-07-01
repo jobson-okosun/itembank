@@ -310,6 +310,7 @@ export class MainComponent implements OnInit {
     this.dashboardService.fetchDashboardData().subscribe(
       (value) => {
         this.dashboardData = value;
+        console.log('TAGS GRAPH: ', this.dashboardData);
         this.moderationGraph = this.dashboardData.questionModerationGraph;
         this.authoringGraph = this.dashboardData.questionModerationGraph;
         this.currentExamMonitoringGraph = {

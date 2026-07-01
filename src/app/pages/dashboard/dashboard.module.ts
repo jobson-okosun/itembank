@@ -14,6 +14,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { MainComponent } from './main/main.component';
 import { NoSanitizerPipe } from './no-sanitizer.pipe';
 import { NewDashboardComponent } from './new-dashboard/new-dashboard.component';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
   declarations: [MainComponent, NoSanitizerPipe, NewDashboardComponent],
@@ -31,7 +32,8 @@ import { NewDashboardComponent } from './new-dashboard/new-dashboard.component';
     }),
     HttpClientModule,
     LayoutsModule,
-    ManualsModule
+    ManualsModule,
+    PaginatorModule
   ],
 })
 export class DashboardModule {}

@@ -1,6 +1,6 @@
-import { TrueOrFalseComponent } from './../../pages/items/true-or-false/true-or-false.component';
-import { HttpErrorResponse } from '@angular/common/http';
-import { AuthenticationService } from '../authentication.service';
+import { TrueOrFalseComponent } from "./../../pages/items/true-or-false/true-or-false.component";
+import { HttpErrorResponse } from "@angular/common/http";
+import { AuthenticationService } from "../authentication.service";
 import {
   AfterViewInit,
   ChangeDetectorRef,
@@ -12,23 +12,28 @@ import {
   SimpleChanges,
   ViewChild,
   ViewChildren,
-} from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+} from "@angular/core";
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from "@angular/forms";
+import { Router } from "@angular/router";
+import { environment } from "src/environments/environment";
 
-import { NotifierService } from 'angular-notifier';
-import { UserService } from 'src/app/shared/user.service';
-import { SchedulerAccountService } from '../services/scheduler-account.service';
-import { NgOtpInputComponent } from 'ng-otp-input';
-import { ItemServiceService } from 'src/app/shared/item-services/item-service.service';
+import { NotifierService } from "angular-notifier";
+import { UserService } from "src/app/shared/user.service";
+import { SchedulerAccountService } from "../services/scheduler-account.service";
+import { NgOtpInputComponent } from "ng-otp-input";
+import { ItemServiceService } from "src/app/shared/item-services/item-service.service";
 
 declare var tinymce: any;
 declare const MathJax: any;
 @Component({
-  selector: 'app-sign-in',
-  templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.scss'],
+  selector: "app-sign-in",
+  templateUrl: "./sign-in.component.html",
+  styleUrls: ["./sign-in.component.scss"],
 })
 export class SignInComponent implements OnInit, AfterViewInit {
   private readonly notifier: NotifierService;
@@ -37,18 +42,18 @@ export class SignInComponent implements OnInit, AfterViewInit {
   loginForm!: FormGroup;
   schedulerLoginForm!: FormGroup;
 
-  loginOtp: string = '';
+  loginOtp: string = "";
 
   isOtpProvided: boolean;
 
   submitted = false;
   fieldTextType!: boolean;
-  
-  error_msg = '';
-  success_msg = '';
+
+  error_msg = "";
+  success_msg = "";
 
   returnUrl!: string;
-  notification_error = '';
+  notification_error = "";
   // set the current year
   year: number = new Date().getFullYear();
   checkSubmit: boolean = false;
@@ -69,7 +74,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
     private router: Router,
     private userService: UserService,
     private schedulerAccountService: SchedulerAccountService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
   ) {
     this.notifier = notifierService;
   }
@@ -80,15 +85,14 @@ export class SignInComponent implements OnInit, AfterViewInit {
      * Form Validatyion
      */
     this.loginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required],
+      username: ["", [Validators.required]],
+      password: ["", Validators.required],
     });
 
     this.schedulerLoginForm = this.formBuilder.group({
-      username: ['', [Validators.required]],
-      password: ['', Validators.required],
+      username: ["", [Validators.required]],
+      password: ["", Validators.required],
     });
-
   }
 
   ngAfterViewInit(): void {
@@ -110,21 +114,21 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   onSubmit(): void {
     this.error = false;
-    this.error_msg = '';
+    this.error_msg = "";
     this.submitted = true;
     this.checkSubmit = true;
     let whitespace =
-      this.loginForm.controls['username'].value.indexOf(' ') >= 0;
+      this.loginForm.controls["username"].value.indexOf(" ") >= 0;
     if (whitespace) {
       this.submitted = false;
       this.error = true;
-      this.error_msg = 'username is invalid';
+      this.error_msg = "username is invalid";
       return;
     }
 
     if (
-      this.loginForm.controls['username'].value === '' ||
-      this.loginForm.controls['password'].value === ''
+      this.loginForm.controls["username"].value === "" ||
+      this.loginForm.controls["password"].value === ""
     ) {
       this.error_msg = `All fields are required!`;
       this.error = true;
@@ -143,52 +147,44 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
           this.loginOtp = value.otpRecordId;
 
-          console.log('LOGIN OTP: ', value);
-          
+          console.log("LOGIN OTP: ", value);
+
           this.error = false;
         },
         (err: HttpErrorResponse) => {
           this.error = true;
 
           this.http.provideOtpToProceed = false;
-          
-          if(err.error?.message?.includes('Authentication ')) {
-            this.error_msg = 'Not authorized: Authentication failed'
-          }
 
-          else if(err.error?.message?.includes('OTP ')) {
-            this.error_msg = err.error.message
-          }
-
-          else if (err.status === 401) {
-            this.error_msg = 'Invalid Login Credentials!';
-          }
-
-          else if (err?.error?.message) {
+          if (err.error?.message?.includes("Authentication ")) {
+            this.error_msg = "Not authorized: Authentication failed";
+          } else if (err.error?.message?.includes("OTP ")) {
             this.error_msg = err.error.message;
-          }
-
-          else {
-            this.error_msg = 'Sorry! Unable to perform login';
+          } else if (err.status === 401) {
+            this.error_msg = "Invalid Login Credentials!";
+          } else if (err?.error?.message) {
+            this.error_msg = err.error.message;
+          } else {
+            this.error_msg = "Sorry! Unable to perform login";
           }
 
           this.submitted = false;
-        }
+        },
       );
     }
   }
 
   onSchedulerSubmit(): void {
     this.error = false;
-    this.error_msg = '';
+    this.error_msg = "";
     this.submitted = true;
     this.checkSubmit = true;
     let whitespace =
-      this.schedulerLoginForm.controls['username'].value.indexOf(' ') >= 0;
+      this.schedulerLoginForm.controls["username"].value.indexOf(" ") >= 0;
     if (whitespace) {
       this.submitted = false;
       this.error = true;
-      this.error_msg = 'username is invalid';
+      this.error_msg = "username is invalid";
       return;
     }
     // console.log(this.schedulerLoginForm.value);
@@ -203,7 +199,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
           // this.schedulerAccountService.setCurrentUser(value);
           this.userService.setCurrentUser(value);
           this.router
-            .navigate(['schedule/participants'])
+            .navigate(["schedule/participants"])
             .catch((reason) => console.log(reason));
         },
         (err: HttpErrorResponse) => {
@@ -226,7 +222,7 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   //
 
-  itemStimulus: string = '';
+  itemStimulus: string = "";
 
   preProcess(pl, o) {
     // console.log(pl);
@@ -236,16 +232,16 @@ export class SignInComponent implements OnInit, AfterViewInit {
     height: 200,
     menubar: true,
     branding: false,
-    base_url: '/tinymce',
-    suffix: '.min',
-    plugins: 'table quickbars lists autoresize charmap paste',
+    base_url: "/tinymce",
+    suffix: ".min",
+    plugins: "table quickbars lists autoresize charmap paste",
     quickbars_insert_toolbars: false,
     setup: this.setup.bind(this),
     paste_preprocess: function (pl, o) {
       // console.log(o.content);
     },
     toolbar:
-      'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap',
+      "undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | subscript superscript charmap",
   };
 
   setup(editor: any) {
@@ -253,35 +249,35 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
     const openDialog = (latex: string) => {
       editor.windowManager.open({
-        title: 'Edit Equation',
-        size: 'normal',
+        title: "Edit Equation",
+        size: "normal",
         body: {
-          type: 'panel',
+          type: "panel",
           items: [
             {
-              type: 'htmlpanel',
+              type: "htmlpanel",
               html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey">${latex}</math-field>`,
             },
           ],
         },
         buttons: [
-          { type: 'cancel', name: 'cancel', text: 'Cancel' },
-          { type: 'submit', name: 'update', text: 'Update', primary: true },
+          { type: "cancel", name: "cancel", text: "Cancel" },
+          { type: "submit", name: "update", text: "Update", primary: true },
         ],
         onSubmit: (api) => {
-          const mathField = document.getElementById('mathfield') as any;
+          const mathField = document.getElementById("mathfield") as any;
           const updatedLatex = mathField.getValue();
 
           if (activeEquation) {
             // Update the selected equation
-            activeEquation.setAttribute('data-latex', updatedLatex);
+            activeEquation.setAttribute("data-latex", updatedLatex);
             activeEquation.innerHTML = `\\(${updatedLatex}\\)`;
-            activeEquation.classList.add('math-expression');
+            activeEquation.classList.add("math-expression");
 
             // Trigger MathJax to re-render
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log('Math rendering updated'))
-              .catch((err) => console.error('Math rendering failed:', err));
+              .then(() => console.log("Math rendering updated"))
+              .catch((err) => console.error("Math rendering failed:", err));
           }
 
           activeEquation = null;
@@ -290,60 +286,60 @@ export class SignInComponent implements OnInit, AfterViewInit {
       });
     };
 
-    editor.on('init', () => {
+    editor.on("init", () => {
       const editorBody = editor.getBody();
 
       // Event  for equations
-      editorBody.addEventListener('click', (event: MouseEvent) => {
+      editorBody.addEventListener("click", (event: MouseEvent) => {
         const target = event.target as HTMLElement;
-        if (target.closest('.math-expression')) {
+        if (target.closest(".math-expression")) {
           const equationElement = target.closest(
-            '.math-expression',
+            ".math-expression",
           ) as HTMLElement;
           activeEquation = equationElement;
 
-          const latex = equationElement.getAttribute('data-latex') || '';
+          const latex = equationElement.getAttribute("data-latex") || "";
 
           openDialog(latex);
         }
       });
     });
 
-    editor.ui.registry.addButton('equation-editor', {
-      text: 'Insert Math',
-      icon: 'character-count',
+    editor.ui.registry.addButton("equation-editor", {
+      text: "Insert Math",
+      icon: "character-count",
       onAction: () => {
         editor.windowManager.open({
-          title: 'Insert Equation',
-          size: 'normal',
+          title: "Insert Equation",
+          size: "normal",
           body: {
-            type: 'panel',
+            type: "panel",
             items: [
               {
-                type: 'htmlpanel',
+                type: "htmlpanel",
                 html: `<math-field id="mathfield" style="width: 100%; height: 200px; border: 1px solid grey"></math-field>`,
               },
             ],
           },
           buttons: [
-            { type: 'cancel', name: 'cancel', text: 'Cancel' },
-            { type: 'submit', name: 'insert', text: 'Insert', primary: true },
+            { type: "cancel", name: "cancel", text: "Cancel" },
+            { type: "submit", name: "insert", text: "Insert", primary: true },
           ],
           onSubmit: (api) => {
-            const mathField = document.getElementById('mathfield') as any;
+            const mathField = document.getElementById("mathfield") as any;
             const latex = mathField.getValue();
 
             // Create span for the math equation
             const content = `<span class="math-expression" data-latex="${latex}">\\(${latex}\\)</span>`;
             editor.insertContent(content);
-            editor.insertContent('&nbsp;');
+            editor.insertContent("&nbsp;");
 
             // Ensure cursor placement is outside the equation
             editor.selection.collapse(false);
 
             MathJax.typesetPromise([editor.getBody()])
-              .then(() => console.log('Math rendering complete'))
-              .catch((err) => console.error('Math rendering failed:', err));
+              .then(() => console.log("Math rendering complete"))
+              .catch((err) => console.error("Math rendering failed:", err));
 
             api.close();
           },
@@ -353,146 +349,120 @@ export class SignInComponent implements OnInit, AfterViewInit {
   }
 
   renderMath(): void {
-    console.log('Math rendering initiated');
+    console.log("Math rendering initiated");
     const editorContent = tinymce?.activeEditor?.getBody();
     if (editorContent) {
       MathJax.typesetPromise([editorContent])
-        .then((e) => console.log('Math rendering complete', e))
-        .catch((err) => console.error('Math rendering failed:', err));
+        .then((e) => console.log("Math rendering complete", e))
+        .catch((err) => console.error("Math rendering failed:", err));
     } else {
-      console.warn('No active editor content found for Math rendering.');
+      console.warn("No active editor content found for Math rendering.");
     }
   }
   show: boolean = false;
   viewInnerHtml() {
-    console.log(this.itemStimulus, 'itemstimulus');
+    console.log(this.itemStimulus, "itemstimulus");
   }
   capture(event: any) {
-    console.log(event, 'here');
+    console.log(event, "here");
     if (event) {
-      console.log('event');
+      console.log("event");
       this.show = !this.show;
       this.renderMath();
     }
   }
 
   onOtpChange(value: string): void {
-    console.log('OTP TYPED: ', value);
     this.loginOtp = value;
   }
 
   submitOtpForm(): void {
-
     this.isOtpProvided = false;
     this.error = false;
-    this.error_msg = '';
+    this.error_msg = "";
 
-    if(!this.loginOtp){
+    if (!this.loginOtp) {
       this.isOtpProvided = true;
-      this.error_msg = 'Sorry! Ensure you provide the sent OTP'
+      this.error_msg = "Sorry! Ensure you provide the sent OTP";
       return;
     }
 
-    if(this.loginOtp.length < 6) {
+    if (this.loginOtp.length < 6) {
       this.isOtpProvided = true;
-      this.error_msg = 'Provide complete OTP sent to you'
+      this.error_msg = "Provide complete OTP sent to you";
       return;
     }
 
     this.isSubmittingOtp = true;
 
     const payload = {
-      otp: this.loginOtp
+      otp: this.loginOtp,
+    };
+
+    this.http.verifyOtp(payload).subscribe(
+      (value) => {
+        this.router
+          .navigate(["examalpha"])
+          .catch((reason) => console.log(reason));
+        this.loginOtp = "";
+        // this.http.provideOtpToProceed = false;
+        this.isSubmittingOtp = false;
+        this.error = false;
+      },
+      (err: HttpErrorResponse) => {
+        this.error = true;
+        this.isSubmittingOtp = false;
+
+           console.log('The exact error object:', err); 
+    
+    // 2. Check if it's actually an Angular Http Error
+    if (err instanceof HttpErrorResponse) {
+      console.log('Status:', err.status);
+      console.log('Body:', err.error);
+    } else {
+      console.log('This is not an HttpErrorResponse. Message is:', err || err);
     }
 
-    console.log('OTP RECORD: ', payload.otp);
-
-       this.http.verifyOtp(payload).subscribe(
-        (value) => {
-          this.router.navigate(['examalpha']).catch((reason) => console.log(reason));
-          this.loginOtp = '';
-          // this.http.provideOtpToProceed = false;
-          this.isSubmittingOtp = false;
-          this.error = false;
-
-        },
-        (err: HttpErrorResponse) => {
-          this.error = true;
-          
-          if(err.error?.message?.includes('Authentication ')) {
-            this.error_msg = 'Not authorized: Authentication failed'
-          }
-
-          else if(err.error?.message?.includes('OTP ')) {
-            this.error_msg = err.error.message
-          }
-
-          else if (err.status === 401) {
-            this.error_msg = 'Invalid Login Credentials!';
-          }
-
-          else if (err?.error?.message) {
-            this.error_msg = err.error.message;
-          }
-
-          else {
-            this.error_msg = 'Sorry! Unable to verify OTP';
-          }
-
-          this.isSubmittingOtp = false;
+        if (err.error && err.error.error) {
+          this.error_msg = err.error.error;
+        } else {
+          this.error_msg = "Sorry! Unable to verify OTP";
         }
-      );
+      },
+    );
   }
 
   resendOTP(): void {
-
-        this.isOtpProvided = false;
+    this.isOtpProvided = false;
     this.error = false;
-    this.error_msg = '';
+    this.error_msg = "";
     this.isResendingOtp = true;
     this.success = false;
 
-           this.http.resendOtp({ "method": "email" }).subscribe(
-        (value) => {
+    this.http.resendOtp({ method: "email" }).subscribe(
+      (value) => {
+        console.log("RESENDED: ", value);
 
-          console.log('RESENDED: ', value);
+        this.loginOtp = '';
 
-          this.isResendingOtp = false;
+        this.isResendingOtp = false;
 
-          this.success = true;
-          this.success_msg = value.message
+        this.success = true;
+        this.success_msg = value.message;
+      },
+      (err: HttpErrorResponse) => {
+        this.error = true;
+        this.isResendingOtp = false;
 
-        },
-        (err: HttpErrorResponse) => {
-          this.error = true;
-          
-          if(err.error?.message?.includes('Authentication ')) {
-            this.error_msg = 'Not authorized: Authentication failed'
-          }
-
-          else if(err.error?.message?.includes('OTP ')) {
-            this.error_msg = err.error.message
-          }
-
-          else if (err.status === 401) {
-            this.error_msg = 'Invalid Login Credentials!';
-          }
-
-          else if (err.error && err.error.error) {
-            this.error_msg = err.error.error;
-          }
-
-          else if (err.message) {
-            this.error_msg = err.message;
-          }
-
-          else {
-            this.error_msg = 'Sorry! Unable to verify OTP';
-          }
-
-          this.isResendingOtp = false;
+        if (err.error && err.error.error) {
+          this.error_msg = err.error.error;
+        } else if (err.status === 401) {
+          this.error_msg = "Invalid Login Credentials!";
+        } else {
+          this.error_msg = "Sorry! Unable to verify OTP";
         }
-      );
+        
+      },
+    );
   }
-
 }

@@ -1,111 +1,104 @@
-import { map, mergeMap } from 'rxjs/operators';
-import { Account } from './model/account.model';
-import { SignUp } from './sign-up/model/sign-up';
-import { environment } from './../../environments/environment';
-import { ResourceCreated } from './../shared/model/resource-created';
-import { Observable } from 'rxjs';
+import { catchError, map, mergeMap } from "rxjs/operators";
+import { Account } from "./model/account.model";
+import { SignUp } from "./sign-up/model/sign-up";
+import { environment } from "./../../environments/environment";
+import { ResourceCreated } from "./../shared/model/resource-created";
+import { Observable, throwError } from "rxjs";
 import {
   HttpClient,
   HttpErrorResponse,
   HttpHeaders,
-} from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { SignIn } from './sign-in/model/sign-in';
-import { Role } from '../shared/enum/role';
-import { UserService } from '../shared/user.service';
+} from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { SignIn } from "./sign-in/model/sign-in";
+import { Role } from "../shared/enum/role";
+import { UserService } from "../shared/user.service";
 import {
   ActivateUsernamePassword,
   IResourceCreated,
-} from '../pages/scheduler/models/resource-created';
-import { SecureStorageService } from '../services/secure-storage.service';
-import { ItemServiceService } from '../shared/item-services/item-service.service';
+} from "../pages/scheduler/models/resource-created";
+import { SecureStorageService } from "../services/secure-storage.service";
+import { ItemServiceService } from "../shared/item-services/item-service.service";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class AuthenticationService {
-
   provideOtpToProceed: boolean = false;
 
   constructor(
     private http: HttpClient,
     private userService: UserService,
-    private secureStorage: SecureStorageService
+    private secureStorage: SecureStorageService,
   ) {}
 
   registerOrganization(signupModel: SignUp): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/register`,
-      signupModel
+      signupModel,
     );
   }
 
-    verifyOtp(payload: { otp: string }): Observable<Account> {
-
-       const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json'
-    );
-
-    return this.http.post<Account>(
-      `${environment.developmentIP}/otp/verify`,
-      payload,  {
+  verifyOtp(payload: { otp: string }): Observable<Account> {
+    const headers = new HttpHeaders().set("Content-Type", "application/json");
+    return this.http
+      .post<Account>(`${environment.developmentIP}/otp/verify`, payload, {
         headers,
-        responseType: 'json',
+        responseType: "json",
         withCredentials: true,
-      }
-    ).pipe(mergeMap(() => this.getLoggedInAccount()));;
+      })
+      .pipe( mergeMap(() => this.getLoggedInAccount()),
+      );
   }
 
-      resendOtp(payload: { method: string }): Observable<any> {
-
-           const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json'
-    );
+  resendOtp(payload: { method: string }): Observable<any> {
+    const headers = new HttpHeaders().set("Content-Type", "application/json");
 
     return this.http.post<any>(
       `${environment.developmentIP}/otp/resend`,
-      payload , {
+      payload,
+      {
         headers,
-        responseType: 'json',
+        responseType: "json",
         withCredentials: true,
-      }
+      },
     );
   }
 
   login(signInModel: SignIn): Observable<{
-        otpRequired: boolean, message: string, otpRecordId?: string
-}> {
+    otpRequired: boolean;
+    message: string;
+    otpRecordId?: string;
+  }> {
     const data =
       `username=${encodeURIComponent(signInModel.username)}` +
       `&password=${encodeURIComponent(signInModel.password)}` +
       //`&remember-me=${credentials.rememberMe ? 'true' : 'false'}` +
-      '&submit=Login';
+      "&submit=Login";
 
     // console.log(data);
 
     const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/x-www-form-urlencoded'
+      "Content-Type",
+      "application/x-www-form-urlencoded",
     );
 
-    return this.http
-      .post<{
-        otpRequired: boolean, message: string, otpRecordId?: string
-}>(`${environment.developmentIP}/authentication`, data, {
-        headers,
-        responseType: 'json',
-        withCredentials: true,
-      })
-      
+    return this.http.post<{
+      otpRequired: boolean;
+      message: string;
+      otpRecordId?: string;
+    }>(`${environment.developmentIP}/authentication`, data, {
+      headers,
+      responseType: "json",
+      withCredentials: true,
+    });
   }
 
   authorizeItembank(data: any): Observable<any> {
     return this.http.post<any>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/auth/authorize_item_bank`, //examalpha/api/v1/sch_mon_grd/auth/login,
       data,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -125,14 +118,14 @@ export class AuthenticationService {
     // console.log(data);
 
     const headers = new HttpHeaders().set(
-      'Content-Type',
-      'application/json' //'application/x-www-form-urlencoded'
+      "Content-Type",
+      "application/json", //'application/x-www-form-urlencoded'
     );
 
     return this.http.post<Account>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/auth/authorize_item_bank`, //examalpha/api/v1/sch_mon_grd/auth/login,
       data,
-      { headers, withCredentials: true }
+      { headers, withCredentials: true },
     );
 
     //.pipe(mergeMap(() => this.getLoggedInAccount()));
@@ -146,12 +139,12 @@ export class AuthenticationService {
       .pipe(
         map((value) => {
           value.authority = Role[value.authorities[0]];
-          
+
           this.userService.setCurrentUser(value);
 
           this.secureStorage.setItem(environment.secureStorageId, value);
           return value;
-        })
+        }),
       );
   }
 
@@ -162,7 +155,7 @@ export class AuthenticationService {
 
   userLogin(signInModel: SignIn): Observable<Account> {
     return this.login(signInModel).pipe(
-      mergeMap(() => this.getLoggedInAccount())
+      mergeMap(() => this.getLoggedInAccount()),
     );
   }
 
@@ -182,23 +175,23 @@ export class AuthenticationService {
   doPasswordReset(email: string): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.developmentIP}/account/reset_password`,
-      { email }
+      { email },
     );
   }
 
   setNewPassword(payload): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.developmentIP}/account/reset_password/new-password`,
-      payload
+      payload,
     );
   }
 
   updateExistingUserUsernameAndPassword(
-    payload: ActivateUsernamePassword
+    payload: ActivateUsernamePassword,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.developmentIP}/accounts/new-user-account/set-credentials`,
-      payload
+      payload,
     );
   }
 }
