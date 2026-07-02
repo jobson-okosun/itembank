@@ -179,7 +179,6 @@
   </div>
   <!-- End Headlines -->
 
-  <!-- <div *ngIf="examsForTheDay"> -->
       <div>
 
     <div class="d-flex justify-content-between align-items-center">
@@ -192,7 +191,7 @@
     </div>
 
     <!-- Data Table -->
-    <div class="row g-3">
+    <div class="row g-3 mb-5">
       <div class="col-sm-12 col-lg-8">
         <div class="premium-card p-0 overflow-hidden">
           <div
@@ -342,133 +341,99 @@
         </div>
       </div>
 
-      <div class="col-sm-12 col-lg-4">
-        <div class="row overflow-auto" style="max-height: 500px;">
+      <div class="col-sm-12 col-lg-4" style="place-content: center;">
+  <div class="row overflow-auto" style="max-height: 450px;">
 
-          <div class="col-xl-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-
-                  <div class="flex-grow-1">
-                    <div class="d-flex">
-                      <div class="flex-grow-1">
-                        <h5 class="mb-1 card-title">Exam Overview</h5>
-                      </div>
-                    </div>
-                    <div class="row mt-3">
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Total Exams</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.total) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Passport Downloaded</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.day_total_centers_downloaded_passport) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Currently Online</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.total_candidates_online) | number}}</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+    <!-- Candidate Attendance Card -->
+    <div class="col-xl-12 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="mb-3 card-title">Candidate Attendance</h5>
+          
+          <!-- Row with modern uniform gutters -->
+          <div class="row g-3">
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Sched. Candidates</p>
+                <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_scheduled | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Present</p>
+                <h5 class="mb-0 fw-semibold text-success">{{ examsForTheDay?.total_candidates_present | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Absent</p>
+                <h5 class="mb-0 fw-semibold text-danger">{{ examsForTheDay?.total_candidates_absent | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Currently Online</p>
+                <h5 class="mb-0 fw-semibold text-info">{{ examsForTheDay?.total_candidates_online | number }}</h5>
               </div>
             </div>
           </div>
-          <!--end col-->
-
-          <div class="col-xl-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-
-                  <div class="flex-grow-1">
-                    <div class="d-flex">
-                      <div class="flex-grow-1">
-                        <h5 class="mb-1 card-title">Candidate Attandance</h5>
-                      </div>
-                    </div>
-                    <div class="row mt-3">
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Sched. Candidates</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.total_candidates_scheduled) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Present</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.total_candidates_present) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Abscent</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.total_candidates_absent) | number}}</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--end col-->
-
-          <div class="col-xl-12">
-            <div class="card">
-              <div class="card-body">
-                <div class="d-flex">
-
-                  <div class="flex-grow-1">
-                    <div class="d-flex">
-                      <div class="flex-grow-1">
-                        <h5 class="mb-1 card-title">Center Synchronization (Today)</h5>
-                      </div>
-                    </div>
-                    <div class="row mt-3">
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Total Centers</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.day_total_centers) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Downloaded Centers</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.day_total_centers_downloaded) | number}}</h5>
-                        </div>
-                      </div>
-                      <div class="col-4">
-                        <div class="border p-2 rounded border-dashed">
-                          <p class="text-muted text-truncate mb-2">Uploaded centers</p>
-                          <h5 class="mb-0">{{(examsForTheDay && examsForTheDay.day_total_centers_uploaded) | number}}</h5>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!--end col-->
 
         </div>
       </div>
+    </div>
 
+    <!-- Center Synchronization Card -->
+    <div class="col-xl-12 mb-3">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="mb-3 card-title">Center Synchronization (Today)</h5>
+          
+          <div class="row g-3">
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Total Centers</p>
+                <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Downloaded Centers</p>
+                <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Uploaded Centers</p>
+                <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_uploaded | number }}</h5>
+              </div>
+            </div>
+            
+            <div class="col-sm-12 col-md-6">
+              <div class="border p-2 rounded border-dashed h-100">
+                <p class="text-muted text-truncate mb-1 small fw-medium">Passport Downloaded</p>
+                <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded_passport | number }}</h5>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
     </div>
 
     <div>
       <!-- Calendar & Workload Row -->
       <div class="row g-4 mb-4">
 
-        <div class="col-xl-4" *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER')">
+        <div class="col-xl-4">
           <div class="premium-card">
             <div class="d-flex justify-content-between align-items-center mb-2">
               <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5>
@@ -516,7 +481,7 @@
         </div>
 
         <!-- Horizontal Proctor Workload -->
-        <div class="col-xl-8" *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER')">
+        <div class="col-xl-8">
           <div class="p-0">
             <div>
               <div class="card shadow-sm">
@@ -553,7 +518,7 @@
                 </div>
 
                 <!-- THE CALENDAR SYSTEM -->
-                <div class="calendar-container">
+                <div class="calendar-container" *ngIf="true">
 
                   <div class="calendar-grid-row header-row">
                     <div class="time-cell header-cell">Time</div>
@@ -651,7 +616,7 @@
         </div>
 
         <!-- Horizontal Proctor Workload -->
-        <div class="col-sm-12 col-xl-8" *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('EXAMINER')">
+        <div class="col-sm-12 col-xl-8">
         <div class="premium-card p-0 overflow-hidden">
           <div
             class="p-4 border-bottom border-light d-flex justify-content-between align-item-center">

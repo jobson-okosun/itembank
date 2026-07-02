@@ -5,14 +5,14 @@ export const MENU: MenuItem[] = [
     id: 11,
     label: 'MENUITEMS.DASHBOARD.TEXT',
     link: '/examalpha/dashboard',
-    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS'],
+    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS', 'GROUP_ADMIN'],
     icon: 'grid',
   },
   {
     id: 12,
     label: 'MENUITEMS.USERS.TEXT',
     link: '/examalpha/users',
-    role: ['ADMIN'],
+    role: ['ADMIN', 'GROUP_ADMIN'],
     icon: 'users',
   },
   {
@@ -60,7 +60,7 @@ export const MENU: MenuItem[] = [
     id: 16,
     label: 'MENUITEMS.QUESTIONS.TEXT',
     link: '/examalpha/subjects',
-    role: ['AUTHOR', 'MODERATOR', 'ADMIN'],
+    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'GROUP_ADMIN'],
     icon: 'folder',
     subItems: [
       //Subject obj was moved to the top and the id of obj was changed accordingly.
@@ -70,7 +70,7 @@ export const MENU: MenuItem[] = [
         link: '/examalpha/subjects',
         parentId: 16,
         icon: 'folder',
-        role: ['AUTHOR', 'MODERATOR', 'EXAMINER', 'ADMIN'],
+        role: ['AUTHOR', 'MODERATOR', 'EXAMINER', 'ADMIN', 'GROUP_ADMIN'],
       },
       {
         id: 1,
@@ -78,7 +78,7 @@ export const MENU: MenuItem[] = [
         link: '/examalpha/subjects/questions',
         parentId: 16,
         icon: 'layers',
-        role: ['EXAMINER', 'ADMIN', 'AUTHOR', 'MODERATOR'],
+        role: ['EXAMINER', 'ADMIN', 'AUTHOR', 'MODERATOR', 'GROUP_ADMIN', 'GROUP_ADMIN'],
       },
       {
         id: 2,
@@ -86,7 +86,7 @@ export const MENU: MenuItem[] = [
         link: '/examalpha/passages/subjects/passages',
         parentId: 16,
         icon: 'book',
-        role: ['EXAMINER', 'ADMIN', 'AUTHOR', 'MODERATOR'],
+        role: ['EXAMINER', 'ADMIN', 'AUTHOR', 'MODERATOR', 'GROUP_ADMIN'],
       },
       // {
       //   id: 3,
@@ -102,7 +102,7 @@ export const MENU: MenuItem[] = [
         link: '/examalpha/moderation',
         parentId: 16,
         icon: 'user-check',
-        role: ['EXAMINER', 'ADMIN'],
+        role: ['EXAMINER', 'ADMIN', 'GROUP_ADMIN'],
       },
       {
         id: 5,
@@ -110,7 +110,7 @@ export const MENU: MenuItem[] = [
         link: '/examalpha/recycle',
         parentId: 16,
         icon: 'repeat',
-        role: ['EXAMINER', 'ADMIN'],
+        role: ['EXAMINER', 'ADMIN', 'GROUP_ADMIN'],
       },
     ],
   },
@@ -118,28 +118,28 @@ export const MENU: MenuItem[] = [
     id: 17,
     label: 'MENUITEMS.EXAMS.TEXT',
     link: '/examalpha/exams',
-    role: ['ADMIN', 'EXAMINER', 'MARKER'],
+    role: ['ADMIN', 'EXAMINER', 'MARKER', 'GROUP_ADMIN'],
     icon: 'monitor',
   },
   {
     id: 18,
     label: 'MENUITEMS.SCHEDULE.TEXT',
     link: '/examalpha/schedule',
-    role: ['EXAMINER', 'ADMIN', 'PROCTOR_ADMIN'],
+    role: ['EXAMINER', 'ADMIN', 'PROCTOR_ADMIN', 'GROUP_ADMIN'],
     icon: 'calendar',
   },
   {
     id: 19,
     label: "MENUITEMS.RESULT.TEXT",
     link: "/examalpha/result",
-    role: ["ADMIN", "EXAMINER", "ANALYTIC"],
+    role: ["ADMIN", "EXAMINER", "ANALYTIC", "GROUP_ADMIN"],
     icon: "bar-chart",
   },
   {
     id: 19,
     label: "MENUITEMS.MONITOR.TEXT",
     link: "/examalpha/monitor",
-    role: ["EXAMINER", "ADMIN", "MONITOR"],
+    role: ["EXAMINER", "ADMIN", "MONITOR", "GROUP_ADMIN"],
     icon: "airplay",
   },
   // {
