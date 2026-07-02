@@ -10,7 +10,6 @@
 
     <div>
         <div class="row">
-            <!-- exam overview -->
             <div class="col-sm-6 col-lg-4 col-md-6">
                 <div>
                     <div class="border rounded bg-white  d-flex flex-column" style="height: 648px !important;">
@@ -137,7 +136,6 @@
                             <div echarts [options]="DoughnutChart" class="demo-chart"></div>
                         </div>
 
-                        <!-- Loading State -->
                         <div *ngIf="fetchingSummary" class="d-flex align-items-center justify-content-center" style="margin-top: 170px; height: 300px;">
                             <div class="spinner-border text-primary fs-18" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -352,7 +350,6 @@
                             <div class="flex-grow-1 overflow-auto p-3 no-scrollbar">
 
 
-                                <!-- Loading State -->
                                 <div *ngIf="fetchingNotifications" class="d-flex align-items-center justify-content-center" style="height: 30vh">
                                     <div class="d-flex align-items-center gap-2">
                                         <div class="spinner-border text-primary fs-18" role="status">
@@ -362,13 +359,11 @@
                                 </div>
 
                                 <ng-container *ngIf="!fetchingNotifications">
-                                    <!-- Empty State -->
                                     <div *ngIf="pagedNotifications.length === 0" class="text-center py-5">
                                         <i class="pi pi-bell-slash text-muted fs-24 mb-2 d-block"></i>
                                         <span class="text-muted small">No notifications</span>
                                     </div>
 
-                                    <!-- Notification Tiles -->
                                     <div *ngFor="let item of pagedNotifications" class="pb-3 pt-2 mb-2 border-bottom">
                                     <div class="d-flex align-items-start gap-3">
                                         <span class="rounded-circle bg-soft-primary text-primary d-flex align-items-center justify-content-center flex-shrink-0" style="width: 28px; height: 28px;">
@@ -386,7 +381,6 @@
                                 </ng-container>
                             </div>
 
-                            <!-- Pagination Stuck at Bottom -->
                             <div class="border-top p-2 bg-white text-center">
                                 <p-paginator 
                                     [first]="notifFirst" 
@@ -485,7 +479,6 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Loading State -->
                 <tr *ngIf="fetchingParticipants">
                     <td colspan="8" class="text-center py-5">
                         <div class="spinner-border text-primary fs-18" role="status">
@@ -498,71 +491,79 @@
                     <ng-container *ngFor="let item of participantList?.data; let i = index">
                         <tr class="smaller">
                             <td>{{ (participantPage - 1) * participantSize + i + 1 }}</td>
-                        <td>
-                            <div style="min-width: 250px;">
-                                <div class="text-black mb-1">{{ item.name | titlecase }}</div>
-                                <div style="font-size: 13px;">{{ item.login_field }}</div>
+                        <td style="min-width: 250px">
+                            <div class="d-flex flex-column">
+                                <div class="text-black">{{ item.name | titlecase }}</div>
+                                <div style="font-size: 11px;">{{ item.login_field }}</div>
                                 
                                 <div class="d-flex align-items-center justify-content-start flex-wrap gap-1 py-2">
-                                    <div class="rounded border smaller" style="padding: 1px 4px">
-                                        <div class="text-uppercase text-muted" style="font-size: 10px">STATUS</div>
-                                        <div class="fw-bold fs-12" [ngClass]="item.status === 'STARTED' ? 'text-success' : (item.status === 'NOT_STARTED' ? 'text-secondary' : 'text-warning')">{{ item.status.replace('_', ' ') | titlecase }}</div>
+                                    <div class="rounded border smaller tag" style="padding: 1px 4px">
+                                        <div class="text-uppercase text-black" style="font-size: 10px">STATUS</div>
+                                        <div class="mt-1 d-flex align-items-center justify-content-center">
+                                            <span class="badge rounded-pill" style="text-transform: capitalize" [ngClass]="{
+                                                'badge-soft-danger': item.status === 'NOT_STARTED',
+                                                'badge-soft-warning': item.status === 'STARTED',
+                                                'badge-soft-success': item.status === 'ENDED'
+                                            }">{{ item.status.replace('_', ' ') | titlecase }}</span>
+                                        </div>
                                     </div>
-                                    <div class="rounded border smaller" style="padding: 1px 4px">
-                                        <div class="text-uppercase text-muted" style="font-size: 10px">BVM</div>
-                                        <div class="fw-bold fs-12" [ngClass]="item.bvm_verified ? 'text-success' : 'text-danger'">{{ item.bvm_verified ? 'Verified' : 'Not verified' }}</div>
+                                    <div class="rounded border smaller tag" style="padding: 1px 4px">
+                                        <div class="text-uppercase text-black" style="font-size: 10px">BVM</div>
+                                        <div class="mt-1 d-flex align-items-center justify-content-center">
+                                            <span class="badge rounded-pill" [ngClass]="item.bvm_verified ? 'badge-soft-success' : 'badge-soft-danger'">{{ item.bvm_verified ? 'Verified' : 'Not verified' }}</span>
+                                        </div>
                                     </div>
-                                    <div *ngIf="item.batch?.name" class="rounded border smaller" style="padding: 1px 4px">
-                                        <div class="text-uppercase text-muted" style="font-size: 10px">BATCH</div>
-                                        <div class="fw-bold fs-12 text-dark">{{ item.batch?.name }}</div>
+                                    <div *ngIf="item.batch?.name" class="rounded border smaller tag" style="padding: 1px 4px">
+                                        <div class="text-uppercase text-black" style="font-size: 10px">BATCH</div>
+                                        <div>{{ item.batch?.name }}</div>
                                     </div>
-                                    <div *ngIf="item.suspended" class="rounded border smaller bg-soft-danger" style="padding: 1px 4px">
+                                    <div *ngIf="item.suspended" class="rounded border smaller tag bg-soft-danger" style="padding: 1px 4px">
                                         <div class="text-uppercase text-danger fw-bold" style="font-size: 10px">SUSPENDED</div>
                                     </div>
-                                    <div *ngIf="item.compensatory_time_added" class="rounded border smaller bg-soft-warning" style="padding: 1px 4px">
+                                    <div *ngIf="item.compensatory_time_added" class="rounded border smaller tag bg-soft-warning" style="padding: 1px 4px">
                                         <div class="text-uppercase text-warning fw-bold" style="font-size: 10px">COMP. TIME</div>
                                     </div>
-                                    <div *ngIf="item.timed_out" class="rounded border smaller bg-soft-danger" style="padding: 1px 4px">
+                                    <div *ngIf="item.timed_out" class="rounded border smaller tag bg-soft-danger" style="padding: 1px 4px">
                                         <div class="text-uppercase text-danger fw-bold" style="font-size: 10px">TIMED OUT</div>
                                     </div>
-                                    <div *ngIf="item.has_malpractice" class="rounded border smaller bg-soft-danger" style="padding: 1px 4px">
+                                    <div *ngIf="item.has_malpractice" class="rounded border smaller tag bg-soft-danger" style="padding: 1px 4px">
                                         <div class="text-uppercase text-danger fw-bold" style="font-size: 10px">MALPRACTICE</div>
                                     </div>
-                                    <div *ngIf="item.is_rescheduled" class="rounded border smaller bg-soft-warning" style="padding: 1px 4px">
+                                    <div *ngIf="item.is_rescheduled" class="rounded border smaller tag bg-soft-warning" style="padding: 1px 4px">
                                         <div class="text-uppercase text-warning fw-bold" style="font-size: 10px">RESCHEDULED</div>
                                     </div>
-                                    <div *ngIf="item.retake" class="rounded border smaller bg-soft-info" style="padding: 1px 4px">
+                                    <div *ngIf="item.retake" class="rounded border smaller tag bg-soft-info" style="padding: 1px 4px">
                                         <div class="text-uppercase text-info fw-bold" style="font-size: 10px">RETAKE</div>
                                     </div>
                                 </div>
                             </div>
                         </td>
                             <td>
-                                <div class="d-flex flex-column gap-1" style="width: 180px;">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="p-1 rounded border">
-                                            <i class="pi pi-history text-primary" style="font-size: 14px;"></i>
+                                <div class="d-flex flex-column" style="gap: 3px; font-size: 10.5px; line-height: 1.2; width: 180px;">
+                                    <div class="d-flex align-items-center" style="gap: 4px;">
+                                        <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-primary" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 14px;">
+                                            <i class="ri-history-line"></i>
                                         </span>
-                                        <span>{{ item.duration_mins || 0 }} Mins</span>
+                                        <span class="fw-semibold text-dark">{{ item.duration_mins || 0 }} Mins</span>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="p-1 rounded border">
-                                            <i class="pi pi-play text-success" style="font-size: 14px;"></i>
+                                    <div class="d-flex align-items-center" style="gap: 4px;">
+                                        <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-success" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
+                                            <i class="ri-play-fill"></i>
                                         </span>
-                                        <span>{{ item.login_time ? (item.login_time | date:'MMM d, y - h:mma') : 'N/A' }}</span>
+                                        <span style="font-size: 12px;">{{ item.login_time ? (item.login_time | date:'MMM d, y - h:mma') : 'N/A' }}</span>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="p-1 rounded border">
-                                            <i class="pi pi-stop text-danger" style="font-size: 14px;"></i>
+                                    <div class="d-flex align-items-center" style="gap: 4px;">
+                                        <span class="d-inline-flex align-items-center justify-content-center border rounded bg-white text-danger" style="width: 18px; height: 18px; border-color: #e3e3e3 !important; font-size: 10px;">
+                                            <i class="ri-stop-fill"></i>
                                         </span>
-                                        <span>{{ item.end_time ? (item.end_time | date:'MMM d, y - h:mma') : 'N/A' }}</span>
+                                        <span style="font-size: 12px;">{{ item.end_time ? (item.end_time | date:'MMM d, y - h:mma') : 'N/A' }}</span>
                                     </div>
                                 </div>
                             </td>
                             <td>
                                 <div class="d-flex flex-wrap gap-1" style="width: 120px;">
                                     <ng-container *ngFor="let login of item.login_times; let j = index">
-                                        <span *ngIf="j < 3" class="badge bg-light text-dark border">{{ login | date:'shortTime' }}</span>
+                                        <span *ngIf="j < 3" class="badge bg-light text-dark border" style="font-size: 11px; padding: 4px 6px;">{{ login | date:'shortTime' }}</span>
                                     </ng-container>
                                     
                                     <span *ngIf="item.login_times?.length > 3"
@@ -585,16 +586,19 @@
                                     </div>
                                 </ng-template>
                             </td>
-                            <td>{{ item.section_attempts?.total_attempted || 0 }}</td>
+                            <td class="text-center">
+                                <span style="font-size: 13px; font-weight: 500;">{{ item.section_attempts?.total_attempted || 0 }}</span>
+                            </td>
                             <td>
                                 <span *ngIf="!item.ip_addresses || item.ip_addresses.length === 0" class="text-muted" style="font-size: 12px;"></span>
                                 <ng-container *ngIf="item.ip_addresses && item.ip_addresses.length > 0">
                                     <span *ngIf="hasComputerSwapped(item)" 
                                           class="text-danger fw-bold cursor-pointer"
+                                          style="font-size: 12px;"
                                           triggers="mouseenter:mouseleave"
                                           [ngbPopover]="swapsPopOver"
                                           popoverTitle="System Swaps">Yes</span>
-                                    <span *ngIf="!hasComputerSwapped(item)" class="text-success">No</span>
+                                    <span *ngIf="!hasComputerSwapped(item)" class="text-success" style="font-size: 12px;">No</span>
                                     
                                     <ng-template #swapsPopOver>
                                         <div class="p-1" style="font-size: 12px;">
@@ -606,16 +610,16 @@
                                         </div>
                                     </ng-template>
                                 </ng-container>
-                            </td> <!-- COM.SWAPS calculated from distinct IPs -->
+                            </td>
                             <td>
                                 <div class="d-flex flex-column gap-2" style="width: 120px;">
                                     <div class="d-flex align-items-center gap-2">
                                         <span class="status-dot" [ngClass]="item.online ? 'bg-success' : 'bg-danger'"></span>
-                                        <span>{{ item.online ? 'ONLINE' : 'OFFLINE' }}</span>
+                                        <span style="font-size: 11px;">{{ item.online ? 'ONLINE' : 'OFFLINE' }}</span>
                                     </div>
                                     <div class="d-flex flex-wrap gap-1">
                                         <ng-container *ngFor="let ipObj of item.ip_addresses; let k = index">
-                                            <span *ngIf="k < 1" class="badge bg-light text-dark border">{{ ipObj.ip_address }}</span>
+                                            <span *ngIf="k < 1" class="badge bg-light text-dark border" style="font-size: 10px;">{{ ipObj.ip_address }}</span>
                                         </ng-container>
                                         
                                         <span *ngIf="item.ip_addresses?.length > 1"

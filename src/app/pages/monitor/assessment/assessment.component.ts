@@ -3,7 +3,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MonitorService } from '../services/monitor.service';
 import { interval, pipe, Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, AssessmentBatchDTO, InfractionTypeSummaryDTO, InfractionEventsPage, InfractionEventDTO, InfractionEvidenceDTO, ProctorActionTypeSummaryDTO, ProctorActionEventsPage } from '../model/types';
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, AttendanceStatus, BucketParticipantsPage, BVM_STATUS, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventENUM, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, MonitoringCenterReport, MonitoringCenterReportStatuses, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RESCHEDULE_STATUS, RescheduleParticipantParams, RescheduleParticipantsPage, TechnicalIssueCategoryListPage, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, AssessmentBatchDTO, InfractionTypeSummaryDTO, InfractionEventsPage, InfractionEventDTO, InfractionEvidenceDTO, ProctorActionTypeSummaryDTO, ProctorActionEventsPage, NewAssessmentCentersPage } from '../model/types';
 import { finalize } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import { HttpResponse } from '@angular/common/http';
@@ -142,6 +142,21 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     center_id: ''
   }
 
+  // New Assessment Centers API Variables
+  fetchingNewCenters: boolean = false;
+  newCentersList: NewAssessmentCentersPage | null = null;
+  newCentersPage: number = 1;
+  newCentersSize: number = 20;
+  
+  newCentersSearchType: string = 'NONE';
+  newCentersSearchText: string = ''; 
+  newCentersSearchState: string = '';
+  newCentersSearchBatch: string = '';
+  newCentersFilterDownloaded: string = '';
+  newCentersFilterUploaded: string = '';
+  newCentersFilterOnline: string = '';
+  newCentersFilterPassport: string = '';
+
   reportTypeSelected: string = ''
   centerTechnicalReportSelected: TechnicalReportCenterDTO
 
@@ -243,7 +258,8 @@ export class AssessmentComponent implements OnInit, OnDestroy {
     this.applyParticipantsSummaryFilter(this.participantSummaryReportType)
     this.fetchTechnicalIssuesCategories()
     this.fetchTechnicalReportCenters()
-    this.fetchCenters()
+    // this.fetchCenters()
+    this.fetchNewCentersList()
   }
 
   fetchAssessmentOverview() {
@@ -292,6 +308,59 @@ export class AssessmentComponent implements OnInit, OnDestroy {
           this.centers = res
         }
       })
+  }
+
+  fetchNewCentersList() {
+    this.fetchingNewCenters = true;
+    const params: any = {
+      page: this.newCentersPage,
+      size: this.newCentersSize
+    };
+
+    if (this.newCentersSearchType === 'NAME') params.name = this.newCentersSearchText;
+    if (this.newCentersSearchType === 'CENTER_ID') params.center_id = this.newCentersSearchText;
+    if (this.newCentersSearchType === 'STATE') params.state = this.newCentersSearchState;
+    if (this.newCentersSearchType === 'BATCH') params.batch_id = this.newCentersSearchBatch;
+
+    if (this.newCentersFilterDownloaded) params.downloaded = this.newCentersFilterDownloaded;
+    if (this.newCentersFilterUploaded) params.uploaded = this.newCentersFilterUploaded;
+    if (this.newCentersFilterOnline) params.online = this.newCentersFilterOnline;
+    if (this.newCentersFilterPassport) params.passport_downloaded = this.newCentersFilterPassport;
+
+    this.monitorService.fetchNewAssessmentCentersList(this.assessmentId, params)
+      .pipe(finalize(() => this.fetchingNewCenters = false))
+      .subscribe({
+        next: (res) => {
+          this.newCentersList = res;
+        },
+        error: (err) => {
+          console.error(err);
+          this.newCentersList = null;
+        }
+      });
+  }
+
+  applyNewCentersFilters() {
+    this.newCentersPage = 1;
+    this.fetchNewCentersList();
+  }
+
+  clearNewCentersFilters() {
+    this.newCentersSearchType = 'NONE';
+    this.newCentersSearchText = '';
+    this.newCentersSearchState = '';
+    this.newCentersSearchBatch = '';
+    this.newCentersFilterDownloaded = '';
+    this.newCentersFilterUploaded = '';
+    this.newCentersFilterOnline = '';
+    this.newCentersFilterPassport = '';
+    this.applyNewCentersFilters();
+  }
+
+  onNewCentersPageChange(event: any) {
+    this.newCentersPage = (event.page ?? 0) + 1;
+    this.newCentersSize = event.rows;
+    this.fetchNewCentersList();
   }
 
   fetchTechnicalReportCenters() {
