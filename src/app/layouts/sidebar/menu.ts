@@ -5,14 +5,14 @@ export const MENU: MenuItem[] = [
     id: 11,
     label: 'MENUITEMS.DASHBOARD.TEXT',
     link: '/itembank/dashboard',
-    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS'],
+    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS', 'GROUP_ADMIN'],
     icon: 'grid',
   },
   {
     id: 12,
     label: 'MENUITEMS.USERS.TEXT',
     link: '/itembank/users',
-    role: ['ADMIN'],
+    role: ['ADMIN', 'GROUP_ADMIN'],
     icon: 'users',
   },
   {
@@ -60,7 +60,7 @@ export const MENU: MenuItem[] = [
     id: 16,
     label: 'MENUITEMS.SUBJECTS.TEXT',
     link: '/itembank/subjects',
-    role: ['AUTHOR', 'MODERATOR', 'ADMIN'],
+    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'GROUP_ADMIN'],
     icon: 'folder',
   },
   {
@@ -132,7 +132,7 @@ export const AUTHOR_MENU: MenuItem[] = [
     id: 3,
     label: 'MENUITEMS.SUBJECTS.TEXT',
     link: '/itembank/subjects',
-    role: ['AUTHOR'],
+    role: ['AUTHOR', 'GROUP_ADMIN'],
     icon: 'folder',
   }
 ];
