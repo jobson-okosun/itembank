@@ -491,7 +491,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(this.assessmentFilter.totalQuestions);
 
     // dropdown for move/copy question
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.itemService.fetchAllSubjectsDropdown().subscribe(
         (value) => {
           value.map((item) => {
@@ -859,7 +859,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   fetchSubjectDetails() {
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       // console.log('ADMIN BLOCK SUBJECT FETCHING DETAILS');
 
       this.handleAdminActions();
@@ -1036,7 +1036,7 @@ export class SubjectComponent implements OnInit, OnChanges {
 
     this.setModerationStatus()
 
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.fetchSubjectTopicsTreeAdmin();
     } else if (this.currentUser.authorities.includes('AUTHOR')) {
       this.fetchTopicTreeAuthor();
@@ -1341,7 +1341,7 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(event);
     // todo: refactor this
     // reload topics tree
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.itemService
         .fetchSubjectTopicsTreeAdmin(this.itemService.subjectId)
         .subscribe(
@@ -2039,7 +2039,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   openNewTopicModal(newTopicModal?: any) {
-    if (this.currentUser.authorities.includes('ADMIN') && !this._currentBlock)
+    if ((this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) && !this._currentBlock)
       this.modal.open(newTopicModal, { centered: true });
   }
 

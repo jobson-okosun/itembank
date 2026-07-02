@@ -58,6 +58,16 @@ export type AIInfractionChartOptions = {
   plotOptions: ApexPlotOptions;
 };
 
+export type UserChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+  legend: ApexLegend;
+  dataLabels: ApexDataLabels;  
+  plotOptions: ApexPlotOptions;
+};
+
 export interface AIInfractionSummaryDTO {
   infraction_type: string;
   total_candidates: number;

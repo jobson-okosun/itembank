@@ -165,7 +165,7 @@ export class ListPassagesComponent implements OnInit {
       if (this.subjectId === 'passages') {
         // console.log('passages', 'passed');
         // this.loading_passages = false;
-        if (this.currentUser.authorities.includes('ADMIN')) {
+        if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
           this.fetchAllSubjects();
         } else {
           this.fetchAllSubjectsNonAdmin();
@@ -173,13 +173,13 @@ export class ListPassagesComponent implements OnInit {
       } else {
         if (this.subjectId !== 'passages') {
           // this.subjectId = params.get("subjectId");
-          if (this.currentUser.authorities.includes('ADMIN')) {
+          if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
             this.fetchAllSubjects();
           } else {
             this.fetchAllSubjectsNonAdmin();
           }
           this.subjectName = this.passageService.subjectName;
-          if (this.currentUser.authorities.includes('ADMIN')) {
+          if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
             this.itemService
               .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
               .subscribe(
@@ -327,7 +327,7 @@ export class ListPassagesComponent implements OnInit {
       this.itemUtil.saveCurrentItemTrail(itemTrail);
     }
 
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.itemService
         .fetchPassageTopicTreeAdmin(this.passageService.subjectId)
         .subscribe(
@@ -872,7 +872,7 @@ export class ListPassagesComponent implements OnInit {
   }
 
   fetchTopicTree(subjectId: string) {
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.itemService.fetchPassageTopicTreeAdmin(subjectId).subscribe(
         (value) => {
           // console.log(value);
