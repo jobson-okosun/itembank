@@ -521,3 +521,105 @@ export interface ProctorActionEventsPage {
   page: number;
   size: number;
 }
+
+export enum CenterAppEventType {
+  CANDIDATE_SYNC = 'CANDIDATE_SYNC',
+  COMPENSATORY_TIME_ADDED = 'COMPENSATORY_TIME_ADDED',
+  CANDIDATE_SUSPENDED = 'CANDIDATE_SUSPENDED',
+  CANDIDATE_RESUMED = 'CANDIDATE_RESUMED',
+  COMPUTER_SWAP_ATTEMPT = 'COMPUTER_SWAP_ATTEMPT',
+  COMPUTER_SWAP_ALLOWED = 'COMPUTER_SWAP_ALLOWED',
+  LOGIN = 'LOGIN',
+  RE_LOGIN = 'RE_LOGIN',
+  DISCONNECTED = 'DISCONNECTED',
+  ENDED = 'ENDED',
+  RETAKE = 'RETAKE',
+  BATTERY_LOW = 'BATTERY_LOW',
+  BIOMETRICS = 'BIOMETRICS',
+  MALPRACTICE = 'MALPRACTICE',
+  RESCHEDULE = 'RESCHEDULE'
+}
+
+export interface CenterAppEventDTO {
+  id: number;
+  center_r_id: string;
+  app_event_id: number;
+  event_type: CenterAppEventType;
+  event_source: string;
+  status: string;
+  title: string;
+  message: string;
+  participant_data: any;
+  occur_at: string;
+  assessment_id: string;
+  received_at: string;
+}
+
+export interface CenterAppEventsPage {
+  data: CenterAppEventDTO[];
+  total: number;
+  page: number;
+  size: number;
+}
+
+export interface CenterAppEventParams {
+  assessment_id: string;
+  center_id?: string;
+  page: number;
+  size: number;
+  search_type?: CenterAppEventType;
+  login_field?: string;
+  event_source?: string;
+}
+
+export interface ParticipantSummaryDTO {
+  total: number;
+  total_started: number;
+  total_not_started: number;
+  total_ended: number;
+  total_ended_timedout: number;
+  total_comptime_added: number;
+  total_relogins: number;
+  total_comp_swaps: number;
+  total_suspended: number;
+  total_resumed: number;
+  total_offline: number;
+  total_rescheduled: number;
+  total_bvm_verified: number;
+  total_malpractice: number;
+  total_un_verified: number;
+  total_un_considered: number;
+  total_no_attempt: number;
+}
+
+export interface CenterParticipantDTO {
+  id: string;
+  name: string;
+  status: string;
+  login_time: string;
+  duration_mins: number;
+  login_times: string[];
+  current_ip: string;
+  section_attempts: { total_attempted: number; [key: string]: any };
+  suspended: boolean;
+  compensatory_time_added: boolean;
+  ip_addresses: { ip_address: string; time: string }[];
+  online: boolean;
+  login_field: string;
+  end_time: string;
+  end_times: string[];
+  score: any[];
+  retake: boolean;
+  timed_out: boolean;
+  batch: any;
+  bvm_verified: boolean;
+  is_rescheduled: boolean;
+  has_malpractice: boolean;
+}
+
+export interface PaginatedCenterParticipants {
+  data: CenterParticipantDTO[];
+  total: number;
+  page: number;
+  size: number;
+}
