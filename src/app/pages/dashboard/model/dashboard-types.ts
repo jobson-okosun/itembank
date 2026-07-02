@@ -1,3 +1,5 @@
+import { ApexChart, ApexDataLabels, ApexLegend, ApexNonAxisChartSeries, ApexPlotOptions, ApexResponsive } from "ng-apexcharts";
+
 export interface ExamDayDTO {
   id: string;
   exam_name: string;
@@ -45,6 +47,16 @@ export interface UpcomingExamsResponse {
   page: number;
   size: number;
 }
+
+export type AIInfractionChartOptions = {
+  series: ApexNonAxisChartSeries;
+  chart: ApexChart;
+  responsive: ApexResponsive[];
+  labels: any;
+  legend: ApexLegend;
+  dataLabels: ApexDataLabels;  
+  plotOptions: ApexPlotOptions;
+};
 
 export interface AIInfractionSummaryDTO {
   infraction_type: string;

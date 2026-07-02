@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { SharedModule } from 'src/app/shared/shared.module';
@@ -15,6 +15,10 @@ import { MainComponent } from './main/main.component';
 import { NoSanitizerPipe } from './no-sanitizer.pipe';
 import { NewDashboardComponent } from './new-dashboard/new-dashboard.component';
 import { PaginatorModule } from 'primeng/paginator';
+    import {
+  NgbDropdownModule,
+} from "@ng-bootstrap/ng-bootstrap";
+import { NgSelectModule } from "@ng-select/ng-select";
 
 @NgModule({
   declarations: [MainComponent, NoSanitizerPipe, NewDashboardComponent],
@@ -33,7 +37,9 @@ import { PaginatorModule } from 'primeng/paginator';
     HttpClientModule,
     LayoutsModule,
     ManualsModule,
-    PaginatorModule
+    PaginatorModule,
+    NgbDropdownModule,
+    NgSelectModule
   ],
 })
 export class DashboardModule {}

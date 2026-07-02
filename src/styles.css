@@ -16,4 +16,7 @@
   margin: 0;
 }
 
+::ng-deep .multiline-tooltip .tooltip-inner {
+  White-space: pre-line;
+}
 

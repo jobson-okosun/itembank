@@ -63,6 +63,7 @@ export class DashboardService {
   // --- NEW MONITORING DASHBOARD APIS (MOCKED) ---
 
   fetchExamsForTheDay(params?: any): Observable<ExamsForTheDayResponse> {
+    console.log("SERVICE PARAMS: ", params);
     return of({
       total: 24,
       page: 1,
@@ -77,21 +78,22 @@ export class DashboardService {
       day_total_centers_downloaded_passport: 42,
       content: [
         {
-          id: '1',
-          exam_name: 'Mathematics 101',
-          delivery_method: 'COMPUTER_BASED',
+          id: "1",
+          exam_name: "Mathematics 101",
+          delivery_method: "COMPUTER_BASED",
           total_centers: 10,
           total_participants: 500,
-          total_participants_present: 4000,
+          total_participants_present: 400,
           total_participants_absent: 50,
           total_participants_online: 0,
           total_centers_downloaded_exam: 10,
           total_centers_uploaded_exam: 8,
-          total_centers_downloaded_passport: 10
+          total_centers_downloaded_passport: 10,
         },
         {
-          id: '2', exam_name: 'Physics Advanced',
-          delivery_method: 'LIVE_PROCTORING',
+          id: "2",
+          exam_name: "Physics Advanced",
+          delivery_method: "LIVE_PROCTORING",
           total_centers: 5,
           total_participants: 300,
           total_participants_present: 280,
@@ -99,11 +101,12 @@ export class DashboardService {
           total_participants_online: 280,
           total_centers_downloaded_exam: 5,
           total_centers_uploaded_exam: 5,
-          total_centers_downloaded_passport: 5
+          total_centers_downloaded_passport: 5,
         },
         {
-          id: '3', exam_name: 'Physics Advanced',
-          delivery_method: 'LIVE_PROCTORING',
+          id: "3",
+          exam_name: "Physics Advanced",
+          delivery_method: "LIVE_PROCTORING",
           total_centers: 5,
           total_participants: 300,
           total_participants_present: 280,
@@ -111,11 +114,12 @@ export class DashboardService {
           total_participants_online: 280,
           total_centers_downloaded_exam: 5,
           total_centers_uploaded_exam: 5,
-          total_centers_downloaded_passport: 5
+          total_centers_downloaded_passport: 5,
         },
         {
-          id: '4', exam_name: 'Physics Advanced',
-          delivery_method: 'LIVE_PROCTORING',
+          id: "4",
+          exam_name: "Physics Advanced",
+          delivery_method: "LIVE_PROCTORING",
           total_centers: 5,
           total_participants: 300,
           total_participants_present: 280,
@@ -123,11 +127,12 @@ export class DashboardService {
           total_participants_online: 280,
           total_centers_downloaded_exam: 5,
           total_centers_uploaded_exam: 5,
-          total_centers_downloaded_passport: 5
+          total_centers_downloaded_passport: 5,
         },
         {
-          id: '5', exam_name: 'Physics Advanced',
-          delivery_method: 'LIVE_PROCTORING',
+          id: "5",
+          exam_name: "Physics Advanced",
+          delivery_method: "LIVE_PROCTORING",
           total_centers: 5,
           total_participants: 300,
           total_participants_present: 280,
@@ -135,9 +140,9 @@ export class DashboardService {
           total_participants_online: 280,
           total_centers_downloaded_exam: 5,
           total_centers_uploaded_exam: 5,
-          total_centers_downloaded_passport: 5
-        }
-      ]
+          total_centers_downloaded_passport: 5,
+        },
+      ],
     });
   }
 
@@ -153,6 +158,7 @@ export class DashboardService {
   // }
 
   fetchUpcomingExams(params?: any): Observable<UpcomingExamsResponse> {
+    console.log("SERVICE PARAMS: ", params);
     return of({
       total: 3,
       page: 1,
@@ -184,7 +190,18 @@ export class DashboardService {
           id: "3",
           exam_name: "History Quiz",
           delivery_method: "LIVE_PROCTORING",
-          exam_status: "PUBLISHED",
+          exam_status: "CLOSED",
+          exam_start_date: new Date(Date.now() + 86400000 * 5).toISOString(),
+          exam_end_date: new Date(Date.now() + 86400000 * 6).toISOString(),
+          total_centers: 0,
+          total_participants: 150,
+          total_proctors: 5,
+        },
+        {
+          id: "4",
+          exam_name: "Animal Husbandry Quiz",
+          delivery_method: "LIVE_PROCTORING",
+          exam_status: "CLOSED",
           exam_start_date: new Date(Date.now() + 86400000 * 5).toISOString(),
           exam_end_date: new Date(Date.now() + 86400000 * 6).toISOString(),
           total_centers: 0,
@@ -195,9 +212,21 @@ export class DashboardService {
     });
   }
 
+  // fetchUpcomingExams(params?: any): Observable<UpcomingExamsResponse> {
+  //   console.log("UPCOMING PARAM: ", params);
+  //   return this.http.get<UpcomingExamsResponse>(
+  //     `${environment.developmentIP}/sch_mon_grd/dashboard/upcoming_exams`,
+  //     {
+  //       withCredentials: true,
+  //       params: params,
+  //     },
+  //   );
+  // }
+
   fetchAIInfractionsForTheDay(
     params?: any,
   ): Observable<AIInfractionSummaryDTO[]> {
+    console.log("AI INFRACTION SERVICE PARAM: ", params);
     return of([
       {
         infraction_type: "LOOKING_AWAY",
@@ -221,6 +250,19 @@ export class DashboardService {
       },
     ]);
   }
+
+  // fetchAIInfractionsForTheDay(
+  //   params?: any,
+  // ): Observable<AIInfractionSummaryDTO[]> {
+  //   console.log("AI INFRACTION SERVICE PARAM: ", params);
+  //   return this.http.get<AIInfractionSummaryDTO[]>(
+  //     `${environment.developmentIP}/sch_mon_grd/dashboard/ai_infractions_for_the_day`,
+  //     {
+  //       withCredentials: true,
+  //       params: params,
+  //     },
+  //   );
+  // }
 
   fetchExamCalendar(params?: any): Observable<ExamCalendarDTO[]> {
     return of([
@@ -267,49 +309,113 @@ export class DashboardService {
     ]);
   }
 
+  // fetchExamCalendar(params?: any): Observable<ExamCalendarDTO[]> {
+  //   console.log("CALENDER PARAM: ", params);
+  //   return this.http.get<ExamCalendarDTO[]>(
+  //     `${environment.developmentIP}/sch_mon_grd/dashboard/exam_calendar`,
+  //     {
+  //       withCredentials: true,
+  //       params: params,
+  //     },
+  //   );
+  // }
+
   fetchProctorWeeklyCalendar(
     params?: any,
   ): Observable<ProctorWeeklyCalendarDTO[]> {
+    console.log("PROCTOR WEEKLY CALENDAR SERVICE PARAM: ", params);
     return of([
       {
-        id: "1",
-        exam_name: "Physics Advanced",
-        status: "PUBLISHED",
+        id: "db689442-1a6b-48fe-88b5-8a5373bc48a8",
+        exam_name: "Angular Certification",
+        status: "SCHEDULED",
+        delivery_method: "PROCTORING",
+        total_participants: 25,
+        proctor_full_name: "John Doe",
+        proctor_username: "jdoe",
+        batch_name: "Batch A",
+        batch_start_time: "2026-07-02T08:00:00Z",
+        batch_end_time: "2026-07-02T10:00:00Z",
+        total_participants_assigned: 25,
+      },
+      {
+        id: "e4c19b88-3f44-4b51-9dc2-7c8fa17df01a",
+        exam_name: "UTME Certification",
+        status: "IN_PROGRESS",
         delivery_method: "LIVE_PROCTORING",
-        total_participants: 300,
-        proctor_full_name: "Jane Doe",
-        proctor_username: "jane_d",
-        batch_name: "Morning Batch A",
-        batch_start_time: new Date().toISOString(),
-        batch_end_time: new Date(Date.now() + 7200000).toISOString(),
+        total_participants: 30,
+        proctor_full_name: "Sarah Jenkins",
+        proctor_username: "sjenkins",
+        batch_name: "Batch B",
+        batch_start_time: "2026-06-29T08:00:00Z",
+        batch_end_time: "2026-06-29T10:00:00Z",
+        total_participants_assigned: 30,
+      },
+      {
+        id: "7fa8412e-912b-4cd7-ba48-1123498ffae3",
+        exam_name: "AWS Cloud Practitioner",
+        status: "COMPLETED",
+        delivery_method: "LIVE_PROCTORING",
+        total_participants: 15,
+        proctor_full_name: "Marcus Vance",
+        proctor_username: "mvance",
+        batch_name: "Morning Group",
+        batch_start_time: "2026-06-29T08:00:00Z",
+        batch_end_time: "2026-06-29T10:00:00Z",
+        total_participants_assigned: 15,
+      },
+      {
+        id: "219bbfa0-ee71-4122-8ea3-df817ea2d411",
+        exam_name: "Docker & Kubernetes Architect",
+        status: "SCHEDULED",
+        delivery_method: "LIVE_PROCTORING",
+        total_participants: 40,
+        proctor_full_name: "Elena Rostova",
+        proctor_username: "erostova",
+        batch_name: "Global Batch 1",
+        batch_start_time: "2026-06-29T08:00:00Z",
+        batch_end_time: "2026-06-29T10:00:00Z",
+        total_participants_assigned: 38,
+      },
+      {
+        id: "cb104f29-5511-47a3-b09e-647dfa92cc88",
+        exam_name: "Senior TypeScript Developer",
+        status: "CANCELLED",
+        delivery_method: "LIVE_PROCTORING",
+        total_participants: 12,
+        proctor_full_name: "John Doe",
+        proctor_username: "jdoe",
+        batch_name: "Weekend Makeup",
+        batch_start_time: "2026-06-30T08:00:00Z",
+        batch_end_time: "2026-06-30T10:00:00Z",
+        total_participants_assigned: 0,
+      },
+      {
+        id: "fa934812-cc84-47ef-8d19-91823bcda902",
+        exam_name: "UI/UX Principles Specialist",
+        status: "SCHEDULED",
+        delivery_method: "LIVE_PROCTORING",
+        total_participants: 50,
+        proctor_full_name: "System Automated",
+        proctor_username: "sys_auto",
+        batch_name: "Cohort 4",
+        batch_start_time: "2026-07-05T00:00:00Z",
+        batch_end_time: "2026-07-05T23:59:59Z",
         total_participants_assigned: 50,
-      },
-      {
-        id: "2",
-        exam_name: "Physics Advanced",
-        status: "PUBLISHED",
-        delivery_method: "LIVE_PROCTORING",
-        total_participants: 300,
-        proctor_full_name: "John Smith",
-        proctor_username: "john_s",
-        batch_name: "Morning Batch B",
-        batch_start_time: new Date().toISOString(),
-        batch_end_time: new Date(Date.now() + 7200000).toISOString(),
-        total_participants_assigned: 45,
-      },
-      {
-        id: "3",
-        exam_name: "History Quiz",
-        status: "PUBLISHED",
-        delivery_method: "LIVE_PROCTORING",
-        total_participants: 150,
-        proctor_full_name: "Mark Taylor",
-        proctor_username: "mark_t",
-        batch_name: "Afternoon Batch A",
-        batch_start_time: new Date(Date.now() + 14400000).toISOString(),
-        batch_end_time: new Date(Date.now() + 21600000).toISOString(),
-        total_participants_assigned: 75,
       },
     ]);
   }
+
+  // fetchProctorWeeklyCalendar(
+  //   params?: any,
+  // ): Observable<ProctorWeeklyCalendarDTO[]> {
+  //   console.log("WEEKLY PARAM: ", params);
+  //   return this.http.get<ProctorWeeklyCalendarDTO[]>(
+  //     `${environment.developmentIP}/sch_mon_grd/dashboard/proctor_weekly_calendar`,
+  //     {
+  //       withCredentials: true,
+  //       params: params,
+  //     },
+  //   );
+  // }
 }
