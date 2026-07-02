@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MonitorService } from '../services/monitor.service';
+import { ActivatedRoute } from '@angular/router';
+import { CenterAppEventDTO, CenterAppEventParams, CenterAppEventType, ParticipantSummaryDTO, PaginatedCenterParticipants, CenterParticipantDTO, AssessmentBatchDTO } from '../model/types';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -10,84 +12,208 @@ import { catchError } from 'rxjs/operators';
 })
 export class CenterComponent implements OnInit {
   DoughnutChart: any;
-  notifications = [
-    { id: 1, message: 'Rufai Ahmed deedat (20253893444FH) requested a Computer swap due to system freeze.', time: 'June 25, 2026 - 12:15pm', type: 'Computer swap', actionable: true, status: 'pending' },
-    { id: 2, message: 'BVM verification succeeded for Sarah Jenkins (20258839221AJ).', time: 'June 25, 2026 - 12:10pm', type: 'BVM verified', actionable: false },
-    { id: 3, message: 'Malpractice detected: Multiple faces identified in candidate room for John Doe.', time: 'June 25, 2026 - 11:58am', type: 'Malpractice', actionable: true, status: 'pending' },
-    { id: 4, message: 'Network disconnected for candidate Rufai Ahmed deedat.', time: 'June 25, 2026 - 11:45am', type: 'Network disconnected', actionable: false },
-    { id: 5, message: 'Compensatory time request: +15 minutes requested by center proctor for David King.', time: 'June 25, 2026 - 11:30am', type: 'Compensatory time', actionable: true, status: 'pending' },
-    { id: 6, message: 'Relogin attempt successful for Mary Sani (20253849111AA).', time: 'June 25, 2026 - 11:15am', type: 'Relogin', actionable: false },
-    { id: 7, message: 'Candidate Musa Ibrahim has timed out.', time: 'June 25, 2026 - 11:00am', type: 'Timed out', actionable: false },
-    { id: 8, message: 'Assessment started for candidate Blessing Udoh.', time: 'June 25, 2026 - 10:45am', type: 'Started', actionable: false },
-    { id: 9, message: 'Suspended: Proctor suspended candidate Rufus Thomas due to suspicious objects.', time: 'June 25, 2026 - 10:30am', type: 'Suspended', actionable: true, status: 'pending' },
-    { id: 10, message: 'Assessment ended for candidate Rufai Ahmed deedat.', time: 'June 25, 2026 - 10:15am', type: 'Ended', actionable: false },
-    { id: 11, message: 'Candidate Chinonso Eke has been rescheduled to tomorrow.', time: 'June 25, 2026 - 10:00am', type: 'Rescheduled', actionable: false },
-    { id: 12, message: 'Candidate Paul Smith has not started the exam yet.', time: 'June 25, 2026 - 09:45am', type: 'Not started', actionable: false }
-  ];
 
-  filteredNotifications: any[] = [];
-  pagedNotifications: any[] = [];
+
+  filteredNotifications: CenterAppEventDTO[] = [];
+  pagedNotifications: CenterAppEventDTO[] = [];
   notifTotalRecords = 0;
   notifFirst = 0;
-  notifRows = 4;
+  notifRows = 10;
   notifSelectedFilter = 'ALL';
+  notifLoginFilter = '';
+  notifEventSourceFilter = 'ALL';
+  fetchingNotifications = false;
+  
+  participantSummary: ParticipantSummaryDTO | null = null;
+  fetchingSummary = false;
 
-  notifFilters = [
-    'ALL',
-    'Not started',
-    'Started',
-    'Network disconnected',
-    'Compensatory time',
-    'Relogin',
-    'Computer swap',
-    'Suspended',
-    'Timed out',
-    'Ended',
-    'Malpractice',
-    'Rescheduled',
-    'BVM verified'
+  participantList: PaginatedCenterParticipants | null = null;
+  fetchingParticipants = false;
+  participantPage = 1;
+  participantSize = 10;
+  
+  participantSearchType: string = 'NONE';
+  participantSearchText: string = '';
+  participantSearchStatus: string = 'STARTED';
+  participantSearchDuration: number | null = null;
+  participantSearchAttemptCount: number | null = null;
+  participantSearchBatch: string = '';
+  
+  batches: AssessmentBatchDTO[] = [];
+  
+  participantSearchTypes: string[] = [
+    'NONE', 'NAME', 'LOGIN_FIELD', 'STATUS', 'SUSPENDED', 
+    'COMPENSATORY_TIME_ADDED', 'RE_LOGIN', 'COMPUTER_SWAP', 
+    'ATTEMPT_COUNT_GREATER', 'ATTEMPT_COUNT_LESSER', 
+    'DURATION_GREATER', 'DURATION_LESSER', 'BATCH'
   ];
+  participantStatusOptions: string[] = ['NOT_STARTED', 'STARTED', 'ENDED', 'ENDED_TIMED_OUT'];
 
-  constructor(private monitorService: MonitorService) { }
+  notifFilters: string[] = ['ALL', ...Object.values(CenterAppEventType)];
+  notifEventSources: string[] = ['ALL', 'EXAM', 'PASSPORT', 'PARTICIPANT', 'EXAM_RESULT', 'EXAM_PARTICIPANT', 'BIOMETRICS'];
+
+  assessmentId: string = '';
+  centerId: string = '';
+
+  constructor(private monitorService: MonitorService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
     window.scrollTo(0, 0);
-    this._DoughnutChart();
-    this.fetchNotificationsFromBackend();
+    this._DoughnutChart(null);
+    
+    this.route.paramMap.subscribe(params => {
+      this.assessmentId = params.get('assessmentId') || '';
+      this.centerId = params.get('centerId') || '';
+      if (this.centerId && this.assessmentId) {
+        this.fetchParticipantSummary();
+        this.fetchParticipants();
+        this.fetchBatches();
+      }
+      this.fetchCenterEvents();
+    });
   }
 
   goBack() {
     history.back()
   }
 
-  fetchNotificationsFromBackend() {
-    const page = this.notifFirst / this.notifRows;
+  fetchParticipantSummary() {
+    this.fetchingSummary = true;
+    this.monitorService.fetchParticipantSummary(this.assessmentId, this.centerId).pipe(
+      catchError(err => {
+        return of(null);
+      })
+    ).subscribe(res => {
+      this.fetchingSummary = false;
+      if (res) {
+        this.participantSummary = res;
+        this.updateDoughnutChart(res);
+      }
+    });
+  }
+
+  fetchParticipants() {
+    this.fetchingParticipants = true;
     const params: any = {
+      page: this.participantPage,
+      size: this.participantSize
+    };
+    
+    if (this.participantSearchType !== 'NONE') {
+      params.search_type = this.participantSearchType;
+      if (this.participantSearchType === 'NAME' || this.participantSearchType === 'LOGIN_FIELD') {
+        params.search_text = this.participantSearchText;
+      } else if (this.participantSearchType === 'STATUS') {
+        params.status = this.participantSearchStatus;
+      } else if (this.participantSearchType === 'DURATION_GREATER' || this.participantSearchType === 'DURATION_LESSER') {
+        params.duration = this.participantSearchDuration;
+      } else if (this.participantSearchType === 'ATTEMPT_COUNT_GREATER' || this.participantSearchType === 'ATTEMPT_COUNT_LESSER') {
+        params.attempt_count = this.participantSearchAttemptCount;
+      }
+    }
+
+    if (this.participantSearchType === 'BATCH' && this.participantSearchBatch) {
+      params.batch_id = this.participantSearchBatch;
+    }
+
+    this.monitorService.fetchParticipantList(this.assessmentId, this.centerId, params).pipe(
+      catchError(err => {
+        return of(null);
+      })
+    ).subscribe(res => {
+      this.fetchingParticipants = false;
+      if (res) {
+        this.participantList = res;
+      }
+    });
+  }
+
+  applyParticipantFilters() {
+    this.participantPage = 1;
+    this.fetchParticipants();
+  }
+
+  clearParticipantFilters() {
+    this.participantSearchType = 'NONE';
+    this.participantSearchText = '';
+    this.participantSearchStatus = 'STARTED';
+    this.participantSearchDuration = null;
+    this.participantSearchAttemptCount = null;
+    this.participantSearchBatch = '';
+    this.applyParticipantFilters();
+  }
+
+  onParticipantPageChange(event: any) {
+    this.participantPage = (event.page ?? 0) + 1;
+    this.participantSize = event.rows;
+    this.fetchParticipants();
+  }
+
+  hasComputerSwapped(item: CenterParticipantDTO): boolean {
+    if (!item.ip_addresses || item.ip_addresses.length <= 1) return false;
+    const uniqueIps = new Set(item.ip_addresses.map(ip => ip.ip_address));
+    return uniqueIps.size > 1;
+  }
+
+  getUniqueIps(item: CenterParticipantDTO): any[] {
+    if (!item.ip_addresses || item.ip_addresses.length === 0) return [];
+    const uniqueMap = new Map<string, any>();
+    for (const ipObj of item.ip_addresses) {
+      if (!uniqueMap.has(ipObj.ip_address)) {
+        uniqueMap.set(ipObj.ip_address, ipObj);
+      }
+    }
+    return Array.from(uniqueMap.values());
+  }
+
+  fetchBatches() {
+    this.monitorService.fetchInfractionBatches(this.assessmentId).subscribe({
+      next: (res) => {
+        this.batches = res || [];
+      },
+      error: (err) => console.error(err)
+    });
+  }
+
+  fetchCenterEvents() {
+    this.fetchingNotifications = true;
+    const page = this.notifFirst / this.notifRows;
+    const params: CenterAppEventParams = {
+      assessment_id: this.assessmentId,
       page: page,
       size: this.notifRows
     };
+
     if (this.notifSelectedFilter !== 'ALL') {
-      params.filter = this.notifSelectedFilter;
+      params.search_type = this.notifSelectedFilter as CenterAppEventType;
+    }
+    
+    if (this.notifEventSourceFilter !== 'ALL') {
+      params.event_source = this.notifEventSourceFilter;
     }
 
-    this.monitorService.fetchNotifications('10001', params).pipe(
+    if (this.notifLoginFilter && this.notifLoginFilter.trim() !== '') {
+      params.login_field = this.notifLoginFilter.trim();
+    }
+    
+    if (this.centerId) {
+       params.center_id = this.centerId;
+    }
+
+    this.monitorService.fetchCenterAppEvents(params).pipe(
       catchError(err => {
-        console.warn('Backend notifications endpoint not found, falling back to mock pagination/filtering');
-        let mockList = [...this.notifications];
-        if (this.notifSelectedFilter !== 'ALL') {
-          mockList = mockList.filter(n => n.type === this.notifSelectedFilter);
-        }
-        const total = mockList.length;
-        const startIndex = this.notifFirst;
-        const content = mockList.slice(startIndex, startIndex + this.notifRows);
+        console.error('Failed to fetch notifications from backend', err);
         return of({
-          total: total,
-          content: content
+          total: 0,
+          data: [],
+          page: 1,
+          size: this.notifRows
         });
       })
     ).subscribe(res => {
+      this.fetchingNotifications = false;
       if (res) {
-        this.pagedNotifications = res.content || [];
+        this.pagedNotifications = res.data || [];
         this.notifTotalRecords = res.total || 0;
       }
     });
@@ -96,12 +222,24 @@ export class CenterComponent implements OnInit {
   setNotifFilter(filter: string) {
     this.notifSelectedFilter = filter;
     this.notifFirst = 0;
-    this.fetchNotificationsFromBackend();
+    this.fetchCenterEvents();
+  }
+
+  applyNotifFilters() {
+    this.notifFirst = 0;
+    this.fetchCenterEvents();
+  }
+
+  clearNotifFilters() {
+    this.notifSelectedFilter = 'ALL';
+    this.notifEventSourceFilter = 'ALL';
+    this.notifLoginFilter = '';
+    this.applyNotifFilters();
   }
 
   onNotifPageChange(event: any) {
     this.notifFirst = event.first;
-    this.fetchNotificationsFromBackend();
+    this.fetchCenterEvents();
   }
 
 
@@ -135,20 +273,36 @@ export class CenterComponent implements OnInit {
   }
 
 
-  private _DoughnutChart() {
-    const c = '["--vz-primary", "--vz-info-rgb, 0.80", "--vz-warning-rgb, 0.70", "--vz-danger-rgb, 0.60", "--vz-success-rgb, 0.45", "#8772f9"]'
+  private _DoughnutChart(summary: ParticipantSummaryDTO | null) {
+    const rawData = summary ? [
+      { name: 'Not started', value: summary.total_not_started || 0, color: '#6464ed' },
+      { name: 'Started', value: summary.total_started || 0, color: '#57bb50' },
+      { name: 'Network disconnected', value: summary.total_offline || 0, color: '#bb5e50' },
+      { name: 'Compensatory time', value: summary.total_comptime_added || 0, color: '#5dc1b5' },
+      { name: 'Relogin', value: summary.total_relogins || 0, color: '#56a4b3' },
+      { name: 'Computer swap', value: summary.total_comp_swaps || 0, color: '#4b4f4b' },
+      { name: 'Suspended', value: summary.total_suspended || 0, color: '#de8f52' },
+      { name: 'Timed out', value: summary.total_ended_timedout || 0, color: '#db8259' },
+      { name: 'Ended', value: summary.total_ended || 0, color: '#dc3545' },
+      { name: 'Malpractice', value: summary.total_malpractice || 0, color: '#d5487c' },
+      { name: 'Rescheduled', value: summary.total_rescheduled || 0, color: '#4051b1' },
+      { name: 'BVM verified', value: summary.total_bvm_verified || 0, color: '#6ebb50' },
+      { name: 'Resumed', value: summary.total_resumed || 0, color: '#7e57c2' },
+      { name: 'Un-verified', value: summary.total_un_verified || 0, color: '#ffb74d' },
+      { name: 'Un-considered', value: summary.total_un_considered || 0, color: '#f06292' },
+      { name: 'No attempt', value: summary.total_no_attempt || 0, color: '#9e9e9e' }
+    ].filter(item => item.value > 0) : [];
 
-    const colors = this.getChartColorsArray(c);
+    const totalValue = rawData.reduce((acc, curr) => acc + curr.value, 0) || 1;
+
+    const mappedData = rawData.map(item => ({
+      value: item.value,
+      name: item.name,
+      itemStyle: { color: item.color }
+    }));
 
     this.DoughnutChart = {
       tooltip: { trigger: "item" },
-      // height: "80%",
-      // legend: {
-      //   textStyle: { color: "#858d98"},
-      //   top: "middle",
-      //   usePointStyle: true,
-      // },
-      color: colors,
       series: [
         {
           type: "pie",
@@ -157,23 +311,14 @@ export class CenterComponent implements OnInit {
           startAngle: 180,
           label: {
             show: false,
-            formatter(param) {
+            formatter(param: any) {
               return param.name + " (" + param.percent * 2 + "%)";
             },
           },
           data: [
+            ...mappedData,
             {
-              value: 10,
-              name: "Present",
-            },
-            {
-              value: 20,
-              name: "Absent",
-            },
-            {
-              value:
-                10 +
-                20,
+              value: totalValue,
               itemStyle: {
                 color: "none",
                 decal: {
@@ -191,5 +336,12 @@ export class CenterComponent implements OnInit {
         fontFamily: "Poppins, sans-serif",
       },
     };
+  }
+
+  updateDoughnutChart(summary: ParticipantSummaryDTO | null) {
+    this._DoughnutChart(summary);
+    
+    // Force echarts to update by reassigning the reference
+    this.DoughnutChart = { ...this.DoughnutChart };
   }
 }

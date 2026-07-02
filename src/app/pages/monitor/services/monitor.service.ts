@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO, ProctorActionTypeSummaryDTO, ProctorActionEventDTO, ProctorActionEventsPage } from "../model/types";
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO, ProctorActionTypeSummaryDTO, ProctorActionEventDTO, ProctorActionEventsPage, CenterAppEventsPage, CenterAppEventParams, ParticipantSummaryDTO, PaginatedCenterParticipants } from "../model/types";
 import { environment } from "src/environments/environment";
 import { AssessmentCenterListPage, AssessmentCenterListParams } from "../../assessment/model/assessment-list";
 
@@ -159,7 +159,7 @@ export class MonitorService {
         const url = this.baseURL + `/fetch_technical_report/assessment/${ assessmentId }/center/${ centerId }`
 
         return this._http.get<TechnicalReportCenterDTO>(url, { withCredentials: true})
-    }
+    } 
 
     fetchCenters(assessmentId: string, params: AssessmentCenterListParams): Observable<AssessmentCenterListPage> {
         const url = this.baseURL + `/list_centers_in_assessment/assessment/${ assessmentId }` + this.buildQuery(params);
@@ -305,5 +305,21 @@ export class MonitorService {
     fetchNotifications(assessmentId: string, params?: { page?: number, size?: number, filter?: string }): Observable<any> {
       const url = this.baseURL + `/notifications/assessment/${assessmentId}` + this.buildQuery(params);
       return this._http.get<any>(url, { withCredentials: true });
+    }
+
+    fetchCenterAppEvents(params: CenterAppEventParams): Observable<CenterAppEventsPage> {
+      const url = this.baseURL + `/center_app_events` + this.buildQuery(params);
+      return this._http.get<CenterAppEventsPage>(url, { withCredentials: true });
+    }
+
+    fetchParticipantSummary(assessmentId: string, centerId: string): Observable<ParticipantSummaryDTO> {
+      const url = this.baseURL + `/participant_summary?assessment_id=${assessmentId}&center_id=${centerId}`;
+      return this._http.get<ParticipantSummaryDTO>(url, { withCredentials: true });
+    }
+
+    fetchParticipantList(assessmentId: string, centerId: string, params?: any): Observable<PaginatedCenterParticipants> {
+      const queryParams = { ...params, assessment_id: assessmentId, center_id: centerId };
+      const url = this.baseURL + `/participant_list` + this.buildQuery(queryParams);
+      return this._http.get<PaginatedCenterParticipants>(url, { withCredentials: true });
     }
 }
