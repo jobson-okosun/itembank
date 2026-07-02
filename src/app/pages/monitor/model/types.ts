@@ -623,3 +623,32 @@ export interface PaginatedCenterParticipants {
   page: number;
   size: number;
 }
+
+export interface NewAssessmentCenterDTO {
+  id: string;
+  name: string;
+  center_id: string;
+  state: string;
+  exam_downloaded: boolean;
+  passport_downloaded: boolean;
+  exam_uploaded: boolean;
+  total_participants: number;
+  total_participants_started: number;
+  total_participants_ended: number;
+  total_times_started: number;
+  total_times_launched: number;
+  online: boolean;
+  download_time: string;
+  total_batches: number;
+  total_batches_started: number;
+  total_batches_completed: number;
+  batch_info: any[];
+}
+
+export interface NewAssessmentCentersPage {
+  data: NewAssessmentCenterDTO[];
+  total: number;
+  page: number;
+  size: number;
+}
+

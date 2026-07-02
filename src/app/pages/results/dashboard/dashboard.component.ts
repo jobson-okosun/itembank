@@ -67,6 +67,7 @@ export class DashboardComponent implements OnInit {
   loadingDashboardResources: boolean = false;
 
   assessmentSummary: AssessmentResultSummary | null = null;
+  registrationFields: any[] = [];
   centers: any[] = [];
   sections: any[] = [];
   batches: any[] = [];
@@ -219,6 +220,10 @@ export class DashboardComponent implements OnInit {
         }) => {
           this.assessmentSummary = assessmentSummary;
           
+          if (assessmentSummary?.registration_fields) {
+            this.registrationFields = assessmentSummary.registration_fields.filter((f: any) => f.values && f.values.length > 0 && f.values.some((v: any) => v !== null && v !== ''));
+          }
+
           if (!this.centers.length && assessmentSummary?.centers) {
             this.centers = assessmentSummary.centers;
           }
@@ -357,12 +362,16 @@ export class DashboardComponent implements OnInit {
       center_id: new FormControl(''),
       section_id: new FormControl(''),
       exam_group_id: new FormControl(''),
+      field_name: new FormControl(''),
+      field_value: new FormControl(''),
     });
 
     this.scoreAnalysisFilterForm = new FormGroup({
       center_id: new FormControl(''),
       section_id: new FormControl(''),
       exam_group_id: new FormControl(''),
+      field_name: new FormControl(''),
+      field_value: new FormControl(''),
     });
 
     this.transcriptFilterForm = new FormGroup({
@@ -396,6 +405,26 @@ export class DashboardComponent implements OnInit {
       infraction_score_less: new FormControl(''),
       infraction_score_greater_than: new FormControl(''),
     });
+  }
+
+  getScoreDistributionRegFieldValues(): any[] {
+    const fieldName = this.scoreDistributionFilterForm.get('field_name')?.value;
+    if (!fieldName) return [];
+    return this.registrationFields.find(f => f.name === fieldName)?.values.filter((v: any) => v !== null && v !== '') || [];
+  }
+
+  getScoreAnalysisRegFieldValues(): any[] {
+    const fieldName = this.scoreAnalysisFilterForm.get('field_name')?.value;
+    if (!fieldName) return [];
+    return this.registrationFields.find(f => f.name === fieldName)?.values.filter((v: any) => v !== null && v !== '') || [];
+  }
+
+  onScoreDistributionRegFieldChange() {
+    this.scoreDistributionFilterForm.patchValue({ field_value: '' });
+  }
+
+  onScoreAnalysisRegFieldChange() {
+    this.scoreAnalysisFilterForm.patchValue({ field_value: '' });
   }
 
   applyTranscriptFilter() {
@@ -684,7 +713,7 @@ export class DashboardComponent implements OnInit {
     if (this.scoreAnalysisFilterForm.invalid)
       return this.scoreAnalysisFilterForm.markAllAsTouched();
 
-    const { center_id, section_id, exam_group_id } = this.scoreAnalysisFilterForm.value;
+    const { center_id, section_id, exam_group_id, field_name, field_value } = this.scoreAnalysisFilterForm.value;
     this.scoreAnalysisFilterSubjectName = section_id ? (this.sections.find( item => item.id == section_id))?.name || 'ALL' : 'ALL'
 
     const params: ScoreAnalysisParams = {};
@@ -699,6 +728,11 @@ export class DashboardComponent implements OnInit {
 
     if (exam_group_id) {
       params.exam_group_id = exam_group_id;
+    }
+
+    if (field_name && field_value) {
+      params.field_name = field_name;
+      params.field_value = field_value;
     }
 
     this.isLoadingAnalysis = true;
@@ -717,7 +751,7 @@ export class DashboardComponent implements OnInit {
   applyDistributionFilter() {
     if (this.scoreDistributionFilterForm.invalid) return this.scoreDistributionFilterForm.markAllAsTouched();
 
-    const { center_id, section_id, exam_group_id } = this.scoreDistributionFilterForm.value;
+    const { center_id, section_id, exam_group_id, field_name, field_value } = this.scoreDistributionFilterForm.value;
     this.scoreDistributionFilterSubjectName = section_id ? (this.sections.find( item => item.id == section_id))?.name || 'ALL' : 'ALL'
     
     const params: ScoreDistributionParams = {};
@@ -732,6 +766,11 @@ export class DashboardComponent implements OnInit {
 
     if (exam_group_id) {
       params.exam_group_id = exam_group_id;
+    }
+
+    if (field_name && field_value) {
+      params.field_name = field_name;
+      params.field_value = field_value;
     }
 
     this.dataService

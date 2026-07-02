@@ -520,16 +520,34 @@
                       </option>
                     </select>
                   </div>
-                  <div class="mb-2">
-                    <label for="examGroup" class="small">Exam Group</label>
-                    <select formControlName="exam_group_id" class="form-control control-input">
-                      <option value="">-- Select group --</option>
-                      <option *ngFor="let item of examGroups" [value]="item.id">
-                        {{ item.name }}
-                      </option>
-                    </select>
-                  </div>
-                </form>
+                    <div class="mb-2">
+                      <label for="examGroup" class="small">Exam Group</label>
+                      <select formControlName="exam_group_id" class="form-control control-input">
+                        <option value="">-- Select group --</option>
+                        <option *ngFor="let item of examGroups" [value]="item.id">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-2" *ngIf="registrationFields.length > 0">
+                      <label for="regField" class="small">Registration Field</label>
+                      <select formControlName="field_name" class="form-control control-input" (change)="onScoreAnalysisRegFieldChange()">
+                        <option value="">-- Select field --</option>
+                        <option *ngFor="let item of registrationFields" [value]="item.name">
+                          {{ item.name }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="mb-2" *ngIf="scoreAnalysisFilterForm.get('field_name')?.value">
+                      <label for="regFieldValue" class="small">Field Value</label>
+                      <select formControlName="field_value" class="form-control control-input">
+                        <option value="">-- Select value --</option>
+                        <option *ngFor="let value of getScoreAnalysisRegFieldValues()" [value]="value">
+                          {{ value }}
+                        </option>
+                      </select>
+                    </div>
+                  </form>
 
                 <div class="dropdown-divider"></div>
                 <div class="px-3 px-3 d-flex gap-1">
@@ -739,6 +757,24 @@
                     <option value="">-- Select group --</option>
                     <option *ngFor="let item of examGroups" [value]="item.id">
                       {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-2" *ngIf="registrationFields.length > 0">
+                  <label for="regFieldDist" class="small">Registration Field</label>
+                  <select formControlName="field_name" class="form-control control-input" (change)="onScoreDistributionRegFieldChange()">
+                    <option value="">-- Select field --</option>
+                    <option *ngFor="let item of registrationFields" [value]="item.name">
+                      {{ item.name }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-2" *ngIf="scoreDistributionFilterForm.get('field_name')?.value">
+                  <label for="regFieldValueDist" class="small">Field Value</label>
+                  <select formControlName="field_value" class="form-control control-input">
+                    <option value="">-- Select value --</option>
+                    <option *ngFor="let value of getScoreDistributionRegFieldValues()" [value]="value">
+                      {{ value }}
                     </option>
                   </select>
                 </div>

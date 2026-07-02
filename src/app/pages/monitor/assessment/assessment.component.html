@@ -1220,16 +1220,81 @@
                   <span class="rounded p-1 border">
                     <i class="pi pi-th-large"></i>
                   </span> 
-                  &nbsp;{{ centers?.total }} Centers
+                  &nbsp;{{ newCentersList?.total || 0 }} Centers
                 </h6>
                 <div class="d-flex gap-2">
-                    <input type="text" placeholder="Center ID" class="form-control" [(ngModel)]="centersFilterParams.center_id">
-                    <button (click)="fetchCenters()" class="btn btn-primary btn">Search</button>
+                    <div class="dropdown" ngbDropdown #centersFilterDrop="ngbDropdown">
+                        <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                            <i class="pi pi pi-ellipsis-v align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                        </a>
+                        <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm dropdown-menu-end">
+                            <div class="px-3 py-2 small text-black fw-bold">Filter Centers</div>
+                            <div class="dropdown-divider"></div>
+                            <form class="px-3 py-1">
+                                <div class="mb-2">
+                                    <label class="small">Filter By</label>
+                                    <select class="form-select w-100" name="searchType" [(ngModel)]="newCentersSearchType">
+                                        <option value="NONE">None</option>
+                                        <option value="NAME">Name</option>
+                                        <option value="CENTER_ID">Center ID</option>
+                                        <option value="STATE">State</option>
+                                        <option value="BATCH">Batch ID</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2" *ngIf="newCentersSearchType === 'NAME' || newCentersSearchType === 'CENTER_ID'">
+                                    <label class="small">Search Text</label>
+                                    <input type="text" class="form-control w-100" name="searchText" [(ngModel)]="newCentersSearchText" placeholder="Enter text..." (keyup.enter)="applyNewCentersFilters(); centersFilterDrop.close()">
+                                </div>
+                                <div class="mb-2" *ngIf="newCentersSearchType === 'STATE'">
+                                    <label class="small">State</label>
+                                    <input type="text" class="form-control w-100" name="searchState" [(ngModel)]="newCentersSearchState" placeholder="Enter state..." (keyup.enter)="applyNewCentersFilters(); centersFilterDrop.close()">
+                                </div>
+                                <div class="mb-2" *ngIf="newCentersSearchType === 'BATCH'">
+                                    <label class="small">Batch ID</label>
+                                    <input type="text" class="form-control w-100" name="searchBatch" [(ngModel)]="newCentersSearchBatch" placeholder="Enter batch ID..." (keyup.enter)="applyNewCentersFilters(); centersFilterDrop.close()">
+                                </div>
+
+                                
+                                <div class="mb-2">
+                                    <label class="small">Online Status</label>
+                                    <select class="form-select w-100" name="filterOnline" [(ngModel)]="newCentersFilterOnline">
+                                        <option value="">All</option>
+                                        <option value="true">Online</option>
+                                        <option value="false">Offline</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-2">
+                                    <label class="small">Exam Downloaded</label>
+                                    <select class="form-select w-100" name="filterDownloaded" [(ngModel)]="newCentersFilterDownloaded">
+                                        <option value="">All</option>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-2">
+                                    <label class="small">Exam Uploaded</label>
+                                    <select class="form-select w-100" name="filterUploaded" [(ngModel)]="newCentersFilterUploaded">
+                                        <option value="">All</option>
+                                        <option value="true">Yes</option>
+                                        <option value="false">No</option>
+                                    </select>
+                                </div>
+                            </form>
+                            <div class="dropdown-divider"></div>
+                            <div class="px-3 pb-2 d-flex gap-1">
+                                <button type="button" (click)="clearNewCentersFilters(); centersFilterDrop.close()" class="btn btn-secondary w-100">Clear</button>
+                                <button type="button" (click)="applyNewCentersFilters(); centersFilterDrop.close()" class="btn btn-primary w-100">Apply</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div *ngIf="fetchingCenters" class="d-flex align-items-center justify-content-center" style="height: 30vh">
+        <div *ngIf="fetchingNewCenters" class="d-flex align-items-center justify-content-center" style="height: 30vh">
           <div class="d-flex align-items-center gap-2">
             <div class="spinner-border text-info fs-18" role="status">
               <span class="visually-hidden">Loading...</span>
@@ -1237,57 +1302,152 @@
           </div>
         </div>
 
-        <div *ngIf="!fetchingCenters && centers" class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+        <div *ngIf="!fetchingNewCenters && newCentersList" class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="white-space: nowrap;">
                 <thead class="table-light">
-                    <tr>
+                    <tr class="small text-muted">
                         <th>S/N</th>
-                        <th>Center name <i class="bi bi-arrow-down-up"></i></th>
-                        <th>Center ID</th>
-                        <th>Participants</th> 
-                        <th>Started</th>
-                        <th>Ended</th>
-                        <th>Not started</th>
-                        <th>Downloaded</th>
-                        <th>Uploaded</th>
-                        <th>Actions</th>
+                        <th>INFORMATION</th>
+                        <th>PARTICIPANTS</th> 
+                        <th>BATCHES</th>
+                        <th>EVENTS</th>
+                        <th>ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <ng-container *ngFor="let item of centers.content; let i = index">
+                    <ng-container *ngFor="let item of newCentersList.data; let i = index">
                       <tr>
                           <td>{{ i + 1 }}</td>
-                          <td class="max-width: 200px">{{ item.name }}</td>
-                          <td>{{ item.center_id }}</td>
-                          <td>{{ item.total_participants }}</td>
-                          <td>{{ item.total_started }}</td>
-                          <td>{{ item.total_ended }}</td>
-                          <td>{{ item.total_not_started }}</td>
-                          <td>{{ item.downloaded_time | date: 'medium' }}</td>
-                          <td>{{ item.upload_date_time | date: 'medium' }}</td>
+                          <td>
+                              <div style="min-width: 250px;">
+                                  <div class="text-black mb-1 fw-bold text-truncate" style="max-width: 280px;" [title]="item.name">{{ item.name | titlecase }}</div>
+                                  <div style="font-size: 13px;">{{ item.center_id }} <span class="text-muted" *ngIf="item.state">| {{ item.state }}</span></div>
+                                  
+                                  <div class="d-flex align-items-center flex-wrap gap-1 mt-2">
+                                      <div class="rounded border d-flex align-items-center" style="padding: 2px 6px">
+                                          <div class="fw-bold" [ngClass]="item.online ? 'text-success' : 'text-danger'" style="font-size: 11px">
+                                              <i class="pi" [ngClass]="item.online ? 'pi-wifi' : 'pi-wifi text-danger'" style="font-size: 10px;"></i>
+                                              {{ item.online ? 'Online' : 'Offline' }}
+                                          </div>
+                                      </div>
+                                      
+                                      <div class="rounded border" [ngClass]="item.exam_downloaded ? 'bg-soft-success border-success' : 'bg-soft-danger border-danger'" style="padding: 2px 6px">
+                                          <div class="fw-bold" [ngClass]="item.exam_downloaded ? 'text-success' : 'text-danger'" style="font-size: 11px">
+                                              <i class="pi" [ngClass]="item.exam_downloaded ? 'pi-download' : 'pi-times-circle'" style="font-size: 10px;"></i>
+                                              Exam {{ item.exam_downloaded ? 'Downloaded' : 'Not Downloaded' }}
+                                          </div>
+                                      </div>
+                                      
+                                      <div class="rounded border" [ngClass]="item.exam_uploaded ? 'bg-soft-success border-success' : 'bg-soft-danger border-danger'" style="padding: 2px 6px">
+                                          <div class="fw-bold" [ngClass]="item.exam_uploaded ? 'text-success' : 'text-danger'" style="font-size: 11px">
+                                              <i class="pi" [ngClass]="item.exam_uploaded ? 'pi-upload' : 'pi-times-circle'" style="font-size: 10px;"></i>
+                                              Exam {{ item.exam_uploaded ? 'Uploaded' : 'Not Uploaded' }}
+                                          </div>
+                                      </div>
+                                      
+                                      <div class="rounded border" [ngClass]="item.passport_downloaded ? 'bg-soft-success border-success' : 'bg-soft-warning border-warning'" style="padding: 2px 6px">
+                                          <div class="fw-bold" [ngClass]="item.passport_downloaded ? 'text-success' : 'text-warning'" style="font-size: 11px">
+                                              <i class="pi" [ngClass]="item.passport_downloaded ? 'pi-images' : 'pi-images'" style="font-size: 10px;"></i>
+                                              Passports {{ item.passport_downloaded ? 'Downloaded' : 'Not Downloaded' }}
+                                          </div>
+                                      </div>
+                                  </div>
+                              </div>
+                          </td>
+                          <td>
+                              <div class="d-flex flex-column gap-1" style="min-width: 140px; font-size: 13px;">
+                                  <div class="d-flex justify-content-between align-items-center p-1 rounded px-2">
+                                      <span class="text-muted">Total:</span> <span class="fw-bold">{{ item.total_participants }}</span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center bg-soft-warning p-1 rounded px-2">
+                                      <span class="text-warning">Started:</span> <span class="fw-bold text-warning">{{ item.total_participants_started }}</span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center bg-soft-success p-1 rounded px-2">
+                                      <span class="text-success">Ended:</span> <span class="fw-bold text-success">{{ item.total_participants_ended }}</span>
+                                  </div>
+                              </div>
+                          </td>
+                          <td>
+                              <div class="d-flex flex-column gap-1" style="min-width: 140px; font-size: 13px;">
+                                  <div class="d-flex justify-content-between align-items-center p-1 rounded px-2">
+                                      <span class="text-muted">Total:</span> <span class="fw-bold">{{ item.total_batches }}</span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center bg-soft-warning p-1 rounded px-2">
+                                      <span class="text-warning">Started:</span> <span class="fw-bold text-warning">{{ item.total_batches_started }}</span>
+                                  </div>
+                                  <div class="d-flex justify-content-between align-items-center bg-soft-success p-1 rounded px-2">
+                                      <span class="text-success">Completed:</span> <span class="fw-bold text-success">{{ item.total_batches_completed }}</span>
+                                  </div>
+                                  <div *ngIf="item.batch_info?.length > 0" class="mt-1">
+                                      <span class="badge bg-primary cursor-pointer w-100 py-1"
+                                            triggers="mouseenter:mouseleave"
+                                            [ngbPopover]="batchPopOver"
+                                            popoverTitle="Batch Details">View {{ item.batch_info.length }} Batches</span>
+                                  </div>
+                                  <ng-template #batchPopOver>
+                                      <div class="p-1" style="font-size: 12px; min-width: 200px;">
+                                          <div *ngFor="let b of item.batch_info" class="border-bottom py-2">
+                                              <div class="fw-bold">{{ b.name }}</div>
+                                              <div class="d-flex justify-content-between text-muted mt-1">
+                                                  <span>Starts: {{ (b.start_time | date:'shortTime') || 'N/A' }}</span>
+                                                  <span *ngIf="b.started_time" class="text-success"> ({{ b.started_time | date:'shortTime' }})</span>
+                                              </div>
+                                              <div class="d-flex justify-content-between text-muted">
+                                                  <span>Ends: {{ (b.end_time | date:'shortTime') || 'N/A' }}</span>
+                                                  <span *ngIf="b.ended_time" class="text-success"> ({{ b.ended_time | date:'shortTime' }})</span>
+                                              </div>
+                                              <div class="mt-1">
+                                                  <span class="badge" [ngClass]="b.uploaded ? 'bg-success' : 'bg-warning'">{{ b.uploaded ? 'Uploaded' : 'Pending Upload' }}</span>
+                                              </div>
+                                          </div>
+                                      </div>
+                                  </ng-template>
+                              </div>
+                          </td>
+                          <td>
+                              <div class="d-flex flex-column gap-2" style="font-size: 13px;">
+                                  <div class="d-flex align-items-center gap-2">
+                                      <span class="p-1 rounded border">
+                                          <i class="pi pi-desktop text-primary" style="font-size: 12px;"></i>
+                                      </span>
+                                      <span>Started: <strong class="ms-1">{{ item.total_times_started }}</strong></span>
+                                  </div>
+                                  <div class="d-flex align-items-center gap-2">
+                                      <span class="p-1 rounded border">
+                                          <i class="pi pi-window-maximize text-info" style="font-size: 12px;"></i>
+                                      </span>
+                                      <span>Launched: <strong class="ms-1">{{ item.total_times_launched }}</strong></span>
+                                  </div>
+                              </div>
+                          </td>
                           <td>
                             <div class="dropdown" ngbDropdown container="body">
                                 <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
-                                  <i class="pi pi pi-ellipsis-h align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                                  <i class="pi pi-ellipsis-v align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
                                   <li>
-                                    <a [routerLink]="'center/' + item.id" class="dropdown-item"> View </a>
+                                    <a [routerLink]="'center/' + item.id" class="dropdown-item"> View Monitor Dashboard </a>
                                   </li>
                                 </ul>
                               </div>
                           </td>
                       </tr>
                     </ng-container>
-                </tbody>
-            </table>
-        </div>
+                    <tr *ngIf="newCentersList.data.length === 0">
+                        <td colspan="6" class="text-center py-4 text-muted">No centers found matching criteria.</td>
+                    </tr>
+                  </tbody>
+              </table>
+          </div>
 
-        <div>
-          <p-paginator [ngClass]="{ 'd-none': !centers }"
-          [first]="0" [totalRecords]="centers?.total ?? 0" [rowsPerPageOptions]="[50, 100, 200, 500]"
-          [rows]="50" [pageLinkSize]="10" [showCurrentPageReport]="true" (onPageChange)="onCenterPageChange($event)" currentPageReportTemplate="{first} to {last} of {totalRecords}" ></p-paginator>
-      </div>
+          <div class="pt-2">
+            <p-paginator [ngClass]="{ 'd-none': !newCentersList }" 
+                (onPageChange)="onNewCentersPageChange($event)"
+                [first]="(newCentersPage - 1) * newCentersSize" [totalRecords]="newCentersList?.total || 0" 
+                [rowsPerPageOptions]="[10, 20, 50, 100]" [rows]="newCentersSize"
+                [showCurrentPageReport]="true" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            </p-paginator></div>
     </div> 
 </div>
 

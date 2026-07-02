@@ -40,12 +40,15 @@ export class AssessmentResultSummary {
   }>
   exam_group_id?: string
   exam_group_name?: string;
+  registration_fields?: RegistrationField[];
 }
 
 export class ScoreDistributionParams {
   center_id?: string;
   section_id?: string;
   exam_group_id?: string;
+  field_name?: string;
+  field_value?: string;
 }
 
 export class ScoreDistributionScaledScore {
@@ -56,6 +59,8 @@ export class ScoreAnalysisParams {
   center_id?: string;
   section_id?: string;
   exam_group_id?: string;
+  field_name?: string;
+  field_value?: string;
 }
 
 export class ScoreAnalysisScaledScore {
@@ -366,3 +371,12 @@ export class ExamGroupsPage {
   size?: number;
   page?: number;
 }
+
+export interface RegistrationField {
+  id: string;
+  name: string;
+  type: string;
+  values: any[];
+  placement: number;
+}
+
