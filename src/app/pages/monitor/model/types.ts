@@ -652,3 +652,42 @@ export interface NewAssessmentCentersPage {
   size: number;
 }
 
+export interface CenterExamOverviewBatch {
+  id: string;
+  batch_name: string;
+  start_date: string;
+  end_date: string;
+  completed: boolean;
+  current_batch_status: string;
+  status_time: string;
+}
+
+export interface CenterExamOverviewDownloadHistory {
+  download_type: string;
+  downloaded_at: string;
+  downloaded_by: string;
+}
+
+export interface CenterExamOverviewStatusHistory {
+  launched: string[];
+  started: string[];
+  uploaded: string[];
+}
+
+export interface CenterExamOverviewDTO {
+  center_name: string;
+  delivery_method: string;
+  login_field: string;
+  exam_start_time: string;
+  exam_end_time: string;
+  batches: CenterExamOverviewBatch[];
+  total_candidates: number;
+  exam_downloaded: boolean;
+  passport_downloaded: boolean;
+  ended: boolean;
+  ended_time: string;
+  current_status: string;
+  status_time: string;
+  status_history: CenterExamOverviewStatusHistory;
+  download_history: CenterExamOverviewDownloadHistory[];
+}

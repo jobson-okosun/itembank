@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AssessmentsService } from '../../assessment/service/assessments.service';
 import { ActivatedRoute } from '@angular/router';
 import { DataService } from 'src/app/services/data.service';
@@ -35,6 +35,8 @@ import {
   AssessmentBatchDTO,
 } from 'src/app/pages/monitor/model/types';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CandidateBehaviourProfileComponent } from './components/candidate-behaviour-profile/candidate-behaviour-profile.component';
+import { ItemPsychometricsComponent } from './components/item-psychometrics/item-psychometrics.component';
 
 export enum ProctorActionType {
   WARN = 'WARN',
@@ -99,6 +101,12 @@ export class DashboardComponent implements OnInit {
   isLoadingParticipants: boolean = false;
   participantList: ParticipantsScoreList | null = null;
   participants: any[] = [];
+  participantsError: string = '';
+
+  @ViewChild('candidateProfile') candidateProfileComponent!: CandidateBehaviourProfileComponent;
+  @ViewChild('itemPsychometrics') itemPsychometricsComponent!: ItemPsychometricsComponent;
+
+  assessmentFilterBucket: AssessmentBatchDTO[] = []
   examGroups: ExamGroupDto[] = []
   participantFilterParams: ParticipantsParams = {
     page: 0,
@@ -1460,5 +1468,17 @@ export class DashboardComponent implements OnInit {
           this.evidenceDetails = undefined;
         }
       });
+  }
+
+  viewCandidateProfile(participantId: string) {
+    if (this.candidateProfileComponent) {
+      this.candidateProfileComponent.openProfile(participantId);
+    }
+  }
+
+  viewItemPsychometrics() {
+    if (this.itemPsychometricsComponent) {
+      this.itemPsychometricsComponent.openModal();
+    }
   }
 }

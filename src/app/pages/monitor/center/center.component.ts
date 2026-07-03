@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MonitorService } from '../services/monitor.service';
 import { ActivatedRoute } from '@angular/router';
-import { CenterAppEventDTO, CenterAppEventParams, CenterAppEventType, ParticipantSummaryDTO, PaginatedCenterParticipants, CenterParticipantDTO, AssessmentBatchDTO } from '../model/types';
+import { CenterAppEventDTO, CenterAppEventParams, CenterAppEventType, ParticipantSummaryDTO, PaginatedCenterParticipants, CenterParticipantDTO, AssessmentBatchDTO, CenterExamOverviewDTO } from '../model/types';
 import { of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -12,7 +12,6 @@ import { catchError } from 'rxjs/operators';
 })
 export class CenterComponent implements OnInit {
   DoughnutChart: any;
-
 
   filteredNotifications: CenterAppEventDTO[] = [];
   pagedNotifications: CenterAppEventDTO[] = [];
@@ -26,6 +25,9 @@ export class CenterComponent implements OnInit {
   
   participantSummary: ParticipantSummaryDTO | null = null;
   fetchingSummary = false;
+
+  examOverview: CenterExamOverviewDTO | null = null;
+  fetchingOverview = false;
 
   participantList: PaginatedCenterParticipants | null = null;
   fetchingParticipants = false;
@@ -64,11 +66,14 @@ export class CenterComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.assessmentId = params.get('assessmentId') || '';
       this.centerId = params.get('centerId') || '';
+
       if (this.centerId && this.assessmentId) {
+        this.fetchCenterExamOverview();
         this.fetchParticipantSummary();
         this.fetchParticipants();
         this.fetchBatches();
       }
+
       this.fetchCenterEvents();
     });
   }
@@ -88,6 +93,20 @@ export class CenterComponent implements OnInit {
       if (res) {
         this.participantSummary = res;
         this.updateDoughnutChart(res);
+      }
+    });
+  }
+
+  fetchCenterExamOverview() {
+    this.fetchingOverview = true;
+    this.monitorService.fetchCenterExamOverview(this.assessmentId, this.centerId).pipe(
+      catchError(err => {
+        return of(null);
+      })
+    ).subscribe(res => {
+      this.fetchingOverview = false;
+      if (res) {
+        this.examOverview = res;
       }
     });
   }

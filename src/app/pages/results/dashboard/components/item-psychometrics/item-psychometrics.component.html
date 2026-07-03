@@ -1,0 +1,213 @@
+<!-- Button to trigger the modal from dashboard -->
+<button class="btn btn-outline-primary btn-sm" (click)="openModal()">
+    <i class="ri-bar-chart-2-line me-1"></i> View Item Psychometrics
+</button>
+
+<!-- Main Item Analysis Modal -->
+<ng-template #itemAnalysisModal let-modal>
+    <div class="modal-header bg-light border-bottom p-3">
+        <h5 class="modal-title fw-bold">Item Analysis & Psychometrics</h5>
+        <div class="d-flex align-items-center gap-3">
+            <div class="btn-group btn-group-sm" role="group">
+                <input type="radio" class="btn-check" name="viewToggle" id="perfView" autocomplete="off" 
+                       [checked]="currentView === 'performance'" (click)="currentView = 'performance'">
+                <label class="btn btn-outline-primary" for="perfView">Performance</label>
+              
+                <input type="radio" class="btn-check" name="viewToggle" id="behavView" autocomplete="off"
+                       [checked]="currentView === 'behavioral'" (click)="currentView = 'behavioral'">
+                <label class="btn btn-outline-primary" for="behavView">Behavioral</label>
+            </div>
+            
+            <div class="dropdown" ngbDropdown #itemFilterDrop="ngbDropdown">
+                <a class="text-muted arrow-none" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                    <i class="ri-more-2-fill align-middle me-3 fs-18 fw-bold text-dark" style="cursor: pointer" title="Filter Items"></i>
+                </a>
+                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                    <div class="px-3 py-2 small text-black">
+                        Filter Items
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="px-3 py-1">
+                        <div class="mb-2">
+                            <label class="small">Subject ID</label>
+                            <input type="text" class="form-control control-input" placeholder="Enter Subject ID..." [(ngModel)]="subjectId" (keyup.enter)="applyFilters(); itemFilterDrop.close()">
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Exam Group</label>
+                            <select [(ngModel)]="examGroupId" class="form-control control-input">
+                                <option value="">-- Select group --</option>
+                                <option *ngFor="let item of examGroups" [value]="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Section</label>
+                            <select [(ngModel)]="sectionId" class="form-control control-input">
+                                <option value="">-- Select section --</option>
+                                <option *ngFor="let item of sections" [value]="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="px-3 py-2 d-flex gap-1">
+                        <button type="button" (click)="applyFilters(); itemFilterDrop.close()" class="btn btn-primary w-100">Apply</button>
+                        <button type="button" (click)="clearFilters(); itemFilterDrop.close()" class="btn btn-secondary w-100">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+        </div>
+    </div>
+    <div class="modal-body p-0 bg-white">
+
+        <div *ngIf="isLoading" class="d-flex justify-content-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoading && itemsData" class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+                <thead class="table-light">
+                    <tr class="small">
+                        <th class="sticky-col first-col">S/N</th>
+                        <th class="sticky-col second-col">TOPIC & SUBTOPIC</th>
+                        <th>ITEM TYPE</th>
+                        <th>TOTAL RESP.</th>
+                        
+                        <!-- Performance Columns -->
+                        <ng-container *ngIf="currentView === 'performance'">
+                            <th>CORRECT</th>
+                            <th>INCORRECT</th>
+                            <th>SKIPPED</th>
+                            <th>AVG SCORE</th>
+                            <th>LOWEST</th>
+                            <th>HIGHEST</th>
+                            <th>DIFFICULTY</th>
+                            <th>DISCRIMINATION</th>
+                        </ng-container>
+
+                        <!-- Behavioral Columns -->
+                        <ng-container *ngIf="currentView === 'behavioral'">
+                            <th>GUESSING RATE (<5s)</th>
+                            <th>FLAGGED RATE</th>
+                            <th>AVG ANS. CHANGES</th>
+                            <th>CALCULATOR USAGE</th>
+                        </ng-container>
+
+                        <!-- Common Timing/Pacing Columns -->
+                        <th>FASTEST TIME</th>
+                        <th>AVG TIME</th>
+                        <th>MEDIAN TIME</th>
+                        <th>P95 TIME</th>
+                        <th>AVG ATTEMPTS</th>
+                        <th>AVG VISITS</th>
+                        <th>REVISIT RATE</th>
+                        <th>ACTION</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of itemsData.data; let i = index">
+                        <td class="sticky-col first-col">{{ (page - 1) * size + i + 1 }}</td>
+                        <td class="sticky-col second-col">
+                            <div class="text-black fw-bold">{{ item.topic_name }}</div>
+                            <div class="small text-muted">{{ item.subtopic_name }}</div>
+                        </td>
+                        <td><span class="badge bg-light text-dark border">{{ item.item_type }}</span></td>
+                        <td>{{ item.total_responses }}</td>
+                        
+                        <!-- Performance Columns -->
+                        <ng-container *ngIf="currentView === 'performance'">
+                            <td class="text-success">{{ item.correct }}</td>
+                            <td class="text-danger">{{ item.incorrect }}</td>
+                            <td class="text-warning">{{ item.skipped }}</td>
+                            <td>{{ item.avg_score }} / {{ item.max_score }}</td>
+                            <td>{{ item.lowest_score }}</td>
+                            <td>{{ item.highest_score }}</td>
+                            <td [ngClass]="getDifficultyClass(item.difficulty_index)">{{ item.difficulty_index }}%</td>
+                            <td [ngClass]="getDiscriminationClass(item.discrimination_index)">{{ item.discrimination_index }}</td>
+                        </ng-container>
+
+                        <!-- Behavioral Columns -->
+                        <ng-container *ngIf="currentView === 'behavioral'">
+                            <td [class.text-danger]="item.pct_answered_under_5s! > 10">{{ item.pct_answered_under_5s || 0 | number:'1.1-1' }}%</td>
+                            <td>{{ item.pct_flagged || 0 | number:'1.1-1' }}%</td>
+                            <td>{{ item.avg_answer_changes || 0 | number:'1.1-2' }}</td>
+                            <td>{{ item.pct_calculator_used || 0 | number:'1.1-1' }}%</td>
+                        </ng-container>
+
+                        <!-- Common Timing/Pacing Columns -->
+                        <td>{{ ((currentView === 'behavioral' ? item.min_duration_ms : item.fastest_time_ms) || 0) / 1000 | number:'1.1-1' }}s</td>
+                        <td>{{ ((currentView === 'behavioral' ? item.avg_duration_ms : item.avg_time_ms) || 0) / 1000 | number:'1.1-1' }}s</td>
+                        <td>{{ ((currentView === 'behavioral' ? item.median_duration_ms : item.median_time_ms) || 0) / 1000 | number:'1.1-1' }}s</td>
+                        <td>{{ ((currentView === 'behavioral' ? item.p95_duration_ms : item.p95_time_ms) || 0) / 1000 | number:'1.1-1' }}s</td>
+                        <td>{{ item.avg_attempt_count | number:'1.1-1' }}</td>
+                        <td>{{ (currentView === 'behavioral' ? item.total_visits! / item.total_responses : item.avg_visit_count) || 0 | number:'1.1-1' }}</td>
+                        <td>{{ item.revisit_rate | percent:'1.1-1' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-light border" (click)="viewItemDetails(item, itemDetailsModal)">
+                                Details
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer p-1 border-top">
+        <p-paginator *ngIf="itemsData"
+                     class="w-100"
+                     [first]="(page - 1) * size" 
+                     [totalRecords]="itemsData.total" 
+                     [rowsPerPageOptions]="[10, 50, 100]"
+                     [rows]="size" 
+                     (onPageChange)="onPageChange($event)">
+        </p-paginator>
+    </div>
+</ng-template>
+
+<!-- Item Details / Response Distribution Modal -->
+<ng-template #itemDetailsModal let-modal>
+    <div class="modal-header bg-light border-bottom p-3">
+        <h5 class="modal-title fw-bold">Item Insights</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body p-4" *ngIf="selectedItem">
+        <div class="row g-4">
+            <div class="col-md-6">
+                <h6 class="fw-bold mb-3">Response Distribution</h6>
+                <apx-chart *ngIf="responseDistributionChart"
+                           [series]="responseDistributionChart.series" 
+                           [chart]="responseDistributionChart.chart"
+                           [xaxis]="responseDistributionChart.xaxis" 
+                           [colors]="responseDistributionChart.colors"
+                           [plotOptions]="responseDistributionChart.plotOptions"
+                           [dataLabels]="responseDistributionChart.dataLabels">
+                </apx-chart>
+            </div>
+            <div class="col-md-6">
+                <h6 class="fw-bold mb-3">Time & Behaviour Metrics</h6>
+                <ul class="list-group list-group-flush border rounded">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Fastest Time <span class="fw-bold">{{ (selectedItem.fastest_time_ms / 1000).toFixed(1) }}s</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Median Time <span class="fw-bold">{{ (selectedItem.median_time_ms / 1000).toFixed(1) }}s</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        P95 Time <span class="fw-bold">{{ (selectedItem.p95_time_ms / 1000).toFixed(1) }}s</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Avg Attempt Count <span class="fw-bold">{{ selectedItem.avg_attempt_count }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Revisit Rate <span class="fw-bold text-primary">{{ selectedItem.revisit_rate }}%</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</ng-template>

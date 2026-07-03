@@ -2,7 +2,7 @@ import { HttpClient, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable, of } from "rxjs";
 import { delay } from "rxjs/operators";
-import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO, ProctorActionTypeSummaryDTO, ProctorActionEventDTO, ProctorActionEventsPage, CenterAppEventsPage, CenterAppEventParams, ParticipantSummaryDTO, PaginatedCenterParticipants, NewAssessmentCentersPage } from "../model/types";
+import { AllParticipantPage, AllParticipantParams, AttemptedBucketParams, AttemptedBucketParticipantsPage, AttendanceParams, AttendanceParticipantsPage, BucketParticipantsPage, BvmParticipantParams, BvmParticipantsPage, DownloadedCentersPage, DurationBucketParams, EventParticipantParams, EventParticipantsPage, ExamStatusMonitorFromDb, MalpracticeCodeSummaryDTO, MalpracticeParticipantParams, MalpracticeParticipantsPage, MonitorExamDetailsDTO, PageParams, ParticipantBvmStatusDTO, ParticipantDurationBucketDTO, ParticipantEventSummaryDTO, ParticipantRescheduleStatusDTO, ParticipantStatusCountDTO, participantSummaryFilter, RescheduleParticipantParams, RescheduleParticipantsPage, RescheduleStatusParams, TechnicalIssueCategoryListPage, TechnicalIssueCategoryParams, TechnicalIssueCategorySummaryDTO, TechnicalIssueCentersPage, TechnicalReportCenterDTO, TechnicalReportCentersPage, TechnicalReportParams, InfractionTypeSummaryDTO, InfractionEventDTO, InfractionEventsPage, AssessmentBatchDTO, ProctorActionTypeSummaryDTO, ProctorActionEventDTO, ProctorActionEventsPage, CenterAppEventsPage, CenterAppEventParams, ParticipantSummaryDTO, PaginatedCenterParticipants, NewAssessmentCentersPage, CenterExamOverviewDTO } from "../model/types";
 import { environment } from "src/environments/environment";
 import { AssessmentCenterListPage, AssessmentCenterListParams } from "../../assessment/model/assessment-list";
 
@@ -27,6 +27,11 @@ export class MonitorService {
         const url = this.baseURL + `/exam_details/assessment/${ assessmentId }`;
 
         return this._http.get<MonitorExamDetailsDTO>(url, { withCredentials: true})
+    }
+
+    fetchCenterExamOverview(assessmentId: string, centerId: string): Observable<CenterExamOverviewDTO> {
+        const url = this.baseURL + `/center_exam_overview/assessment/${ assessmentId }/center/${ centerId }`;
+        return this._http.get<CenterExamOverviewDTO>(url, { withCredentials: true });
     }
 
     fetchExamStatus(assessmentId: string): Observable<ExamStatusMonitorFromDb> {

@@ -1,0 +1,284 @@
+<div *ngIf="isLoading" class="d-flex justify-content-center p-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+</div>
+
+<div *ngIf="!isLoading && cohortData" class="card mb-3 mt-4">
+    <div class="card-body">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div>
+                <h4 class="mb-1 modal-title">Behavioral Insights</h4>
+                <p class="text-muted small mb-0">Aggregated behavioural trends and psychological metrics across all candidates.</p>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-primary btn-sm" (click)="openHighRiskModal(highRiskModal)">
+                    <i class="ri-file-search-line me-1"></i> View High-Risk Candidate Report
+                </button>
+                <div class="dropdown" ngbDropdown #cohortFilterDrop="ngbDropdown">
+                    <a class="text-muted arrow-none" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                        <i class="ri-more-2-fill align-middle fs-18 fw-bold text-dark" style="cursor: pointer" title="Filter Cohort"></i>
+                    </a>
+                    <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm dropdown-menu-end">
+                        <div class="px-3 py-2 small text-black">
+                            Filter Behavioral Insights
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="px-3 py-1">
+                            <div class="mb-2">
+                                <label class="small">Exam Group</label>
+                                <select [(ngModel)]="examGroupId" class="form-control control-input">
+                                    <option value="">-- Select group --</option>
+                                    <option *ngFor="let item of examGroups" [value]="item.id">
+                                        {{ item.name }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="px-3 py-2 d-flex gap-1">
+                            <button type="button" (click)="applyCohortFilter(); cohortFilterDrop.close()" class="btn btn-primary w-100">Apply</button>
+                            <button type="button" (click)="clearCohortFilter(); cohortFilterDrop.close()" class="btn btn-secondary w-100">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- General Assessment Stats Row -->
+        <div class="row g-3 mb-3">
+            <div class="col-sm-6 col-md-3">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Total Candidates</p>
+                    <h5 class="mb-0 fw-semibold">{{ cohortData.total_candidates }}</h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Avg Exam Duration</p>
+                    <h5 class="mb-0 fw-semibold">{{ formatTime(cohortData.avg_exam_duration_ms) }}</h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Avg Idle Time</p>
+                    <h5 class="mb-0 fw-semibold">{{ cohortData.avg_idle_percentage }}%</h5>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Candidates w/ Flags</p>
+                    <h5 class="mb-0 fw-semibold text-danger">{{ cohortData.candidates_with_integrity_flags }}</h5>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="mb-2 fw-bold text-dark mt-4">Psychometric Averages</h6>
+        <!-- Row with modern uniform gutters -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Integrity</p>
+                    <h5 class="mb-0 fw-semibold text-success">{{ cohortData.avg_integrity_score }}</h5>
+                </div>
+            </div>
+            
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Confidence</p>
+                    <h5 class="mb-0 fw-semibold text-primary">{{ cohortData.avg_confidence_score }}</h5>
+                </div>
+            </div>
+            
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Hesitation</p>
+                    <h5 class="mb-0 fw-semibold text-warning">{{ cohortData.avg_hesitation_score }}</h5>
+                </div>
+            </div>
+            
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Carefulness</p>
+                    <h5 class="mb-0 fw-semibold text-info">{{ cohortData.avg_carefulness_score || 0 }}</h5>
+                </div>
+            </div>
+            
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Rushing</p>
+                    <h5 class="mb-0 fw-semibold text-danger">{{ cohortData.avg_rushing_score }}</h5>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Guessing Prob.</p>
+                    <h5 class="mb-0 fw-semibold text-secondary">{{ cohortData.avg_guessing_probability }}%</h5>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="mb-2 fw-bold text-dark mt-4">System & Proctoring Averages</h6>
+        <!-- Proctoring Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4 col-md-4">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Network Offlines</p>
+                    <h5 class="mb-0 fw-semibold">{{ cohortData.avg_network_offline_count }} <span class="small text-muted fw-normal">avg times</span></h5>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Window Blurs</p>
+                    <h5 class="mb-0 fw-semibold">{{ cohortData.avg_window_blur_count }} <span class="small text-muted fw-normal">avg times</span></h5>
+                </div>
+            </div>
+            <div class="col-sm-4 col-md-4">
+                <div class="border p-2 rounded h-100">
+                    <p class="text-muted text-truncate mb-1 small fw-bold">Exam Pauses</p>
+                    <h5 class="mb-0 fw-semibold">{{ cohortData.avg_pause_count }} <span class="small text-muted fw-normal">avg times</span></h5>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="border p-3 rounded h-100">
+                    <p class="text-muted text-truncate mb-3 small fw-bold">Exam Strategy Breakdown</p>
+                    <apx-chart *ngIf="examStrategyChart"
+                               [series]="examStrategyChart.series" 
+                               [chart]="examStrategyChart.chart"
+                               [labels]="examStrategyChart.labels" 
+                               [colors]="examStrategyChart.colors"
+                               [legend]="examStrategyChart.legend"
+                               [dataLabels]="examStrategyChart.dataLabels">
+                    </apx-chart>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="border p-3 rounded h-100">
+                    <p class="text-muted text-truncate mb-3 small fw-bold">Risk Score Distribution</p>
+                    <apx-chart *ngIf="integrityDistributionChart"
+                               [series]="integrityDistributionChart.series" 
+                               [chart]="integrityDistributionChart.chart"
+                               [xaxis]="integrityDistributionChart.xaxis" 
+                               [colors]="integrityDistributionChart.colors"
+                               [plotOptions]="integrityDistributionChart.plotOptions"
+                               [dataLabels]="integrityDistributionChart.dataLabels">
+                    </apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- High Risk Candidates Modal -->
+<ng-template #highRiskModal let-modal>
+    <div class="modal-header border-bottom p-3">
+        <h5 class="modal-title fw-bold">High-Risk Candidates Report</h5>
+        <div class="d-flex align-items-center">
+            <div class="dropdown" ngbDropdown #riskFilterDrop="ngbDropdown">
+                <a class="text-muted arrow-none" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                    <i class="ri-more-2-fill align-middle me-3 fs-18 fw-bold text-dark" style="cursor: pointer" title="Filter Candidates"></i>
+                </a>
+                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                    <div class="px-3 py-2 small text-black">
+                        Filter Candidates
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="px-3 py-1">
+                        <div class="mb-2">
+                            <label class="small">Center</label>
+                            <select [(ngModel)]="filterCenterId" class="form-control control-input">
+                                <option value="">--Select center --</option>
+                                <option *ngFor="let item of centers" [value]="item.id">
+                                    {{ item.center_id || item.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Exam Group</label>
+                            <select [(ngModel)]="examGroupId" class="form-control control-input">
+                                <option value="">-- Select group --</option>
+                                <option *ngFor="let item of examGroups" [value]="item.id">
+                                    {{ item.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="small">Min Integrity Score</label>
+                            <input type="number" class="form-control control-input" placeholder="Enter Score..." [(ngModel)]="filterMinIntegrityScore" (keyup.enter)="applyRiskFilters(); riskFilterDrop.close()">
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="px-3 py-2 d-flex gap-1">
+                        <button type="button" (click)="applyRiskFilters(); riskFilterDrop.close()" class="btn btn-primary w-100">Apply</button>
+                        <button type="button" (click)="clearRiskFilters(); riskFilterDrop.close()" class="btn btn-secondary w-100">Clear</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+        </div>
+    </div>
+    <div class="modal-body p-0">
+
+        <div *ngIf="isLoadingRiskTable" class="d-flex justify-content-center p-5">
+            <div class="spinner-border text-danger" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+
+        <div *ngIf="!isLoadingRiskTable && highRiskData" class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+                <thead class="table-light">
+                    <tr class="small">
+                        <th class="sticky-col first-col">S/N</th>
+                        <th class="sticky-col second-col">CANDIDATE</th>
+                        <th>INTEGRITY SCORE</th>
+                        <th>WINDOW BLURS</th>
+                        <th>COPY/PASTE</th>
+                        <th>SCREENSHOTS</th>
+                        <th>PRINTS</th>
+                        <th>FULLSCREEN EXITS</th>
+                        <th>PHONE DETECTED</th>
+                        <th>BOOK DETECTED</th>
+                        <th>FACE LOSS</th>
+                        <th>MULTIPLE FACES</th>
+                        <th>SESSIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of highRiskData.data; let i = index">
+                        <td class="sticky-col first-col">{{ (riskTablePage - 1) * riskTableSize + i + 1 }}</td>
+                        <td class="sticky-col second-col">
+                            <div class="text-black fw-bold">{{ item.candidate_name }}</div>
+                            <div class="small text-muted">{{ item.login_field_value }}</div>
+                        </td>
+                        <td>{{ item.integrity_score }}</td>
+                        <td>{{ item.window_blur_count }}</td>
+                        <td>C: {{ item.copy_attempts }} | P: {{ item.paste_attempts }}</td>
+                        <td>{{ item.screenshot_attempts }}</td>
+                        <td>{{ item.print_attempts }}</td>
+                        <td>{{ item.fullscreen_exit_count }}</td>
+                        <td>{{ item.phone_detected_count }}</td>
+                        <td>{{ item.book_detected_count }}</td>
+                        <td>{{ item.face_loss_count }}</td>
+                        <td>{{ item.multiple_faces_count }}</td>
+                        <td>{{ item.session_count }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="modal-footer p-1 border-top">
+        <p-paginator *ngIf="highRiskData"
+                     class="w-100"
+                     [first]="(riskTablePage - 1) * riskTableSize" 
+                     [totalRecords]="highRiskData.total" 
+                     [rowsPerPageOptions]="[10, 50, 100]"
+                     [rows]="riskTableSize" 
+                     (onPageChange)="onRiskTablePageChange($event)">
+        </p-paginator>
+    </div>
+</ng-template>

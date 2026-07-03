@@ -47,6 +47,9 @@ import { LabelImageDragAndDropComponent } from './transcript/question-types/labe
 import { LabelImageWithTextComponent } from './transcript/question-types/label-image-with-text/label-image-with-text.component';
 import { LabelImageWithDropdownComponent } from './transcript/question-types/label-image-with-dropdown/label-image-with-dropdown.component';
 import { ItemsModule } from "../items/items.module";
+import { CohortBehaviourComponent } from './dashboard/components/cohort-behaviour/cohort-behaviour.component';
+import { ItemPsychometricsComponent } from './dashboard/components/item-psychometrics/item-psychometrics.component';
+import { CandidateBehaviourProfileComponent } from './dashboard/components/candidate-behaviour-profile/candidate-behaviour-profile.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +76,10 @@ import { ItemsModule } from "../items/items.module";
     ChoiceMatrixComponent,
     LabelImageDragAndDropComponent,
     LabelImageWithTextComponent,
-    LabelImageWithDropdownComponent
+    LabelImageWithDropdownComponent,
+    CohortBehaviourComponent,
+    ItemPsychometricsComponent,
+    CandidateBehaviourProfileComponent
   ],
   imports: [
     CommonModule,

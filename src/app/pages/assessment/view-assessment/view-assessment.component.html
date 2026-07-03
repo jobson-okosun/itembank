@@ -877,9 +877,9 @@
                 class="form-select form-select-md" [value]="assessmentSettings.sectionNavigation">
 
                 <option selected disabled>Select one</option>
-                <option value="FREE_NAVIGATION">Free Navigation</option>
-                <option value="CONTINUOUS_NAVIGATION">Continuous</option>
-                <option value="SEQUENTIAL_NAVIGATION">Sequential</option>
+                <option value="FREE_NAVIGATION">Any</option>
+                <option value="CONTINUOUS_NAVIGATION">Merge</option>
+                <option value="SEQUENTIAL_NAVIGATION">Gated</option>
 
                 <!-- <option selected disabled>Select one</option>
                 <option value="COMPOSITE_SECTIONS">Composite Sections</option>
@@ -895,9 +895,9 @@
               </select>
 
               <div [ngSwitch]="assessmentSettings.sectionNavigation">
-                  <small *ngSwitchCase="'FREE_NAVIGATION'"><em>Candidate can select anyone at any time</em></small>
-                  <small *ngSwitchCase="'CONTINUOUS_NAVIGATION'"><em>Merged</em></small>
-                  <small *ngSwitchCase="'SEQUENTIAL_NAVIGATION'"><em>End one section to start the other</em></small>
+                  <small *ngSwitchCase="'FREE_NAVIGATION'"><em>Candidates can freely skip and jump between all sections.</em></small>
+                  <small *ngSwitchCase="'CONTINUOUS_NAVIGATION'"><em>Consolidate all sections into a single, continuous exam.</em></small>
+                  <small *ngSwitchCase="'SEQUENTIAL_NAVIGATION'"><em>Candidates must submit the current section before unlocking the next.</em></small>
                 </div>
 
             </div>

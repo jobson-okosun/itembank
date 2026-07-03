@@ -1,0 +1,495 @@
+<ng-template #candidateProfileModal let-modal>
+    <div class="modal-header bg-light border-bottom p-3 d-flex align-items-center">
+        <div>
+            <h5 class="modal-title fw-bold mb-1">Candidate Behaviour Profile</h5>
+        </div>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    
+    <div class="modal-body p-0 bg-white">
+        <!-- Tabs Header -->
+        <ul class="nav nav-tabs px-4 pt-3 bg-light border-bottom" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link fw-medium cursor-pointer" [class.active]="activeTab === 'overview'" (click)="setActiveTab('overview')">
+                    <i class="ri-radar-line me-1"></i> Psychometrics & Efficiency
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-medium cursor-pointer" [class.active]="activeTab === 'navigation'" (click)="setActiveTab('navigation')">
+                    <i class="ri-route-line me-1"></i> Navigation & Workflow
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-medium cursor-pointer" [class.active]="activeTab === 'proctoring'" (click)="setActiveTab('proctoring')">
+                    <i class="ri-shield-user-line me-1"></i> Proctoring & System Health
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-medium cursor-pointer" [class.active]="activeTab === 'timeline'" (click)="setActiveTab('timeline')">
+                    <i class="ri-time-line me-1"></i> Event Timeline
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link fw-medium cursor-pointer" [class.active]="activeTab === 'counts'" (click)="setActiveTab('counts')">
+                    <i class="ri-table-line me-1"></i> More insights
+                </a>
+            </li>
+        </ul>
+
+        <div class="p-4" style="min-height: 400px;">
+            <div *ngIf="isLoading" class="d-flex justify-content-center p-5">
+                <div class="spinner-border " role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+
+            <div *ngIf="!isLoading && profileData">
+                
+                <!-- TAB 1: OVERVIEW -->
+                <div *ngIf="activeTab === 'overview'" class="row g-4">
+                    <div class="col-md-5">
+                        <div class="card h-100 shadow-none border">
+                            <div class="card-header bg-white border-bottom-0 pb-0">
+                                <h6 class="fw-bold mb-0">Psychological Dimensions</h6>
+                            </div>
+                            <div class="card-body">
+                                <apx-chart *ngIf="radarChartOptions"
+                                           [series]="radarChartOptions.series" 
+                                           [chart]="radarChartOptions.chart"
+                                           [labels]="radarChartOptions.labels" 
+                                           [stroke]="radarChartOptions.stroke"
+                                           [fill]="radarChartOptions.fill"
+                                           [markers]="radarChartOptions.markers"
+                                           [yaxis]="radarChartOptions.yaxis"
+                                           [colors]="radarChartOptions.colors">
+                                </apx-chart>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <h6 class="fw-bold mb-3">Time & Efficiency</h6>
+                        <div class="row g-3 mb-4">
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100">
+                                    <div class="text-muted small fw-bold mb-1">Total Exam Time</div>
+                                    <h5 class="mb-0 text-dark">{{ formatTime(profileData.total_exam_duration_ms) }}</h5>
+                                    <small class="text-muted">Remaining: {{ formatTime(profileData.time_remaining_ms) }}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100">
+                                    <div class="text-muted small fw-bold mb-1">Total Idle Time</div>
+                                    <h5 class="mb-0 ">{{ formatTime(profileData.total_idle_ms) }}</h5>
+                                    <small class="text-muted">{{ profileData.idle_percentage }}% of total duration</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100">
+                                    <div class="text-muted small fw-bold mb-1">Pauses / Suspensions</div>
+                                    <h5 class="mb-0 ">{{ profileData.pause_count }} <span class="fs-12 text-muted fw-normal">({{ formatTime(profileData.total_pause_ms) }})</span></h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100">
+                                    <div class="text-muted small fw-bold mb-1">Guessing Probability</div>
+                                    <h5 class="mb-0 ">{{ profileData.guessing_probability | percent }}</h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="fw-bold mb-3 mt-2">Section Pacing & Anomalies</h6>
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100 bg-light">
+                                    <div class="text-muted small fw-bold mb-1">Fastest Section</div>
+                                    <h6 class="mb-0 text-dark text-truncate">{{ profileData.fastest_section_id }}</h6>
+                                    <small class="">{{ formatTime(profileData.fastest_section_ms) }}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="border p-3 rounded h-100 bg-light">
+                                    <div class="text-muted small fw-bold mb-1">Slowest Section</div>
+                                    <h6 class="mb-0 text-dark text-truncate">{{ profileData.slowest_section_id }}</h6>
+                                    <small class="">{{ formatTime(profileData.slowest_section_ms) }}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="border p-3 rounded h-100 bg-light">
+                                    <div class="text-muted small fw-bold mb-1">Answer Changes</div>
+                                    <h5 class="mb-0 text-dark">{{ profileData.total_answer_changes }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="border p-3 rounded h-100 bg-light">
+                                    <div class="text-muted small fw-bold mb-1">Last Min Changes</div>
+                                    <h5 class="mb-0 ">{{ profileData.last_minute_changes }}</h5>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="border p-3 rounded h-100 bg-light">
+                                    <div class="text-muted small fw-bold mb-1">Answers < 5s</div>
+                                    <h5 class="mb-0 ">{{ profileData.questions_under_5_sec }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: NAVIGATION -->
+                <div *ngIf="activeTab === 'navigation'">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light border-bottom">
+                                    <h6 class="fw-bold mb-0">Workflow Statistics</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Total Revisits <span class="fw-bold">{{ profileData.total_revisits }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Skipped Questions <span class="fw-bold">{{ profileData.skipped_question_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Skip Return Rate <span class="fw-bold">{{ profileData.skip_return_rate | percent }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Flagged Questions <span class="fw-bold">{{ profileData.questions_flagged }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Flagged & Never Revisited <span class="fw-bold ">{{ profileData.flagged_never_revisited }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light border-bottom">
+                                    <h6 class="fw-bold mb-0">Navigation Vectors & Tools</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Navigation Entropy <span class="fw-bold">{{ profileData.navigation_entropy }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        'Next' / 'Previous' Clicks <span class="fw-bold">{{ profileData.nav_next_count }} / {{ profileData.nav_previous_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Palette / Overview Jumps <span class="fw-bold">{{ profileData.nav_palette_count }} / {{ profileData.nav_overview_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Keyboard Shortcuts <span class="fw-bold">{{ profileData.nav_keyboard_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Answer Clears <span class="fw-bold">{{ profileData.total_answer_clears }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: PROCTORING & SYSTEM HEALTH -->
+                <div *ngIf="activeTab === 'proctoring'">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light  border-bottom">
+                                    <h6 class="fw-bold mb-0 ">Browser Misconduct & Integrity</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Window Blurs <span class="fw-bold ">{{ profileData.window_blur_count }} <small class="text-muted fw-normal">({{ (profileData.window_blur_total_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Fullscreen Exits <span class="fw-bold ">{{ profileData.fullscreen_exit_count }} <small class="text-muted fw-normal">({{ (profileData.fullscreen_outside_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Copy / Paste Attempts <span class="fw-bold">{{ profileData.copy_attempts }} / {{ profileData.paste_attempts }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Print / Screenshot Attempts <span class="fw-bold">{{ profileData.print_attempts }} / {{ profileData.screenshot_attempts }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light  border-bottom">
+                                    <h6 class="fw-bold mb-0 ">Environment and Identification</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Face Loss <span class="fw-bold">{{ profileData.face_loss_count }} <small class="text-muted fw-normal">({{ (profileData.face_loss_total_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Multiple Faces / Looking Away <span class="fw-bold">{{ profileData.multiple_faces_count }} / {{ profileData.looking_away_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Phone / Book Detected <span class="fw-bold ">{{ profileData.phone_detected_count }} / {{ profileData.book_detected_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Camera / Mic Blocked <span class="fw-bold">{{ profileData.camera_blocked_ms > 0 ? 'Yes' : 'No' }} / {{ profileData.mic_blocked_count }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light border-bottom">
+                                    <h6 class="fw-bold mb-0">System & Network Health</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Network Offline Events <span class="fw-bold">{{ profileData.network_offline_count }} <small class="text-muted fw-normal">({{ (profileData.total_offline_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Device Sleep <span class="fw-bold">{{ profileData.device_sleep_count }} <small class="text-muted fw-normal">({{ (profileData.device_sleep_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        App Crashes / Sync Fails / Login Fails <span class="fw-bold">{{ profileData.application_crashes }} / {{ profileData.sync_failures }} / {{ profileData.login_failures }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Min Battery Level / Low Count <span class="fw-bold">{{ profileData.min_battery_level || 'N/A' }}% / {{ profileData.battery_low_count }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card shadow-none border h-100">
+                                <div class="card-header bg-light border-bottom">
+                                    <h6 class="fw-bold mb-0">In-Exam Tool Usage</h6>
+                                </div>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Calculator Opens <span class="fw-bold">{{ profileData.calculator_opens }} <small class="text-muted fw-normal">({{ (profileData.calculator_total_ms / 1000).toFixed(1) }}s)</small></span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Calc Unique Questions <span class="fw-bold">{{ profileData.calculator_unique_questions }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Chat Opens <span class="fw-bold">{{ profileData.chat_open_count }}</span>
+                                    </li>
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Messages Sent <span class="fw-bold">{{ profileData.messages_sent }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 4: TIMELINE -->
+                <div *ngIf="activeTab === 'timeline'">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex align-items-center gap-2">
+                            <h6 class="fw-bold mb-0">Chronological Event Log</h6>
+                            <span class="badge bg-secondary">{{ eventsData.length }} Events</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <select class="form-select form-select-sm" style="width: 250px;" [(ngModel)]="filterEventType" (change)="applyEventFilter()">
+                                <option value="">All Events</option>
+                                <optgroup label="Session & Login">
+                                    <option value="SESSION_STARTED">Session Started</option>
+                                    <option value="SESSION_RESUMED">Session Resumed</option>
+                                    <option value="SESSION_PAUSED">Session Paused</option>
+                                    <option value="SESSION_TERMINATED">Session Terminated</option>
+                                    <option value="SESSION_TIMEOUT">Session Timeout</option>
+                                    <option value="SESSION_LOGOUT">Session Logout</option>
+                                    <option value="LOGIN_ATTEMPTED">Login Attempted</option>
+                                    <option value="LOGIN_SUCCEEDED">Login Succeeded</option>
+                                    <option value="LOGIN_FAILED">Login Failed</option>
+                                    <option value="SECURE_ENVIRONMENT_FAILED">Secure Env Failed</option>
+                                </optgroup>
+                                <optgroup label="Onboarding">
+                                    <option value="ONBOARDING_STARTED">Onboarding Started</option>
+                                    <option value="ONBOARDING_STEP_CHANGED">Step Changed</option>
+                                    <option value="SYSTEM_CHECK_STARTED">System Check Started</option>
+                                    <option value="SYSTEM_CHECK_COMPLETED">System Check Completed</option>
+                                    <option value="SYSTEM_CHECK_FAILED">System Check Failed</option>
+                                    <option value="MIC_TEST_STARTED">Mic Test Started</option>
+                                    <option value="MIC_TEST_COMPLETED">Mic Test Completed</option>
+                                    <option value="CAMERA_TEST_STARTED">Camera Test Started</option>
+                                    <option value="CAMERA_TEST_COMPLETED">Camera Test Completed</option>
+                                    <option value="GUIDELINES_ACCEPTED">Guidelines Accepted</option>
+                                </optgroup>
+                                <optgroup label="Exam Flow">
+                                    <option value="INSTRUCTIONS_VIEWED">Instructions Viewed</option>
+                                    <option value="READING_TIME_WARNING">Reading Time Warning</option>
+                                    <option value="READING_TIME_EXPIRED">Reading Time Expired</option>
+                                    <option value="EXAM_START_REQUESTED">Exam Start Requested</option>
+                                    <option value="EXAM_SELECTED">Exam Selected</option>
+                                    <option value="EXAM_STARTED">Exam Started</option>
+                                    <option value="EXAM_SUBMIT_REQUESTED">Submit Requested</option>
+                                    <option value="EXAM_SUBMIT_CANCELLED">Submit Cancelled</option>
+                                    <option value="EXAM_SUBMITTED">Exam Submitted</option>
+                                    <option value="EXAM_AUTO_SUBMITTED">Exam Auto Submitted</option>
+                                    <option value="SECTION_ENTERED">Section Entered</option>
+                                    <option value="SECTION_EXITED">Section Exited</option>
+                                </optgroup>
+                                <optgroup label="Navigation & Answering">
+                                    <option value="QUESTION_ENTERED">Question Entered</option>
+                                    <option value="QUESTION_EXITED">Question Exited</option>
+                                    <option value="ANSWER_SELECTED">Answer Selected</option>
+                                    <option value="ANSWER_CHANGED">Answer Changed</option>
+                                    <option value="ANSWER_CLEARED">Answer Cleared</option>
+                                    <option value="QUESTION_FLAGGED">Question Flagged</option>
+                                    <option value="QUESTION_UNFLAGGED">Question Unflagged</option>
+                                </optgroup>
+                                <optgroup label="UI & Tools">
+                                    <option value="EXAM_OVERVIEW_OPENED">Overview Opened</option>
+                                    <option value="LAYOUT_CHANGED">Layout Changed</option>
+                                    <option value="INSTRUCTIONS_PANEL_TOGGLED">Instructions Toggled</option>
+                                    <option value="PROFILE_OPENED">Profile Opened</option>
+                                    <option value="CALCULATOR_OPENED">Calculator Opened</option>
+                                    <option value="CALCULATOR_CLOSED">Calculator Closed</option>
+                                </optgroup>
+                                <optgroup label="System & Security">
+                                    <option value="NETWORK_ONLINE">Network Online</option>
+                                    <option value="NETWORK_OFFLINE">Network Offline</option>
+                                    <option value="SYNC_STARTED">Sync Started</option>
+                                    <option value="SYNC_COMPLETED">Sync Completed</option>
+                                    <option value="SYNC_FAILED">Sync Failed</option>
+                                    <option value="WINDOW_BLURRED">Window Blurred</option>
+                                    <option value="WINDOW_FOCUSED">Window Focused</option>
+                                    <option value="COPY_ATTEMPT">Copy Attempt</option>
+                                    <option value="PASTE_ATTEMPT">Paste Attempt</option>
+                                    <option value="PRINT_ATTEMPT">Print Attempt</option>
+                                    <option value="SCREENSHOT_ATTEMPT">Screenshot Attempt</option>
+                                    <option value="FULLSCREEN_ENTERED">Fullscreen Entered</option>
+                                    <option value="FULLSCREEN_EXITED">Fullscreen Exited</option>
+                                    <option value="BATTERY_LOW">Battery Low</option>
+                                    <option value="DEVICE_SLEEP">Device Sleep</option>
+                                    <option value="DEVICE_RESUMED">Device Resumed</option>
+                                    <option value="APPLICATION_EXIT_REQUESTED">App Exit Requested</option>
+                                    <option value="APPLICATION_EXITED">App Exited</option>
+                                    <option value="APPLICATION_CRASHED">App Crashed</option>
+                                </optgroup>
+                                <optgroup label="Proctoring & AI">
+                                    <option value="PROCTOR_CHAT_OPENED">Proctor Chat Opened</option>
+                                    <option value="PROCTOR_CHAT_CLOSED">Proctor Chat Closed</option>
+                                    <option value="PROCTOR_MESSAGE_SENT">Message Sent</option>
+                                    <option value="PROCTOR_MESSAGE_RECEIVED">Message Received</option>
+                                    <option value="FACE_DETECTED">Face Detected</option>
+                                    <option value="FACE_LOST">Face Lost</option>
+                                    <option value="MULTIPLE_FACES">Multiple Faces</option>
+                                    <option value="PHONE_DETECTED">Phone Detected</option>
+                                    <option value="BOOK_DETECTED">Book Detected</option>
+                                    <option value="LOOKING_AWAY">Looking Away</option>
+                                    <option value="MIC_BLOCKED">Mic Blocked</option>
+                                    <option value="CAMERA_BLOCKED">Camera Blocked</option>
+                                </optgroup>
+                            </select>
+                            <button *ngIf="filterEventType" class="btn btn-sm btn-light border" (click)="clearEventFilter()" title="Clear Filter">
+                                <i class="ri-close-line"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="border rounded p-3 bg-light" style="max-height: 500px; overflow-y: auto;">
+                        <ul class="list-group list-group-flush shadow-sm">
+                            <li *ngFor="let event of eventsData" class="list-group-item py-3">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">{{ event.event_type.replace('_', ' ') }}</h6>
+                                        <div class="small text-muted">
+                                            <span class="me-3"><i class="ri-time-line align-middle"></i> Elapsed: {{ (event.elapsed_ms / 1000).toFixed(1) }}s</span>
+                                            <span *ngIf="event.duration_ms"><i class="ri-timer-line align-middle"></i> Duration: {{ (event.duration_ms / 1000).toFixed(1) }}s</span>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-light border" (click)="openEventDetails(event, eventDetailsModal)">
+                                        Details
+                                    </button>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- TAB 5: RAW COUNTS -->
+                <div *ngIf="activeTab === 'counts'">
+                    <div class="card shadow-none border">
+                        <div class="card-header bg-light border-bottom">
+                            <h6 class="fw-bold mb-0">Usage Metrics</h6>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-bordered table-striped mb-0">
+                                <thead>
+                                    <tr class="bg-light">
+                                        <th>Metric</th>
+                                        <th class="text-end">Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Session</td><td class="text-end fw-bold">{{ profileData.session_count }}</td></tr>
+                                    <tr><td>Login Failures</td><td class="text-end fw-bold">{{ profileData.login_failures }}</td></tr>
+                                    <tr><td>Pause</td><td class="text-end fw-bold">{{ profileData.pause_count }}</td></tr>
+                                    <tr><td>Total Revisits</td><td class="text-end fw-bold">{{ profileData.total_revisits }}</td></tr>
+                                    <tr><td>Skipped Question</td><td class="text-end fw-bold">{{ profileData.skipped_question_count }}</td></tr>
+                                    <tr><td>Questions Flagged</td><td class="text-end fw-bold">{{ profileData.questions_flagged }}</td></tr>
+                                    <tr><td>Flagged Never Revisited</td><td class="text-end fw-bold">{{ profileData.flagged_never_revisited }}</td></tr>
+                                    <tr><td>Nav Next</td><td class="text-end fw-bold">{{ profileData.nav_next_count }}</td></tr>
+                                    <tr><td>Nav Previous</td><td class="text-end fw-bold">{{ profileData.nav_previous_count }}</td></tr>
+                                    <tr><td>Nav Palette</td><td class="text-end fw-bold">{{ profileData.nav_palette_count }}</td></tr>
+                                    <tr><td>Nav Keyboard</td><td class="text-end fw-bold">{{ profileData.nav_keyboard_count }}</td></tr>
+                                    <tr><td>Nav Overview</td><td class="text-end fw-bold">{{ profileData.nav_overview_count }}</td></tr>
+                                    <tr><td>Total Answer Changes</td><td class="text-end fw-bold">{{ profileData.total_answer_changes }}</td></tr>
+                                    <tr><td>Total Answer Clears</td><td class="text-end fw-bold">{{ profileData.total_answer_clears }}</td></tr>
+                                    <tr><td>Last Minute Changes</td><td class="text-end fw-bold">{{ profileData.last_minute_changes }}</td></tr>
+                                    <tr><td>Questions Under 5 Sec</td><td class="text-end fw-bold">{{ profileData.questions_under_5_sec }}</td></tr>
+                                    <tr><td>Window Blur</td><td class="text-end fw-bold">{{ profileData.window_blur_count }}</td></tr>
+                                    <tr><td>Fullscreen Exit</td><td class="text-end fw-bold">{{ profileData.fullscreen_exit_count }}</td></tr>
+                                    <tr><td>Copy Attempts</td><td class="text-end fw-bold">{{ profileData.copy_attempts }}</td></tr>
+                                    <tr><td>Paste Attempts</td><td class="text-end fw-bold">{{ profileData.paste_attempts }}</td></tr>
+                                    <tr><td>Print Attempts</td><td class="text-end fw-bold">{{ profileData.print_attempts }}</td></tr>
+                                    <tr><td>Screenshot Attempts</td><td class="text-end fw-bold">{{ profileData.screenshot_attempts }}</td></tr>
+                                    <tr><td>Network Offline</td><td class="text-end fw-bold">{{ profileData.network_offline_count }}</td></tr>
+                                    <tr><td>Sync Failures</td><td class="text-end fw-bold">{{ profileData.sync_failures }}</td></tr>
+                                    <tr><td>Application Crashes</td><td class="text-end fw-bold">{{ profileData.application_crashes }}</td></tr>
+                                    <tr><td>Calculator Opens</td><td class="text-end fw-bold">{{ profileData.calculator_opens }}</td></tr>
+                                    <tr><td>Chat Open</td><td class="text-end fw-bold">{{ profileData.chat_open_count }}</td></tr>
+                                    <tr><td>Messages Sent</td><td class="text-end fw-bold">{{ profileData.messages_sent }}</td></tr>
+                                    <tr><td>Face Loss</td><td class="text-end fw-bold">{{ profileData.face_loss_count }}</td></tr>
+                                    <tr><td>Multiple Faces</td><td class="text-end fw-bold">{{ profileData.multiple_faces_count }}</td></tr>
+                                    <tr><td>Looking Away</td><td class="text-end fw-bold">{{ profileData.looking_away_count }}</td></tr>
+                                    <tr><td>Phone Detected</td><td class="text-end fw-bold">{{ profileData.phone_detected_count }}</td></tr>
+                                    <tr><td>Book Detected</td><td class="text-end fw-bold">{{ profileData.book_detected_count }}</td></tr>
+                                    <tr><td>Mic Blocked</td><td class="text-end fw-bold">{{ profileData.mic_blocked_count }}</td></tr>
+                                    <tr><td>Battery Low</td><td class="text-end fw-bold">{{ profileData.battery_low_count }}</td></tr>
+                                    <tr><td>Device Sleep</td><td class="text-end fw-bold">{{ profileData.device_sleep_count }}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<!-- Event Details Modal -->
+<ng-template #eventDetailsModal let-modal>
+    <div class="modal-header bg-light border-bottom p-3">
+        <h5 class="modal-title fw-bold mb-0">Event Details</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body p-0">
+        <table class="table table-bordered mb-0" *ngIf="selectedEvent">
+            <tbody>
+                <tr><th class="bg-light" style="width: 30%;">ID</th><td>{{ selectedEvent.id }}</td></tr>
+                <tr><th class="bg-light">Event ID</th><td>{{ selectedEvent.event_id }}</td></tr>
+                <tr><th class="bg-light">Session ID</th><td>{{ selectedEvent.session_id }}</td></tr>
+                <tr><th class="bg-light">Sequence</th><td>{{ selectedEvent.sequence }}</td></tr>
+                <tr><th class="bg-light">Event Type</th><td><span class="badge bg-light ">{{ selectedEvent.event_type }}</span></td></tr>
+                <tr><th class="bg-light">Elapsed Time (s)</th><td>{{ (selectedEvent.elapsed_ms / 1000).toFixed(1) }}s</td></tr>
+                <tr><th class="bg-light">Duration (s)</th><td>{{ selectedEvent.duration_ms !== null ? (selectedEvent.duration_ms / 1000).toFixed(1) + 's' : 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Section ID</th><td>{{ selectedEvent.section_id || 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Item ID</th><td>{{ selectedEvent.item_id || 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Answer</th><td>{{ selectedEvent.answer !== null ? selectedEvent.answer : 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Old Answer</th><td>{{ selectedEvent.old_answer !== null ? selectedEvent.old_answer : 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Navigation Method</th><td>{{ selectedEvent.navigation_method || 'N/A' }}</td></tr>
+                <tr><th class="bg-light">Battery Level</th><td>{{ selectedEvent.battery_level !== null ? selectedEvent.battery_level + '%' : 'N/A' }}</td></tr>
+            </tbody>
+        </table>
+    </div>
+</ng-template>

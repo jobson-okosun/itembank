@@ -5,7 +5,10 @@
           Back
         </button>
         
-        <h4 class="mb-0 fw-bold">Abuja | 10001 -  First semester exam 2024</h4>
+        <h4 class="mb-0 fw-bold">
+            <span *ngIf="examOverview">{{ examOverview.center_name }}</span>
+            <span *ngIf="!examOverview">Loading Center...</span>
+        </h4>
     </div>
 
     <div>
@@ -18,27 +21,22 @@
                                  Exam Overview
                             </h5>
                         </div>
-                        <div style="height: 590px; overflow-y: auto;" class="p-3 no-scrollbar flex-grow-1">
-                            <div class="p-3 bg-light rounded border mb-4">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <span style="width: 38px; height: 38px;" class="bg-primary rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
-                                            <i class="pi pi-clock fs-18"></i>
-                                        </span>
-                                        <div>
-                                            <p class="text-muted mb-0 fs-10 text-uppercase fw-bold" style="font-size: 9px; letter-spacing: 0.5px;">Time Remaining</p>
-                                            <h4 class="fw-bold mb-0 text-dark" style="font-size: 16px;">60 min</h4>
-                                        </div>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="badge bg-danger px-2 py-1 fs-11">Ended</span>
-                                        <span class="d-block text-success fw-bold mt-1" style="font-size: 11px;">
-                                            <i class="pi pi-shield me-1" style="font-size: 10px;"></i> Biometrics enabled
-                                        </span>
-                                    </div>
-                                </div>
+                        <div style="height: 590px; overflow-y: auto;" class="p-3 no-scrollbar flex-grow-1" *ngIf="examOverview">
+                            
+                            <!-- Status Badges -->
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <span class="badge" [ngClass]="examOverview.ended ? 'bg-danger' : 'bg-success'">
+                                    {{ examOverview.ended ? 'Ended' : 'Active' }}
+                                </span>
+                                <span class="badge" [ngClass]="examOverview.exam_downloaded ? 'bg-success' : 'bg-warning'">
+                                    <i class="pi pi-download me-1" style="font-size: 10px;"></i> Exam {{ examOverview.exam_downloaded ? 'Downloaded' : 'Pending' }}
+                                </span>
+                                <span class="badge" [ngClass]="examOverview.passport_downloaded ? 'bg-success' : 'bg-warning'">
+                                    <i class="pi pi-images me-1" style="font-size: 10px;"></i> Passports {{ examOverview.passport_downloaded ? 'Downloaded' : 'Pending' }}
+                                </span>
                             </div>
 
+                            <!-- Basic Info -->
                             <div class="d-flex flex-column gap-3 mb-4 ps-1">
                                 <div class="d-flex gap-3 align-items-center">
                                     <span style="width: 38px; height: 38px;" class="bg-warning rounded text-white d-flex align-items-center justify-content-center flex-shrink-0">
@@ -46,7 +44,7 @@
                                     </span>
                                     <div>
                                         <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Candidates</h6>
-                                        <span *ngIf="participantSummary" class="text-secondary" style="font-size: 12px;">{{ participantSummary?.total || 0 }}</span>
+                                        <span class="text-secondary" style="font-size: 12px;">{{ examOverview.total_candidates }}</span>
                                     </div>
                                 </div>
 
@@ -56,7 +54,7 @@
                                     </span>
                                     <div>
                                         <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Login Field</h6>
-                                        <span class="text-secondary" style="font-size: 12px;">Email</span>
+                                        <span class="text-secondary" style="font-size: 12px;">{{ examOverview.login_field }}</span>
                                     </div>
                                 </div>
 
@@ -66,57 +64,170 @@
                                     </span>
                                     <div>
                                         <h6 class="fw-bold mb-0 text-dark" style="font-size: 13px;">Delivery Method</h6>
-                                        <span class="text-secondary" style="font-size: 12px;">Secure Browser</span>
+                                        <span class="text-secondary" style="font-size: 12px;">{{ examOverview.delivery_method }}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <hr class="my-3 text-secondary">
                             
-                            <div class="d-flex flex-column gap-3 mb-4 px-2">
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="d-inline-block rounded bg-success d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
-                                        <i class="pi pi-play text-white" style="font-size: 9px;"></i>
-                                    </span>
-                                    <div>
-                                        <div class="fw-bold text-black small" style="font-size: 11px;">Start Time</div>
-                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
+                            <!-- Times -->
+                            <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Exam Schedule</h6>
+                            
+                            <div class="d-flex flex-column gap-3 mb-4">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="rounded bg-success d-flex align-items-center justify-content-center shadow-sm" style="width: 28px; height: 28px;">
+                                            <i class="pi pi-play text-white" style="font-size: 11px;"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-black" style="font-size: 11px;">Expected Start</div>
+                                            <div class="text-secondary mt-1" style="font-size: 11px;">{{ examOverview.exam_start_time | date:'medium' }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="text-end">
+                                            <div class="fw-bold text-black" style="font-size: 11px;">Expected End</div>
+                                            <div class="text-secondary mt-1" style="font-size: 11px;">{{ examOverview.exam_end_time | date:'medium' }}</div>
+                                        </div>
+                                        <span class="rounded bg-danger d-flex align-items-center justify-content-center shadow-sm" style="width: 28px; height: 28px;">
+                                            <i class="pi pi-history text-white" style="font-size: 11px;"></i>
+                                        </span>
                                     </div>
                                 </div>
-
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="d-inline-block rounded bg-info d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
-                                        <i class="pi pi-spin pi-spinner text-white" style="font-size: 9px;"></i>
-                                    </span>
-                                    <div>
-                                        <div class="fw-bold text-black small" style="font-size: 11px;">Started Time</div>
-                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
+                                
+                                <div class="d-flex align-items-center justify-content-center mt-2 pt-3 border-top" style="border-top-style: dashed !important;" *ngIf="examOverview.ended">
+                                    <div class="d-flex align-items-center gap-2 px-3 py-2 bg-light rounded border">
+                                        <span class="rounded bg-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 24px; height: 24px;">
+                                            <i class="pi pi-stop text-white" style="font-size: 10px;"></i>
+                                        </span>
+                                        <div>
+                                            <div class="fw-bold text-black" style="font-size: 11px;">Actual Ended Time</div>
+                                            <div class="text-secondary mt-1" style="font-size: 11px;">{{ examOverview.ended_time | date:'medium' }}</div>
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
+                            
+                            <hr class="my-3 text-secondary">
+                            
+                            <!-- History Timelines -->
+                            <h6 class="fw-bold text-dark mb-3" style="font-size: 13px;">Event History Timelines</h6>
 
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="d-inline-block rounded bg-danger d-flex align-items-center justify-content-center flex-shrink-0" style="width: 22px; height: 22px;">
-                                        <i class="pi pi-history text-white" style="font-size: 9px;"></i>
-                                    </span>
-                                    <div>
-                                        <div class="fw-bold text-black small" style="font-size: 11px;">End Time</div>
-                                        <span class="text-secondary small">Mar 3, 2026 - 4:40pm</span>
+                            <!-- Launch Timeline -->
+                            <div class="mb-4" *ngIf="examOverview.status_history?.launched?.length">
+                                <div class="fw-bold text-primary small mb-2 d-flex align-items-center gap-2">
+                                    <i class="pi pi-rocket"></i> Launch History
+                                </div>
+                                <div class="position-relative ms-1">
+                                    <div class="position-absolute border-start border-2 border-primary" style="left: 4px; top: 8px; bottom: 8px; z-index: 0; opacity: 0.3;"></div>
+                                    <div class="d-flex mb-3 position-relative z-1" *ngFor="let time of examOverview.status_history.launched; let i = index">
+                                        <div class="flex-shrink-0 d-flex justify-content-center align-items-start" style="width: 10px;">
+                                            <span class="rounded-circle border border-2 border-primary bg-white shadow-sm" style="width: 10px; height: 10px; margin-top: 4px;"></span>
+                                        </div>
+                                        <div class="ms-3 pt-1 w-100">
+                                            <div class="text-dark fw-bold" style="font-size: 11px;">{{ time | date:'medium' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Start Timeline -->
+                            <div class="mb-4" *ngIf="examOverview.status_history?.started?.length">
+                                <div class="fw-bold text-info small mb-2 d-flex align-items-center gap-2">
+                                    Start History
+                                </div>
+                                <div class="position-relative ms-1">
+                                    <div class="position-absolute border-start border-2 border-info" style="left: 4px; top: 8px; bottom: 8px; z-index: 0; opacity: 0.3;"></div>
+                                    <div class="d-flex mb-3 position-relative z-1" *ngFor="let time of examOverview.status_history.started; let i = index">
+                                        <div class="flex-shrink-0 d-flex justify-content-center align-items-start" style="width: 10px;">
+                                            <span class="rounded-circle border border-2 border-info bg-white shadow-sm" style="width: 10px; height: 10px; margin-top: 4px;"></span>
+                                        </div>
+                                        <div class="ms-3 pt-1 w-100">
+                                            <div class="text-dark fw-bold" style="font-size: 11px;">{{ time | date:'medium' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Timeline -->
+                            <div class="mb-2" *ngIf="examOverview.status_history?.uploaded?.length">
+                                <div class="fw-bold text-warning small mb-2 d-flex align-items-center gap-2">
+                                    <i class="pi pi-upload"></i> Upload History
+                                </div>
+                                <div class="position-relative ms-1">
+                                    <div class="position-absolute border-start border-2 border-warning" style="left: 4px; top: 8px; bottom: 8px; z-index: 0; opacity: 0.3;"></div>
+                                    <div class="d-flex mb-3 position-relative z-1" *ngFor="let time of examOverview.status_history.uploaded; let i = index">
+                                        <div class="flex-shrink-0 d-flex justify-content-center align-items-start" style="width: 10px;">
+                                            <span class="rounded-circle border border-2 border-warning bg-white shadow-sm" style="width: 10px; height: 10px; margin-top: 4px;"></span>
+                                        </div>
+                                        <div class="ms-3 pt-1 w-100">
+                                            <div class="text-dark fw-bold" style="font-size: 11px;">{{ time | date:'medium' }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center text-secondary small py-2" *ngIf="!examOverview.status_history?.started?.length && !examOverview.status_history?.launched?.length && !examOverview.status_history?.uploaded?.length">
+                                No events recorded yet.
+                            </div>
+
+                            <hr class="my-3 text-secondary">
+                            
+                            <!-- Batches -->
+                            <h6 class="fw-bold text-dark mb-2" style="font-size: 13px;">Batches ({{ examOverview.batches?.length || 0 }})</h6>
+                            <div class="d-flex flex-column gap-2 mb-3">
+                                <div *ngFor="let batch of examOverview.batches" class="p-2 border rounded bg-light">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold text-dark" style="font-size: 12px;">{{ batch.batch_name }}</span>
+                                        <span class="badge" [ngClass]="batch.completed ? 'bg-success' : 'bg-warning'">{{ batch.current_batch_status }}</span>
+                                    </div>
+                                    <div class="text-secondary" style="font-size: 11px;">
+                                        <div>Starts: {{ batch.start_date | date:'short' }}</div>
+                                        <div>Ends: {{ batch.end_date | date:'short' }}</div>
                                     </div>
                                 </div>
                             </div>
 
                             <hr class="my-3 text-secondary">
-                            
-                            <div class="d-flex flex-column gap-3 px-1">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span class="text-muted fs-11 text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Close Browser</span>
-                                    <span class="text-secondary" style="font-size: 12px;">Secure browser</span>
-                                </div>
 
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <span class="text-muted fs-11 text-uppercase fw-bold mb-0" style="letter-spacing: 0.5px;">Early End Exam</span>
-                                    <span class="text-secondary" style="font-size: 12px;">Secure browser</span>
+                            <!-- Download History Timeline -->
+                            <div class="mb-4" *ngIf="examOverview.download_history?.length">
+                                <div class="fw-bold text-secondary small mb-2 d-flex align-items-center gap-2">
+                                    Download History
                                 </div>
+                                <div class="position-relative ms-1">
+                                    <div class="position-absolute border-start border-2 border-secondary" style="left: 4px; top: 8px; bottom: 8px; z-index: 0; opacity: 0.3;"></div>
+                                    <div class="d-flex mb-3 position-relative z-1" *ngFor="let dl of examOverview.download_history">
+                                        <div class="flex-shrink-0 d-flex justify-content-center align-items-start" style="width: 10px;">
+                                            <span class="rounded-circle border border-2 bg-white shadow-sm" [ngClass]="dl.download_type === 'EXAM' ? 'border-primary' : 'border-success'" style="width: 10px; height: 10px; margin-top: 4px;"></span>
+                                        </div>
+                                        <div class="ms-3 pt-1 w-100">
+                                            <div class="text-dark fw-bold" style="font-size: 11px;">{{ dl.downloaded_at | date:'medium' }}</div>
+                                            <div class="mt-1" style="font-size: 11px;">
+                                                <span class="fw-bold" [ngClass]="dl.download_type === 'EXAM' ? 'text-primary' : 'text-success'">{{ dl.download_type }}</span>
+                                                <span class="text-secondary"> by {{ dl.downloaded_by }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <hr class="my-3 text-secondary">
+
+                            <!-- Current Status & History -->
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="fw-bold text-dark" style="font-size: 13px;">Current Status</span>
+                                <span class="badge bg-info">{{ examOverview.current_status }}</span>
+                            </div>
+                            <div class="text-secondary mb-3" style="font-size: 11px;">
+                                Last Updated: {{ examOverview.status_time | date:'short' }}
+                            </div>
+
+                        </div>
+                        <div *ngIf="fetchingOverview" class="d-flex justify-content-center align-items-center h-100 flex-grow-1">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
                     </div>

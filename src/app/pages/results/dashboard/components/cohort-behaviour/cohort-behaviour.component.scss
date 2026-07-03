@@ -1,0 +1,22 @@
+.sticky-col {
+    position: -webkit-sticky;
+    position: sticky;
+    z-index: 2;
+    background-color: #fff;
+}
+
+thead .sticky-col {
+    background-color: #f8f9fa; /* Matches table-light */
+    z-index: 3;
+}
+
+.first-col {
+    left: 0;
+    min-width: 60px;
+    max-width: 60px;
+}
+
+.second-col {
+    left: 60px;
+    min-width: 250px;
+}
