@@ -208,6 +208,28 @@ export class DashboardService {
   //         total_participants: 150,
   //         total_proctors: 5,
   //       },
+  //       {
+  //         id: "5",
+  //         exam_name: "Animal Husbandry Quiz",
+  //         delivery_method: "LIVE_PROCTORING",
+  //         exam_status: "CLOSED",
+  //         exam_start_date: new Date(Date.now() + 86400000 * 5).toISOString(),
+  //         exam_end_date: new Date(Date.now() + 86400000 * 6).toISOString(),
+  //         total_centers: 0,
+  //         total_participants: 150,
+  //         total_proctors: 5,
+  //       },
+  //       {
+  //         id: "6",
+  //         exam_name: "Animal Husbandry Quiz",
+  //         delivery_method: "LIVE_PROCTORING",
+  //         exam_status: "CLOSED",
+  //         exam_start_date: new Date(Date.now() + 86400000 * 5).toISOString(),
+  //         exam_end_date: new Date(Date.now() + 86400000 * 6).toISOString(),
+  //         total_centers: 0,
+  //         total_participants: 150,
+  //         total_proctors: 5,
+  //       },
   //     ],
   //   });
   // }

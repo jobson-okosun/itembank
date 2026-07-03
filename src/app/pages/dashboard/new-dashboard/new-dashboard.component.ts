@@ -35,12 +35,14 @@ export class NewDashboardComponent implements OnInit {
 
   loading: boolean = false;
 
+  isLoadingexamsForTheDay: boolean = false;
+
   totalUsersCount: number = 0;
 
   // Global Filter State
-  selectedExamForTheDayDeliveryMethod: string = "";
+  selectedExamForTheDayDeliveryMethod: string = "COMPUTER_BASED";
 
-  selectedInfractionDeliveryMethod: string = "";
+  selectedInfractionDeliveryMethod: string = "COMPUTER_BASED";
 
   selectedUpcomingExamDeliveryMethod: string = "";
   selectedUpcomingExamStatus: string = "";
@@ -230,34 +232,37 @@ export class NewDashboardComponent implements OnInit {
         this.totalUsersCount = value.usersCard.totalUsers;
 
         this.userChartOptions = {
-          series: [value.usersCard.totalActiveUsers, value.usersCard.totalInActiveUsers],
-          labels: ['Active Users', 'Inactive Users'],
+          series: [
+            value.usersCard.totalActiveUsers,
+            value.usersCard.totalInActiveUsers,
+          ],
+          labels: ["Active Users", "Inactive Users"],
           chart: {
-            type: 'donut',
-            height: 350
+            type: "donut",
+            height: 350,
           },
           dataLabels: {
-            enabled: false // Removes percentages inside slices
+            enabled: false, // Removes percentages inside slices
           },
           plotOptions: {
             pie: {
               donut: {
-                size: '75%' // Manages thickness
-              }
-            }
+                size: "75%", // Manages thickness
+              },
+            },
           },
           legend: {
-            position: 'bottom'
+            position: "bottom",
           },
           responsive: [
             {
               breakpoint: 480,
               options: {
                 chart: { width: 300 },
-                legend: { position: 'bottom' }
-              }
-            }
-          ]
+                legend: { position: "bottom" },
+              },
+            },
+          ],
         };
 
         this.isUserChartLoaded = true;
@@ -423,6 +428,8 @@ export class NewDashboardComponent implements OnInit {
   // }
 
   fetchExamsForTheDay() {
+    this.isLoadingexamsForTheDay = true;
+
     const params: any = {
       page: this.examForTheDayPaginationPage,
       size: this.examForTheDayPaginationSize,
@@ -434,8 +441,14 @@ export class NewDashboardComponent implements OnInit {
 
     this.dashboardService
       .fetchExamsForTheDay(this.buildParams(params))
-      .subscribe((res) => {
-        this.examsForTheDay = res;
+      .subscribe({
+        next: (res) => {
+          this.examsForTheDay = res;
+          this.isLoadingexamsForTheDay = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoadingexamsForTheDay = false;
+        },
       });
   }
 

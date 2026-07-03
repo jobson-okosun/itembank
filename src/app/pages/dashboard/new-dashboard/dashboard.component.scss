@@ -5,42 +5,14 @@
     min-height: 100vh;
 }
 
-.side-stack-row {
-    // border: 1px solid red;
-    height: 400px;
-    overflow-y: auto;
-}
-
-/* Custom Card Styling
-   FIX #1: height:100% was commented out, so a card with less content
-   (e.g. an empty table) never stretched to match its taller sibling
-   column. Bootstrap's .row is already display:flex (align-items:stretch),
-   so the column itself is already the right height — this just lets the
-   card fill it.
-   We also turn the card into a flex column so its header / body / footer
-   can be distributed vertically instead of all bunching at the top. */
+/* Custom Card Styling */
 .premium-card {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
-    height: 100%;
-    //height: 80%;
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.exam-breakdown-premium-card {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
-    height: 80%;
-    display: flex;
-    flex-direction: column;
+    //height: 100%;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -50,52 +22,15 @@
 
 .premium-card-title {
     font-size: 1.1rem;
+    // font-weight: 600;
     color: #1a1d20;
     margin-bottom: 1.5rem;
     font-family: 'Inter', sans-serif;
 }
 
-/* premium-card is p-0 in some places (cards that wrap a table), so the
-   header / table-body / footer inside need their own spacing since the
-   card itself has no padding in that variant. */
-.premium-card.p-0 {
-    padding: 0 !important;
-}
-
-/* The table wrapper: flex-grow so it fills whatever vertical space is
-   left in the card (instead of a fixed max-height that leaves a gap
-   below a short/empty table). min-height keeps it from collapsing too
-   far on genuinely tiny content; it will still scroll internally if the
-   data is tall (table-scroll-area handles the overflow). */
-.table-scroll-area {
-    flex: 1 1 auto;
-    // min-height: 220px;
-    // max-height: 420px;
-    height: 220px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-/* When the table itself has no rows, this makes the empty-state message
-   sit centered and fill the remaining space rather than floating at the
-   top with dead space beneath it. */
-.table-empty-state {
-    flex: 1 1 auto;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 220px;
-}
-
-/* Footer/pagination row pinned to the bottom of the card no matter how
-   tall/short the content above it is. */
-.card-footer-pin {
-    margin-top: auto;
-}
-
 /* KPI Cards with Green Borders */
 .kpi-card {
+    // border: 2px solid #28c76f;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-radius: 12px;
     background: #ffffff;
@@ -212,6 +147,7 @@
 
 .has-selection {
     border: 2px solid #28a745;
+    /* Success green border */
 }
 
 /* Modernizing the Breakdown Table */
@@ -236,21 +172,21 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    // height: auto;
     background: #fff;
-    overflow-x: auto;
-    flex: 1 1 auto;
-    // min-height: 300px;
-    // max-height: 400px;
-    height: 320px;
+    overflow-x: auto; // Generates desktop overflow breaks gracefully if compressed
+    max-height: 400px; // Your specified height restraint boundaries
     overflow-y: auto;
 }
 
+// Controls structural width symmetry across time rows
 .calendar-grid-row {
     display: flex;
     width: 100%;
-    min-width: 900px;
+    min-width: 900px; // Guarantees cells never squish beyond readable boundaries
 }
 
+// Fixed width for the timeline track
 .time-cell {
     width: 80px;
     min-width: 80px;
@@ -261,13 +197,15 @@
     justify-content: center;
 }
 
+// Dynamic evenly-weighted segments for days of the week 
 .grid-cell {
     flex-grow: 1;
     flex-shrink: 0;
-    flex-basis: 0;
+    flex-basis: 0; // Forces identical equal structural widths across all columns
     width: 0;
 }
 
+// Header Row Formatting
 .header-row {
     background-color: #fafbfc;
     border-bottom: 2px solid rgba(0, 0, 0, 0.08);
@@ -283,18 +221,23 @@
     }
 }
 
+// Scroll Body Boundaries
 .calendar-scroll-body {
-    flex: 1 1 auto;
+    //max-height: 400px; // Your specified height restraint boundaries
+    //overflow-y: auto;
 }
 
+// New timeslot row style
+
+// Data Row Core Layout Grid
 .data-cell {
-    height: 65px;
+    height: 65px; // Increased slightly to allow at least 2 small entries viewable comfortably before scroll kicks in
     border-right: 1px solid #E7E7E7;
     border-bottom: 1px solid #E7E7E7;
     background-color: #ffffff;
     padding: 3px;
     position: relative;
-    overflow: hidden;
+    overflow: hidden; // Prevents cards from spilling outside cell borders
     transition: background-color 0.2s ease;
 
     &.time-col,
@@ -312,11 +255,13 @@
     }
 }
 
+// NEW: Controls internal cell limits
 .slot-scroll-container {
-    max-height: 58px;
+    max-height: 58px; // Keeps inner layout slightly smaller than cell tracking height
     overflow-y: auto;
     overflow-x: hidden;
 
+    // Optional: Custom sleek mini scrollbars for clean styling inside small blocks
     &::-webkit-scrollbar {
         width: 4px;
     }
@@ -335,11 +280,12 @@
     }
 }
 
+// Keep cards tight and predictable
 .exam-card {
     font-size: 0.7rem;
     line-height: 1.2;
     color: #212529;
-    flex-shrink: 0;
+    flex-shrink: 0; // Essential: prevents flex from crunching heights to zero
 }
 
 .bg-primary-light {
@@ -356,19 +302,4 @@
 
 .shadow-xs {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-
-/* Responsive tweaks: on small screens the equal-height stretching from
-   the row can make cards look artificially tall since columns stack
-   full-width. Let cards size to content again below the lg breakpoint. */
-@media (max-width: 991.98px) {
-    .premium-card {
-        height: auto;
-    }
-
-    .table-scroll-area,
-    .table-empty-state {
-        min-height: 180px;
-        max-height: 320px;
-    }
 }
