@@ -85,7 +85,7 @@
         >
           <i
             title="NEW TOPIC"
-            *ngIf="currentUser.authorities.includes('ADMIN') && !_currentBlock"
+            *ngIf="(currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock"
             (click)="openNewTopicModal(newTopicModal)"
             class="ri-add-line label-icon align-middle fs-11 ms-2"
           ></i>
@@ -528,7 +528,7 @@
                         <i class="ri-edit-line"></i>
                       </button>
                       <button
-                        *ngIf="currentUser.authorities.includes('ADMIN')"
+                        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')"
                         ngbTooltip="USAGE HISTORY"
                         type="button"
                         class="btn btn-icon btn-outline-info"
@@ -758,7 +758,7 @@
                         <i class="ri-edit-line"></i>
                       </button>
                       <button
-                        *ngIf="currentUser.authorities.includes('ADMIN')"
+                        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')"
                         ngbTooltip="USAGE HISTORY"
                         type="button"
                         class="btn btn-icon btn-outline-info"

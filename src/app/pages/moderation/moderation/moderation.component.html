@@ -98,7 +98,7 @@
             </div>
             <div
               class="flex-shrink-0 ms-2"
-              *ngIf="currentUser.authorities.includes('ADMIN')"
+              *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')"
             >
               <div class="d-flex gap-1">
                 <div class="dropdown" ngbDropdown>

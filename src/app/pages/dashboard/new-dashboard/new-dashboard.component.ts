@@ -11,6 +11,7 @@ import {
   ExamCalendarDTO,
   ProctorWeeklyCalendarDTO,
   AIInfractionChartOptions,
+  UserChartOptions,
 } from "../model/dashboard-types";
 // import { ChartComponent, ChartOptions } from "chart.js";
 import { ChartComponent } from "ng-apexcharts";
@@ -31,6 +32,10 @@ export class NewDashboardComponent implements OnInit {
   dashboardData: DashboardCards;
   rowOne: CardDetails[] = [];
   isLoadingQuestionsOverview: boolean = false;
+
+  loading: boolean = false;
+
+  totalUsersCount: number = 0;
 
   // Global Filter State
   selectedExamForTheDayDeliveryMethod: string = "";
@@ -81,7 +86,11 @@ export class NewDashboardComponent implements OnInit {
   @ViewChild("chart") chart!: ChartComponent;
   public chartOptions!: AIInfractionChartOptions;
 
+  @ViewChild("userChart") userChart!: ChartComponent;
+  public userChartOptions!: UserChartOptions;
+
   public isChartLoaded = false;
+  public isUserChartLoaded = false;
 
   // Pagination States
   private examForTheDayPaginationSize: number = 20;
@@ -120,10 +129,18 @@ export class NewDashboardComponent implements OnInit {
       this.selectedUpcomingExamDeliveryMethod = "LIVE_PROCTORING";
     }
 
-    this.generateTimeSlots();
+    if (
+      this.currentUser.authorities.includes("ADMIN") ||
+      this.currentUser.authorities.includes("PROCTOR_ADMIN") ||
+      this.currentUser.authorities.includes("MONITOR") ||
+      this.currentUser.authorities.includes("EXAMINER") ||
+      this.currentUser.authorities.includes("GROUP_ADMIN")
+    ) {
+      this.generateTimeSlots();
 
-    // Fallback initialize to current running week's Monday
-    this.setWeekState(new Date());
+      // Fallback initialize to current running week's Monday
+      this.setWeekState(new Date());
+    }
 
     // Set initial proctor week start to today's date (or nearest monday ideally)
     // this.proctorWeekStart = new Date().toISOString().split("T")[0];
@@ -142,31 +159,36 @@ export class NewDashboardComponent implements OnInit {
           {
             title: "Total Subjects",
             icon: "folder-line",
-            count: this.dashboardData.questionsModerationCard?.totalSubjects,
+            count:
+              this.dashboardData.questionsModerationCard?.totalSubjects ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR"],
           },
           {
             title: "Total Questions",
             icon: "stack-line",
-            count: this.dashboardData.questionsModerationCard?.totalQuestions,
+            count:
+              this.dashboardData.questionsModerationCard?.totalQuestions ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR"],
           },
           {
             title: "Total Passages",
             icon: "article-line",
-            count: this.dashboardData.questionsModerationCard?.totalPassages,
+            count:
+              this.dashboardData.questionsModerationCard?.totalPassages ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR"],
           },
           {
             title: "Total Questions In-recycle",
             icon: "recycle-line",
-            count: this.dashboardData.questionsModerationCard?.totalInRecycle,
+            count:
+              this.dashboardData.questionsModerationCard?.totalInRecycle ?? 0,
             roles: ["ADMIN", "EXAMINER"],
           },
           {
             title: "Total Published Questions",
             icon: "upload-cloud-2-line",
-            count: this.dashboardData.questionsModerationCard?.totalPublished,
+            count:
+              this.dashboardData.questionsModerationCard?.totalPublished ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
           },
           {
@@ -174,48 +196,102 @@ export class NewDashboardComponent implements OnInit {
             icon: "arrow-left-right-line",
             count:
               this.dashboardData.questionsModerationCard
-                ?.totalAwaitingModeration,
+                ?.totalAwaitingModeration ?? 0,
             roles: ["ADMIN", "MODERATOR", "EXAMINER"],
           },
           {
             title: "Total Approved Questions",
             icon: "check-double-line",
-            count: this.dashboardData.questionsModerationCard?.totalApproved,
+            count:
+              this.dashboardData.questionsModerationCard?.totalApproved ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
           },
           {
             title: "Total Draft Questions",
             icon: "draft-line",
-            count: this.dashboardData.questionsModerationCard?.totalDrafts,
+            count: this.dashboardData.questionsModerationCard?.totalDrafts ?? 0,
             roles: ["ADMIN", "AUTHOR", "EXAMINER"],
           },
           {
             title: "Total Rejected Questions",
             icon: "feedback-line",
-            count: this.dashboardData.questionsModerationCard?.totalRejected,
+            count:
+              this.dashboardData.questionsModerationCard?.totalRejected ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
           },
           {
             title: "Total Used Questions",
             icon: "eye-2-line",
-            count: this.dashboardData.questionsModerationCard?.totalUsed,
+            count: this.dashboardData.questionsModerationCard?.totalUsed ?? 0,
             roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
           },
         ];
+
+        this.totalUsersCount = value.usersCard.totalUsers;
+
+        this.userChartOptions = {
+          series: [value.usersCard.totalActiveUsers, value.usersCard.totalInActiveUsers],
+          labels: ['Active Users', 'Inactive Users'],
+          chart: {
+            type: 'donut',
+            height: 350
+          },
+          dataLabels: {
+            enabled: false // Removes percentages inside slices
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                size: '75%' // Manages thickness
+              }
+            }
+          },
+          legend: {
+            position: 'bottom'
+          },
+          responsive: [
+            {
+              breakpoint: 480,
+              options: {
+                chart: { width: 300 },
+                legend: { position: 'bottom' }
+              }
+            }
+          ]
+        };
+
+        this.isUserChartLoaded = true;
       },
       (error: HttpErrorResponse) => {
         this.isLoadingQuestionsOverview = false;
         this.notifierService.notify("error", `${error.error?.message}`);
       },
     );
+
+    this.generateCalendarGrid();
   }
 
   fetchDashboardData() {
-    this.fetchExamsForTheDay();
-    this.fetchUpcomingExams();
-    this.fetchAIInfractions();
-    this.fetchExamCalendar();
-    // this.fetchProctorWeekly();
+    if (
+      this.currentUser.authorities.includes("ADMIN") ||
+      this.currentUser.authorities.includes("PROCTOR_ADMIN") ||
+      this.currentUser.authorities.includes("MONITOR") ||
+      this.currentUser.authorities.includes("EXAMINER") ||
+      this.currentUser.authorities.includes("GROUP_ADMIN")
+    ) {
+      this.fetchExamsForTheDay();
+      this.fetchAIInfractions();
+      this.fetchExamCalendar();
+    }
+
+    if (
+      this.currentUser.authorities.includes("ADMIN") ||
+      this.currentUser.authorities.includes("PROCTOR_ADMIN") ||
+      this.currentUser.authorities.includes("EXAMINER") ||
+      this.currentUser.authorities.includes("GROUP_ADMIN")
+    ) {
+      this.fetchUpcomingExams();
+    }
   }
 
   onExamForTheDayDeliveryMethodChange() {
@@ -414,11 +490,19 @@ export class NewDashboardComponent implements OnInit {
     this.dashboardService
       .fetchAIInfractionsForTheDay(this.buildParams(params))
       .subscribe({
-        next: (res) => {
+        next: (res: AIInfractionSummaryDTO[]) => {
           this.aiInfractions = res;
+
+          var chartLabels: string[] = ["NO_AVAILABLE_RECORD"];
+          var chartSeries: number[] = [100];
+
+          if (res.length > 0) {
+            chartLabels = res.map((item) => item.infraction_type);
+            chartSeries = res.map((item) => item.total_candidates);
+          }
+
           // this.setupAIInfractionsChart();
-          const chartLabels = res.map((item) => item.infraction_type);
-          const chartSeries = res.map((item) => item.total_candidates);
+
           console.log("RESPONSE: ", res);
 
           this.chartOptions = {
@@ -466,7 +550,7 @@ export class NewDashboardComponent implements OnInit {
       .fetchExamCalendar(this.buildParams(params))
       .subscribe((res) => {
         this.examCalendar = res;
-        this.generateCalendarGrid();
+        // this.generateCalendarGrid();
       });
   }
 
@@ -526,7 +610,7 @@ export class NewDashboardComponent implements OnInit {
     }
   }
 
-  getdd(name: any){
+  getRecordOnCalenderCellBlock(name: any) {
     console.log(name);
   }
 
