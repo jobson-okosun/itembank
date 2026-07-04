@@ -23,7 +23,7 @@ import { states } from "./center-states/data";
   templateUrl: "./assessment-center.component.html",
   styleUrls: ["./assessment-center.component.scss"],
 })
-export class AssessmentCenterComponent implements OnInit{
+export class AssessmentCenterComponent implements OnInit {
   routeSub!: Subscription;
   assessmentId: string = "";
   centers!: ICenters;
@@ -44,6 +44,8 @@ export class AssessmentCenterComponent implements OnInit{
   dashboardCenterData: ICenterDashboard;
   centerStates: Array<String> = states;
   processingDelete: boolean = false;
+  processingExamRedownload: boolean = false;
+  processingDisableExamRedownload: boolean = false;
   constructor(
     private schedulerService: SchedulerService,
     private activatedRoute: ActivatedRoute,
@@ -51,7 +53,7 @@ export class AssessmentCenterComponent implements OnInit{
     private notifierService: NotifierService,
     private userService: UserService,
     private itembankAssessmentService: AssessmentsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -59,9 +61,11 @@ export class AssessmentCenterComponent implements OnInit{
       this.assessmentId = params["assessmentId"];
     }); */
     this.assessmentId = this.itembankAssessmentService.schedulerAssessmentId;
-    
+
     this.fetchAssessmentCenters(0, 50);
-    this.fetchCenterDashboard(this.itembankAssessmentService.schedulerAssessmentId);
+    this.fetchCenterDashboard(
+      this.itembankAssessmentService.schedulerAssessmentId,
+    );
   }
 
   onFileSelected(event: any) {
@@ -93,12 +97,12 @@ export class AssessmentCenterComponent implements OnInit{
     // ]);
 
     new Promise((resolve) => {
-      localStorage.setItem('abandon-reset', 'true')
-      resolve(true)
+      localStorage.setItem("abandon-reset", "true");
+      resolve(true);
     }).then(() => {
       this.router.navigate([
-      `schedule/center/${this.assessmentId}/${centerId}/details`,
-    ]);
+        `schedule/center/${this.assessmentId}/${centerId}/details`,
+      ]);
     });
   }
 
@@ -111,7 +115,7 @@ export class AssessmentCenterComponent implements OnInit{
     // // centerMapLocation: string,
     // contactPersonPhone: string,
     // contactPersonEmail: string
-    newAssessmentCenter: NgForm
+    newAssessmentCenter: NgForm,
   ): void {
     this.processingAddAssessmentCenter = true;
 
@@ -234,16 +238,16 @@ export class AssessmentCenterComponent implements OnInit{
     this.payload.assessmentId = this.assessmentId;
 
     const cleanPayload: IFilterCenter = {
-      assessmentId: this.assessmentId
+      assessmentId: this.assessmentId,
     };
 
-    if (this.payload.centerId && this.payload.centerId.trim() !== '') {
+    if (this.payload.centerId && this.payload.centerId.trim() !== "") {
       cleanPayload.centerId = this.payload.centerId.trim();
     }
-    if (this.payload.centerName && this.payload.centerName.trim() !== '') {
+    if (this.payload.centerName && this.payload.centerName.trim() !== "") {
       cleanPayload.centerName = this.payload.centerName.trim();
     }
-    if (this.payload.state && this.payload.state.trim() !== '') {
+    if (this.payload.state && this.payload.state.trim() !== "") {
       cleanPayload.state = this.payload.state.trim();
     }
 
@@ -257,7 +261,10 @@ export class AssessmentCenterComponent implements OnInit{
         },
         error: (err: HttpErrorResponse) => {
           this.processingFetchAssessmentCenters = false;
-          this.notifierService.notify("error", err.error.message || "Failed to filter centers");
+          this.notifierService.notify(
+            "error",
+            err.error.message || "Failed to filter centers",
+          );
         },
       });
   }
@@ -288,5 +295,61 @@ export class AssessmentCenterComponent implements OnInit{
         this.notifierService.notify("error", err.error.error);
       },
     });
+  }
+
+  allowExamRedownload(
+    centerId: string,
+    assessmentId: string,
+    allowRedownload: boolean,
+  ): void {
+    this.processingExamRedownload = true;
+
+    const payload = {
+      flag: !allowRedownload,
+    };
+
+    this.schedulerService
+      .allowExamRedownloadForCenter(centerId, assessmentId, payload)
+      .subscribe({
+        next: (value) => {
+          this.processingExamRedownload = false;
+          this.fetchAssessmentCenters(0, 250);
+          this.fetchCenterDashboard(this.assessmentId);
+          this.notifierService.notify("success", "Exam Redownloaded Enabled Successfully");
+          this.modalService.dismissAll();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.processingExamRedownload = false;
+          this.notifierService.notify("error", err.error.error);
+        },
+      });
+  }
+
+    disableExamRedownload(
+    centerId: string,
+    assessmentId: string,
+    allowRedownload: boolean,
+  ): void {
+    this.processingDisableExamRedownload = true;
+
+    const payload = {
+      flag: !allowRedownload,
+    };
+
+    this.schedulerService
+      .allowExamRedownloadForCenter(centerId, assessmentId, payload)
+      .subscribe({
+        next: (value) => {
+          this.processingDisableExamRedownload = false;
+          this.fetchAssessmentCenters(0, 250);
+          this.fetchCenterDashboard(this.assessmentId);
+          this.notifierService.notify("success", "Exam Redownloaded Disabled Successfully");
+          this.modalService.dismissAll();
+        },
+        error: (err: HttpErrorResponse) => {
+          this.processingDisableExamRedownload = false;
+          this.notifierService.notify("error", err.error.error);
+        },
+      });
   }
 }

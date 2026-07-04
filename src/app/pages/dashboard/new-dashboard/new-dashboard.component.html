@@ -4,14 +4,15 @@
     <div class="spinner-border text-success" role="status"></div>
   </div> -->
 
-    <!-- Headlines -->
+  <!-- Headlines -->
   <div class="row">
     <div class="col-xl-12">
-      <!-- <div *ngIf="currentUser.authority === 'ADMIN'" class="card"> -->
-        <div *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')" class="card">
+  
+      <div *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')"
+        class="card">
         <div class="d-flex align-items-center justify-content-between card-header">
           <h4 class="card-title mb-0 flex-grow-1">
-            Questions Analysis Overview
+            Question Analysis
           </h4>
         </div>
         <div class="card-body p-0">
@@ -25,19 +26,19 @@
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                       <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                          'text-info': data.title === 'Total Subjects',
-                          'text-success':
-                            data.title === 'Total Approved Questions',
-                          'text-secondary': data.title === 'Total Questions',
-                          'text-danger':
-                            data.title === 'Total Rejected Questions' ||
-                            data.title === 'Total Questions In-recycle',
-                          'text-primary':
-                            data.title === 'Total Published Questions',
-                          'text-warning':
-                            data.title === 'Total Draft Questions' ||
-                            data.title === 'Awaiting Moderation'
-                        }"></i>
+                                  'text-info': data.title === 'Total Subjects',
+                                  'text-success':
+                                    data.title === 'Total Approved Questions',
+                                  'text-secondary': data.title === 'Total Questions',
+                                  'text-danger':
+                                    data.title === 'Total Rejected Questions' ||
+                                    data.title === 'Total Questions In-recycle',
+                                  'text-primary':
+                                    data.title === 'Total Published Questions',
+                                  'text-warning':
+                                    data.title === 'Total Draft Questions' ||
+                                    data.title === 'Awaiting Moderation'
+                                }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -53,9 +54,13 @@
         <!-- end card body -->
       </div>
       <!-- end card -->
-
-
-      <div *ngIf="currentUser.authority === 'AUTHOR'" class="card">
+  
+      <div *ngIf="currentUser.authorities.includes('AUTHOR')" class="card">
+        <div class="d-flex align-items-center justify-content-between card-header">
+          <h4 class="card-title mb-0 flex-grow-1">
+            Question Analysis
+          </h4>
+        </div>
         <div class="card-body p-0">
           <div class="row row-cols-3 row-cols-1 g-0">
             <ng-container *ngFor="let data of rowOne">
@@ -67,15 +72,15 @@
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                       <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                          'text-info': data.title === 'Total Subjects',
-                          'text-success': data.title === 'Total Approved',
-                          'text-secondary': data.title === 'Total Questions',
-                          'text-danger': data.title === 'Total Rejected',
-                          'text-primary': data.title === 'Total Published',
-                          'text-warning':
-                            data.title === 'Total Draft' ||
-                            data.title === 'Awaiting Moderation'
-                        }"></i>
+                            'text-info': data.title === 'Total Subjects',
+                            'text-success': data.title === 'Total Approved',
+                            'text-secondary': data.title === 'Total Questions',
+                            'text-danger': data.title === 'Total Rejected',
+                            'text-primary': data.title === 'Total Published',
+                            'text-warning':
+                              data.title === 'Total Draft' ||
+                              data.title === 'Awaiting Moderation'
+                          }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -91,8 +96,13 @@
         <!-- end card body -->
       </div>
       <!-- end card -->
-
+  
       <div *ngIf="currentUser.authorities.includes('MODERATOR')" class="card">
+        <div class="d-flex align-items-center justify-content-between card-header">
+          <h4 class="card-title mb-0 flex-grow-1">
+            Question Analysis
+          </h4>
+        </div>
         <div class="card-body p-0">
           <div class="row row-cols-3 g-0">
             <ng-container *ngFor="let data of rowOne">
@@ -104,15 +114,15 @@
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                       <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                          'text-info': data.title === 'Total Subjects',
-                          'text-success': data.title === 'Total Approved',
-                          'text-secondary': data.title === 'Total Questions',
-                          'text-danger': data.title === 'Total Rejected',
-                          'text-primary': data.title === 'Total Published',
-                          'text-warning':
-                            data.title === 'Total Draft' ||
-                            data.title === 'Awaiting Moderation'
-                        }"></i>
+                                  'text-info': data.title === 'Total Subjects',
+                                  'text-success': data.title === 'Total Approved',
+                                  'text-secondary': data.title === 'Total Questions',
+                                  'text-danger': data.title === 'Total Rejected',
+                                  'text-primary': data.title === 'Total Published',
+                                  'text-warning':
+                                    data.title === 'Total Draft' ||
+                                    data.title === 'Awaiting Moderation'
+                                }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -128,8 +138,13 @@
         <!-- end card body -->
       </div>
       <!-- end card -->
-
-      <div *ngIf="currentUser.authority === 'EXAMINER'" class="card">
+  
+      <div *ngIf="currentUser.authorities.includes('EXAMINER')" class="card">
+        <div class="d-flex align-items-center justify-content-between card-header">
+          <h4 class="card-title mb-0 flex-grow-1">
+            Question Analysis
+          </h4>
+        </div>
         <div class="card-body p-0">
           <div class="row row-cols-4 row-cols-1 g-0">
             <div *ngFor="let data of rowOne">
@@ -141,15 +156,15 @@
                   <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
                       <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                          'text-info': data.title === 'Total Subjects',
-                          'text-success': data.title === 'Total Approved',
-                          'text-secondary': data.title === 'Total Questions',
-                          'text-danger': data.title === 'Total Rejected',
-                          'text-primary': data.title === 'Total Published',
-                          'text-warning':
-                            data.title === 'Total Draft' ||
-                            data.title === 'Awaiting Moderation'
-                        }"></i>
+                                  'text-info': data.title === 'Total Subjects',
+                                  'text-success': data.title === 'Total Approved',
+                                  'text-secondary': data.title === 'Total Questions',
+                                  'text-danger': data.title === 'Total Rejected',
+                                  'text-primary': data.title === 'Total Published',
+                                  'text-warning':
+                                    data.title === 'Total Draft' ||
+                                    data.title === 'Awaiting Moderation'
+                                }"></i>
                     </div>
                     <div class="flex-grow-1 ms-4">
                       <h2 class="mb-0">{{ data.count }}</h2>
@@ -165,6 +180,7 @@
         <!-- end card body -->
       </div>
       <!-- end card -->
+  
     </div>
     <!-- end col -->
   </div>
@@ -185,15 +201,41 @@
       <div class="premium-card p-0 overflow-hidden">
         <div
           class="p-4 border-bottom border-light border border-primary d-flex justify-content-between align-item-center">
-          <!-- <h5 class="mb-0 text-primary font-weight-bold">Today's Exams Breakdown</h5> -->
           <h5 class="mb-3 card-title">Exam for the day Breakdown</h5>
-          <select class="filter-select form-select-sm border-0 bg-light"
-            [(ngModel)]="selectedExamForTheDayDeliveryMethod" (change)="onExamForTheDayDeliveryMethodChange();"
-            [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
-            <option value="COMPUTER_BASED">COMPUTER BASED</option>
-            <option value="PAPER_BASED">PAPER BASED</option>
-            <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
-          </select>
+          <div *ngIf="!currentUser.authorities.includes('PROCTOR_ADMIN')" class="dropdown" ngbDropdown #examForTheDayFilterDrop="ngbDropdown"
+            [placement]="['bottom-right', 'bottom-left', 'top-right', 'top-left']" container="body">
+            <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+              ngbDropdownToggle>
+              <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+            </a>
+            <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+              <div class="px-3 py-2 small text-black">Filter Exams for the day</div>
+              <div class="dropdown-divider"></div>
+              <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
+                <div class="mb-2">
+                  <label for="center" class="small">Delivery Method</label>
+                  <select #select class="form-select form-select w-100" name="type"
+                    [(ngModel)]="selectedExamForTheDayDeliveryMethod">
+                    <option value=""> -- Select Mode --</option>
+                    <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
+                      {{ mode.label }}
+                    </option>
+                  </select>
+                </div>
+          
+              </form>
+              <div class="dropdown-divider"></div>
+              <div class="px-3 pb-2 d-flex gap-1">
+                <button type="button" (click)="examForTheDayFilterDrop.close(); clearExamForTheDayFilter()"
+                  class="btn btn-secondary w-100">
+                  Clear
+                </button>
+          
+                <button type="button" (click)="applyExamForTheDayFilter(); examForTheDayFilterDrop.close()"
+                  class="btn btn-primary w-100">Apply</button>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- table-scroll-area flex-grows to fill the card; empty/loading
@@ -427,7 +469,7 @@
           <div class="d-flex justify-content-between align-items-center mb-2">
             <!-- <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5> -->
             <h5 class="mb-3 card-title">Exam Calendar</h5>
-            <div class="d-flex gap-2 align-items-center">
+            <!-- <div class="d-flex gap-2 align-items-center">
               <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="calendarMonth"
                 (change)="fetchExamCalendar()">
                 <option
@@ -436,7 +478,70 @@
               </select>
               <input type="number" class="form-control form-control-sm border-0 bg-light" style="width: 70px;"
                 [(ngModel)]="calendarYear" (change)="fetchExamCalendar()">
+            </div> -->
+
+            <div class="dropdown" ngbDropdown #examCalendarFilterDrop="ngbDropdown"
+              [placement]="['bottom-right', 'bottom-left', 'top-right', 'top-left']" container="body">
+              <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+                ngbDropdownToggle>
+                <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+              </a>
+              <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                <div class="px-3 py-2 small text-black">Filter exam calendar</div>
+                <div class="dropdown-divider"></div>
+                <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
+                  <!-- <div class="mb-2">
+                    <label for="center" class="small">Delivery Method</label>
+                    <select #selects class="form-select form-select w-100" name="type" [(ngModel)]="selectedExamCalendarDeliveryMethod"
+                      [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+                      <option value=""> -- Select Mode --</option>
+                      <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
+                        {{ mode.label }}
+                      </option>
+                    </select>
+                  </div> -->
+
+                  <div class="mb-2">
+                    <label for="center" class="small">Delivery Method</label>
+                    <select #select class="form-select form-select w-100" name="type" [(ngModel)]="selectedExamCalendarDeliveryMethod"
+                      [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+                      <option value=""> -- Select Mode --</option>
+                      <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
+                        {{ mode.label }}
+                      </option>
+                    </select>
+                  </div>
+
+                  <div class="mb-2">
+                    <label for="center" class="small">Month</label>
+                    <select #select class="form-select form-select w-100" name="type" [(ngModel)]="calendarMonth">
+                      <option
+                        *ngFor="let m of [{id: 1, name: 'January'}, {id: 2, name: 'February'}, {id: 3, name: 'March'}, {id: 4, name: 'April'}, {id: 5, name: 'May'}, {id: 6, name: 'June'}, {id: 7, name: 'July'}, {id: 8, name: 'August'}, {id: 9, name: 'September'}, {id: 10, name: 'October'}, {id: 11, name: 'November'}, {id: 12, name: 'December'}]"
+                        [value]="m.id"> {{m.name}} </option>
+                    </select>
+                  </div>
+            
+                  <div class="mb-2">
+                    <label for="center" class="small">Year</label>
+                    <!-- <input type="number" class="form-control form-control border-0 bg-light" style="width: 70px;"
+                                  [(ngModel)]="calendarYear" (change)="fetchExamCalendar()"> -->
+                    <input type="number" min="0" class="form-control" placeholder="30" name="autoSaveIntervalSeconds"
+                      [(ngModel)]="calendarYear" />
+                  </div>
+            
+                </form>
+                <div class="dropdown-divider"></div>
+                <div class="px-3 pb-2 d-flex gap-1">
+                  <button type="button" (click)="examCalendarFilterDrop.close(); clearExamCalendarFilter()"
+                    class="btn btn-secondary w-100">
+                    Clear
+                  </button>
+                  <button type="button" (click)="applyExamsCalendarFilter(); examCalendarFilterDrop.close()"
+                    class="btn btn-primary w-100">Apply</button>
+                </div>
+              </div>
             </div>
+
           </div>
 
           <div class="calendar-heatmap">
@@ -576,15 +681,43 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
           <!-- <h5 class="mb-0 text-primary font-weight-bold">AI Infraction</h5> -->
           <h5 class="mb-3 card-title">AI Infraction</h5>
-          <div class="d-flex gap-2 align-items-center">
-            <select class="form-select form-select-sm border-0 bg-light"
-              [(ngModel)]="selectedInfractionDeliveryMethod" (change)="onInfractionDeliveryMethodChange();"
-              [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
-              <option value="COMPUTER_BASED">COMPUTER BASED</option>
-              <option value="PAPER_BASED">PAPER BASED</option>
-              <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
-            </select>
+
+          <div *ngIf="!currentUser.authorities.includes('PROCTOR_ADMIN')" class="dropdown" ngbDropdown
+            #aiInfractionFilterDrop="ngbDropdown" [placement]="['bottom-right', 'bottom-left', 'top-right', 'top-left']"
+            container="body">
+            <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+              ngbDropdownToggle>
+              <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+            </a>
+            <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+              <div class="px-3 py-2 small text-black">Filter AI Infraction</div>
+              <div class="dropdown-divider"></div>
+              <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
+                <div class="mb-2">
+                  <label for="center" class="small">Delivery Method</label>
+                  <select #select class="form-select form-select w-100" name="type"
+                    [(ngModel)]="selectedInfractionDeliveryMethod">
+                    <option value=""> -- Select Mode --</option>
+                    <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
+                      {{ mode.label }}
+                    </option>
+                  </select>
+                </div>
+          
+              </form>
+              <div class="dropdown-divider"></div>
+              <div class="px-3 pb-2 d-flex gap-1">
+                <button type="button" (click)="aiInfractionFilterDrop.close(); clearAIInfractionFilter()"
+                  class="btn btn-secondary w-100">
+                  Clear
+                </button>
+          
+                <button type="button" (click)="applyAIInfractionFilter(); aiInfractionFilterDrop.close()"
+                  class="btn btn-primary w-100">Apply</button>
+              </div>
+            </div>
           </div>
+
         </div>
 
         <div class="flex-grow-1 d-flex flex-column justify-content-center">
@@ -621,10 +754,11 @@
                 <div class="mb-2">
                   <label for="center" class="small">Delivery Method</label>
                   <select #select class="form-select form-select w-100" name="type"
-                    [(ngModel)]="selectedUpcomingExamDeliveryMethod">
-                    <option value="COMPUTER_BASED">COMPUTER BASED</option>
-                    <option value="PAPER_BASED">PAPER BASED</option>
-                    <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
+                    [(ngModel)]="selectedUpcomingExamDeliveryMethod" [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+                    <option value=""> -- Select Mode --</option>
+                    <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
+                      {{ mode.label }}
+                    </option>
                   </select>
                 </div>
 
@@ -666,12 +800,10 @@
               </form>
               <div class="dropdown-divider"></div>
               <div class="px-3 pb-2 d-flex gap-1">
-                <button type="button" (click)="
-                                        upcomingExamFilterDrop.close(); clearUpcomingExamsFilter()"
+                <button type="button" (click)="upcomingExamFilterDrop.close(); clearUpcomingExamsFilter()"
                   class="btn btn-secondary w-100">
                   Clear
-                </button>
-
+                </button>              
                 <button type="button" (click)="applyUpcomingExamsFilter(); upcomingExamFilterDrop.close()"
                   class="btn btn-primary w-100">Apply</button>
               </div>

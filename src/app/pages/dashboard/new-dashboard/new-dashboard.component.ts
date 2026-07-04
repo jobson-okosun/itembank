@@ -19,6 +19,8 @@ import { NotifierService } from "angular-notifier";
 import { DashboardCards } from "../model/dashboard-cards";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CardDetails } from "../main/main.component";
+import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
+import { DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
 
 @Component({
   selector: "app-new-dashboard",
@@ -39,12 +41,19 @@ export class NewDashboardComponent implements OnInit {
 
   totalUsersCount: number = 0;
 
+  deliveryMethods: Array<string> = [];
+  deliveryMethodsWithLabel: {
+    label: string;
+    value: string;
+    description: string;
+  }[] = [];
+
   // Global Filter State
-  selectedExamForTheDayDeliveryMethod: string = "COMPUTER_BASED";
-
-  selectedInfractionDeliveryMethod: string = "COMPUTER_BASED";
-
+  selectedExamForTheDayDeliveryMethod: string = "";
+  selectedInfractionDeliveryMethod: string = "";
   selectedUpcomingExamDeliveryMethod: string = "";
+  selectedExamCalendarDeliveryMethod = "";
+
   selectedUpcomingExamStatus: string = "";
   // These should be in standard 'YYYY-MM-DD' string format
   upcomingExamsStartDateFromStr: string = "";
@@ -125,10 +134,23 @@ export class NewDashboardComponent implements OnInit {
       return;
     }
 
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.deliveryMethods.push(method);
+    });
+
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map(
+      (value: string, index: number) => ({
+        value: value,
+        label: DELIVERY_METHOD_LABEL?.[index]?.label,
+        description: DELIVERY_METHOD_LABEL?.[index]?.description,
+      }),
+    );
+
     if (this.currentUser.authorities.includes(Role.PROCTOR_ADMIN)) {
       this.selectedExamForTheDayDeliveryMethod = "LIVE_PROCTORING";
       this.selectedInfractionDeliveryMethod = "LIVE_PROCTORING";
       this.selectedUpcomingExamDeliveryMethod = "LIVE_PROCTORING";
+      this.selectedExamCalendarDeliveryMethod = "LIVE_PROCTORING";
     }
 
     if (
@@ -163,35 +185,35 @@ export class NewDashboardComponent implements OnInit {
             icon: "folder-line",
             count:
               this.dashboardData.questionsModerationCard?.totalSubjects ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Questions",
             icon: "stack-line",
             count:
               this.dashboardData.questionsModerationCard?.totalQuestions ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Passages",
             icon: "article-line",
             count:
               this.dashboardData.questionsModerationCard?.totalPassages ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Questions In-recycle",
             icon: "recycle-line",
             count:
               this.dashboardData.questionsModerationCard?.totalInRecycle ?? 0,
-            roles: ["ADMIN", "EXAMINER"],
+            roles: ["ADMIN", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Published Questions",
             icon: "upload-cloud-2-line",
             count:
               this.dashboardData.questionsModerationCard?.totalPublished ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Awaiting Moderation",
@@ -199,33 +221,33 @@ export class NewDashboardComponent implements OnInit {
             count:
               this.dashboardData.questionsModerationCard
                 ?.totalAwaitingModeration ?? 0,
-            roles: ["ADMIN", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Approved Questions",
             icon: "check-double-line",
             count:
               this.dashboardData.questionsModerationCard?.totalApproved ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Draft Questions",
             icon: "draft-line",
             count: this.dashboardData.questionsModerationCard?.totalDrafts ?? 0,
-            roles: ["ADMIN", "AUTHOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Rejected Questions",
             icon: "feedback-line",
             count:
               this.dashboardData.questionsModerationCard?.totalRejected ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Used Questions",
             icon: "eye-2-line",
             count: this.dashboardData.questionsModerationCard?.totalUsed ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
         ];
 
@@ -299,10 +321,26 @@ export class NewDashboardComponent implements OnInit {
     }
   }
 
-  onExamForTheDayDeliveryMethodChange() {
+  clearExamForTheDayFilter(): void {
+    this.selectedExamForTheDayDeliveryMethod = "";
     this.examForTheDayPaginationSize = 20;
     this.examForTheDayPaginationPage = 1;
     this.fetchExamsForTheDay();
+  }
+
+  applyExamForTheDayFilter(): void {
+    this.examForTheDayPaginationSize = 20;
+    this.examForTheDayPaginationPage = 1;
+    this.fetchExamsForTheDay();
+  }
+
+  clearAIInfractionFilter(): void {
+    this.selectedInfractionDeliveryMethod = "";
+    this.fetchAIInfractions();
+  }
+
+  applyAIInfractionFilter(): void {
+    this.fetchAIInfractions();
   }
 
   onInfractionDeliveryMethodChange(): void {
@@ -321,7 +359,12 @@ export class NewDashboardComponent implements OnInit {
     this.upcomingExamsPaginationSize = 20;
     this.upcomingExamsPaginationPage = 1;
 
-    this.selectedUpcomingExamDeliveryMethod = "";
+    if (this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
+      this.selectedUpcomingExamDeliveryMethod = "LIVE_PROCTORING";
+    } else {
+      this.selectedUpcomingExamDeliveryMethod = "";
+    }
+
     this.selectedUpcomingExamStatus = "";
     this.upcomingExamsStartDateFromStr = "";
     this.upcomingExamsStartDateToStr = "";
@@ -329,6 +372,23 @@ export class NewDashboardComponent implements OnInit {
     this.upcomingExamsEndDateToStr = "";
 
     this.fetchUpcomingExams();
+  }
+
+  applyExamsCalendarFilter(): void {
+    this.fetchExamCalendar();
+  }
+
+  clearExamCalendarFilter(): void {
+    if (this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
+      this.selectedExamCalendarDeliveryMethod = "LIVE_PROCTORING";
+    } else {
+      this.selectedExamCalendarDeliveryMethod = "";
+    }
+
+    console.log('MONTH: ', this.calendarMonth);
+    console.log('YEAR: ', this.calendarYear);
+
+    this.fetchExamCalendar();
   }
 
   onUpcomingExamsStartDateToChange(event: Event): void {
@@ -559,6 +619,11 @@ export class NewDashboardComponent implements OnInit {
 
   fetchExamCalendar() {
     const params = { month: this.calendarMonth, year: this.calendarYear };
+
+    if (this.selectedExamCalendarDeliveryMethod) {
+      params["delivery_method"] = this.selectedExamCalendarDeliveryMethod;
+    }
+
     this.dashboardService
       .fetchExamCalendar(this.buildParams(params))
       .subscribe((res) => {

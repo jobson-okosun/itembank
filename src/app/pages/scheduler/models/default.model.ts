@@ -27,3 +27,4 @@ export const DEFAULT_PROCTOR_GUIDE = `
     { label: 'E-PAPER', description: 'Exam will be taken on a dedicated device.' },
     { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
   ];
+

@@ -611,7 +611,7 @@ export class CreateItemComponent implements OnInit, OnDestroy {
         // console.log(this.subjectModerationStatus, "mod status");
         if (
           (!this.currentUser.authorities.includes("MODERATOR") &&
-            !this.currentUser.authorities.includes("ADMIN")) || // Both roles are missing
+            !this.currentUser.authorities.includes("ADMIN") && !this.currentUser.authorities.includes("GROUP_ADMIN")) || // Both roles are missing
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
         ) {

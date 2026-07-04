@@ -120,7 +120,7 @@ export class ViewUserComponent implements OnInit {
   }
 
   setDefaultActivityFilterParams() {
-    if (this.currentUser?.authorities?.includes('ADMIN')) {
+    if (this.currentUser?.authorities?.includes('ADMIN') || this.currentUser?.authorities?.includes('GROUP_ADMIN')) {
       this.userActivityFilter.userId = this.userId;
     }
     //this.userActivityFilter.userActivityType = 'LOGIN';
@@ -128,7 +128,7 @@ export class ViewUserComponent implements OnInit {
 
   fetchUserItemAnalysis(userId: string) {
     // get all the items created by user
-    if (this.currentUser?.authorities?.includes('ADMIN')) {
+    if (this.currentUser?.authorities?.includes('ADMIN') || this.currentUser?.authorities?.includes('GROUP_ADMIN')) {
       this.userService2.getAuthorItems(this.userId).subscribe(
         (value) => {
           this.userItemAnalysis = value;
@@ -153,7 +153,7 @@ export class ViewUserComponent implements OnInit {
   }
 
   fetchUserDetail(userId: string) {
-    if (this.currentUser?.authorities?.includes('ADMIN')) {
+    if (this.currentUser?.authorities?.includes('ADMIN') || this.currentUser?.authorities?.includes('GROUP_ADMIN')) {
       this.userService2.getUserDetail(userId).subscribe(
         (value) => {
           this.userDetail = value;
@@ -186,7 +186,7 @@ export class ViewUserComponent implements OnInit {
 
   fetchActivities() {
     this.loadingActivityList = true;
-    if (this.currentUser?.authorities?.includes('ADMIN')) {
+    if (this.currentUser?.authorities?.includes('ADMIN') || this.currentUser?.authorities?.includes('GROUP_ADMIN')) {
       this.userService2
         .fetchActivityListAdmin(this.userActivityFilter, this.page, this.size)
         .subscribe(

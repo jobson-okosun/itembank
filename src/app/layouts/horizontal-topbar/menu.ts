@@ -207,7 +207,7 @@ export const SCHEDULER_MENU: MenuItem[] = [
     id: 2,
     label: 'SCHEDULER_MENU.USERS.TEXT',
     link: '/itembank/users',
-    role: ['ADMIN'],
+    role: ['ADMIN', 'GROUP_ADMIN'],
     icon: 'users',
   },
   {
