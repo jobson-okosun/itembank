@@ -58,7 +58,7 @@
             <button (click)="openNewTopicModal(newTopicModal)" type="button"
               class="btn btn-primary btn-label waves-effect right waves-light w-100">
               <i title="NEW TOPIC" *ngIf="
-                  currentUser.authorities.includes('ADMIN') && !_currentBlock
+                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock
                 " class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               <!-- {{ subject.subjectName.toUpperCase() }} -->
               Add Topic
@@ -144,7 +144,7 @@
           <div>
             <button type="button" class="btn btn-primary btn-label waves-effect right waves-light w-100">
               <i title="NEW TOPIC" *ngIf="
-                  currentUser.authorities.includes('ADMIN') && !_currentBlock
+                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock
                 " (click)="openNewTopicModal(newTopicModal)"
                 class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               {{ subject && subject.subjectName.toUpperCase() }}
@@ -387,7 +387,7 @@
                       <i class="ri-add-line align-middle me-2 text-primary"></i> New Question
                     </button>
                   </li>
-                  <ng-container *ngIf="clickedTopic && currentUser.authorities.includes('ADMIN')">
+                  <ng-container *ngIf="clickedTopic && (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN'))">
                     <li *ngIf="!clickedTopic.subtopicName">
                       <button class="dropdown-item" (click)="openNewSubTopicModal(newSubTopicModal, clickedTopic)">
                         <i class="ri-draft-line align-middle me-2 text-warning"></i> Add Subtopic
@@ -674,7 +674,7 @@
                         <a *ngIf="item.showFullItem === true" (click)="hidePreview(item, i)"
                           class="btn btn-outline-success btn-sm d-flex align-items-center justify-items-center">hide</a>
 
-                        <button *ngIf="currentUser.authorities.includes('ADMIN')" ngbTooltip="USAGE HISTORY"
+                        <button *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')" ngbTooltip="USAGE HISTORY"
                           type="button" class="btn px-2 btn-icon btn-outline-info"
                           (click)="routeToUsageHistoryPage(item.itemId)">
                           <i class="ri-history-line"></i>

@@ -26,6 +26,7 @@ import { NgForm, NgSelectOption } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Account } from "src/app/authentication/model/account.model";
 import { UserService } from "src/app/shared/user.service";
+import { Role } from "../model/role";
 
 @Component({
   selector: "app-edit-user",

@@ -241,12 +241,12 @@
         <!-- table-scroll-area flex-grows to fill the card; empty/loading
              states below use table-empty-state so they center instead of
              leaving blank space -->
-        <div class="table-scroll-area table-scroll-area--compact" *ngIf="!examsForTheDay || examsForTheDay?.content?.length">
+        <div class="table-scroll-area table-scroll-area--compact" *ngIf="examsForTheDay?.content?.length">
           <table class="table modern-table table-borderless table-nowrap mb-0 w-100">
             <thead class="bg-light">
               <tr>
-                <th style="text-align: center;">Exam Name</th>
-                <th style="text-align: center;">Method</th>
+                <th>Exam Name</th>
+                <th>Method</th>
                 <th style="text-align: center;">Total Center(s) <br /> (Dow. Exam/Uploaded Exam/Dow. Passport)</th>
                 <th style="text-align: center;">Participant(s) <br /> (Online/Present/Absent) </th>
                 <th style="text-align: center;">Total Centers </th>
@@ -256,12 +256,12 @@
             <tbody>
               <tr *ngFor="let ex of examsForTheDay?.content">
                 <td>
-                  <div class="d-flex justify-content-center items-center">
-                    <div>{{ ex.exam_name }}</div>
+                  <div>
+                    <div class="text-capitalize">{{ ex.exam_name }}</div>
                   </div>
                 </td>
                 <td>
-                  <div class="d-flex justify-content-center items-center">
+                  <div>
                     <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{
                       ex.delivery_method?.replaceAll('_', ' ') }}</span>
                   </div>
@@ -351,7 +351,7 @@
 
         <!-- Empty / loading states now fill the remaining card space
              instead of sitting in a single short table row -->
-        <div class="table-empty-state table-scroll-area--compact text-muted" *ngIf="examsForTheDay && examsForTheDay?.content?.length === 0">
+        <div class="table-empty-state table-scroll-area--compact text-muted" *ngIf="(examsForTheDay && examsForTheDay?.content?.length === 0) || !examsForTheDay">
           <div class="text-center">
             <i class="ri-file-list-3-line fs-2 d-block mb-2"></i>
             No exams scheduled for today.
@@ -490,20 +490,10 @@
                 <div class="px-3 py-2 small text-black">Filter exam calendar</div>
                 <div class="dropdown-divider"></div>
                 <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
-                  <!-- <div class="mb-2">
-                    <label for="center" class="small">Delivery Method</label>
-                    <select #selects class="form-select form-select w-100" name="type" [(ngModel)]="selectedExamCalendarDeliveryMethod"
-                      [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
-                      <option value=""> -- Select Mode --</option>
-                      <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
-                        {{ mode.label }}
-                      </option>
-                    </select>
-                  </div> -->
 
                   <div class="mb-2">
-                    <label for="center" class="small">Delivery Method</label>
-                    <select #select class="form-select form-select w-100" name="type" [(ngModel)]="selectedExamCalendarDeliveryMethod"
+                    <label for="mode" class="small">Delivery Method</label>
+                    <select #select id="mode" class="form-select form-select w-100" name="mode" [(ngModel)]="selectedExamCalendarDeliveryMethod"
                       [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
                       <option value=""> -- Select Mode --</option>
                       <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
@@ -523,8 +513,6 @@
             
                   <div class="mb-2">
                     <label for="center" class="small">Year</label>
-                    <!-- <input type="number" class="form-control form-control border-0 bg-light" style="width: 70px;"
-                                  [(ngModel)]="calendarYear" (change)="fetchExamCalendar()"> -->
                     <input type="number" min="0" class="form-control" placeholder="30" name="autoSaveIntervalSeconds"
                       [(ngModel)]="calendarYear" />
                   </div>
@@ -555,11 +543,62 @@
             <div class="calendar-header-day">Sun</div>
 
             <!-- Days -->
-            <div *ngFor="let cell of calendarDays" class="calendar-cell" [ngClass]="cell.heatClass"
+            <!-- <div *ngFor="let cell of calendarDays" class="calendar-cell" [ngClass]="cell.heatClass"
               [ngbTooltip]="cell.day ? (cell.exams.length + ' Exams (' + cell.dateStr + ')') : ''" container="body"
               (click)="getRecordOnCalenderCellBlock(cell)">
               {{ cell.day }}
+            </div> -->
+
+            <div *ngFor="let cell of calendarDays" class="calendar-cell position-relative" [ngClass]="cell.heatClass"
+              [style.z-index]="hoveredCell === cell ? 99 : 1" (click)="getRecordOnCalenderCellBlock(cell)">
+            
+              <div class="w-100 h-100 d-flex align-items-center justify-content-center relative" *ngIf="cell.day" ngbDropdown
+                #myDrop="ngbDropdown" placement="bottom-start" (mouseenter)="hoveredCell = cell; myDrop.open()"
+                (mouseleave)="hoveredCell = null; myDrop.close()">
+            
+                <!-- FIX: We position the anchor at the absolute center line (top: 50%) with zero height -->
+                <span ngbDropdownAnchor class="position-absolute start-0 end-0" style="top: 50%; height: 0;" style="visibility: hidden;"></span>
+            
+                <!-- Day text -->
+                <span class="position-relative fw-bold" [ngClass]="{'text-white': cell.exams.length > 0, 'text-dark': cell.exams.length === 0}">
+                  {{ cell.day }}
+                </span>
+            
+                <!-- Dropdown menu -->
+                <div ngbDropdownMenu class="dropdown-menu p-3 shadow-lg rounded-lg spec-calendar-dropdown">
+                  <div class="dropdown-header px-0 text-dark fw-bold d-flex justify-content-between align-items-center">
+                    <span>Exams Portfolio</span>
+                    <span class="badge rounded-pill bg-light text-dark border">{{ cell.exams?.length || 0 }}</span>
+                  </div>
+                  <div class="dropdown-divider my-2"></div>
+            
+                  <div *ngIf="!cell.exams || cell.exams.length === 0" class="text-muted small py-1">
+                    No exams scheduled for {{ cell.dateStr }}
+                  </div>
+            
+                  <ul *ngIf="cell.exams && cell.exams.length > 0" class="list-unstyled mb-0 custom-scrollbar"
+                    style="max-height: 200px; overflow-y: auto; width: 100%;">
+                    <!-- 1. Changed d-flex align-items-start to give text layouts room vertically -->
+                    <li *ngFor="let exam of cell.exams" class="py-2 border-bottom last-border-0 small d-flex align-items-start">
+                      <span class="exam-dot me-2 mt-1.5"></span>
+            
+                      <!-- 2. Changed text-truncate wrapper to w-100 so it can fully expand -->
+                      <div class="w-100 min-width-0">
+                        <strong class="text-dark d-block text-truncate mb-1 text-uppercase">{{ exam.exam_name || 'Exam' }}</strong>
+            
+                        <!-- 3. Corrected Bootstrap layout classes: justify-content-between & align-items-center -->
+                        <div class="d-flex justify-content-between align-items-center w-100 exam-dates-meta text-muted">
+                          <span>Start: {{ exam.start_date | date: 'short' }}</span>
+                          <span>End: {{ exam.end_date | date: 'short' }}</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+            
+              </div>
             </div>
+            
           </div>
           <div class="card-footer-pin d-flex justify-content-end gap-2 text-muted" style="font-size: 0.75rem;">
             <span class="d-flex align-items-center gap-1">
@@ -816,8 +855,8 @@
           <table class="table modern-table table-borderless table-nowrap mb-0 w-100">
             <thead class="bg-light">
               <tr>
-                <th style="text-align: center;">Exam Name</th>
-                <th style="text-align: center;">Method</th>
+                <th>Exam Name</th>
+                <th>Method</th>
                 <th style="text-align: center;">Status</th>
                 <th style="text-align: center;">End Date</th>
                 <th style="text-align: center;">Start Date</th>
@@ -828,12 +867,12 @@
             <tbody>
               <tr *ngFor="let ex of upcomingExams?.content">
                 <td>
-                  <div class="d-flex justify-content-center items-center">
-                    <div>{{ ex.exam_name }}</div>
+                  <div class="d-flex">
+                    <div class="text-capitalize">{{ ex.exam_name }}</div>
                   </div>
                 </td>
                 <td>
-                  <div class="d-flex justify-content-center items-center">
+                  <div class="d-flex">
                     <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{
                       ex.delivery_method?.replaceAll('_', ' ') }}</span>
                   </div>
@@ -874,7 +913,7 @@
           </table>
         </div>
 
-        <div class="table-empty-state text-muted" *ngIf="upcomingExams?.content?.length === 0">
+        <div class="table-empty-state text-muted" *ngIf="upcomingExams?.content?.length === 0 || !upcomingExams">
           <div class="text-center">
             <i class="ri-calendar-line fs-2 d-block mb-2"></i>
             No upcoming exams scheduled.

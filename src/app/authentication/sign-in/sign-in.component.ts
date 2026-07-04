@@ -67,6 +67,8 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
   isResendingOtp: boolean = false;
 
+  @ViewChild("ngOtpInput", { static: false }) ngOtpInputRef: any;
+
   constructor(
     private formBuilder: FormBuilder,
     public http: AuthenticationService,
@@ -145,7 +147,11 @@ export class SignInComponent implements OnInit, AfterViewInit {
 
           this.http.provideOtpToProceed = true;
 
-          this.loginOtp = value.otpRecordId;
+        //   this.loginOtp = value.otpRecordId;
+
+        //   if (this.loginOtp) {
+        //   this.ngOtpInputRef.setValue(this.loginOtp);
+        // }
 
           console.log("LOGIN OTP: ", value);
 
@@ -380,6 +386,8 @@ export class SignInComponent implements OnInit, AfterViewInit {
     this.isOtpProvided = false;
     this.error = false;
     this.error_msg = "";
+    this.success = false;
+        this.success_msg = "";
 
     if (!this.loginOtp) {
       this.isOtpProvided = true;
@@ -399,43 +407,35 @@ export class SignInComponent implements OnInit, AfterViewInit {
       otp: this.loginOtp,
     };
 
-    this.http.verifyOtp(payload).subscribe(
-      (value) => {
+    this.http.verifyOtp(payload).subscribe({
+      next: (value) => {
         this.router
           .navigate(["examalpha"])
           .catch((reason) => console.log(reason));
         this.loginOtp = "";
-        // this.http.provideOtpToProceed = false;
         this.isSubmittingOtp = false;
         this.error = false;
       },
-      (err: HttpErrorResponse) => {
+      error: (error: HttpErrorResponse) => {
         this.error = true;
         this.isSubmittingOtp = false;
 
-           console.log('The exact error object:', err); 
-    
-    // 2. Check if it's actually an Angular Http Error
-    if (err instanceof HttpErrorResponse) {
-      console.log('Status:', err.status);
-      console.log('Body:', err.error);
-    } else {
-      console.log('This is not an HttpErrorResponse. Message is:', err || err);
-    }
+        console.error(error);
 
-        if (err.error && err.error.error) {
-          this.error_msg = err.error.error;
+        this.success = false;
+        this.success_msg = "";
+
+        if (error.error && error.error.error) {
+          this.error_msg = error.error.error;
         } else {
-          this.error_msg = "Sorry! Unable to verify OTP";
+          this.error_msg = "Sorry! Unable to resolve OTP";
         }
       },
-    );
+    });
   }
 
   resendOTP(): void {
     this.isOtpProvided = false;
-    this.error = false;
-    this.error_msg = "";
     this.isResendingOtp = true;
     this.success = false;
 
@@ -443,8 +443,14 @@ export class SignInComponent implements OnInit, AfterViewInit {
       (value) => {
         console.log("RESENDED: ", value);
 
-        this.loginOtp = '';
+        if (this.ngOtpInputRef) {
+          this.ngOtpInputRef.setValue("");
+        }
 
+        this.loginOtp = "";
+
+        this.error = false;
+        this.error_msg = "";
         this.isResendingOtp = false;
 
         this.success = true;
@@ -461,7 +467,6 @@ export class SignInComponent implements OnInit, AfterViewInit {
         } else {
           this.error_msg = "Sorry! Unable to verify OTP";
         }
-        
       },
     );
   }

@@ -110,6 +110,8 @@ export class NewDashboardComponent implements OnInit {
   private upcomingExamsPaginationSize: number = 20;
   private upcomingExamsPaginationPage: number = 1;
 
+  hoveredCell: any = null;
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -251,12 +253,12 @@ export class NewDashboardComponent implements OnInit {
           },
         ];
 
-        this.totalUsersCount = value.usersCard.totalUsers;
+        this.totalUsersCount = value.usersCard && value.usersCard.totalUsers;
 
         this.userChartOptions = {
           series: [
-            value.usersCard.totalActiveUsers,
-            value.usersCard.totalInActiveUsers,
+            value.usersCard && value.usersCard.totalActiveUsers,
+            value.usersCard && value.usersCard.totalInActiveUsers,
           ],
           labels: ["Active Users", "Inactive Users"],
           chart: {
@@ -628,7 +630,8 @@ export class NewDashboardComponent implements OnInit {
       .fetchExamCalendar(this.buildParams(params))
       .subscribe((res) => {
         this.examCalendar = res;
-        // this.generateCalendarGrid();
+        
+        this.generateCalendarGrid();
       });
   }
 
@@ -661,10 +664,12 @@ export class NewDashboardComponent implements OnInit {
         .toISOString()
         .split("T")[0];
 
+        
+
       // Find exams falling on this date
       const examsOnDay = this.examCalendar.filter((ex) => {
-        const start = ex.start_date.split("T")[0];
-        const end = ex.end_date.split("T")[0];
+        const start = new Date(ex.start_date).toISOString().split("T")[0];
+        const end = new Date(ex.end_date).toISOString().split("T")[0]; 
         return currentDateStr >= start && currentDateStr <= end;
       });
 

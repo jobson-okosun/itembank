@@ -11,6 +11,33 @@
     overflow-y: auto;
 }
 
+.calendar-cell {
+  position: relative;
+  overflow: visible !important; /* Crucial so the dropdown menu doesn't get clipped by the cell box */
+}
+
+.spec-calendar-dropdown {
+  min-width: 290px; /* Widened slightly so date strings don't wrap awkwardly */
+  max-width: 340px;
+
+  .min-width-0 {
+    min-width: 0; /* Prevents flex children from breaking parent bounds */
+  }
+
+  .mt-1\.5 {
+    margin-top: 0.35rem;
+  }
+
+  .exam-dates-meta {
+    font-size: 0.75rem;
+    gap: 0.75rem; /* Generates a comfortable default spacing gap if the width shrinks */
+    
+    span {
+      white-space: nowrap;
+    }
+  }
+}
+
 /* Custom Card Styling
    FIX #1: height:100% was commented out, so a card with less content
    (e.g. an empty table) never stretched to match its taller sibling

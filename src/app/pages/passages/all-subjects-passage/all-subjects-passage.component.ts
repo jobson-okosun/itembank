@@ -39,7 +39,7 @@ export class AllSubjectsPassageComponent implements OnInit {
     this.breadCrumbItems = [{label: 'Passages', active: false}, { label: 'Subjects', active: true }];
     this.currentUser = this.userService.getCurrentUser();
 
-    if(this.currentUser.authorities.includes('ADMIN')){
+    if(this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')){
       this.itemService.fetchAllSubjectsItems().subscribe(
         (value) => {
           this.allSubjects = value;

@@ -3,7 +3,7 @@ import { Account } from "./model/account.model";
 import { SignUp } from "./sign-up/model/sign-up";
 import { environment } from "./../../environments/environment";
 import { ResourceCreated } from "./../shared/model/resource-created";
-import { Observable, throwError } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import {
   HttpClient,
   HttpErrorResponse,
@@ -47,7 +47,8 @@ export class AuthenticationService {
         responseType: "json",
         withCredentials: true,
       })
-      .pipe( mergeMap(() => this.getLoggedInAccount()),
+      .pipe(
+        mergeMap(() => this.getLoggedInAccount())
       );
   }
 

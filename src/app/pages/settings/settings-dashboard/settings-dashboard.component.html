@@ -3,8 +3,8 @@
     <div class="card-header">
       <ul ngbNav #customNav="ngbNav" [activeId]="1" class="nav nav-tabs-custom rounded card-header-tabs border-bottom-0"
         role="tablist">
-        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 1" class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')">
+        <li [ngbNavItem]="(currentUser.authorities.includes(Role.ADMIN) || currentUser.authorities.includes(Role.GROUP_ADMIN)) && 1" class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-user-settings-fill align-middle me-2 fs-4"></i>
             Account Settings
@@ -229,8 +229,8 @@
             </form>
           </ng-template>
         </li>
-        <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 2" class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')">
+        <li [ngbNavItem]="(currentUser.authorities.includes(Role.ADMIN) || currentUser.authorities.includes(Role.GROUP_ADMIN)) && 2" class="nav-item"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-palette-fill me-2 align-middle fs-4"></i>
             Branding
@@ -240,7 +240,7 @@
           </ng-template>
         </li>
         <li [ngbNavItem]="currentUser.authorities.includes(Role.ADMIN) && 3" class="nav-item"
-          *ngIf="currentUser.authorities.includes('ADMIN')">
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')">
           <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
             <i class="ri-shield-fill me-2 align-middle fs-4"></i>
             Security
@@ -574,7 +574,7 @@
                     <label for="email" class="form-label">Username</label>
                     <input type="text" class="form-control" name="username" id="username" placeholder="Enter username"
                       value="{{ userDetail.username }}" [(ngModel)]="userDetail.username"
-                      [disabled]="!currentUser.authorities.includes('ADMIN')" />
+                      [disabled]="(!currentUser.authorities.includes('ADMIN') || !currentUser.authorities.includes('GROUP_ADMIN'))" />
                   </div>
                 </div>
                 <div class="col-lg-6">

@@ -884,7 +884,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
     // Set the item status based on user role
     if (
       !this.currentUser.authorities.includes('MODERATOR') &&
-      !this.currentUser.authorities.includes('ADMIN')
+      !this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN')
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
@@ -961,7 +961,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
       case 'save':
         if (
           !this.currentUser.authorities.includes('MODERATOR') &&
-          !this.currentUser.authorities.includes('ADMIN') &&
+          !this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN') &&
           (this.moderationStatus ||
             item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {

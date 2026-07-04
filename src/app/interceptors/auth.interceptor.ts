@@ -24,7 +24,7 @@ export class AuthInterceptor implements HttpInterceptor {
         if (
           error.status === 401 &&
           error.error &&
-          error.error.message.toLowerCase() ===
+          (error.error.message && error.error.message.toLowerCase()) ===
             "you are not logged in, please log in" &&
           request.url.includes("examalpha/api/v1/sch_mon_grd/schedule")
         ) {

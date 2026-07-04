@@ -294,7 +294,7 @@ export class DashboardService {
   //       status: "PUBLISHED",
   //       delivery_method: "COMPUTER_BASED",
   //       start_date: new Date(Date.now() + 86400000 * 2).toISOString(),
-  //       end_date: new Date(Date.now() + 86400000 * 3).toISOString(),
+  //       end_date: new Date(Date.now() + 86400000 * 11).toISOString(),
   //       total_batches: 2,
   //       total_centers: 15,
   //       total_candidates: 1000,
