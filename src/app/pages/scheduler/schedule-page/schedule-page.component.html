@@ -28,7 +28,8 @@
       <app-assessment-participants></app-assessment-participants>
     </ng-template>
   </li>
-  <li [ngbNavItem]="4" *ngIf="!deliveryMethod?.includes('ONLINE')">
+  <!-- *ngIf="!deliveryMethod?.includes('ONLINE')" -->
+  <li [ngbNavItem]="4">
     <a ngbNavLink>
       <span class="d-sm-block">Center Admin</span>
     </a>

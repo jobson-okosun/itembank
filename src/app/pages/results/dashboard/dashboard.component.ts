@@ -1476,9 +1476,5 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  viewItemPsychometrics() {
-    if (this.itemPsychometricsComponent) {
-      this.itemPsychometricsComponent.openModal();
-    }
-  }
+
 }

@@ -473,6 +473,10 @@
   <!-- Cohort Behaviour & Integrity (Macro) -->
   <app-cohort-behaviour [assessmentId]="assessmentId" [examGroups]="examGroups" [centers]="centers"></app-cohort-behaviour>
 
+  <div class="my-5">
+    <app-item-psychometrics [assessmentId]="assessmentId" [examGroups]="examGroups" [sections]="sections"></app-item-psychometrics>
+  </div>
+
   <!-- charts -->
   <div>
     <!-- Title -->
@@ -497,9 +501,6 @@
               <span class="fw-bold text-black">Score Analysis ({{ scoreAnalysisFilterSubjectName }}) </span>
             </div>
             <div class="d-flex align-items-center">
-              <button class="btn btn-sm btn-outline-primary me-3" (click)="viewItemPsychometrics()">
-                <i class="ri-bar-chart-2-line me-1"></i> View Item Psychometrics
-              </button>
               <div class="dropdown" ngbDropdown #scoreAnalysisDrop="ngbDropdown">
                 <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
                   ngbDropdownToggle><i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark"
@@ -1846,5 +1847,4 @@
 </ng-container>
 
 <!-- Analytics Modals Components -->
-<app-item-psychometrics #itemPsychometrics [assessmentId]="assessmentId" [examGroups]="examGroups" [sections]="sections"></app-item-psychometrics>
 <app-candidate-behaviour-profile #candidateProfile [assessmentId]="assessmentId"></app-candidate-behaviour-profile>

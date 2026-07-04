@@ -29,14 +29,14 @@ export class CandidateBehaviourProfileComponent implements OnInit {
   activeTab: string = 'overview';
 
   constructor(
-    // private analyticsService: AnalyticsService,
-    private analyticsService: AnalyticsMockService,
+    private analyticsService: AnalyticsService,
+    // private analyticsService: AnalyticsMockService,
     private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {}
 
-  openProfile(participantId: string) {
+  openProfile(participantId: string) { 
     this.participantId = participantId;
     this.activeTab = 'overview'; // reset tab on open
     this.fetchData();

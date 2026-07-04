@@ -32,8 +32,8 @@ export class CohortBehaviourComponent implements OnInit {
   examGroupId: string = '';
 
   constructor(
-    // private analyticsService: AnalyticsService,
-    private analyticsService: AnalyticsMockService,
+    private analyticsService: AnalyticsService,
+    // private analyticsService: AnalyticsMockService,
     private modalService: NgbModal
   ) { }
 

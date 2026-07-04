@@ -1,13 +1,7 @@
-<!-- Button to trigger the modal from dashboard -->
-<button class="btn btn-outline-primary btn-sm" (click)="openModal()">
-    <i class="ri-bar-chart-2-line me-1"></i> View Item Psychometrics
-</button>
-
-<!-- Main Item Analysis Modal -->
-<ng-template #itemAnalysisModal let-modal>
-    <div class="modal-header bg-light border-bottom p-3">
-        <h5 class="modal-title fw-bold">Item Analysis & Psychometrics</h5>
-        <div class="d-flex align-items-center gap-3">
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-light border-bottom p-3 d-flex justify-content-between align-items-center">
+        <h5 class="card-title fw-bold m-0">Item Analysis & Psychometrics</h5>
+        <div class="d-flex align-items-center gap-3" *ngIf="itemsData || isLoading">
             <div class="btn-group btn-group-sm" role="group">
                 <input type="radio" class="btn-check" name="viewToggle" id="perfView" autocomplete="off" 
                        [checked]="currentView === 'performance'" (click)="currentView = 'performance'">
@@ -18,7 +12,7 @@
                 <label class="btn btn-outline-primary" for="behavView">Behavioral</label>
             </div>
             
-            <div class="dropdown" ngbDropdown #itemFilterDrop="ngbDropdown">
+            <div class="dropdown" ngbDropdown #itemFilterDrop="ngbDropdown" [placement]="'botttom-right'">
                 <a class="text-muted arrow-none" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                     <i class="ri-more-2-fill align-middle me-3 fs-18 fw-bold text-dark" style="cursor: pointer" title="Filter Items"></i>
                 </a>
@@ -58,10 +52,18 @@
                     </div>
                 </div>
             </div>
-            <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+            <!-- <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button> -->
         </div>
     </div>
-    <div class="modal-body p-0 bg-white">
+    <div class="card-body p-0 bg-white">
+
+        <div *ngIf="!isLoading && !itemsData" class="d-flex flex-column align-items-center justify-content-center p-5 text-muted">
+            <i class="ri-bar-chart-2-line fs-24 mb-2"></i>
+            <p>Click the load button to view Item Psychometrics data.</p>
+            <button class="btn btn-primary mt-2" (click)="fetchItems()">
+                Load Psychometrics
+            </button>
+        </div>
 
         <div *ngIf="isLoading" class="d-flex justify-content-center p-5">
             <div class="spinner-border text-primary" role="status">
@@ -167,7 +169,7 @@
                      (onPageChange)="onPageChange($event)">
         </p-paginator>
     </div>
-</ng-template>
+</div>
 
 <!-- Item Details / Response Distribution Modal -->
 <ng-template #itemDetailsModal let-modal>

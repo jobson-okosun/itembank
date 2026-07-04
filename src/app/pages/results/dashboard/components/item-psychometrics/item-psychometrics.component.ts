@@ -30,17 +30,12 @@ export class ItemPsychometricsComponent implements OnInit {
   responseDistributionChart: any;
 
   constructor(
-    // private analyticsService: AnalyticsService,
-    private analyticsService: AnalyticsMockService,
+    private analyticsService: AnalyticsService,
+    // private analyticsService: AnalyticsMockService,
     private modalService: NgbModal
   ) { }
 
   ngOnInit(): void {}
-
-  openModal() {
-    this.fetchItems();
-    this.modalService.open(this.itemAnalysisModal, { size: 'xl', centered: true, scrollable: true });
-  }
 
   fetchItems() {
     this.isLoading = true;

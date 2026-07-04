@@ -161,6 +161,7 @@ export class AuthenticationService {
 
   logoutUser(): Observable<any> {
     // console.log('logged out!');
+    localStorage.clear()
     return this.http.get<any>(`${environment.developmentIP}/logout`, {
       withCredentials: true,
     });
