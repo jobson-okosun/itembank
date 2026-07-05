@@ -245,7 +245,7 @@ export class TopbarComponent implements OnInit {
   }
 
   routeToProfile() {
-    if (this.currentUser.authorities.includes('ADMIN')) {
+    if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.router.navigate(['/itembank/users/view/' + this.currentUser.id]);
     }
   }

@@ -1,12 +1,21 @@
 <div *ngIf="userDetail">
   <div class="position-relative mx-n4 mt-n4">
-    <div class="py-2 d-flex align-items-center flex-row gap-2">
+    <!-- <div class="py-2 d-flex align-items-center flex-row gap-2">
       <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
         width="24" height="24" fill="none" viewBox="0 0 24 24">
         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M5 12h14M5 12l4-4m-4 4 4 4" />
       </svg>
       <a (click)="routeBack()">Back to Users</a>
+    </div> -->
+
+        <div class="d-flex align-items-center gap-2 col-lg-4 col-sm-12 my-2">
+      <button class="btn mb-2 btn-outline-info" (click)="routeBack()">
+        <i class="ri-arrow-left-line"></i>Back
+      </button>
+      <!-- <h3 class="card-title">
+        {{ selectedItemType }} | <span class="text-muted">{{ formType }}</span>
+      </h3> -->
     </div>
     <div class="profile-wid-bg profile-setting-img">
       <!-- <img src="assets/images/profile-bg.jpg" class="profile-wid-img" alt="" /> -->

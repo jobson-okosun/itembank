@@ -289,6 +289,7 @@ export class MainComponent implements OnInit {
     this.breadCrumbItems = [{ label: 'dashboard', active: true }];
     if (
       this.currentUser.authorities.includes('ADMIN') ||
+      this.currentUser.authorities.includes('GROUP_ADMIN') ||
       this.currentUser.authorities.includes('MODERATOR')
     ) {
       this.authorChartLabels.push('Total Approved Questions');
@@ -336,7 +337,7 @@ export class MainComponent implements OnInit {
           }
         }
 
-        if (this.currentUser.authorities.includes('ADMIN')) {
+        if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
           this.userChart('["--vz-success", "--vz-danger"]');
           this.setAuthorGraph();
           this.setupTagsGraph();
@@ -471,13 +472,15 @@ export class MainComponent implements OnInit {
           this.authorGraph[6] = Object.values(this.authoringGraph)[index];
         } else if (
           (this.currentUser.authorities.includes('MODERATOR') ||
-            this.currentUser.authorities.includes('ADMIN')) &&
+            this.currentUser.authorities.includes('ADMIN') ||
+            this.currentUser.authorities.includes('GROUP_ADMIN')) &&
           key === 'totalApproved'
         ) {
           this.authorGraph[7] = Object.values(this.authoringGraph)[index];
         } else if (
           (this.currentUser.authorities.includes('MODERATOR') ||
-            this.currentUser.authorities.includes('ADMIN')) &&
+            this.currentUser.authorities.includes('ADMIN') ||
+            this.currentUser.authorities.includes('GROUP_ADMIN')) &&
           key === 'totalRejected'
         ) {
           this.authorGraph[8] = Object.values(this.authoringGraph)[index];

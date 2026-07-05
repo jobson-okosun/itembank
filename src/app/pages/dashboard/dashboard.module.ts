@@ -19,6 +19,7 @@ import { PaginatorModule } from 'primeng/paginator';
   NgbDropdownModule,
 } from "@ng-bootstrap/ng-bootstrap";
 import { NgSelectModule } from "@ng-select/ng-select";
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   declarations: [MainComponent, NoSanitizerPipe, NewDashboardComponent],
@@ -39,7 +40,8 @@ import { NgSelectModule } from "@ng-select/ng-select";
     ManualsModule,
     PaginatorModule,
     NgbDropdownModule,
-    NgSelectModule
+    NgSelectModule,
+    OverlayModule
   ],
 })
 export class DashboardModule {}

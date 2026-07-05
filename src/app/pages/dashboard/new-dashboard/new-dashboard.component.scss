@@ -153,8 +153,9 @@
     color: #6c757d;
 }
 
-/* Calendar Heatmap Styling */
-.calendar-heatmap {
+
+/* Exam Calendar Styling */
+.exam-calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
@@ -186,34 +187,146 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Heatmap Colors based on mockup */
-.heat-empty {
+/* Exam cell Colors based on result */
+.available-candidate-grade-empty {
     background-color: transparent;
 }
 
-.heat-0 {
+.available-candidate-grade-0 {
     background-color: #f1f3f4;
     color: #6c757d;
 }
 
-.heat-1 {
-    background-color: #d1f2eb;
+.available-candidate-grade-1 {
+    // background-color: #d1f2eb;
+    background-color: #97D2F2;
     color: #1a1d20;
 }
 
-.heat-2 {
-    background-color: #a3e4d7;
+.available-candidate-grade-2 {
+    // background-color: #a3e4d7;
+    background-color: #6FC0EC;
     color: #1a1d20;
 }
 
-.heat-3 {
-    background-color: #48c9b0;
+.available-candidate-grade-3 {
+    // background-color: #48c9b0;
+    background-color: #46AFE7;
     color: #ffffff;
 }
 
-.heat-4 {
-    background-color: #1abc9c;
+.available-candidate-grade-4 {
+    // background-color: #1abc9c;
+    background-color: #25A0E2;
     color: #ffffff;
+}
+
+// Exam cell dropdown styling
+.exam-portfolio-dropdown {
+  width: 350px;
+  overflow: hidden;
+  border-radius: 12px;
+
+  .dropdown-header {
+    background: #f8f9fb;
+  }
+
+  .exam-count-badge {
+    background: #f1f3f4;
+    color: #1a1d20;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  .dropdown-subheader {
+    background: #f8f9fb;
+    font-size: 0.75rem;
+  }
+
+  .exam-list {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .exam-item {
+    border-radius: 8px;
+    padding: 8px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f8f9fb;
+    }
+
+    & + .exam-item {
+      margin-top: 2px;
+    }
+  }
+
+  .exam-status-bar {
+    width: 1px;
+    align-self: stretch;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    &.status-upcoming { background-color: #25a0e2; }
+    &.status-ongoing  { background-color: #16a34a; }
+    &.status-ended    { background-color: #9ca3af; }
+  }
+
+  .exam-name {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .exam-status-label {
+    font-size: 0.65rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    &.status-upcoming { background: #dbeafe; color: #25a0e2; }
+    &.status-ongoing  { background: #dcfce7; color: #15803d; }
+    &.status-ended    { background: #f3f4f6; color: #6b7280; }
+  }
+
+  .exam-dates-meta {
+    font-size: 0.7rem;
+  }
+
+  .min-w-0 { min-width: 0; }
+  .custom-scrollbar {
+    scrollbar-width: thin; // Firefox
+    scrollbar-color: #d1d5db transparent; // Firefox: thumb / track
+
+    &::-webkit-scrollbar {
+      width: 5px; // slim
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #d1d5db;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: #9ca3af;
+      }
+    }
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.exam-list:hover .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
 }
 
 /* Customizing the Global Filter */

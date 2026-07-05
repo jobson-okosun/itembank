@@ -28,3 +28,4 @@ export const DEFAULT_PROCTOR_GUIDE = `
     { label: 'BRING YOUR OWN DEVICE', description: 'Exam will be taken on the candidate\'s own device.' },
   ];
 
+  export const CALENDAR_MONTH: string[] = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']

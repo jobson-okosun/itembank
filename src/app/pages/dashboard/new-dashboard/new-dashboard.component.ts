@@ -20,7 +20,8 @@ import { DashboardCards } from "../model/dashboard-cards";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CardDetails } from "../main/main.component";
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
-import { DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
+import { CALENDAR_MONTH, DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
+import { ConnectionPositionPair } from '@angular/cdk/overlay';
 
 @Component({
   selector: "app-new-dashboard",
@@ -78,6 +79,8 @@ export class NewDashboardComponent implements OnInit {
   calendarMonth: number = new Date().getMonth() + 1;
   calendarYear: number = new Date().getFullYear();
   calendarDays: any[] = [];
+  selectedCalendarMonthText: string = CALENDAR_MONTH[this.calendarMonth - 1];
+  selectedCalendarYear: number = new Date().getMonth() + 1;
 
   proctorWeekStarts: string = "";
 
@@ -380,6 +383,24 @@ export class NewDashboardComponent implements OnInit {
     this.fetchExamCalendar();
   }
 
+  getExamStatusClass(exam: any): string {
+    const now = new Date();
+    const start = new Date(exam.start_date);
+    const end = new Date(exam.end_date);
+    if (now < start) return "status-upcoming";
+    if (now > end) return "status-ended";
+    return "status-ongoing";
+  }
+
+  getExamStatusLabel(exam: any): string {
+    const cls = this.getExamStatusClass(exam);
+    return cls === "status-upcoming"
+      ? "Upcoming"
+      : cls === "status-ended"
+        ? "Ended"
+        : "Ongoing";
+  }
+
   clearExamCalendarFilter(): void {
     if (this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
       this.selectedExamCalendarDeliveryMethod = "LIVE_PROCTORING";
@@ -387,8 +408,8 @@ export class NewDashboardComponent implements OnInit {
       this.selectedExamCalendarDeliveryMethod = "";
     }
 
-    console.log('MONTH: ', this.calendarMonth);
-    console.log('YEAR: ', this.calendarYear);
+    this.calendarMonth = new Date().getMonth() + 1;
+    this.calendarYear = new Date().getFullYear();
 
     this.fetchExamCalendar();
   }
@@ -630,12 +651,14 @@ export class NewDashboardComponent implements OnInit {
       .fetchExamCalendar(this.buildParams(params))
       .subscribe((res) => {
         this.examCalendar = res;
-        
+
         this.generateCalendarGrid();
       });
   }
 
   generateCalendarGrid() {
+    this.selectedCalendarMonthText = CALENDAR_MONTH[this.calendarMonth - 1];
+    this.selectedCalendarYear = this.calendarYear;
     this.calendarDays = [];
     const firstDay = new Date(
       this.calendarYear,
@@ -652,43 +675,54 @@ export class NewDashboardComponent implements OnInit {
     let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
 
     for (let i = 0; i < emptyCells; i++) {
-      this.calendarDays.push({ day: null, heatClass: "heat-empty" });
+      this.calendarDays.push({
+        day: null,
+        availableCandidates: "available-candidate-grade-empty",
+      });
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
+      // const currentDateStr = new Date(
+      //   this.calendarYear,
+      //   this.calendarMonth - 1,
+      //   d,
+      // )
+      //   .toISOString()
+      //   .split("T")[0];
+
       const currentDateStr = new Date(
         this.calendarYear,
         this.calendarMonth - 1,
         d,
-      )
-        .toISOString()
-        .split("T")[0];
-
-        
+      ).toLocaleDateString("en-CA");
 
       // Find exams falling on this date
       const examsOnDay = this.examCalendar.filter((ex) => {
-        const start = new Date(ex.start_date).toISOString().split("T")[0];
-        const end = new Date(ex.end_date).toISOString().split("T")[0]; 
+        // const start = new Date(ex.start_date).toISOString().split("T")[0];
+        // const end = new Date(ex.end_date).toISOString().split("T")[0];
+        const start = new Date(ex.start_date).toLocaleDateString("en-CA");
+        const end = new Date(ex.end_date).toLocaleDateString("en-CA");
         return currentDateStr >= start && currentDateStr <= end;
       });
 
       let totalCandidates = 0;
       examsOnDay.forEach((e) => (totalCandidates += e.total_candidates));
 
-      let heatClass = "heat-0";
-      if (totalCandidates > 0 && totalCandidates <= 50) heatClass = "heat-1";
+      let availableCandidates = "available-candidate-grade-0";
+      if (totalCandidates > 0 && totalCandidates <= 50)
+        availableCandidates = "available-candidate-grade-1";
       else if (totalCandidates > 50 && totalCandidates <= 200)
-        heatClass = "heat-2";
+        availableCandidates = "available-candidate-grade-2";
       else if (totalCandidates > 200 && totalCandidates <= 500)
-        heatClass = "heat-3";
-      else if (totalCandidates > 500) heatClass = "heat-4";
+        availableCandidates = "available-candidate-grade-3";
+      else if (totalCandidates > 500)
+        availableCandidates = "available-candidate-grade-4";
 
       this.calendarDays.push({
         day: d,
         dateStr: currentDateStr,
         exams: examsOnDay,
-        heatClass: heatClass,
+        availableCandidates: availableCandidates,
       });
     }
   }
@@ -753,37 +787,41 @@ export class NewDashboardComponent implements OnInit {
     this.fetchProctorWeekly();
   }
 
-  // Generates standard hourly slots (e.g., 08:00 to 17:00)
   generateTimeSlots() {
-    for (let hour = 8; hour <= 17; hour++) {
-      this.timeSlots.push(`${hour.toString().padStart(2, "0")}:00`);
-    }
+  for (let hour = 0; hour <= 23; hour++) {
+    this.timeSlots.push(`${hour.toString().padStart(2, "0")}:00`);
   }
+}
 
-  // Filter exams that belong to a specific day and start hour
-  getExamsForSlot(day: Date, timeSlot: string): ProctorWeeklyCalendarDTO[] {
-    // Format the calendar cell day to target UTC signature
-    const year = day.getFullYear();
-    const month = String(day.getMonth() + 1).padStart(2, "0");
-    const dateNum = String(day.getDate()).padStart(2, "0");
-    const hour = timeSlot.split(":")[0]; // e.g., "08"
+// Filter exams that belong to a specific day and start hour
+getExamsForSlot(day: Date, timeSlot: string): ProctorWeeklyCalendarDTO[] {
+  // Use LOCAL components — must match mapAppointmentsToGrid
+  const year = day.getFullYear();
+  const month = String(day.getMonth() + 1).padStart(2, "0");
+  const dateNum = String(day.getDate()).padStart(2, "0");
+  const hour = timeSlot.split(":")[0].padStart(2, "0");
 
-    const lookupKey = `${year}-${month}-${dateNum}_${hour}`;
+  const lookupKey = `${year}-${month}-${dateNum}_${hour}`;
 
-    // Instant retrieval with no heavy array looping or performance hits
-    return this.examLookupMap[lookupKey] || [];
-  }
+  return this.examLookupMap[lookupKey] || [];
+}
 
-  mapAppointmentsToGrid(appointments: ProctorWeeklyCalendarDTO[]) {
-    this.examLookupMap = {};
-    appointments.forEach((exam) => {
-      const dateObj = new Date(exam.batch_start_time);
+mapAppointmentsToGrid(appointments: ProctorWeeklyCalendarDTO[]) {
+  this.examLookupMap = {};
 
-      // Extract exact UTC string properties to bypass browser timezone shifting
-      const year = dateObj.getUTCFullYear();
-      const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
-      const day = String(dateObj.getUTCDate()).padStart(2, "0");
-      const hour = String(dateObj.getUTCHours()).padStart(2, "0");
+  appointments.forEach((exam) => {
+    const startDate = new Date(exam.batch_start_time);
+    const endDate = new Date(exam.batch_end_time);
+
+    // Walk hour-by-hour in LOCAL time from start to end
+    const cursor = new Date(startDate);
+    cursor.setMinutes(0, 0, 0); // normalize to top of the hour, local time
+
+    while (cursor < endDate) {
+      const year = cursor.getFullYear();
+      const month = String(cursor.getMonth() + 1).padStart(2, "0");
+      const day = String(cursor.getDate()).padStart(2, "0");
+      const hour = String(cursor.getHours()).padStart(2, "0");
 
       const mapKey = `${year}-${month}-${day}_${hour}`;
 
@@ -791,8 +829,14 @@ export class NewDashboardComponent implements OnInit {
         this.examLookupMap[mapKey] = [];
       }
       this.examLookupMap[mapKey].push(exam);
-    });
-  }
+
+      // move to next hour, local time — this correctly rolls over midnight
+      // into the next day, and even handles DST transitions since setHours
+      // recalculates the wall-clock time properly
+      cursor.setHours(cursor.getHours() + 1);
+    }
+  });
+}
 
   // Next/Prev stepping execution track
   navigateWeek(direction: number) {

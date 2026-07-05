@@ -4,187 +4,270 @@
     <div class="spinner-border text-success" role="status"></div>
   </div> -->
 
-  <!-- Headlines -->
-  <div class="row">
-    <div class="col-xl-12">
-  
-      <div *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')"
-        class="card">
-        <div class="d-flex align-items-center justify-content-between card-header">
-          <h4 class="card-title mb-0 flex-grow-1">
-            Question Analysis
-          </h4>
+
+  <!-- New Headlines -->
+
+    <!-- Assessment Summary -->
+    <div class="card p-3">
+      <!-- title -->
+      <div class="row align-items-end">
+        <div class="col-lg-6">
+          <h5 class="modal-title">Question Analysis</h5>
         </div>
-        <div class="card-body p-0">
-          <div class="row">
-            <ng-container *ngFor="let data of rowOne">
-              <div class="col-sm-12 col-md-6 col-lg-3">
-                <div class="py-3 px-3">
-                  <h5 class="text-muted text-uppercase fs-13">
-                    {{ data.title }}
-                  </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                                  'text-info': data.title === 'Total Subjects',
-                                  'text-success':
-                                    data.title === 'Total Approved Questions',
-                                  'text-secondary': data.title === 'Total Questions',
-                                  'text-danger':
-                                    data.title === 'Total Rejected Questions' ||
-                                    data.title === 'Total Questions In-recycle',
-                                  'text-primary':
-                                    data.title === 'Total Published Questions',
-                                  'text-warning':
-                                    data.title === 'Total Draft Questions' ||
-                                    data.title === 'Awaiting Moderation'
-                                }"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-4">
-                      <h2 class="mb-0">{{ data.count }}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
-            </ng-container>
-          </div>
-          <!-- end row -->
-        </div>
-        <!-- end card body -->
       </div>
-      <!-- end card -->
-  
-      <div *ngIf="currentUser.authorities.includes('AUTHOR')" class="card">
-        <div class="d-flex align-items-center justify-content-between card-header">
-          <h4 class="card-title mb-0 flex-grow-1">
-            Question Analysis
-          </h4>
-        </div>
-        <div class="card-body p-0">
-          <div class="row row-cols-3 row-cols-1 g-0">
-            <ng-container *ngFor="let data of rowOne">
-              <div class="col" *ngIf="data.roles.includes('AUTHOR')">
-                <div class="py-3 px-3">
-                  <h5 class="text-muted text-uppercase fs-13">
-                    {{ data.title }}
-                  </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                            'text-info': data.title === 'Total Subjects',
-                            'text-success': data.title === 'Total Approved',
-                            'text-secondary': data.title === 'Total Questions',
-                            'text-danger': data.title === 'Total Rejected',
-                            'text-primary': data.title === 'Total Published',
-                            'text-warning':
-                              data.title === 'Total Draft' ||
-                              data.title === 'Awaiting Moderation'
-                          }"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-4">
-                      <h2 class="mb-0">{{ data.count }}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
-            </ng-container>
+    
+      <!-- Cards section-->
+      <div class="mt-4"
+        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')">
+        <div *ngIf="isLoadingQuestionsOverview"
+          class="d-flex flex-column align-items-center justify-content-center gap-2 p-5">
+          <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
           </div>
-          <!-- end row -->
+          <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
         </div>
-        <!-- end card body -->
-      </div>
-      <!-- end card -->
-  
-      <div *ngIf="currentUser.authorities.includes('MODERATOR')" class="card">
-        <div class="d-flex align-items-center justify-content-between card-header">
-          <h4 class="card-title mb-0 flex-grow-1">
-            Question Analysis
-          </h4>
-        </div>
-        <div class="card-body p-0">
-          <div class="row row-cols-3 g-0">
-            <ng-container *ngFor="let data of rowOne">
-              <div class="col" *ngIf="data.roles.includes('MODERATOR')">
-                <div class="py-3 px-3">
-                  <h5 class="text-muted text-uppercase fs-13">
-                    {{ data.title }}
-                  </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                                  'text-info': data.title === 'Total Subjects',
-                                  'text-success': data.title === 'Total Approved',
-                                  'text-secondary': data.title === 'Total Questions',
-                                  'text-danger': data.title === 'Total Rejected',
-                                  'text-primary': data.title === 'Total Published',
-                                  'text-warning':
-                                    data.title === 'Total Draft' ||
-                                    data.title === 'Awaiting Moderation'
-                                }"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-4">
-                      <h2 class="mb-0">{{ data.count }}</h2>
-                    </div>
+    
+        <div *ngIf="!isLoadingQuestionsOverview" class="row">
+    
+          <ng-container *ngFor="let data of rowOne">
+            <div class="col-lg-3 col-md-3 col-sm-12">
+              <div class="card">
+                <div class="d-flex p-2 align-items-center">
+                  <div class="me-3 flex-shrink-0">
+                    <span class="px-2 py-1 avatar-title rounded-2 fs-4" [ngClass]="{
+                                            'bg-soft-primary': data.title === 'Total Subjects',
+                                            'bg-soft-success':
+                                              data.title === 'Total Approved Questions',
+                                            'bg-soft-secondary': data.title === 'Total Questions',
+                                            'bg-soft-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'bg-soft-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'bg-primary-light': data.title === 'Total Published Questions',
+                                            'bg-soft-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }">
+                      <i class="ri-{{ data.icon }}" [ngClass]="{
+                                            'text-info': data.title === 'Total Subjects',
+                                            'text-success':
+                                              data.title === 'Total Approved Questions',
+                                            'text-secondary': data.title === 'Total Questions',
+                                            'text-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'text-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'text-primary':
+                                              data.title === 'Total Published Questions',
+                                            'text-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <span class="fs-14">
+                      {{ data.title }}<br /><span class="fs-4 fw-bold">
+                        {{ data.count }}
+                      </span>
+                    </span>
                   </div>
                 </div>
               </div>
-              <!-- end col -->
-            </ng-container>
-          </div>
-          <!-- end row -->
-        </div>
-        <!-- end card body -->
-      </div>
-      <!-- end card -->
-  
-      <div *ngIf="currentUser.authorities.includes('EXAMINER')" class="card">
-        <div class="d-flex align-items-center justify-content-between card-header">
-          <h4 class="card-title mb-0 flex-grow-1">
-            Question Analysis
-          </h4>
-        </div>
-        <div class="card-body p-0">
-          <div class="row row-cols-4 row-cols-1 g-0">
-            <div *ngFor="let data of rowOne">
-              <div class="col">
-                <div class="py-3 px-3">
-                  <h5 class="text-muted text-uppercase fs-13">
-                    {{ data.title }}
-                  </h5>
-                  <div class="d-flex align-items-center">
-                    <div class="flex-shrink-0">
-                      <i class="ri-{{ data.icon }} display-6" [ngClass]="{
-                                  'text-info': data.title === 'Total Subjects',
-                                  'text-success': data.title === 'Total Approved',
-                                  'text-secondary': data.title === 'Total Questions',
-                                  'text-danger': data.title === 'Total Rejected',
-                                  'text-primary': data.title === 'Total Published',
-                                  'text-warning':
-                                    data.title === 'Total Draft' ||
-                                    data.title === 'Awaiting Moderation'
-                                }"></i>
-                    </div>
-                    <div class="flex-grow-1 ms-4">
-                      <h2 class="mb-0">{{ data.count }}</h2>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <!-- end col -->
             </div>
-          </div>
-          <!-- end row -->
+          </ng-container>
         </div>
-        <!-- end card body -->
       </div>
-      <!-- end card -->
-  
+    
+      <!-- Cards section-->
+      <div class="mt-4" *ngIf="currentUser.authorities.includes('AUTHOR')">
+        <div *ngIf="isLoadingQuestionsOverview"
+          class="d-flex flex-column align-items-center justify-content-center gap-2 p-5">
+          <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+        </div>
+    
+        <div *ngIf="!isLoadingQuestionsOverview" class="row">
+    
+          <ng-container *ngFor="let data of rowOne">
+            <div class="col-lg-3 col-md-3 col-sm-12" *ngIf="data.roles.includes('AUTHOR')">
+              <div class="card">
+                <div class="d-flex p-2 align-items-center">
+                  <div class="me-3 flex-shrink-0">
+                    <span class="px-2 py-1 avatar-title rounded-2 fs-4" [ngClass]="{
+                                            'bg-soft-primary': data.title === 'Total Subjects',
+                                            'bg-soft-success':
+                                              data.title === 'Total Approved Questions',
+                                            'bg-soft-secondary': data.title === 'Total Questions',
+                                            'bg-soft-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'bg-soft-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'bg-primary-light': data.title === 'Total Published Questions',
+                                            'bg-soft-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }">
+                      <i class="ri-{{ data.icon }}" [ngClass]="{
+                                            'text-info': data.title === 'Total Subjects',
+                                            'text-success':
+                                              data.title === 'Total Approved Questions',
+                                            'text-secondary': data.title === 'Total Questions',
+                                            'text-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'text-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'text-primary':
+                                              data.title === 'Total Published Questions',
+                                            'text-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <span class="fs-14">
+                      {{ data.title }}<br /><span class="fs-4 fw-bold">
+                        {{ data.count }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    
+      <!-- Cards section-->
+      <div class="mt-4" *ngIf="currentUser.authorities.includes('MODERATOR')">
+        <div *ngIf="isLoadingQuestionsOverview"
+          class="d-flex flex-column align-items-center justify-content-center gap-2 p-5">
+          <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+        </div>
+    
+        <div *ngIf="!isLoadingQuestionsOverview" class="row">
+    
+          <ng-container *ngFor="let data of rowOne">
+            <div class="col-lg-3 col-md-3 col-sm-12" *ngIf="data.roles.includes('MODERATOR')">
+              <div class="card">
+                <div class="d-flex p-2 align-items-center">
+                  <div class="me-3 flex-shrink-0">
+                    <span class="px-2 py-1 avatar-title rounded-2 fs-4" [ngClass]="{
+                                            'bg-soft-primary': data.title === 'Total Subjects',
+                                            'bg-soft-success':
+                                              data.title === 'Total Approved Questions',
+                                            'bg-soft-secondary': data.title === 'Total Questions',
+                                            'bg-soft-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'bg-soft-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'bg-primary-light': data.title === 'Total Published Questions',
+                                            'bg-soft-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }">
+                      <i class="ri-{{ data.icon }}" [ngClass]="{
+                                            'text-info': data.title === 'Total Subjects',
+                                            'text-success':
+                                              data.title === 'Total Approved Questions',
+                                            'text-secondary': data.title === 'Total Questions',
+                                            'text-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'text-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'text-primary':
+                                              data.title === 'Total Published Questions',
+                                            'text-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <span class="fs-14">
+                      {{ data.title }}<br /><span class="fs-4 fw-bold">
+                        {{ data.count }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    
+      <!-- Cards section-->
+      <div class="mt-4" *ngIf="currentUser.authorities.includes('EXAMINER')">
+        <div *ngIf="isLoadingQuestionsOverview"
+          class="d-flex flex-column align-items-center justify-content-center gap-2 p-5">
+          <div class="spinner-border text-info fs-18" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <span class="text-info text-center fs-16 flex-grow-1 ms-2">Loading...</span>
+        </div>
+    
+        <div *ngIf="!isLoadingQuestionsOverview" class="row">
+    
+          <ng-container *ngFor="let data of rowOne">
+            <div class="col-lg-3 col-md-3 col-sm-12" *ngIf="data.roles.includes('EXAMINER')">
+              <div class="card">
+                <div class="d-flex p-2 align-items-center">
+                  <div class="me-3 flex-shrink-0">
+                    <span class="px-2 py-1 avatar-title rounded-2 fs-4" [ngClass]="{
+                                            'bg-soft-primary': data.title === 'Total Subjects',
+                                            'bg-soft-success':
+                                              data.title === 'Total Approved Questions',
+                                            'bg-soft-secondary': data.title === 'Total Questions',
+                                            'bg-soft-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'bg-soft-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'bg-primary-light': data.title === 'Total Published Questions',
+                                            'bg-soft-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }">
+                      <i class="ri-{{ data.icon }}" [ngClass]="{
+                                            'text-info': data.title === 'Total Subjects',
+                                            'text-success':
+                                              data.title === 'Total Approved Questions',
+                                            'text-secondary': data.title === 'Total Questions',
+                                            'text-dark': data.title === 'Total Passages' || data.title === 'Total Approved Questions' || data.title === 'Total Used Questions',
+                                            'text-danger':
+                                              data.title === 'Total Rejected Questions' ||
+                                              data.title === 'Total Questions In-recycle',
+                                            'text-primary':
+                                              data.title === 'Total Published Questions',
+                                            'text-warning':
+                                              data.title === 'Total Draft Questions' ||
+                                              data.title === 'Awaiting Moderation'
+                                          }"></i>
+                    </span>
+                  </div>
+                  <div class="flex-grow-1 overflow-hidden">
+                    <span class="fs-14">
+                      {{ data.title }}<br /><span class="fs-4 fw-bold">
+                        {{ data.count }}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    
     </div>
-    <!-- end col -->
-  </div>
-  <!-- End Headlines -->
+
+  <!-- New Headlines ends -->
 
 <div>
 
@@ -468,7 +551,10 @@
         <div class="premium-card">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <!-- <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5> -->
-            <h5 class="mb-3 card-title">Exam Calendar</h5>
+            <div>
+              <h5 class="card-title">Exam Calendar</h5>
+              <span *ngIf="selectedCalendarYear" class="text-muted">{{selectedCalendarMonthText}} - {{selectedCalendarYear}}</span>
+            </div>
             <!-- <div class="d-flex gap-2 align-items-center">
               <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="calendarMonth"
                 (change)="fetchExamCalendar()">
@@ -532,7 +618,7 @@
 
           </div>
 
-          <div class="calendar-heatmap">
+          <div class="exam-calendar">
             <!-- Headers -->
             <div class="calendar-header-day">Mon</div>
             <div class="calendar-header-day">Tue</div>
@@ -542,54 +628,93 @@
             <div class="calendar-header-day">Sat</div>
             <div class="calendar-header-day">Sun</div>
 
-            <!-- Days -->
-            <!-- <div *ngFor="let cell of calendarDays" class="calendar-cell" [ngClass]="cell.heatClass"
-              [ngbTooltip]="cell.day ? (cell.exams.length + ' Exams (' + cell.dateStr + ')') : ''" container="body"
-              (click)="getRecordOnCalenderCellBlock(cell)">
-              {{ cell.day }}
-            </div> -->
-
-            <div *ngFor="let cell of calendarDays" class="calendar-cell position-relative" [ngClass]="cell.heatClass"
+             <!-- Days -->
+             <div *ngFor="let cell of calendarDays" class="calendar-cell position-relative" [ngClass]="cell.availableCandidates"
               [style.z-index]="hoveredCell === cell ? 99 : 1" (click)="getRecordOnCalenderCellBlock(cell)">
             
               <div class="w-100 h-100 d-flex align-items-center justify-content-center relative" *ngIf="cell.day" ngbDropdown
-                #myDrop="ngbDropdown" placement="bottom-start" (mouseenter)="hoveredCell = cell; myDrop.open()"
-                (mouseleave)="hoveredCell = null; myDrop.close()">
+                            #myDrop="ngbDropdown" placement="bottom-start" (mouseenter)="hoveredCell = cell; myDrop.open()"
+                            (mouseleave)="hoveredCell = null; myDrop.close()">
             
-                <!-- FIX: We position the anchor at the absolute center line (top: 50%) with zero height -->
-                <span ngbDropdownAnchor class="position-absolute start-0 end-0" style="top: 50%; height: 0;" style="visibility: hidden;"></span>
+                <span ngbDropdownAnchor class="position-absolute start-0 end-0" style="top: 50%; height: 0;"
+                  style="visibility: hidden;"></span>
             
                 <!-- Day text -->
-                <span class="position-relative fw-bold" [ngClass]="{'text-white': cell.exams.length > 0, 'text-dark': cell.exams.length === 0}">
+                <span class="position-relative fw-bold"
+                  [ngClass]="{'text-white': cell.exams.length > 0, 'text-dark': cell.exams.length === 0}">
                   {{ cell.day }}
                 </span>
             
                 <!-- Dropdown menu -->
-                <div ngbDropdownMenu class="dropdown-menu p-3 shadow-lg rounded-lg spec-calendar-dropdown">
+                <!-- <div ngbDropdownMenu class="dropdown-menu p-3 shadow-lg rounded-lg spec-calendar-dropdown">
                   <div class="dropdown-header px-0 text-dark fw-bold d-flex justify-content-between align-items-center">
                     <span>Exams Portfolio</span>
                     <span class="badge rounded-pill bg-light text-dark border">{{ cell.exams?.length || 0 }}</span>
                   </div>
                   <div class="dropdown-divider my-2"></div>
-            
+                
                   <div *ngIf="!cell.exams || cell.exams.length === 0" class="text-muted small py-1">
                     No exams scheduled for {{ cell.dateStr }}
                   </div>
-            
+                
                   <ul *ngIf="cell.exams && cell.exams.length > 0" class="list-unstyled mb-0 custom-scrollbar"
                     style="max-height: 200px; overflow-y: auto; width: 100%;">
-                    <!-- 1. Changed d-flex align-items-start to give text layouts room vertically -->
+                
                     <li *ngFor="let exam of cell.exams" class="py-2 border-bottom last-border-0 small d-flex align-items-start">
                       <span class="exam-dot me-2 mt-1.5"></span>
-            
-                      <!-- 2. Changed text-truncate wrapper to w-100 so it can fully expand -->
+                
                       <div class="w-100 min-width-0">
                         <strong class="text-dark d-block text-truncate mb-1 text-uppercase">{{ exam.exam_name || 'Exam' }}</strong>
-            
-                        <!-- 3. Corrected Bootstrap layout classes: justify-content-between & align-items-center -->
+                
                         <div class="d-flex justify-content-between align-items-center w-100 exam-dates-meta text-muted">
                           <span>Start: {{ exam.start_date | date: 'short' }}</span>
                           <span>End: {{ exam.end_date | date: 'short' }}</span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div> -->
+
+                <div ngbDropdownMenu class="exam-portfolio-dropdown p-0 shadow-lg rounded-lg border-0">
+                  <div class="dropdown-header d-flex justify-content-between align-items-center px-3 py-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <span class="fw-semibold text-dark">Exams Portfolio</span>
+                    </div>
+                    <span class="badge rounded-pill exam-count-badge">{{ cell.exams?.length || 0 }}</span>
+                  </div>
+                
+                  <!-- <div class="dropdown-subheader px-3 pb-2 text-muted small">
+                    {{ cell.dateStr }}
+                  </div> -->
+                
+                  <div class="dropdown-divider m-0"></div>
+                
+                  <!-- Empty state -->
+                  <div *ngIf="!cell.exams || cell.exams.length === 0"
+                    class="empty-state d-flex flex-column align-items-center justify-content-center py-4 px-3">
+                    <i class="pi pi-inbox text-muted mb-2" style="font-size: 1.5rem;"></i>
+                    <span class="text-muted small">No exams scheduled for this date</span>
+                  </div>
+                
+                  <!-- Exam list -->
+                  <ul *ngIf="cell.exams && cell.exams.length > 0" class="list-unstyled mb-0 custom-scrollbar exam-list px-2 py-2 m-2 mb-2">
+                
+                    <li *ngFor="let exam of cell.exams" class="exam-item">
+                      <div class="exam-item-inner d-flex align-items-start gap-2">
+                        <!-- <span class="exam-status-bar" [ngClass]="getExamStatusClass(exam)"></span> -->
+                
+                        <div class="flex-grow-1 min-w-0">
+                          <div class="d-flex justify-content-between align-items-start gap-2">
+                            <span class="fw-semibold text-dark text-truncate text-uppercase">{{ exam.exam_name || 'Exam' }}</span>
+                            <span class="exam-status-label" [ngClass]="getExamStatusClass(exam)">
+                              {{ getExamStatusLabel(exam) }}
+                            </span>
+                          </div>
+                
+                          <div class="d-flex justify-content-between align-items-center exam-dates-meta text-muted mt-1">
+                            <span>Start: {{ exam.start_date | date: 'MMM d, h:mm a' }}</span>
+                            <span>End: {{ exam.end_date | date: 'MMM d, h:mm a' }}</span>
+                          </div>
                         </div>
                       </div>
                     </li>
@@ -600,18 +725,30 @@
             </div>
             
           </div>
-          <div class="card-footer-pin d-flex justify-content-end gap-2 text-muted" style="font-size: 0.75rem;">
+          <div class="card-footer-pin d-flex justify-content-end gap-2 text-muted mt-3" style="font-size: 0.75rem;">
+            <!-- <span class="d-flex align-items-center gap-1">
+                        <div style="width:12px;height:12px;background:#f1f3f4;border-radius:2px;"></div> 0
+                      </span>
+                      <span class="d-flex align-items-center gap-1">
+                        <div style="width:12px;height:12px;background:#d1f2eb;border-radius:2px;"></div> 1-50
+                      </span>
+                      <span class="d-flex align-items-center gap-1">
+                        <div style="width:12px;height:12px;background:#48c9b0;border-radius:2px;"></div> 200+
+                      </span>
+                      <span class="d-flex align-items-center gap-1">
+                        <div style="width:12px;height:12px;background:#1abc9c;border-radius:2px;"></div> 500+
+                      </span> -->
             <span class="d-flex align-items-center gap-1">
               <div style="width:12px;height:12px;background:#f1f3f4;border-radius:2px;"></div> 0
             </span>
             <span class="d-flex align-items-center gap-1">
-              <div style="width:12px;height:12px;background:#d1f2eb;border-radius:2px;"></div> 1-50
+              <div style="width:12px;height:12px;background:#6FC0EC;border-radius:2px;"></div> 1-50
             </span>
             <span class="d-flex align-items-center gap-1">
-              <div style="width:12px;height:12px;background:#48c9b0;border-radius:2px;"></div> 200+
+              <div style="width:12px;height:12px;background:#46AFE7;border-radius:2px;"></div> 200+
             </span>
             <span class="d-flex align-items-center gap-1">
-              <div style="width:12px;height:12px;background:#1abc9c;border-radius:2px;"></div> 500+
+              <div style="width:12px;height:12px;background:#25A0E2;border-radius:2px;"></div> 500+
             </span>
           </div>
         </div>
@@ -678,9 +815,9 @@
 
                     <div *ngFor="let exam of getExamsForSlot(day, slot)"
                       class="exam-card p-1 rounded border-start border-4 shadow-xs" [ngClass]="{
-                                      'bg-primary-light border-primary': exam.delivery_method === 'LIVE_PROCTORING',
-                                      'bg-success-light border-success': exam.delivery_method !== 'LIVE_PROCTORING'
-                                    }">
+                                      'bg-primary-light border-primary': exam.status === 'PUBLISHED',
+                                      'border-warning': exam.status === 'DRAFT'
+                                    }" [ngStyle]="{'background-color': exam.status === 'DRAFT' ? '#FFF8E6' : ''}">
                       <div class="exam-title text-truncate fw-bold" style="cursor: pointer;" placement="top"
                         [ngbTooltip]="examTooltip" container="body">
                         {{ exam.exam_name }}
@@ -692,7 +829,9 @@
                         Total Participants: {{ exam.total_participants }}<br>
                         Total Participants Assigned: {{ exam.total_participants_assigned }}<br>
                         Batch: {{ exam.batch_name }}<br>
-                        Proctor name: {{ exam.proctor_full_name }}
+                        Proctor name: {{ exam.proctor_full_name }}<br>
+                        Start Time: {{ exam.batch_start_time | date: 'shortTime' }}<br>
+                        End Time: {{ exam.batch_end_time | date: 'shortTime'}}<br>
                       </ng-template>
                     </div>
 
