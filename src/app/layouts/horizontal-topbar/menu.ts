@@ -5,7 +5,7 @@ export const MENU: MenuItem[] = [
     id: 11,
     label: 'MENUITEMS.DASHBOARD.TEXT',
     link: '/examalpha/dashboard',
-    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS', 'GROUP_ADMIN'],
+    role: ['AUTHOR', 'MODERATOR', 'ADMIN', 'EXAMINER', 'ANALYTICS', 'GROUP_ADMIN', "MONITOR", "PROCTOR_ADMIN"],
     icon: 'grid',
   },
   {
