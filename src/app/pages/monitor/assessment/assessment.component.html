@@ -1424,7 +1424,7 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
                                   <li>
-                                    <a [routerLink]="'center/' + item.id" class="dropdown-item"> View center </a>
+                                    <a [routerLink]="'center/' + item.id" [queryParams]="{ assessmentName: assessmentOverview?.name }" class="dropdown-item"> View center </a>
                                   </li>
                                 </ul>
                               </div>

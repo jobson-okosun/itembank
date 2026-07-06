@@ -60,7 +60,9 @@
 
     <button (click)="openAssessmentSettingsModal(assessmentSettingsModal)" type="button"
       class="btn btn-outline-success btn-label waves-effect waves-light">
-      <i class="ri-settings-2-line label-icon align-middle me-2"></i>Edit exam settings
+      <i class="ri-settings-2-line label-icon align-middle me-2"></i>
+      <span *ngIf="assessment && assessment.status !== 'PUBLISHED'">Edit exam settings</span>
+      <span *ngIf="assessment && assessment.status === 'PUBLISHED'">View exam settings</span>
     </button>
 
     <!-- for testing only -->
@@ -1006,7 +1008,7 @@
       <button id="modalbtn" type="button" class="btn btn-danger" (click)="modal.close('Close click')">
         <i class="ri-close-line align-middle fs-16 me-2"></i>Close
       </button>
-      <button *ngIf="!submitted" (click)="saveAssessmentSettings()" class="btn btn-primary">
+      <button *ngIf="!submitted && assessment && assessment.status !== 'PUBLISHED'" (click)="saveAssessmentSettings()" class="btn btn-primary">
         <i class="ri-save-line align-middle fs-16 me-2"></i>Save
       </button>
       <ng-template [ngIf]="submitted">

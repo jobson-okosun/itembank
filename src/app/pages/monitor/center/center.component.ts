@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MonitorService } from '../services/monitor.service';
 import { ActivatedRoute } from '@angular/router';
 import { CenterAppEventDTO, CenterAppEventParams, CenterAppEventType, ParticipantSummaryDTO, PaginatedCenterParticipants, CenterParticipantDTO, AssessmentBatchDTO, CenterExamOverviewDTO } from '../model/types';
-import { of } from 'rxjs';
+import { of, Subscription, interval } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
@@ -10,8 +10,9 @@ import { catchError } from 'rxjs/operators';
   templateUrl: './center.component.html',
   styleUrls: ['./center.component.scss']
 })
-export class CenterComponent implements OnInit {
+export class CenterComponent implements OnInit, OnDestroy {
   DoughnutChart: any;
+  refreshSubscription?: Subscription;
 
   filteredNotifications: CenterAppEventDTO[] = [];
   pagedNotifications: CenterAppEventDTO[] = [];
@@ -56,6 +57,7 @@ export class CenterComponent implements OnInit {
 
   assessmentId: string = '';
   centerId: string = '';
+  assessmentName: string = '';
 
   constructor(private monitorService: MonitorService, private route: ActivatedRoute) { }
 
@@ -66,16 +68,35 @@ export class CenterComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       this.assessmentId = params.get('assessmentId') || '';
       this.centerId = params.get('centerId') || '';
+      this.assessmentName = this.route.snapshot.queryParamMap.get('assessmentName') || '';
 
-      if (this.centerId && this.assessmentId) {
-        this.fetchCenterExamOverview();
-        this.fetchParticipantSummary();
-        this.fetchParticipants();
-        this.fetchBatches();
+      this.loadAllData();
+
+      if (this.refreshSubscription) {
+        this.refreshSubscription.unsubscribe();
       }
 
-      this.fetchCenterEvents();
+      this.refreshSubscription = interval(60000).subscribe(() => {
+        this.loadAllData();
+      });
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshSubscription) {
+      this.refreshSubscription.unsubscribe();
+    }
+  }
+
+  loadAllData() {
+    if (this.centerId && this.assessmentId) {
+      this.fetchCenterExamOverview();
+      this.fetchParticipantSummary();
+      this.fetchParticipants();
+      this.fetchBatches();
+    }
+
+    this.fetchCenterEvents();
   }
 
   goBack() {

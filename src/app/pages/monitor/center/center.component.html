@@ -1,14 +1,17 @@
 <div>
-    <div class="d-flex align-items-center mb-4">
-        <button (click)="goBack()" class="btn btn-outline-primary me-3">
-          <i class="bi bi-arrow-left"></i> 
-          Back
-        </button>
-        
-        <h4 class="mb-0 fw-bold">
-            <span *ngIf="examOverview">{{ examOverview.center_name }}</span>
-            <span *ngIf="!examOverview">Loading Center...</span>
-        </h4>
+    <div class="d-flex align-items-center gap-2 justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+            <button (click)="goBack()" class="btn btn-outline-primary me-3">
+                <i class="bi bi-arrow-left"></i> 
+                Back
+            </button>
+            
+            <span class="fw-bold">
+                <span *ngIf="examOverview">{{ examOverview.center_name }} </span>
+                <span *ngIf="!examOverview">Loading Center...</span>
+            </span>
+        </div>
+        <h5 *ngIf="assessmentName" class="fw-bold">{{ assessmentName }}</h5>
     </div>
 
     <div>
@@ -612,9 +615,9 @@
                                         <div class="text-uppercase text-black" style="font-size: 10px">STATUS</div>
                                         <div class="mt-1 d-flex align-items-center justify-content-center">
                                             <span class="badge rounded-pill" style="text-transform: capitalize" [ngClass]="{
-                                                'badge-soft-danger': item.status === 'NOT_STARTED',
-                                                'badge-soft-warning': item.status === 'STARTED',
-                                                'badge-soft-success': item.status === 'ENDED'
+                                                'badge-soft-primary': item.status === 'NOT_STARTED',
+                                                'badge-soft-success': item.status === 'STARTED',
+                                                'badge-soft-danger': item.status === 'ENDED'
                                             }">{{ item.status.replace('_', ' ') | titlecase }}</span>
                                         </div>
                                     </div>
@@ -697,8 +700,42 @@
                                     </div>
                                 </ng-template>
                             </td>
-                            <td class="text-center">
-                                <span style="font-size: 13px; font-weight: 500;">{{ item.section_attempts?.total_attempted || 0 }}</span>
+                            <td class="text-start">
+                                <div class="d-flex flex-column gap-1" style="min-width: 130px; font-size: 12px;">
+                                    <div class="d-flex justify-content-between align-items-center border-bottom pb-1 mb-1">
+                                        <span class="text-secondary">Total:</span>
+                                        <span class="fw-bold text-dark">{{ item.section_attempts?.total_attempted || 0 }}</span>
+                                    </div>
+                                    
+                                    <ng-container *ngIf="item.section_attempts?.['sections']?.length > 0">
+                                        <ng-container *ngFor="let sec of item.section_attempts?.['sections']; let sIdx = index">
+                                            <div *ngIf="sIdx < 3" class="d-flex justify-content-between align-items-center" title="{{ sec.name }}">
+                                                <span class="text-secondary text-truncate" style="max-width: 90px;">{{ sec.name | titlecase }}:</span>
+                                                <span class="fw-bold text-dark">{{ sec.total_attempted }}</span>
+                                            </div>
+                                        </ng-container>
+
+                                        <div *ngIf="item.section_attempts?.['sections'].length > 3" class="text-end mt-1">
+                                            <span triggers="mouseenter:mouseleave"
+                                                [ngbPopover]="sectionsPopOver"
+                                                popoverTitle="All Sections"
+                                                container="body"
+                                                class="badge bg-light text-primary border cursor-pointer shadow-sm"
+                                                style="font-size: 10px;">
+                                                +{{ item.section_attempts?.['sections'].length - 3 }} more
+                                            </span>
+                                        </div>
+                                    </ng-container>
+                                </div>
+                                    
+                                <ng-template #sectionsPopOver>
+                                    <div class="p-1" style="font-size: 12px; min-width: 180px;">
+                                        <div *ngFor="let sec of item.section_attempts?.['sections']" class="d-flex justify-content-between align-items-center border-bottom py-1 gap-3">
+                                            <span class="text-truncate">{{ sec.name }}</span>
+                                            <span class="badge bg-primary rounded-pill">{{ sec.total_attempted }}</span>
+                                        </div>
+                                    </div>
+                                </ng-template>
                             </td>
                             <td>
                                 <span *ngIf="!item.ip_addresses || item.ip_addresses.length === 0" class="text-muted" style="font-size: 12px;"></span>

@@ -9,6 +9,7 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { LoginComponent } from './login/login.component';
 import { NewPasswordComponent } from './new-password/new-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { ItemOfflineComponent } from '../pages/items/item-offline/item-offline.component';
 import { ItemsModule } from '../pages/items/items.module';
@@ -22,6 +23,7 @@ import { NgOtpInputModule } from 'ng-otp-input';
     LoginComponent,
     NewPasswordComponent,
     ResetPasswordComponent,
+    ForgotPasswordComponent,
     InvitationJoinComponent,
     // ItemOfflineComponent
   ],
