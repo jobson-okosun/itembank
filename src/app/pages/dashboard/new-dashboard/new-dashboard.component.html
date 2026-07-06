@@ -462,35 +462,70 @@
             <div class="card-body">
               <h5 class="mb-3 card-title">Exam for the day Candidate Attendance</h5>
 
-              <div class="row g-3">
-                <div class="col-sm-12 col-md-6">
+              <div class="row">
+                <!-- <div class="col-sm-12 col-md-6">
                   <div class="border p-2 rounded border-dashed h-100">
                     <p class="text-muted text-truncate mb-1 small fw-medium">Sched. Candidates</p>
                     <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_scheduled || 0 | number }}</h5>
                   </div>
-                </div>
+                </div> -->
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Present</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_present || 0 | number }}
-                    </h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Sched. Candidates<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.total_candidates_scheduled || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Absent</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_absent || 0 | number }}</h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Present<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.total_candidates_present || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Currently Online</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_online || 0 | number }}</h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Absent<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.total_candidates_absent || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Currently Online<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.total_candidates_scheduled || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
             </div>
@@ -504,34 +539,70 @@
               <h5 class="mb-3 card-title">Exam for the day Center Sync.</h5>
 
               <div class="row g-3">
-                <div class="col-sm-12 col-md-6">
+
+                <!-- <div class="col-sm-12 col-md-6">
                   <div class="border p-2 rounded border-dashed h-100">
                     <p class="text-muted text-truncate mb-1 small fw-medium">Total Centers</p>
                     <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers || 0 | number }}</h5>
                   </div>
-                </div>
+                </div> -->
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Downloaded Centers</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded || 0 | number }}</h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Total Centers<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.day_total_centers || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Uploaded Centers</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_uploaded || 0 | number }}</h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Downloaded Centers<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.day_total_centers_downloaded || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
-                <div class="col-sm-12 col-md-6">
-                  <div class="border p-2 rounded border-dashed h-100">
-                    <p class="text-muted text-truncate mb-1 small fw-medium">Passport Downloaded</p>
-                    <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded_passport || 0 | number }}
-                    </h5>
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Uploaded Centers<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.day_total_centers_uploaded || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                <div class="col-lg-6 col-md-6 col-sm-12">
+                  <div class="card">
+                    <div class="d-flex p-2 align-items-center">
+                      <div class="flex-grow-1 overflow-hidden">
+                        <span class="fs-14">
+                          Passport Downloaded<br /><span class="fs-4 fw-bold">
+                            {{ examsForTheDay?.day_total_centers_downloaded_passport || 0 | number }}
+                          </span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
 
             </div>
