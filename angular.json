@@ -26,6 +26,16 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "dragula",
+              "simplebar",
+              "simplebar-core",
+              "core-js",
+              "ngx-lightbox",
+              "crypto-js",
+              "konva"
+            ],
+            "verbose": false,
             "outputPath": "dist/velzon",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -78,8 +88,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
-                  "maximumError": "4kb"
+                  "maximumWarning": "10kb",
+                  "maximumError": "20kb"
                 }
               ],
               "fileReplacements": [

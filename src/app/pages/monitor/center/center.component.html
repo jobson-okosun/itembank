@@ -798,3 +798,15 @@
             </tbody>
         </table>
     </div>
+    
+    <div class="pt-2">
+        <p-paginator [ngClass]="{ 'd-none': !participantList }" 
+            (onPageChange)="onParticipantPageChange($event)"
+            [first]="(participantPage - 1) * participantSize" 
+            [totalRecords]="participantList?.total || 0" 
+            [rowsPerPageOptions]="[10, 20, 50, 100]" 
+            [rows]="participantSize"
+            [showCurrentPageReport]="true" 
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+        </p-paginator>
+    </div>
