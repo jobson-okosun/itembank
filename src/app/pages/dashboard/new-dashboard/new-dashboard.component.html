@@ -547,24 +547,14 @@
 
       <!-- Exam Calendar class="col-xl-4" -->
       <div class="col-sm-12 col-lg-4"
-        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
+        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
         <div class="premium-card">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <!-- <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5> -->
             <div>
               <h5 class="card-title">Exam Calendar</h5>
               <span *ngIf="selectedCalendarYear" class="text-muted">{{selectedCalendarMonthText}} - {{selectedCalendarYear}}</span>
-            </div>
-            <!-- <div class="d-flex gap-2 align-items-center">
-              <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="calendarMonth"
-                (change)="fetchExamCalendar()">
-                <option
-                  *ngFor="let m of [{id: 1, name: 'January'}, {id: 2, name: 'February'}, {id: 3, name: 'March'}, {id: 4, name: 'April'}, {id: 5, name: 'May'}, {id: 6, name: 'June'}, {id: 7, name: 'July'}, {id: 8, name: 'August'}, {id: 9, name: 'September'}, {id: 10, name: 'October'}, {id: 11, name: 'November'}, {id: 12, name: 'December'}]"
-                  [value]="m.id"> {{m.name}} </option>
-              </select>
-              <input type="number" class="form-control form-control-sm border-0 bg-light" style="width: 70px;"
-                [(ngModel)]="calendarYear" (change)="fetchExamCalendar()">
-            </div> -->
+            </div>            
 
             <div class="dropdown" ngbDropdown #examCalendarFilterDrop="ngbDropdown"
               [placement]="['bottom-right', 'bottom-left', 'top-right', 'top-left']" container="body">
@@ -645,37 +635,7 @@
                   {{ cell.day }}
                 </span>
             
-                <!-- Dropdown menu -->
-                <!-- <div ngbDropdownMenu class="dropdown-menu p-3 shadow-lg rounded-lg spec-calendar-dropdown">
-                  <div class="dropdown-header px-0 text-dark fw-bold d-flex justify-content-between align-items-center">
-                    <span>Exams Portfolio</span>
-                    <span class="badge rounded-pill bg-light text-dark border">{{ cell.exams?.length || 0 }}</span>
-                  </div>
-                  <div class="dropdown-divider my-2"></div>
-                
-                  <div *ngIf="!cell.exams || cell.exams.length === 0" class="text-muted small py-1">
-                    No exams scheduled for {{ cell.dateStr }}
-                  </div>
-                
-                  <ul *ngIf="cell.exams && cell.exams.length > 0" class="list-unstyled mb-0 custom-scrollbar"
-                    style="max-height: 200px; overflow-y: auto; width: 100%;">
-                
-                    <li *ngFor="let exam of cell.exams" class="py-2 border-bottom last-border-0 small d-flex align-items-start">
-                      <span class="exam-dot me-2 mt-1.5"></span>
-                
-                      <div class="w-100 min-width-0">
-                        <strong class="text-dark d-block text-truncate mb-1 text-uppercase">{{ exam.exam_name || 'Exam' }}</strong>
-                
-                        <div class="d-flex justify-content-between align-items-center w-100 exam-dates-meta text-muted">
-                          <span>Start: {{ exam.start_date | date: 'short' }}</span>
-                          <span>End: {{ exam.end_date | date: 'short' }}</span>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div> -->
-
-                <div ngbDropdownMenu class="exam-portfolio-dropdown p-0 shadow-lg rounded-lg border-0">
+               <div ngbDropdownMenu class="exam-portfolio-dropdown p-0 shadow-lg rounded-lg border-0">
                   <div class="dropdown-header d-flex justify-content-between align-items-center px-3 py-2">
                     <div class="d-flex align-items-center gap-2">
                       <span class="fw-semibold text-dark">Exams Portfolio</span>
