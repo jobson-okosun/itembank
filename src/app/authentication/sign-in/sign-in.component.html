@@ -86,14 +86,14 @@
             <!-- <div class="d-flex flex-column gap-2 justify-content-between align-items-center"> -->
               <div class="d-flex flex-column gap-2 m-0">
               <p class="text-muted mb-2">Please enter the 6-digit OTP sent to your device.</p>
-              <!-- <ng-otp-input formControlName="otp" [config]="{ length: 6  }"></ng-otp-input> -->
-               <ng-otp-input (onInputChange)="onOtpChange($event)" [config]="{ length: 6, allowNumbersOnly: true, containerClass: 'd-flex flex-row flex-grow-1 border rounded-2 px-1 py-1', inputClass: 'text-center mx-1 fs-3 fw-bold text-primary border border-primary flex-grow-1' }"></ng-otp-input>
-
-              <!-- <div *ngIf="otpForm.get('otp').invalid" class="mb-3">
-              <div class="alert alert-danger alert-dismissible fade show border-0 rounded-3 shadow-sm mb-0">
-                <i class="ri-error-warning-line me-2"></i><strong>Error</strong> - Sorry! Enter the OTP sent to you
-              </div>
-            </div> -->            
+               <!-- <ng-otp-input #ngOtpInput (onInputChange)="onOtpChange($event)" [config]="{ length: 6, allowNumbersOnly: true, containerClass: 'd-flex flex-row flex-grow-1 border rounded-2 px-1 py-1', inputClass: 'text-center mx-1 fs-3 fw-bold text-primary border border-primary flex-grow-1' }"></ng-otp-input> -->
+                <ng-otp-input #ngOtpInput (onInputChange)="onOtpChange($event)" [config]="{ 
+                    length: 6, 
+                    allowNumbersOnly: true, 
+                    containerClass: 'd-flex flex-row flex-grow-1 border rounded-2 px-1 py-1', 
+                    inputClass: 'text-center mx-1 fs-3 fw-bold text-primary border border-primary flex-grow-1' 
+                  }">
+                </ng-otp-input>       
 
             </div>
 
@@ -103,14 +103,18 @@
               </div>
             </div>
 
-            <div *ngIf="success" class="my-2">
+            <div *ngIf="success && !error" class="my-2">
               <div class="alert alert-success alert-dismissible fade show border-0 rounded-3 shadow-sm mb-0">
                 <i class="ri-error-warning-line me-2"></i><strong>Success</strong> - {{ success_msg }} 
               </div>
             </div>
 
-            <div class="d-flex flex-row justify-content-end" style="cursor: pointer;" (click)="resendOTP()">
+            <div *ngIf="!isResendingOtp" class="d-flex flex-row justify-content-end" style="cursor: pointer;" (click)="resendOTP()">
               <span class="text-[#1f6673] text-decoration-underline">Resend OTP ?</span>
+            </div>
+
+            <div *ngIf="isResendingOtp" class="d-flex flex-row justify-content-end" style="cursor: pointer;">
+              <span class="text-decoration-underline text-muted">Resending OTP...</span>
             </div>
 
             <div class="mt-2">

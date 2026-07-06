@@ -1,0 +1,627 @@
+  <div>
+  
+    <!-- Exam for the day block -->
+    <div class="row g-3 mb-5"
+      *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-grow-1">
+          <!-- premium-card-title -->
+          <!-- <span class="mb-0 fs-5 fw-semibold text-gray-800 text-uppercase">exam for the day</span> -->
+          <h5 class="mb-0 text-primary font-weight-bold">Exam for the Day</h5>
+  
+        </div>
+      </div>
+  
+      <div class="col-sm-12 col-lg-8">
+        <div class="premium-card p-0 overflow-hidden">
+          <div
+            class="p-4 border-bottom border-light border border-primary d-flex justify-content-between align-item-center">
+            <!-- <h5 class="mb-0">Today's Exams Breakdown</h5> -->
+            <h5 class="mb-0 text-primary font-weight-bold">Today's Exams Breakdown</h5>
+            <select class="filter-select form-select-sm border-0 bg-light"
+              [(ngModel)]="selectedExamForTheDayDeliveryMethod" (change)="onExamForTheDayDeliveryMethodChange();"
+              [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+              <option value="">All Methods</option>
+              <option value="COMPUTER_BASED">COMPUTER BASED</option>
+              <option value="PAPER_BASED">PAPER BASED</option>
+              <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
+            </select>
+          </div>
+          <div class="table-responsive overflow-auto" style="max-height: 320px;">
+            <table class="table modern-table table-borderless table-nowrap mb-0 w-100">
+              <thead class="bg-light">
+                <tr>
+                  <th style="text-align: center;">Exam Name</th>
+                  <th style="text-align: center;">Method</th>
+                  <th style="text-align: center;">Total Center(s) <br /> (Dow. Exam/Uploaded Exam/Dow. Passport)</th>
+                  <th style="text-align: center;">Participant(s) <br /> (Online/Present/Absent) </th>
+                  <th style="text-align: center;">Total Centers </th>
+                  <th style="text-align: center;">Total Participants </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let ex of examsForTheDay?.content">
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+                      <div>{{ ex.exam_name }}</div>
+  
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+  
+                      <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{
+                        ex.delivery_method?.replaceAll('_', ' ') }}</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+  
+                      <div class="avatar-group">
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center uploaded exam" placement="top"
+                          ngbTooltip="downloaded exam">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-success">
+                              {{ ex.total_centers_downloaded_exam }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center uploaded exam" placement="top" ngbTooltip="uploaded exam">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-info">
+                              {{ ex.total_centers_uploaded_exam }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center downloaded passport" placement="top"
+                          ngbTooltip="downloaded passport">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-primary">
+                              {{ ex.total_centers_downloaded_passport }}
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+  
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+  
+                      <div class="avatar-group d-flex justify-contents-center items-center">
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total participant online" placement="top" ngbTooltip="online">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-success">
+                              {{ ex.total_participants_online }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total center participant present" placement="top" ngbTooltip="present">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-info">
+                              {{ ex.total_participants_present }}
+                            </div>
+                          </div>
+                        </a>
+                        <a href="javascript: void(0);" class="avatar-group-item" data-bs-toggle="tooltip"
+                          data-bs-trigger="hover" data-bs-placement="top"
+                          data-bs-original-title="total participant absent" placement="top" ngbTooltip="absent">
+                          <div class="avatar-xs">
+                            <div class="avatar-title rounded-circle bg-danger">
+                              {{ ex.total_participants_absent }}
+                            </div>
+                          </div>
+                        </a>
+                      </div>
+  
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+                      {{ ex.total_centers }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-center items-center">
+                      {{ ex.total_participants }}
+                    </div>
+                  </td>
+                </tr>
+                <tr *ngIf="examsForTheDay?.content?.length === 0">
+                  <td colspan="6" class="text-center py-4 text-muted">No exams scheduled for today.</td>
+                </tr>
+                <tr *ngIf="!examsForTheDay">
+                  <td colspan="6" class="text-center py-4 text-muted">Loading scheduled exams...</td>
+                </tr>
+              </tbody>
+  
+            </table>
+  
+          </div>
+  
+          <div class="d-flex justify-content-end align-item-center">
+            <p-paginator container="body" *ngIf="examsForTheDay && examsForTheDay.content.length > 0"
+              [totalRecords]="examsForTheDay.total" (onPageChange)="itemsExamPageChange($event)" [first]="0"
+              [rowsPerPageOptions]="[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]" [rows]="20"
+              [showCurrentPageReport]="true"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+            </p-paginator>
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-sm-12 col-lg-4" style="place-content: center;">
+        <div class="row overflow-auto" style="max-height: 450px;">
+  
+          <!-- Candidate Attendance Card -->
+          <div class="col-xl-12 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="mb-3 card-title">Candidate Attendance</h5>
+  
+                <!-- Row with modern uniform gutters -->
+                <div class="row g-3">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Sched. Candidates</p>
+                      <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.total_candidates_scheduled | number }}</h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Present</p>
+                      <h5 class="mb-0 fw-semibold text-success">{{ examsForTheDay?.total_candidates_present | number }}
+                      </h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Absent</p>
+                      <h5 class="mb-0 fw-semibold text-danger">{{ examsForTheDay?.total_candidates_absent | number }}</h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Currently Online</p>
+                      <h5 class="mb-0 fw-semibold text-info">{{ examsForTheDay?.total_candidates_online | number }}</h5>
+                    </div>
+                  </div>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+  
+          <!-- Center Synchronization Card -->
+          <div class="col-xl-12 mb-3">
+            <div class="card h-100">
+              <div class="card-body">
+                <h5 class="mb-3 card-title">Center Synchronization (Today)</h5>
+  
+                <div class="row g-3">
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Total Centers</p>
+                      <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers | number }}</h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Downloaded Centers</p>
+                      <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded | number }}</h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Uploaded Centers</p>
+                      <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_uploaded | number }}</h5>
+                    </div>
+                  </div>
+  
+                  <div class="col-sm-12 col-md-6">
+                    <div class="border p-2 rounded border-dashed h-100">
+                      <p class="text-muted text-truncate mb-1 small fw-medium">Passport Downloaded</p>
+                      <h5 class="mb-0 fw-semibold">{{ examsForTheDay?.day_total_centers_downloaded_passport | number }}
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+  
+              </div>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+    </div>
+  
+    <div>
+      <div class="row g-4 mb-4">
+  
+        <!-- Exam Calendar -->
+        <div class="col-xl-4"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')"
+          style="place-content: center;">
+          <div class="premium-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5>
+              <div class="d-flex gap-2 align-items-center">
+                <select class="form-select form-select-sm border-0 bg-light" [(ngModel)]="calendarMonth"
+                  (change)="fetchExamCalendar()">
+                  <option
+                    *ngFor="let m of [{id: 1, name: 'January'}, {id: 2, name: 'February'}, {id: 3, name: 'March'}, {id: 4, name: 'April'}, {id: 5, name: 'May'}, {id: 6, name: 'June'}, {id: 7, name: 'July'}, {id: 8, name: 'August'}, {id: 9, name: 'September'}, {id: 10, name: 'October'}, {id: 11, name: 'November'}, {id: 12, name: 'December'}]"
+                    [value]="m.id"> {{m.name}} </option>
+                </select>
+                <input type="number" class="form-control form-control-sm border-0 bg-light" style="width: 70px;"
+                  [(ngModel)]="calendarYear" (change)="fetchExamCalendar()">
+              </div>
+            </div>
+  
+            <div class="calendar-heatmap">
+              <!-- Headers -->
+              <div class="calendar-header-day">Mon</div>
+              <div class="calendar-header-day">Tue</div>
+              <div class="calendar-header-day">Wed</div>
+              <div class="calendar-header-day">Thu</div>
+              <div class="calendar-header-day">Fri</div>
+              <div class="calendar-header-day">Sat</div>
+              <div class="calendar-header-day">Sun</div>
+  
+              <!-- Days -->
+              <div *ngFor="let cell of calendarDays" class="calendar-cell" [ngClass]="cell.heatClass"
+                [ngbTooltip]="cell.day ? (cell.exams.length + ' Exams (' + cell.dateStr + ')') : ''" container="body"
+                (click)="getRecordOnCalenderCellBlock(cell)">
+                {{ cell.day }}
+              </div>
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-3 text-muted" style="font-size: 0.75rem;">
+              <span class="d-flex align-items-center gap-1">
+                <div style="width:12px;height:12px;background:#f1f3f4;border-radius:2px;"></div> 0
+              </span>
+              <span class="d-flex align-items-center gap-1">
+                <div style="width:12px;height:12px;background:#d1f2eb;border-radius:2px;"></div> 1-50
+              </span>
+              <span class="d-flex align-items-center gap-1">
+                <div style="width:12px;height:12px;background:#48c9b0;border-radius:2px;"></div> 200+
+              </span>
+              <span class="d-flex align-items-center gap-1">
+                <div style="width:12px;height:12px;background:#1abc9c;border-radius:2px;"></div> 500+
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Proctor Weekly Calendar -->
+        <div class="col-xl-8"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')"
+          style="place-content: center;">
+  
+          <div class="premium-card p-0 overflow-hidden">
+            <div
+              class="card-header bg-white border-bottom py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+              <div>
+                <h5 class="mb-0 text-primary font-weight-bold">Proctor Weekly Calendar</h5>
+                <small class="text-muted">Week of Monday, {{ currentWeekStartStr | date:'longDate' }}</small>
+              </div>
+  
+              <div class="d-flex align-items-center gap-2 flex-wrap">
+                <!-- Week Step Navigation Group -->
+                <div class="btn-group btn-group-sm" role="group">
+                  <button type="button" class="btn btn-outline-secondary" (click)="navigateWeek(-1)"
+                    title="Previous Week">
+                    <span class="px-1">◀ Previous</span>
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="jumpToCurrentWeek()">
+                    Today
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" (click)="navigateWeek(1)" title="Next Week">
+                    <span class="px-1">Next ▶</span>
+                  </button>
+                </div>
+  
+                <!-- Date Picker Dropdown -->
+                <div class="input-group input-group-sm" style="max-width: 180px;">
+                  <span class="input-group-text bg-light text-muted">Jump to:</span>
+                  <input type="date" class="form-control" [value]="currentWeekStartStr"
+                    (change)="onDateDropdownChange($event)">
+                </div>
+              </div>
+            </div>
+  
+            <!-- THE CALENDAR SYSTEM -->
+            <div class="calendar-container" *ngIf="true">
+  
+              <div class="calendar-grid-row header-row">
+                <div class="time-cell header-cell">Time</div>
+                <div *ngFor="let day of weekDays" class="grid-cell header-cell">
+                  <div class="font-weight-bold text-dark text-truncate">{{ day | date: 'EEEE' }}</div>
+                  <span class="badge rounded-pill bg-light text-secondary px-2 py-0.5 x-small">{{ day | date: 'MMM d'
+                    }}</span>
+                </div>
+              </div>
+  
+              <div class="calendar-scroll-body">
+  
+                <div *ngFor="let slot of timeSlots" class="calendar-grid-row">
+  
+                  <div class="time-cell data-cell">{{ slot }}</div>
+  
+                  <div *ngFor="let day of weekDays" class="grid-cell data-cell">
+  
+                    <div class="slot-scroll-container d-flex flex-column gap-2 w-100">
+  
+                      <div *ngFor="let exam of getExamsForSlot(day, slot)"
+                        class="exam-card p-1 rounded border-start border-4 shadow-xs" [ngClass]="{
+                                        'bg-primary-light border-primary': exam.delivery_method === 'LIVE_PROCTORING',
+                                        'bg-success-light border-success': exam.delivery_method !== 'LIVE_PROCTORING'
+                                      }">
+                        <div class="exam-title text-truncate fw-bold" style="cursor: pointer;" placement="top"
+                          [ngbTooltip]="examTooltip" container="body">
+                          {{ exam.exam_name }}
+                        </div>
+  
+                        <ng-template #examTooltip>
+                          {{ exam.exam_name }}<br>
+                          Status: {{ exam.status }}<br>
+                          Total Participants: {{ exam.total_participants }}<br>
+                          Total Participants Assigned: {{ exam.total_participants_assigned }}<br>
+                          Batch: {{ exam.batch_name }}<br>
+                          Proctor name: {{ exam.proctor_full_name }}
+                        </ng-template>
+                      </div>
+  
+                    </div>
+  
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+  
+          </div>
+  
+        </div>
+  
+      </div>
+    </div>
+  
+      <div class="row g-4 mb-4">
+  
+        <div class="col-xl-4"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
+          <div class="premium-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 text-primary font-weight-bold">AI Infraction</h5>
+              <div class="d-flex gap-2 align-items-center">
+                <select class="form-select form-select-sm border-0 bg-light"
+                  [(ngModel)]="selectedInfractionDeliveryMethod" (change)="onInfractionDeliveryMethodChange();"
+                  [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
+                  <option value="">All METHODS</option>
+                  <option value="COMPUTER_BASED">COMPUTER BASED</option>
+                  <option value="PAPER_BASED">PAPER BASED</option>
+                  <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
+                </select>
+              </div>
+            </div>
+  
+            <div>
+  
+              <div id="chart" *ngIf="isChartLoaded">
+                <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [labels]="chartOptions.labels"
+                  [legend]="chartOptions.legend" [responsive]="chartOptions.responsive" [dataLabels]="chartOptions.dataLabels"></apx-chart>
+              </div>
+  
+              <!-- Optional loading placeholder -->
+              <div *ngIf="!isChartLoaded" class="mt-3 d-flex justify-content-center align-item-center">
+                <p>Loading chart data...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-sm-12 col-xl-8"
+          *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
+          <div class="premium-card p-0 overflow-hidden">
+            <div class="p-4 border-bottom border-light d-flex justify-content-between align-item-center">
+              <h5 class="mb-0 text-primary font-weight-bold">Upcoming Exams</h5>
+  
+              <div class="dropdown" ngbDropdown #upcomingExamFilterDrop="ngbDropdown" container="body">
+                <a class="text-muted arrow-none" id="dropdownMenuLink1" data-bs-toggle="dropdown" aria-expanded="false"
+                  ngbDropdownToggle>
+                  <i class="ri-more-2-fill align-middle me-2 fs-18 fw-bold text-dark" style="cursor: pointer"></i>
+                </a>
+                <div ngbDropdownMenu style="min-width: 300px" class="border shadow-sm">
+                  <div class="px-3 py-2 small text-black">Filter summary</div>
+                  <div class="dropdown-divider"></div>
+                  <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
+                    <div class="mb-2">
+                      <label for="center" class="small">Delivery Method</label>
+                      <select #select class="form-select form-select w-100" name="type"
+                        [(ngModel)]="selectedUpcomingExamDeliveryMethod">
+                        <option value="">ALL METHODS</option>
+                        <option value="COMPUTER_BASED">COMPUTER BASED</option>
+                        <option value="PAPER_BASED">PAPER BASED</option>
+                        <option value="LIVE_PROCTORING">LIVE PROCTORING</option>
+                      </select>
+                    </div>
+  
+                    <div class="mb-2">
+                      <label for="center" class="small">Status</label>
+                      <select #select class="form-select form-select w-100" name="type"
+                        [(ngModel)]="selectedUpcomingExamStatus">
+                        <option value="">ALL</option>
+                        <option value="PUBLISHED">PUBLISHED</option>
+                        <option value="DRAFT">DRAFT</option>
+                        <option value="CLOSED">CLOSED</option>
+                      </select>
+                    </div>
+  
+                    <div class="mb-2">
+                      <label for="center" class="small">Start From</label>
+                      <input type="date" class="form-control" [value]="upcomingExamsStartDateFromStr"
+                        (change)="onUpcomingExamsStartDateFromChange($event)">
+                    </div>
+  
+                    <div class="mb-2">
+                      <label for="center" class="small">Start To</label>
+                      <input type="date" class="form-control" [value]="upcomingExamsStartDateToStr"
+                        [min]="upcomingExamsStartDateFromStr" (change)="onUpcomingExamsStartDateToChange($event)">
+                    </div>
+  
+                    <div class="mb-2">
+                      <label for="center" class="small">End From</label>
+                      <input type="date" class="form-control" [value]="upcomingExamsEndDateFromStr"
+                        (change)="onUpcomingExamsEndDateFromChange($event)">
+                    </div>
+  
+                    <div class="mb-2">
+                      <label for="center" class="small">End To</label>
+                      <input type="date" class="form-control" [value]="upcomingExamsEndDateToStr"
+                        [min]="upcomingExamsStartDateFromStr" (change)="onUpcomingExamsEndDateToChange($event)">
+                    </div>
+  
+                  </form>
+                  <div class="dropdown-divider"></div>
+                  <div class="px-3 pb-2 d-flex gap-1">
+                    <button type="button" (click)="
+                                            upcomingExamFilterDrop.close(); clearUpcomingExamsFilter()"
+                      class="btn btn-secondary w-100">
+                      Clear
+                    </button>
+  
+                    <button type="button" (click)="applyUpcomingExamsFilter(); upcomingExamFilterDrop.close()"
+                      class="btn btn-primary w-100">Apply</button>
+                  </div>
+                </div>
+              </div>
+  
+            </div>
+            <div class="table-responsive overflow-auto" style="max-height: 250px;">
+              <table class="table modern-table table-borderless table-nowrap mb-0 w-100">
+                <thead class="bg-light">
+                  <tr>
+                    <th style="text-align: center;">Exam Name</th>
+                    <th style="text-align: center;">Method</th>
+                    <th style="text-align: center;">Status</th>
+                    <th style="text-align: center;">End Date</th>
+                    <th style="text-align: center;">Start Date</th>
+                    <th style="text-align: center;">Total Participant(s) </th>
+                    <th style="text-align: center;">Total Proctor(s) </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let ex of upcomingExams?.content">
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        <div>{{ ex.exam_name }}</div>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        <span class="badge bg-light text-dark px-3 py-2 rounded-pill">{{
+                          ex.delivery_method?.replaceAll('_', ' ') }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        <span *ngIf="ex.exam_status === 'PUBLISHED'" class="badge bg-success text-white p-2">{{
+                          ex.exam_status
+                          }}</span>
+                        <span *ngIf="ex.exam_status === 'DRAFT'" class="badge bg-warning text-dark p-2">{{ ex.exam_status
+                          }}</span>
+                        <span *ngIf="ex.exam_status === 'CLOSED'" class="badge bg-danger text-white p-2">{{ ex.exam_status
+                          }}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        {{ ex.exam_start_date | date: 'short' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        {{ ex.exam_end_date | date: 'short' }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        {{ ex.total_participants }}
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex justify-content-center items-center">
+                        {{ ex.total_proctors }}
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="upcomingExams?.content?.length === 0">
+                    <td colspan="7" class="text-center py-4 text-muted">No exams scheduled for today.</td>
+                  </tr>
+                </tbody>
+  
+              </table>
+  
+            </div>
+  
+            <div class="d-flex justify-content-end align-item-center">
+              <p-paginator *ngIf="upcomingExams && upcomingExams.content.length > 0" [totalRecords]="upcomingExams.total"
+                (onPageChange)="itemsUpcomingExamPageChange($event)" [first]="0"
+                [rowsPerPageOptions]="[20, 40, 60, 80, 100, 120, 140, 160, 180, 200]" [rows]="20"
+                [showCurrentPageReport]="true"
+                currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+              </p-paginator>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+
+      <div class="row g-4 mb-4">
+      
+        <div class="col-xl-4" *ngIf="currentUser.authorities.includes('ADMIN')">
+          <div class="premium-card">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h5 class="mb-0 text-primary font-weight-bold">Users Breakdown</h5>
+            </div>
+      
+            <div style="text-align: center; font-family: sans-serif; max-width: 400px; margin: 0 auto;">
+              
+                <div id="userChart" *ngIf="isChartLoaded">
+                  <apx-chart [series]="userChartOptions.series" [chart]="userChartOptions.chart" [labels]="userChartOptions.labels"
+                    [legend]="userChartOptions.legend" [dataLabels]="userChartOptions.dataLabels" [responsive]="userChartOptions.responsive"></apx-chart>
+                </div>
+              
+                <!-- 2. Overall Total display placed underneath -->
+                <div *ngIf="isUserChartLoaded" style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                  <span style="font-size: 14px; color: #666; text-transform: uppercase; letter-spacing: 0.5px;">Total Users</span>
+                  <h3 style="font-size: 28px; margin: 5px 0 0 0; color: #333;">{{ totalUsersCount }}</h3>
+                </div>
+              
+                <div *ngIf="!isUserChartLoaded">
+                  <p>Loading user dashboard data...</p>
+                </div>
+              </div>
+          </div>
+        </div>
+      
+        <div class="col-sm-12 col-xl-8">
+        </div>
+      
+      </div>
+  
+  </div>

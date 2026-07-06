@@ -72,68 +72,70 @@ import { ResourceModified } from "../../assessment/model/marking-guide-types";
   providedIn: "root",
 })
 export class SchedulerService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   fetchRegistrationFields(assessmentId: string): Observable<IRegField[]> {
     return this.http.get<IRegField[]>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/list_registration_fields`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessments(page?: number, size?: number): Observable<IAssessmentList> {
     return this.http.get<IAssessmentList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessmentDetails(assessmentId: string): Observable<IAssessmentDetail> {
     return this.http.get<IAssessmentDetail>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/fetch_assessment`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessmentSectionGroups(
     assessmentId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ISectionGroups> {
     return this.http.get<ISectionGroups>(
-      `${environment.schedulerIP
-      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/list_section_groups?page=${page ? page : 0
+      `${
+        environment.schedulerIP
+      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/list_section_groups?page=${
+        page ? page : 0
       }&size=${size ? size : 250}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteRegistrationField(
     assessmentId: string,
-    fieldId: string
+    fieldId: string,
   ): Observable<IResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/field/${fieldId}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
   addRegistrationFieldValue(
-    payload: INewFieldValue
+    payload: INewFieldValue,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessment_id}/prf/new_field_value`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
   deleteRegistrationFieldValue(
     assessmentId: string,
     fieldId: string,
-    arrayValue: string
+    arrayValue: string,
   ): Observable<IResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/field/${fieldId}/array_value/${arrayValue}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -141,17 +143,17 @@ export class SchedulerService {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessment_id}/prf/add_registration_field`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   addParticipantToAssessment(
-    payload: IParticipant
+    payload: IParticipant,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/prf/add_participant`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -159,40 +161,40 @@ export class SchedulerService {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/prf/edit_registration_field`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   downloadRegFieldTemplate(assessmentId: string): Observable<Blob> {
     return this.http.get(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/download_template`,
-      { withCredentials: true, responseType: "blob" }
+      { withCredentials: true, responseType: "blob" },
     );
   }
 
   downloadTemplateForAdminUpload(): Observable<Blob> {
     return this.http.get(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/centers/admins/download_template`,
-      { withCredentials: true, responseType: "blob" }
+      { withCredentials: true, responseType: "blob" },
     );
   }
 
   downloadTemplateForProctorUpload(): Observable<Blob> {
     return this.http.get(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/centers/admins/download_template`,
-      { withCredentials: true, responseType: "blob" }
+      { withCredentials: true, responseType: "blob" },
     );
   }
   downloadTemplateForCenterUpload(): Observable<Blob> {
     return this.http.get(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/centers/download_template`,
-      { withCredentials: true, responseType: "blob" }
+      { withCredentials: true, responseType: "blob" },
     );
   }
 
   uploadParticipantFile(
     assessmentId: string,
-    payload: FormData
+    payload: FormData,
   ): Observable<IResourceCreated> {
     // console.log(
     //   `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/upload_participants`
@@ -200,58 +202,58 @@ export class SchedulerService {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/upload_participants`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchParticipants(
     assessmentId: string,
     page: number,
-    size: number
+    size: number,
   ): Observable<IParticipantList> {
     return this.http.get<IParticipantList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/list_assessment_participants?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createAssessmentCenter(
-    payload: INewAssessmentCenter
+    payload: INewAssessmentCenter,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessment_id}/centers/new`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
   uploadCenters(
     assessmentId: string,
-    payload: FormData
+    payload: FormData,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/centers/upload`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createCenterFilters(
-    payload: INewCenterFilters
+    payload: INewCenterFilters,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/centers/${payload.centerId}/filter`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchCenterFilters(
     assessmentId: string,
-    centerId: string
+    centerId: string,
   ): Observable<ICenterFilters[]> {
     return this.http.get<ICenterFilters[]>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/list_center_filters`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -259,33 +261,33 @@ export class SchedulerService {
     assessmentId: string,
     centerId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<IParticipantList> {
     return this.http.get<IParticipantList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/list_participants?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessmentCenters(
     assessmentId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ICenters> {
     // if (page && size) {
     return this.http.get<ICenters>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/centers/list_centers?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
     // }
   }
 
   fetchAssessmentCenterWithoutPagination(
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ICenters> {
     return this.http.get<ICenters>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/centers/list_centers`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -293,25 +295,25 @@ export class SchedulerService {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/centers/${payload.centerId}/new_admin`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchCenterAdmins(
     assessmentId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ICenterAdmins> {
     return this.http.get<ICenterAdmins>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/center_admins?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSectionsDropdown(assessmentId: string): Observable<ISection[]> {
     return this.http.get<ISection[]>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/sections/dropdown`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -319,127 +321,127 @@ export class SchedulerService {
     assessmentId: string,
     sectionGroupId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<IParticipantList> {
     return this.http.get<IParticipantList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/${sectionGroupId}/list_participants?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   uploadCenterAdmins(
     assessmentId: string,
-    payload: any
+    payload: any,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `
     ${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/upload`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   uploadProctors(
     assessmentId: string,
-    payload: any
+    payload: any,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `
     ${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/upload`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteFilter(
     assessmentId: string,
     centerId: string,
-    filterId: string
+    filterId: string,
   ): Observable<IResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/filter/${filterId}/delete`,
       {
         withCredentials: true,
-      }
+      },
     );
   }
 
   fetchCenterDetails(
     assessmentId: string,
-    centerId: string
+    centerId: string,
   ): Observable<ICenterDetail> {
     return this.http.get<ICenterDetail>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/center_details`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   addGroupSection(
     payload: INewSectionGroup,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/new`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   moveParticipantToAnotherSectionGroup(
     assessmentId: string,
     sectionGroupId: string,
-    participantsToMoveDto: IMovePartipantToGroup
+    participantsToMoveDto: IMovePartipantToGroup,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/${sectionGroupId}/move_participants`,
       participantsToMoveDto,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   moveParticipantToAnotherCenter(
     assessmentId: string,
     centerId: string,
-    participantsToMoveToCenterDto: IMovePartipantToCenter
+    participantsToMoveToCenterDto: IMovePartipantToCenter,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/move_participants`,
       participantsToMoveToCenterDto,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   moveAdminToAnotherCenter(
     assessmentId: string,
     centerId: string,
-    adminsToMoveToNewCenterDto: IMoveAdminToCenter
+    adminsToMoveToNewCenterDto: IMoveAdminToCenter,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/centers/${centerId}/admins/move_admins`,
       adminsToMoveToNewCenterDto,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editAssessmentCenter(
-    payload: INewAssessmentCenter
+    payload: INewAssessmentCenter,
   ): Observable<ResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessment_id}/center/${payload.id}/edit`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editGroupSection(
     payload: INewSectionGroup,
     assessmentId: string,
-    sectionGroupId: string
+    sectionGroupId: string,
   ): Observable<IResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/${sectionGroupId}/edit`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -447,82 +449,89 @@ export class SchedulerService {
     assessmentId: string,
     payload: ISearchParticipant,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<IParticipantList> {
     return this.http.post<IParticipantList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/search_participants?page=${page}&size=${size}`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSectionGroupDetails(
     assessmentId: string,
-    sectionGroupId: string
+    sectionGroupId: string,
   ): Observable<ISectionGroup> {
     return this.http.get<ISectionGroup>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/${sectionGroupId}/section_group_details`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   suspendOrResumeAdmin(
     assessmentId: string,
-    payload: ISuspendOrResumeAdmin
+    payload: ISuspendOrResumeAdmin,
   ): Observable<ResourceCreated> {
-    return this.http.patch<ResourceCreated>( 
+    return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/${payload.adminId}/suspend_resume`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  suspendOrResumeProctor(assessmentId: string, proctorId: string, payload: ISuspendOrResumeProctor): Observable<ResourceCreated> {
+  suspendOrResumeProctor(
+    assessmentId: string,
+    proctorId: string,
+    payload: ISuspendOrResumeProctor,
+  ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${proctorId}/suspend_resume`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  assignProctor(assessmentId: string, payload: AssignProctorDTO): Observable<ResourceCreated> {
+  assignProctor(
+    assessmentId: string,
+    payload: AssignProctorDTO,
+  ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/assign_proctor`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   suspendOrResumeParticipant(
     assessmentId: string,
-    payload: ISuspendOrResumeParticipant
+    payload: ISuspendOrResumeParticipant,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/${payload.participant_id}/suspend_resume_participant`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   updateInfractions(
     assessmentId: string,
-    payload: UpdateInfractionsDTO
+    payload: UpdateInfractionsDTO,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/infractions/update`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
-  
+
   updateProctorSettings(
     assessmentId: string,
-    payload: ProctorSettings
+    payload: ProctorSettings,
   ): Observable<ResourceCreated> {
     return this.http.patch<ResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctor_guide/update`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -530,22 +539,25 @@ export class SchedulerService {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/centers/${payload.centerId}/admins/${payload.id}/edit`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   filterCenterByField(
     payload: IFilterCenter,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ICenters> {
     return this.http.post<ICenters>(
-      `${environment.schedulerIP
-      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId
-      }/centers/filter_center?page=${page ? page : 0}&size=${size ? size : 250
+      `${
+        environment.schedulerIP
+      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${
+        payload.assessmentId
+      }/centers/filter_center?page=${page ? page : 0}&size=${
+        size ? size : 250
       }`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -553,217 +565,232 @@ export class SchedulerService {
     payload: IFilterCenterAdmin,
     assessmentId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ICenterAdmins> {
     return this.http.post<ICenterAdmins>(
-      `${environment.schedulerIP
-      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/center_admins/filter?page=${page ? page : 0
+      `${
+        environment.schedulerIP
+      }/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/center_admins/filter?page=${
+        page ? page : 0
       }&size=${size ? size : 250}`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchUnassignedCenterAdmins(
     payload: IFilterUnAssignedCenterAdmin,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<IUnassignedAdminList> {
     return this.http.post<IUnassignedAdminList>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/un_assigned_center_admins`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   assignAdminToCenter(
     assessmentId: string,
     centerId: string,
-    unassaignedAdminIds: Array<string>
+    unassaignedAdminIds: Array<string>,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/un_assigned_center_admins/center/${centerId}/assign`,
       unassaignedAdminIds,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   uploadParticipantsPassport(
     assessmentId: string,
-    payload: FormData
+    payload: FormData,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/upload_participant_passports`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchCenterDashBoard(assessmentId: string): Observable<ICenterDashboard> {
     return this.http.get<ICenterDashboard>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/centers/dashboard`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchCenterAdminDashboard(
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ICenterAdminDashboard> {
     return this.http.get<ICenterAdminDashboard>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/admins/center_admins/dashboard`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  fetchAssementInfractions(
-    assessmentId: string
-  ): Observable<Infraction[]> {
+  fetchAssementInfractions(assessmentId: string): Observable<Infraction[]> {
     return this.http.get<Infraction[]>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/infractions`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssementInfractionsTemplates(): Observable<InfractionTemplate[]> {
     return this.http.get<InfractionTemplate[]>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/infractions/template/list`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   useInfractionTemplate(
     assessmentId: string,
-    payload: UseInfractionTemplateDTO
+    payload: UseInfractionTemplateDTO,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/infractions/template/use`,
-      payload, { withCredentials: true }
+      payload,
+      { withCredentials: true },
     );
   }
 
   saveInfractionTemplate(
     assessmentId: string,
-    payload: NewInfractionTemplateDTO
+    payload: NewInfractionTemplateDTO,
   ): Observable<IResourceCreated> {
     return this.http.post<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/infractions/template/save`,
-      payload, { withCredentials: true }
+      payload,
+      { withCredentials: true },
     );
   }
 
   fetchParticipantsDashboard(
-    assessmentId: string
+    assessmentId: string,
   ): Observable<IParticipantDashboard> {
     return this.http.get<IParticipantDashboard>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/dashboard`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssementProctorSetting(
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ProctorSettings> {
     return this.http.get<ProctorSettings>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctor_guide`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteCenter(
     assessmentId: string,
-    centerId: string
+    centerId: string,
   ): Observable<IResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/delete`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteSectionGroup(
     assessmentId: string,
-    sectionGroupId: string
+    sectionGroupId: string,
   ): Observable<IResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/${sectionGroupId}/delete`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchParticipantById(
     assessmentId: string,
-    participantId: string
+    participantId: string,
   ): Observable<IParticipantForEdit> {
     return this.http.get<IParticipantForEdit>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/prf/participant/${participantId}`,
-      { withCredentials: true }
+      { withCredentials: true },
+    );
+  }
+
+  allowExamRedownloadForCenter(
+    centerId: string, assessmentId: string,
+    payload: { flag: boolean },
+  ): Observable<{id: string}> {
+    return this.http.patch<{id: string}>(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/center/${centerId}/redownload`,
+      payload,
+      { withCredentials: true },
     );
   }
 
   editParticipant(
-    payload: IEditAssessmentParticipantDTO
+    payload: IEditAssessmentParticipantDTO,
   ): Observable<IResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/prf/participant/${payload.id}/edit`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   moveParticipantToBatch(
     payload: IParticipantBatchMovementDTO,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<IResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/${payload.newBatchId}/move_participants`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  removeLoginFlag(payload: IRemoveEnableLoginFlagDTO): Observable<IResourceCreated> {
+  removeLoginFlag(
+    payload: IRemoveEnableLoginFlagDTO,
+  ): Observable<IResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${payload.assessmentId}/prf/${payload.fieldId}/toggle_login`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSectionGroupDashboard(
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ISectionGroupDashboard> {
     return this.http.get<ISectionGroupDashboard>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/section_group/dashboard`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createBatch(
     payload: INewAssessmentBatchDTO,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ResourceCreated> {
     return this.http.post(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/new_batch`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
   deleteBatch(
     batchId: string,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<ResourceCreated> {
     return this.http.delete<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/${batchId}/delete_batch`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editBatch(
     payload: IAssessmentBatchDTO,
-    assessmentId: string
+    assessmentId: string,
   ): Observable<IResourceCreated> {
     return this.http.patch<IResourceCreated>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/edit_batch`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -771,55 +798,92 @@ export class SchedulerService {
     return this.http.get<Array<IAssessmentBatchDTO>>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/batch/list`,
 
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  fetchUnassignedProctors(assessmentId: string, payload: IFilterUnAssignedCenterAdmin): Observable<ListProctorPage> {
+  fetchUnassignedProctors(
+    assessmentId: string,
+    payload: IFilterUnAssignedCenterAdmin,
+  ): Observable<ListProctorPage> {
     return this.http.post<ListProctorPage>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/un_assigned_proctors`,
-      payload, { withCredentials: true }
+      payload,
+      { withCredentials: true },
     );
   }
 
-  fetchAssignedProctors(assessmentId: string, payoad: FilterProctorDTO,params: proctorQueryParams): Observable<ListProctorPage> {
-    let q = this.buildQueryString(params)
-    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors` + q
+  fetchAssignedProctors(
+    assessmentId: string,
+    payoad: FilterProctorDTO,
+    params: proctorQueryParams,
+  ): Observable<ListProctorPage> {
+    let q = this.buildQueryString(params);
+    const url =
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors` +
+      q;
 
-    return this.http.post<ListProctorPage>(url, payoad, { withCredentials: true });
+    return this.http.post<ListProctorPage>(url, payoad, {
+      withCredentials: true,
+    });
   }
 
-  fetchProctorDashboard(assessmentId: string): Observable<ProctorDashboardMetrics> {
-    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/dashboard`
-    return this.http.get<ProctorDashboardMetrics>(url, { withCredentials: true });
+  fetchProctorDashboard(
+    assessmentId: string,
+  ): Observable<ProctorDashboardMetrics> {
+    const url = `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/dashboard`;
+    return this.http.get<ProctorDashboardMetrics>(url, {
+      withCredentials: true,
+    });
   }
 
   buildQueryString(params: proctorQueryParams): string {
-    const query = Object.entries(params).filter(([_, value]) => value !== undefined && value !== null && value !== '')
-      .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`)
-      .join('&'); return query ? `?${query}` : '';
+    const query = Object.entries(params)
+      .filter(
+        ([_, value]) => value !== undefined && value !== null && value !== "",
+      )
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`,
+      )
+      .join("&");
+    return query ? `?${query}` : "";
   }
 
-  fetchProctorCandidates(assessmentId: string, proctorId: string, params: any, payload: BatchFilter): Observable<IParticipantList> {
-    let q = this.buildQueryString(params)
+  fetchProctorCandidates(
+    assessmentId: string,
+    proctorId: string,
+    params: any,
+    payload: BatchFilter,
+  ): Observable<IParticipantList> {
+    let q = this.buildQueryString(params);
 
     return this.http.post<IParticipantList>(
-      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${ proctorId }/list_participants` + q,
-      payload, { withCredentials: true }
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${proctorId}/list_participants` +
+        q,
+      payload,
+      { withCredentials: true },
     );
   }
 
-  distributeParticipants(assessmentId: string): Observable<ProctorDistributionResult> {
+  distributeParticipants(
+    assessmentId: string,
+  ): Observable<ProctorDistributionResult> {
     return this.http.get<ProctorDistributionResult>(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/distribute_participants`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
-  unAssignProctorBatch(assessmentId: string, proctorId: string, payload: string[]): Observable<ResourceModified> {
+  unAssignProctorBatch(
+    assessmentId: string,
+    proctorId: string,
+    payload: string[],
+  ): Observable<ResourceModified> {
     return this.http.post<ResourceModified>(
-      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${ proctorId }/unassign_batches`,
-      payload, { withCredentials: true }
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/${assessmentId}/proctors/${proctorId}/unassign_batches`,
+      payload,
+      { withCredentials: true },
     );
   }
 }

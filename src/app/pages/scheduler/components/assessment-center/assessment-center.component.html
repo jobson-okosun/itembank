@@ -179,7 +179,7 @@
             <ng-template pTemplate="header">
               <tr>
                 <th pSortableColumn="name">
-                  <div class="flex justify-content-between align-items-center">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
                     NAME
                     <p-sortIcon field="name"></p-sortIcon>
                     <p-columnFilter
@@ -191,7 +191,7 @@
                   </div>
                 </th>
                 <th pSortableColumn="id">
-                  <div class="flex justify-content-between align-items-center">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
                     CENTER ID
                     <p-sortIcon field="id"></p-sortIcon>
                     <!-- <p-columnFilter
@@ -203,7 +203,7 @@
                   </div>
                 </th>
                 <th pSortableColumn="location">
-                  <div class="flex justify-content-between align-items-center">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
                     ADDRESS
                     <p-sortIcon field="location"></p-sortIcon>
                     <p-columnFilter
@@ -216,7 +216,7 @@
                 </th>
 
                 <th pSortableColumn="state">
-                  <div class="flex justify-content-between align-items-center">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
                     STATE
                     <p-sortIcon field="state"></p-sortIcon>
                     <p-columnFilter
@@ -229,7 +229,7 @@
                 </th>
 
                 <th pSortableColumn="capacity">
-                  <div class="flex justify-content-between align-items-center">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
                     PARTICIPANTS
                     <p-sortIcon field="capacity"></p-sortIcon>
                     <!-- <p-columnFilter
@@ -238,6 +238,24 @@
                           display="menu"
                           class="ml-auto"
                         ></p-columnFilter> -->
+                  </div>
+                </th>
+                <th pSortableColumn="downloaded">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
+                    DOWNLOADED
+                    <p-sortIcon field="downloaded"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="passport_downloaded">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
+                    PASSPORT DOWNLOADED
+                    <p-sortIcon field="passport_downloaded"></p-sortIcon>
+                  </div>
+                </th>
+                <th pSortableColumn="allow_redownload">
+                  <div class="flex justify-content-between align-items-center text-nowrap">
+                    ALLOW EXAM RE-DOWNLOADED
+                    <p-sortIcon field="allow_redownload"></p-sortIcon>
                   </div>
                 </th>
                 <!-- <th pSortableColumn="parameters">
@@ -275,6 +293,30 @@
                 <td>{{ center.state }}</td>
 
                 <td>{{ center.participants }}</td>
+                <td>
+                  <span class="badge badge-border" [ngClass]="{
+                                              'badge-soft-danger':
+                                                center.downloaded == false,
+                                              'badge-soft-success':
+                                                center.downloaded == true
+                                            }">{{ center.downloaded ? "YES" : "NO" }}</span>
+                </td>
+                <td>
+                  <span class="badge badge-border" [ngClass]="{
+                                                              'badge-soft-danger':
+                                                                center.passport_downloaded == false,
+                                                              'badge-soft-success':
+                                                                center.passport_downloaded == true
+                                                            }">{{ center.passport_downloaded ? "YES" : "NO" }}</span>
+                </td>
+                <td>
+                  <span class="badge badge-border" [ngClass]="{
+                                                                              'badge-soft-danger':
+                                                                                center.allow_redownload == false,
+                                                                              'badge-soft-success':
+                                                                                center.allow_redownload == true
+                                                                            }">{{ center.allow_redownload ? "YES" : "NO" }}</span>
+                </td>
                 <!-- <td> 
                       <div *ngFor="let section of c.sections">
                         <span style="margin-right: 1px;" class=" badge badge-soft-primary">{{section}}</span> 
@@ -317,6 +359,24 @@
                         <a class="dropdown-item" href="javascript:void(0);"
                           ><i class="ri-eye-line me-2 align-middle"></i>View
                           center details</a
+                        >
+                      </li>
+                      <li *ngIf="!center.allow_redownload"
+                        (click)="
+                          openModal(allowExamRedownloadConfirmationModal, 'md', false)
+                        "
+                      >
+                        <a class="dropdown-item" href="javascript:void(0);"
+                          ><i class="ri-download-cloud-2-line me-2 align-middle"></i>Allow Exam Redownload</a
+                        >
+                      </li>
+                      <li *ngIf="center.allow_redownload"
+                        (click)="
+                          openModal(disableExamRedownloadConfirmationModal, 'md', false)
+                        "
+                      >
+                        <a class="dropdown-item" href="javascript:void(0);"
+                          ><i class="ri-close-line me-2 align-middle"></i>Disable Exam Redownload</a
                         >
                       </li>
                       <li (click)="editAssessmentCenter(center.id)">
@@ -372,6 +432,71 @@
                         </div>
                       </div>
                     </ng-template>
+
+                    <ng-template #allowExamRedownloadConfirmationModal let-modal>
+                      <div class="modal-body text-center p-5">
+                        <div class="mt-4">
+                          <h4 class="mb-3">
+                            Do you wish to Allow Exam Redownload for this Center?
+                          </h4>
+                          <div class="hstack gap-2 justify-content-center">
+                            <button
+                              type="button"
+                              class="btn btn-light"
+                              data-bs-dismiss="modal"
+                              (click)="modal.close('Close click')"
+                            >
+                              Close
+                            </button>
+                            <button
+                              [disabled]="processingExamRedownload"
+                              class="btn btn-success"
+                              (click)="allowExamRedownload(center.id, center.assessmentId, center.allow_redownload)"
+                            >
+                              <span *ngIf="!processingExamRedownload">
+                                Yes, Allow</span
+                              >
+                              <span *ngIf="processingExamRedownload"
+                                >Processing...</span
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+
+                    <ng-template #disableExamRedownloadConfirmationModal let-modal>
+                      <div class="modal-body text-center p-5">
+                        <div class="mt-4">
+                          <h4 class="mb-3">
+                            Do you wish to Disable Exam Redownload for this Center?
+                          </h4>
+                          <div class="hstack gap-2 justify-content-center">
+                            <button
+                              type="button"
+                              class="btn btn-light"
+                              data-bs-dismiss="modal"
+                              (click)="modal.close('Close click')"
+                            >
+                              Close
+                            </button>
+                            <button
+                              [disabled]="processingDisableExamRedownload"
+                              class="btn btn-danger"
+                              (click)="disableExamRedownload(center.id, center.assessmentId, center.allow_redownload)"
+                            >
+                              <span *ngIf="!processingDisableExamRedownload">
+                                Yes, Disable</span
+                              >
+                              <span *ngIf="processingDisableExamRedownload"
+                                >Processing...</span
+                              >
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-template>
+
                   </div>
                 </td>
               </tr>

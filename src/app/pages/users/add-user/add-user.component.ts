@@ -63,7 +63,7 @@ export class AddUserComponent implements OnInit {
   }
 
   onAdd($event: any) {
-    if (this.Role.length > 0 && $event.role === 'ADMIN') {
+    if (this.Role.length > 0 && ($event.role === 'ADMIN' || $event.role === 'GROUP_ADMIN')) {
       this.Role = []; // empties the previously added roles if any, before picking admin role
       this.Role.push($event.role); // pushes just the admin role
       this.selectedRoles = []; // empties the previously selected roles

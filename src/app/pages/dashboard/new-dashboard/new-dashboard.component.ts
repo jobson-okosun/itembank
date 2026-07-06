@@ -19,6 +19,9 @@ import { NotifierService } from "angular-notifier";
 import { DashboardCards } from "../model/dashboard-cards";
 import { HttpErrorResponse } from "@angular/common/http";
 import { CardDetails } from "../main/main.component";
+import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
+import { CALENDAR_MONTH, DELIVERY_METHOD_LABEL } from "../../scheduler/models/default.model";
+import { ConnectionPositionPair } from '@angular/cdk/overlay';
 
 @Component({
   selector: "app-new-dashboard",
@@ -35,14 +38,23 @@ export class NewDashboardComponent implements OnInit {
 
   loading: boolean = false;
 
+  isLoadingexamsForTheDay: boolean = false;
+
   totalUsersCount: number = 0;
+
+  deliveryMethods: Array<string> = [];
+  deliveryMethodsWithLabel: {
+    label: string;
+    value: string;
+    description: string;
+  }[] = [];
 
   // Global Filter State
   selectedExamForTheDayDeliveryMethod: string = "";
-
   selectedInfractionDeliveryMethod: string = "";
-
   selectedUpcomingExamDeliveryMethod: string = "";
+  selectedExamCalendarDeliveryMethod = "";
+
   selectedUpcomingExamStatus: string = "";
   // These should be in standard 'YYYY-MM-DD' string format
   upcomingExamsStartDateFromStr: string = "";
@@ -67,6 +79,8 @@ export class NewDashboardComponent implements OnInit {
   calendarMonth: number = new Date().getMonth() + 1;
   calendarYear: number = new Date().getFullYear();
   calendarDays: any[] = [];
+  selectedCalendarMonthText: string = CALENDAR_MONTH[this.calendarMonth - 1];
+  selectedCalendarYear: number = new Date().getMonth() + 1;
 
   proctorWeekStarts: string = "";
 
@@ -99,6 +113,8 @@ export class NewDashboardComponent implements OnInit {
   private upcomingExamsPaginationSize: number = 20;
   private upcomingExamsPaginationPage: number = 1;
 
+  hoveredCell: any = null;
+
   constructor(
     private userService: UserService,
     private router: Router,
@@ -123,10 +139,23 @@ export class NewDashboardComponent implements OnInit {
       return;
     }
 
+    Object.keys(AssessmentDeliveryEnum).forEach((method) => {
+      this.deliveryMethods.push(method);
+    });
+
+    this.deliveryMethodsWithLabel = this.deliveryMethods?.map(
+      (value: string, index: number) => ({
+        value: value,
+        label: DELIVERY_METHOD_LABEL?.[index]?.label,
+        description: DELIVERY_METHOD_LABEL?.[index]?.description,
+      }),
+    );
+
     if (this.currentUser.authorities.includes(Role.PROCTOR_ADMIN)) {
       this.selectedExamForTheDayDeliveryMethod = "LIVE_PROCTORING";
       this.selectedInfractionDeliveryMethod = "LIVE_PROCTORING";
       this.selectedUpcomingExamDeliveryMethod = "LIVE_PROCTORING";
+      this.selectedExamCalendarDeliveryMethod = "LIVE_PROCTORING";
     }
 
     if (
@@ -161,35 +190,35 @@ export class NewDashboardComponent implements OnInit {
             icon: "folder-line",
             count:
               this.dashboardData.questionsModerationCard?.totalSubjects ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Questions",
             icon: "stack-line",
             count:
               this.dashboardData.questionsModerationCard?.totalQuestions ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Passages",
             icon: "article-line",
             count:
               this.dashboardData.questionsModerationCard?.totalPassages ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
           },
           {
             title: "Total Questions In-recycle",
             icon: "recycle-line",
             count:
               this.dashboardData.questionsModerationCard?.totalInRecycle ?? 0,
-            roles: ["ADMIN", "EXAMINER"],
+            roles: ["ADMIN", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Published Questions",
             icon: "upload-cloud-2-line",
             count:
               this.dashboardData.questionsModerationCard?.totalPublished ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Awaiting Moderation",
@@ -197,67 +226,70 @@ export class NewDashboardComponent implements OnInit {
             count:
               this.dashboardData.questionsModerationCard
                 ?.totalAwaitingModeration ?? 0,
-            roles: ["ADMIN", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Approved Questions",
             icon: "check-double-line",
             count:
               this.dashboardData.questionsModerationCard?.totalApproved ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Draft Questions",
             icon: "draft-line",
             count: this.dashboardData.questionsModerationCard?.totalDrafts ?? 0,
-            roles: ["ADMIN", "AUTHOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Rejected Questions",
             icon: "feedback-line",
             count:
               this.dashboardData.questionsModerationCard?.totalRejected ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
           {
             title: "Total Used Questions",
             icon: "eye-2-line",
             count: this.dashboardData.questionsModerationCard?.totalUsed ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER"],
+            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
           },
         ];
 
-        this.totalUsersCount = value.usersCard.totalUsers;
+        this.totalUsersCount = value.usersCard && value.usersCard.totalUsers;
 
         this.userChartOptions = {
-          series: [value.usersCard.totalActiveUsers, value.usersCard.totalInActiveUsers],
-          labels: ['Active Users', 'Inactive Users'],
+          series: [
+            value.usersCard && value.usersCard.totalActiveUsers,
+            value.usersCard && value.usersCard.totalInActiveUsers,
+          ],
+          labels: ["Active Users", "Inactive Users"],
           chart: {
-            type: 'donut',
-            height: 350
+            type: "donut",
+            height: 350,
           },
           dataLabels: {
-            enabled: false // Removes percentages inside slices
+            enabled: false, // Removes percentages inside slices
           },
           plotOptions: {
             pie: {
               donut: {
-                size: '75%' // Manages thickness
-              }
-            }
+                size: "75%", // Manages thickness
+              },
+            },
           },
           legend: {
-            position: 'bottom'
+            position: "bottom",
           },
           responsive: [
             {
               breakpoint: 480,
               options: {
                 chart: { width: 300 },
-                legend: { position: 'bottom' }
-              }
-            }
-          ]
+                legend: { position: "bottom" },
+              },
+            },
+          ],
         };
 
         this.isUserChartLoaded = true;
@@ -294,10 +326,26 @@ export class NewDashboardComponent implements OnInit {
     }
   }
 
-  onExamForTheDayDeliveryMethodChange() {
+  clearExamForTheDayFilter(): void {
+    this.selectedExamForTheDayDeliveryMethod = "";
     this.examForTheDayPaginationSize = 20;
     this.examForTheDayPaginationPage = 1;
     this.fetchExamsForTheDay();
+  }
+
+  applyExamForTheDayFilter(): void {
+    this.examForTheDayPaginationSize = 20;
+    this.examForTheDayPaginationPage = 1;
+    this.fetchExamsForTheDay();
+  }
+
+  clearAIInfractionFilter(): void {
+    this.selectedInfractionDeliveryMethod = "";
+    this.fetchAIInfractions();
+  }
+
+  applyAIInfractionFilter(): void {
+    this.fetchAIInfractions();
   }
 
   onInfractionDeliveryMethodChange(): void {
@@ -316,7 +364,12 @@ export class NewDashboardComponent implements OnInit {
     this.upcomingExamsPaginationSize = 20;
     this.upcomingExamsPaginationPage = 1;
 
-    this.selectedUpcomingExamDeliveryMethod = "";
+    if (this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
+      this.selectedUpcomingExamDeliveryMethod = "LIVE_PROCTORING";
+    } else {
+      this.selectedUpcomingExamDeliveryMethod = "";
+    }
+
     this.selectedUpcomingExamStatus = "";
     this.upcomingExamsStartDateFromStr = "";
     this.upcomingExamsStartDateToStr = "";
@@ -324,6 +377,41 @@ export class NewDashboardComponent implements OnInit {
     this.upcomingExamsEndDateToStr = "";
 
     this.fetchUpcomingExams();
+  }
+
+  applyExamsCalendarFilter(): void {
+    this.fetchExamCalendar();
+  }
+
+  getExamStatusClass(exam: any): string {
+    const now = new Date();
+    const start = new Date(exam.start_date);
+    const end = new Date(exam.end_date);
+    if (now < start) return "status-upcoming";
+    if (now > end) return "status-ended";
+    return "status-ongoing";
+  }
+
+  getExamStatusLabel(exam: any): string {
+    const cls = this.getExamStatusClass(exam);
+    return cls === "status-upcoming"
+      ? "Upcoming"
+      : cls === "status-ended"
+        ? "Ended"
+        : "Ongoing";
+  }
+
+  clearExamCalendarFilter(): void {
+    if (this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
+      this.selectedExamCalendarDeliveryMethod = "LIVE_PROCTORING";
+    } else {
+      this.selectedExamCalendarDeliveryMethod = "";
+    }
+
+    this.calendarMonth = new Date().getMonth() + 1;
+    this.calendarYear = new Date().getFullYear();
+
+    this.fetchExamCalendar();
   }
 
   onUpcomingExamsStartDateToChange(event: Event): void {
@@ -423,6 +511,8 @@ export class NewDashboardComponent implements OnInit {
   // }
 
   fetchExamsForTheDay() {
+    this.isLoadingexamsForTheDay = true;
+
     const params: any = {
       page: this.examForTheDayPaginationPage,
       size: this.examForTheDayPaginationSize,
@@ -434,8 +524,14 @@ export class NewDashboardComponent implements OnInit {
 
     this.dashboardService
       .fetchExamsForTheDay(this.buildParams(params))
-      .subscribe((res) => {
-        this.examsForTheDay = res;
+      .subscribe({
+        next: (res) => {
+          this.examsForTheDay = res;
+          this.isLoadingexamsForTheDay = false;
+        },
+        error: (error: HttpErrorResponse) => {
+          this.isLoadingexamsForTheDay = false;
+        },
       });
   }
 
@@ -546,15 +642,23 @@ export class NewDashboardComponent implements OnInit {
 
   fetchExamCalendar() {
     const params = { month: this.calendarMonth, year: this.calendarYear };
+
+    if (this.selectedExamCalendarDeliveryMethod) {
+      params["delivery_method"] = this.selectedExamCalendarDeliveryMethod;
+    }
+
     this.dashboardService
       .fetchExamCalendar(this.buildParams(params))
       .subscribe((res) => {
         this.examCalendar = res;
-        // this.generateCalendarGrid();
+
+        this.generateCalendarGrid();
       });
   }
 
   generateCalendarGrid() {
+    this.selectedCalendarMonthText = CALENDAR_MONTH[this.calendarMonth - 1];
+    this.selectedCalendarYear = this.calendarYear;
     this.calendarDays = [];
     const firstDay = new Date(
       this.calendarYear,
@@ -571,41 +675,54 @@ export class NewDashboardComponent implements OnInit {
     let emptyCells = firstDay === 0 ? 6 : firstDay - 1;
 
     for (let i = 0; i < emptyCells; i++) {
-      this.calendarDays.push({ day: null, heatClass: "heat-empty" });
+      this.calendarDays.push({
+        day: null,
+        availableCandidates: "available-candidate-grade-empty",
+      });
     }
 
     for (let d = 1; d <= daysInMonth; d++) {
+      // const currentDateStr = new Date(
+      //   this.calendarYear,
+      //   this.calendarMonth - 1,
+      //   d,
+      // )
+      //   .toISOString()
+      //   .split("T")[0];
+
       const currentDateStr = new Date(
         this.calendarYear,
         this.calendarMonth - 1,
         d,
-      )
-        .toISOString()
-        .split("T")[0];
+      ).toLocaleDateString("en-CA");
 
       // Find exams falling on this date
       const examsOnDay = this.examCalendar.filter((ex) => {
-        const start = ex.start_date.split("T")[0];
-        const end = ex.end_date.split("T")[0];
+        // const start = new Date(ex.start_date).toISOString().split("T")[0];
+        // const end = new Date(ex.end_date).toISOString().split("T")[0];
+        const start = new Date(ex.start_date).toLocaleDateString("en-CA");
+        const end = new Date(ex.end_date).toLocaleDateString("en-CA");
         return currentDateStr >= start && currentDateStr <= end;
       });
 
       let totalCandidates = 0;
       examsOnDay.forEach((e) => (totalCandidates += e.total_candidates));
 
-      let heatClass = "heat-0";
-      if (totalCandidates > 0 && totalCandidates <= 50) heatClass = "heat-1";
+      let availableCandidates = "available-candidate-grade-0";
+      if (totalCandidates > 0 && totalCandidates <= 50)
+        availableCandidates = "available-candidate-grade-1";
       else if (totalCandidates > 50 && totalCandidates <= 200)
-        heatClass = "heat-2";
+        availableCandidates = "available-candidate-grade-2";
       else if (totalCandidates > 200 && totalCandidates <= 500)
-        heatClass = "heat-3";
-      else if (totalCandidates > 500) heatClass = "heat-4";
+        availableCandidates = "available-candidate-grade-3";
+      else if (totalCandidates > 500)
+        availableCandidates = "available-candidate-grade-4";
 
       this.calendarDays.push({
         day: d,
         dateStr: currentDateStr,
         exams: examsOnDay,
-        heatClass: heatClass,
+        availableCandidates: availableCandidates,
       });
     }
   }
@@ -670,37 +787,41 @@ export class NewDashboardComponent implements OnInit {
     this.fetchProctorWeekly();
   }
 
-  // Generates standard hourly slots (e.g., 08:00 to 17:00)
   generateTimeSlots() {
-    for (let hour = 8; hour <= 17; hour++) {
-      this.timeSlots.push(`${hour.toString().padStart(2, "0")}:00`);
-    }
+  for (let hour = 0; hour <= 23; hour++) {
+    this.timeSlots.push(`${hour.toString().padStart(2, "0")}:00`);
   }
+}
 
-  // Filter exams that belong to a specific day and start hour
-  getExamsForSlot(day: Date, timeSlot: string): ProctorWeeklyCalendarDTO[] {
-    // Format the calendar cell day to target UTC signature
-    const year = day.getFullYear();
-    const month = String(day.getMonth() + 1).padStart(2, "0");
-    const dateNum = String(day.getDate()).padStart(2, "0");
-    const hour = timeSlot.split(":")[0]; // e.g., "08"
+// Filter exams that belong to a specific day and start hour
+getExamsForSlot(day: Date, timeSlot: string): ProctorWeeklyCalendarDTO[] {
+  // Use LOCAL components — must match mapAppointmentsToGrid
+  const year = day.getFullYear();
+  const month = String(day.getMonth() + 1).padStart(2, "0");
+  const dateNum = String(day.getDate()).padStart(2, "0");
+  const hour = timeSlot.split(":")[0].padStart(2, "0");
 
-    const lookupKey = `${year}-${month}-${dateNum}_${hour}`;
+  const lookupKey = `${year}-${month}-${dateNum}_${hour}`;
 
-    // Instant retrieval with no heavy array looping or performance hits
-    return this.examLookupMap[lookupKey] || [];
-  }
+  return this.examLookupMap[lookupKey] || [];
+}
 
-  mapAppointmentsToGrid(appointments: ProctorWeeklyCalendarDTO[]) {
-    this.examLookupMap = {};
-    appointments.forEach((exam) => {
-      const dateObj = new Date(exam.batch_start_time);
+mapAppointmentsToGrid(appointments: ProctorWeeklyCalendarDTO[]) {
+  this.examLookupMap = {};
 
-      // Extract exact UTC string properties to bypass browser timezone shifting
-      const year = dateObj.getUTCFullYear();
-      const month = String(dateObj.getUTCMonth() + 1).padStart(2, "0");
-      const day = String(dateObj.getUTCDate()).padStart(2, "0");
-      const hour = String(dateObj.getUTCHours()).padStart(2, "0");
+  appointments.forEach((exam) => {
+    const startDate = new Date(exam.batch_start_time);
+    const endDate = new Date(exam.batch_end_time);
+
+    // Walk hour-by-hour in LOCAL time from start to end
+    const cursor = new Date(startDate);
+    cursor.setMinutes(0, 0, 0); // normalize to top of the hour, local time
+
+    while (cursor < endDate) {
+      const year = cursor.getFullYear();
+      const month = String(cursor.getMonth() + 1).padStart(2, "0");
+      const day = String(cursor.getDate()).padStart(2, "0");
+      const hour = String(cursor.getHours()).padStart(2, "0");
 
       const mapKey = `${year}-${month}-${day}_${hour}`;
 
@@ -708,8 +829,14 @@ export class NewDashboardComponent implements OnInit {
         this.examLookupMap[mapKey] = [];
       }
       this.examLookupMap[mapKey].push(exam);
-    });
-  }
+
+      // move to next hour, local time — this correctly rolls over midnight
+      // into the next day, and even handles DST transitions since setHours
+      // recalculates the wall-clock time properly
+      cursor.setHours(cursor.getHours() + 1);
+    }
+  });
+}
 
   // Next/Prev stepping execution track
   navigateWeek(direction: number) {

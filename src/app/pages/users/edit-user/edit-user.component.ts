@@ -26,6 +26,7 @@ import { NgForm, NgSelectOption } from "@angular/forms";
 import { Location } from "@angular/common";
 import { Account } from "src/app/authentication/model/account.model";
 import { UserService } from "src/app/shared/user.service";
+import { Role } from "../model/role";
 
 @Component({
   selector: "app-edit-user",
@@ -83,7 +84,7 @@ export class EditUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.currentUser.authorities.includes("ADMIN")) {
+    if (this.currentUser.authorities.includes("ADMIN") || this.currentUser.authorities.includes("GROUP_ADMIN")) {
       this.fetchAdminUserDetail(this.userId);
       this.itemService.fetchAllSubjectsDropdown().subscribe((value) => {
         this.subjects = value;
@@ -177,7 +178,7 @@ export class EditUserComponent implements OnInit {
       return;
     }
 
-    if (this.currentUser.authorities?.includes('ADMIN') && this.userDetail.username.trim() === "") {
+    if ((this.currentUser.authorities?.includes('ADMIN') || this.currentUser.authorities?.includes('GROUP_ADMIN')) && this.userDetail.username.trim() === "") {
 
       this.allEditInputFieldIsRequired = true;
 

@@ -178,7 +178,7 @@
   <!--Admin Dashboard for Users and Passages-->
   <div>
     <div class="row project-wrapper">
-      <div *ngIf="currentUser.authorities.includes('ADMIN')" class="col-lg-4 col-sm-12">
+      <div *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')" class="col-lg-4 col-sm-12">
         <div class="card card-height-100">
           <div class="card-header align-items-center d-flex">
             <h4 class="card-title mb-0 flex-grow-1">Users</h4>
@@ -259,10 +259,11 @@
           (tagsGraph.length > 0 &&
             currentUser.authorities.includes('AUTHOR')) ||
           currentUser.authorities.includes('ADMIN') ||
+          currentUser.authorities.includes('GROUP_ADMIN') ||
           currentUser.authorities.includes('EXAMINER') ||
           currentUser.authorities.includes('MODERATOR')
         " [ngClass]="{
-          'col-lg-8 col-sm-12': currentUser.authorities.includes('ADMIN'),
+          'col-lg-8 col-sm-12': currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN'),
           'col-12':
             currentUser.authorities.includes('AUTHOR') ||
             currentUser.authorities.includes('EXAMINER') ||
@@ -312,6 +313,7 @@
   <!--Author Dashboard-->
   <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
+       currentUser.authorities.includes('GROUP_ADMIN') ||
       currentUser.authorities.includes('MODERATOR') ||
       currentUser.authorities.includes('AUTHOR')
     " class="card">
@@ -586,6 +588,7 @@
   <!--Moderator Dashboard-->
   <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
+      currentUser.authorities.includes('GROUP_ADMIN') ||
       currentUser.authorities.includes('MODERATOR')
     " class="card">
     <div class="card-header border-1 align-items-center d-flex justify-content-between">
@@ -650,6 +653,7 @@
   <!--Examiner Dashboard-->
   <div *ngIf="
       currentUser.authorities.includes('ADMIN') ||
+      currentUser.authorities.includes('GROUP_ADMIN') ||
       currentUser.authorities.includes('EXAMINER')
     " class="card">
     <div class="card-header border-1 align-items-center d-flex">

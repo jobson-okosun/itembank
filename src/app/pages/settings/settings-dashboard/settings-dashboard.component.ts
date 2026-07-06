@@ -359,7 +359,7 @@ export class SettingsDashboardComponent implements OnInit, OnDestroy {
       username: [
         {
           value: '',
-          disabled: !this.currentUser.authorities.includes('ADMIN'),
+          disabled: (!this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN')),
         },
       ],
       firstName: [''],

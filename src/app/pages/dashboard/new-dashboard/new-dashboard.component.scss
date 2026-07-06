@@ -5,14 +5,69 @@
     min-height: 100vh;
 }
 
-/* Custom Card Styling */
+.side-stack-row {
+    // border: 1px solid red;
+    height: 400px;
+    overflow-y: auto;
+}
+
+.calendar-cell {
+  position: relative;
+  overflow: visible !important; /* Crucial so the dropdown menu doesn't get clipped by the cell box */
+}
+
+.spec-calendar-dropdown {
+  min-width: 290px; /* Widened slightly so date strings don't wrap awkwardly */
+  max-width: 340px;
+
+  .min-width-0 {
+    min-width: 0; /* Prevents flex children from breaking parent bounds */
+  }
+
+  .mt-1\.5 {
+    margin-top: 0.35rem;
+  }
+
+  .exam-dates-meta {
+    font-size: 0.75rem;
+    gap: 0.75rem; /* Generates a comfortable default spacing gap if the width shrinks */
+    
+    span {
+      white-space: nowrap;
+    }
+  }
+}
+
+/* Custom Card Styling
+   FIX #1: height:100% was commented out, so a card with less content
+   (e.g. an empty table) never stretched to match its taller sibling
+   column. Bootstrap's .row is already display:flex (align-items:stretch),
+   so the column itself is already the right height — this just lets the
+   card fill it.
+   We also turn the card into a flex column so its header / body / footer
+   can be distributed vertically instead of all bunching at the top. */
 .premium-card {
     background: #ffffff;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
-    //height: 100%;
+    height: 100%;
+    //height: 80%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.exam-breakdown-premium-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -22,15 +77,52 @@
 
 .premium-card-title {
     font-size: 1.1rem;
-    // font-weight: 600;
     color: #1a1d20;
     margin-bottom: 1.5rem;
     font-family: 'Inter', sans-serif;
 }
 
+/* premium-card is p-0 in some places (cards that wrap a table), so the
+   header / table-body / footer inside need their own spacing since the
+   card itself has no padding in that variant. */
+.premium-card.p-0 {
+    padding: 0 !important;
+}
+
+/* The table wrapper: flex-grow so it fills whatever vertical space is
+   left in the card (instead of a fixed max-height that leaves a gap
+   below a short/empty table). min-height keeps it from collapsing too
+   far on genuinely tiny content; it will still scroll internally if the
+   data is tall (table-scroll-area handles the overflow). */
+.table-scroll-area {
+    flex: 1 1 auto;
+    // min-height: 220px;
+    // max-height: 420px;
+    height: 220px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* When the table itself has no rows, this makes the empty-state message
+   sit centered and fill the remaining space rather than floating at the
+   top with dead space beneath it. */
+.table-empty-state {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 220px;
+}
+
+/* Footer/pagination row pinned to the bottom of the card no matter how
+   tall/short the content above it is. */
+.card-footer-pin {
+    margin-top: auto;
+}
+
 /* KPI Cards with Green Borders */
 .kpi-card {
-    // border: 2px solid #28c76f;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-radius: 12px;
     background: #ffffff;
@@ -61,8 +153,9 @@
     color: #6c757d;
 }
 
-/* Calendar Heatmap Styling */
-.calendar-heatmap {
+
+/* Exam Calendar Styling */
+.exam-calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
@@ -94,34 +187,146 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Heatmap Colors based on mockup */
-.heat-empty {
+/* Exam cell Colors based on result */
+.available-candidate-grade-empty {
     background-color: transparent;
 }
 
-.heat-0 {
+.available-candidate-grade-0 {
     background-color: #f1f3f4;
     color: #6c757d;
 }
 
-.heat-1 {
-    background-color: #d1f2eb;
+.available-candidate-grade-1 {
+    // background-color: #d1f2eb;
+    background-color: #97D2F2;
     color: #1a1d20;
 }
 
-.heat-2 {
-    background-color: #a3e4d7;
+.available-candidate-grade-2 {
+    // background-color: #a3e4d7;
+    background-color: #6FC0EC;
     color: #1a1d20;
 }
 
-.heat-3 {
-    background-color: #48c9b0;
+.available-candidate-grade-3 {
+    // background-color: #48c9b0;
+    background-color: #46AFE7;
     color: #ffffff;
 }
 
-.heat-4 {
-    background-color: #1abc9c;
+.available-candidate-grade-4 {
+    // background-color: #1abc9c;
+    background-color: #25A0E2;
     color: #ffffff;
+}
+
+// Exam cell dropdown styling
+.exam-portfolio-dropdown {
+  width: 350px;
+  overflow: hidden;
+  border-radius: 12px;
+
+  .dropdown-header {
+    background: #f8f9fb;
+  }
+
+  .exam-count-badge {
+    background: #f1f3f4;
+    color: #1a1d20;
+    font-weight: 600;
+    font-size: 0.75rem;
+  }
+
+  .dropdown-subheader {
+    background: #f8f9fb;
+    font-size: 0.75rem;
+  }
+
+  .exam-list {
+    max-height: 220px;
+    overflow-y: auto;
+  }
+
+  .exam-item {
+    border-radius: 8px;
+    padding: 8px;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f8f9fb;
+    }
+
+    & + .exam-item {
+      margin-top: 2px;
+    }
+  }
+
+  .exam-status-bar {
+    width: 1px;
+    align-self: stretch;
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+
+    &.status-upcoming { background-color: #25a0e2; }
+    &.status-ongoing  { background-color: #16a34a; }
+    &.status-ended    { background-color: #9ca3af; }
+  }
+
+  .exam-name {
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .exam-status-label {
+    font-size: 0.65rem;
+    font-weight: 200;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+
+    &.status-upcoming { background: #dbeafe; color: #25a0e2; }
+    &.status-ongoing  { background: #dcfce7; color: #15803d; }
+    &.status-ended    { background: #f3f4f6; color: #6b7280; }
+  }
+
+  .exam-dates-meta {
+    font-size: 0.7rem;
+  }
+
+  .min-w-0 { min-width: 0; }
+  .custom-scrollbar {
+    scrollbar-width: thin; // Firefox
+    scrollbar-color: #d1d5db transparent; // Firefox: thumb / track
+
+    &::-webkit-scrollbar {
+      width: 5px; // slim
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #d1d5db;
+      border-radius: 10px;
+
+      &:hover {
+        background-color: #9ca3af;
+      }
+    }
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.exam-list:hover .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
 }
 
 /* Customizing the Global Filter */
@@ -147,7 +352,6 @@
 
 .has-selection {
     border: 2px solid #28a745;
-    /* Success green border */
 }
 
 /* Modernizing the Breakdown Table */
@@ -172,21 +376,21 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    // height: auto;
     background: #fff;
-    overflow-x: auto; // Generates desktop overflow breaks gracefully if compressed
-    max-height: 400px; // Your specified height restraint boundaries
+    overflow-x: auto;
+    flex: 1 1 auto;
+    // min-height: 300px;
+    // max-height: 400px;
+    height: 320px;
     overflow-y: auto;
 }
 
-// Controls structural width symmetry across time rows
 .calendar-grid-row {
     display: flex;
     width: 100%;
-    min-width: 900px; // Guarantees cells never squish beyond readable boundaries
+    min-width: 900px;
 }
 
-// Fixed width for the timeline track
 .time-cell {
     width: 80px;
     min-width: 80px;
@@ -197,15 +401,13 @@
     justify-content: center;
 }
 
-// Dynamic evenly-weighted segments for days of the week 
 .grid-cell {
     flex-grow: 1;
     flex-shrink: 0;
-    flex-basis: 0; // Forces identical equal structural widths across all columns
+    flex-basis: 0;
     width: 0;
 }
 
-// Header Row Formatting
 .header-row {
     background-color: #fafbfc;
     border-bottom: 2px solid rgba(0, 0, 0, 0.08);
@@ -221,23 +423,18 @@
     }
 }
 
-// Scroll Body Boundaries
 .calendar-scroll-body {
-    //max-height: 400px; // Your specified height restraint boundaries
-    //overflow-y: auto;
+    flex: 1 1 auto;
 }
 
-// New timeslot row style
-
-// Data Row Core Layout Grid
 .data-cell {
-    height: 65px; // Increased slightly to allow at least 2 small entries viewable comfortably before scroll kicks in
+    height: 65px;
     border-right: 1px solid #E7E7E7;
     border-bottom: 1px solid #E7E7E7;
     background-color: #ffffff;
     padding: 3px;
     position: relative;
-    overflow: hidden; // Prevents cards from spilling outside cell borders
+    overflow: hidden;
     transition: background-color 0.2s ease;
 
     &.time-col,
@@ -255,13 +452,11 @@
     }
 }
 
-// NEW: Controls internal cell limits
 .slot-scroll-container {
-    max-height: 58px; // Keeps inner layout slightly smaller than cell tracking height
+    max-height: 58px;
     overflow-y: auto;
     overflow-x: hidden;
 
-    // Optional: Custom sleek mini scrollbars for clean styling inside small blocks
     &::-webkit-scrollbar {
         width: 4px;
     }
@@ -280,12 +475,11 @@
     }
 }
 
-// Keep cards tight and predictable
 .exam-card {
     font-size: 0.7rem;
     line-height: 1.2;
     color: #212529;
-    flex-shrink: 0; // Essential: prevents flex from crunching heights to zero
+    flex-shrink: 0;
 }
 
 .bg-primary-light {
@@ -302,4 +496,19 @@
 
 .shadow-xs {
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive tweaks: on small screens the equal-height stretching from
+   the row can make cards look artificially tall since columns stack
+   full-width. Let cards size to content again below the lg breakpoint. */
+@media (max-width: 991.98px) {
+    .premium-card {
+        height: auto;
+    }
+
+    .table-scroll-area,
+    .table-empty-state {
+        min-height: 180px;
+        max-height: 320px;
+    }
 }

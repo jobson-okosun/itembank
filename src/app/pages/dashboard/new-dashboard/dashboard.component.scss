@@ -1,0 +1,305 @@
+/* Base Layout Styles */
+.dashboard-container {
+    padding: 1.5rem;
+    background-color: #f8f9fc;
+    min-height: 100vh;
+}
+
+/* Custom Card Styling */
+.premium-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    //height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.premium-card:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+}
+
+.premium-card-title {
+    font-size: 1.1rem;
+    // font-weight: 600;
+    color: #1a1d20;
+    margin-bottom: 1.5rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* KPI Cards with Green Borders */
+.kpi-card {
+    // border: 2px solid #28c76f;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.kpi-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.kpi-value {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: #1a1d20;
+    margin-bottom: 0.25rem;
+    line-height: 1.2;
+}
+
+.kpi-subtext {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Calendar Heatmap Styling */
+.calendar-heatmap {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-top: 1rem;
+}
+
+.calendar-header-day {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6c757d;
+    padding-bottom: 0.5rem;
+}
+
+.calendar-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+}
+
+.calendar-cell:hover {
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heatmap Colors based on mockup */
+.heat-empty {
+    background-color: transparent;
+}
+
+.heat-0 {
+    background-color: #f1f3f4;
+    color: #6c757d;
+}
+
+.heat-1 {
+    background-color: #d1f2eb;
+    color: #1a1d20;
+}
+
+.heat-2 {
+    background-color: #a3e4d7;
+    color: #1a1d20;
+}
+
+.heat-3 {
+    background-color: #48c9b0;
+    color: #ffffff;
+}
+
+.heat-4 {
+    background-color: #1abc9c;
+    color: #ffffff;
+}
+
+/* Customizing the Global Filter */
+.global-filter-bar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter-select {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    background-color: #f8f9fc;
+}
+
+.has-selection {
+    border: 2px solid #28a745;
+    /* Success green border */
+}
+
+/* Modernizing the Breakdown Table */
+.modern-table th {
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #f1f3f4;
+    padding: 1rem;
+}
+
+.modern-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f8f9fc;
+}
+
+// Proctor Weekly Chart Styling
+.calendar-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    // height: auto;
+    background: #fff;
+    overflow-x: auto; // Generates desktop overflow breaks gracefully if compressed
+    max-height: 400px; // Your specified height restraint boundaries
+    overflow-y: auto;
+}
+
+// Controls structural width symmetry across time rows
+.calendar-grid-row {
+    display: flex;
+    width: 100%;
+    min-width: 900px; // Guarantees cells never squish beyond readable boundaries
+}
+
+// Fixed width for the timeline track
+.time-cell {
+    width: 80px;
+    min-width: 80px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+// Dynamic evenly-weighted segments for days of the week 
+.grid-cell {
+    flex-grow: 1;
+    flex-shrink: 0;
+    flex-basis: 0; // Forces identical equal structural widths across all columns
+    width: 0;
+}
+
+// Header Row Formatting
+.header-row {
+    background-color: #fafbfc;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.08);
+    position: sticky;
+    top: 0px;
+    z-index: 100;
+
+    .header-cell {
+        padding: 12px 8px;
+        text-align: center;
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 0.85rem;
+    }
+}
+
+// Scroll Body Boundaries
+.calendar-scroll-body {
+    //max-height: 400px; // Your specified height restraint boundaries
+    //overflow-y: auto;
+}
+
+// New timeslot row style
+
+// Data Row Core Layout Grid
+.data-cell {
+    height: 65px; // Increased slightly to allow at least 2 small entries viewable comfortably before scroll kicks in
+    border-right: 1px solid #E7E7E7;
+    border-bottom: 1px solid #E7E7E7;
+    background-color: #ffffff;
+    padding: 3px;
+    position: relative;
+    overflow: hidden; // Prevents cards from spilling outside cell borders
+    transition: background-color 0.2s ease;
+
+    &.time-col,
+    &.time-cell {
+        background-color: #fdfdfd;
+        border-right: 1px solid rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: #6c757d;
+    }
+
+    &:hover:not(.time-cell) {
+        background-color: #f8f9fa;
+    }
+}
+
+// NEW: Controls internal cell limits
+.slot-scroll-container {
+    max-height: 58px; // Keeps inner layout slightly smaller than cell tracking height
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    // Optional: Custom sleek mini scrollbars for clean styling inside small blocks
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.15);
+        border-radius: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+}
+
+// Keep cards tight and predictable
+.exam-card {
+    font-size: 0.7rem;
+    line-height: 1.2;
+    color: #212529;
+    flex-shrink: 0; // Essential: prevents flex from crunching heights to zero
+}
+
+.bg-primary-light {
+    background-color: #ebf3ff;
+}
+
+.bg-success-light {
+    background-color: #e8f7f0;
+}
+
+.x-small {
+    font-size: 0.75rem;
+}
+
+.shadow-xs {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}

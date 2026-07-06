@@ -96,7 +96,7 @@ export class AllSubjectsComponent implements OnInit {
     this.currentUser = this.userService.getCurrentUser(); // Fetching current user information
 
     if (this.currentUser.authorities.includes("ADMIN") || this.currentUser.authorities.includes("GROUP_ADMIN")) {
-      // If current user role is ADMIN fetch all subjects from within the item bank
+      // If current user role is ADMIN OR GROUP_ADMIN fetch all subjects from within the item bank
       this.itemService.fetchAllSubjectsItems().subscribe(
         (value) => {
           this.allSubjects = value;

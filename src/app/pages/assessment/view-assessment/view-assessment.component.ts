@@ -36,6 +36,7 @@ import { ImportTemplate } from "../model/import-template";
 import { Publish } from "../model/publish";
 import { ItemServiceService } from "src/app/shared/item-services/item-service.service";
 import { ExamPreviewService } from "../../exam-preview/services/exam-preview.service";
+import { catchError } from "rxjs/operators";
 
 interface Card {
   title: string;
@@ -453,8 +454,9 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
                 windowClass: 'modal-fullscreen',
               });
             },
-            error: (err) => {
+            error: (err: HttpErrorResponse) => {
               console.error('Error fetching section previews:', err);
+              this.notifier.notify('error', `${err.error.message}`);
               this.fetchingPreview = false;
             },
           });

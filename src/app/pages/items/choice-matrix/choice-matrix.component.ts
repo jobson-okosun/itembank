@@ -816,7 +816,7 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       case 'save':
         if (
           (!this.currentUser.authorities.includes('MODERATOR') &&
-            !this.currentUser.authorities.includes('ADMIN')) || // Both roles are missing
+            !this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN')) || // Both roles are missing
           this.subjectModerationStatusEnabled ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
         ) {

@@ -533,6 +533,7 @@ export class MatchingComponent implements OnInit, OnDestroy {
         if (
           !this.currentUser.authorities.includes('MODERATOR') &&
           !this.currentUser.authorities.includes('ADMIN') &&
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
           (this.itemService.currentSubjectModerationEnabled ||
             item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {

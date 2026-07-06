@@ -143,7 +143,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 *ngIf="
-                  currentUser.authorities.includes('ADMIN') &&
+                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) &&
                   restoredItemDetails.itemIds.length > 0;
                 "
                 ngbTooltip="RESTORE QUESTIONS"
@@ -157,7 +157,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 *ngIf="
-                  currentUser.authorities.includes('ADMIN') &&
+                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) &&
                   currentTopicName &&
                   !currentSubtopicName && restoredItemDetails.itemIds.length == 0
                 "
@@ -172,7 +172,7 @@
               <button
                 class="btn btn-primary btn-sm"
                 *ngIf="
-                  currentUser.authorities.includes('ADMIN') &&
+                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) &&
                   currentSubtopicName && restoredItemDetails.itemIds.length == 0
                 "
                 ngbTooltip="RESTORE QUESTIONS"

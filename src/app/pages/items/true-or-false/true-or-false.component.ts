@@ -624,7 +624,8 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       case 'save':
         if (
           (!this.currentUser.authorities.includes('MODERATOR') &&
-            !this.currentUser.authorities.includes('ADMIN')) || // Both roles are missing
+            !this.currentUser.authorities.includes('ADMIN') &&
+            !this.currentUser.authorities.includes('GROUP_ADMIN')) || // Both roles are missing
           this.subjectModerationStatus ||
           item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
         ) {
