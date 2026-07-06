@@ -890,8 +890,8 @@
               <div class="dropdown-divider"></div>
               <form class="px-3 py-1 overflow-auto" style="max-height: 250px;">
                 <div class="mb-2">
-                  <label for="center" class="small">Delivery Method</label>
-                  <select #select class="form-select form-select w-100" name="type"
+                  <label for="mode" class="small">Delivery Method</label>
+                  <select #mode class="form-select form-select w-100" name="mode"
                     [(ngModel)]="selectedUpcomingExamDeliveryMethod" [disabled]="currentUser.authorities.includes('PROCTOR_ADMIN')">
                     <option value=""> -- Select Mode --</option>
                     <option *ngFor="let mode of deliveryMethodsWithLabel" [value]="mode.value">
@@ -901,10 +901,10 @@
                 </div>
 
                 <div class="mb-2">
-                  <label for="center" class="small">Status</label>
-                  <select #select class="form-select form-select w-100" name="type"
+                  <label for="status" class="small">Status</label>
+                  <select #status class="form-select form-select w-100" name="status"
                     [(ngModel)]="selectedUpcomingExamStatus">
-                    <option value="">ALL</option>
+                    <option value="">--Select Status--</option>
                     <option value="PUBLISHED">PUBLISHED</option>
                     <option value="DRAFT">DRAFT</option>
                   </select>
