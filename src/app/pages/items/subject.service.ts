@@ -1,7 +1,7 @@
 import { RenameSubjectModel } from './all-subjects/all-subjects.component';
 import { ResourceCreated } from 'src/app/shared/model/resource-created';
 import { Observable } from 'rxjs';
-import { RenameTopicModel } from './subject/subject.component';
+import { RenameTopicModel } from './subject/subject.component'; 
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
