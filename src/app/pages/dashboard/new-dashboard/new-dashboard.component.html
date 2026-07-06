@@ -8,7 +8,7 @@
   <!-- New Headlines -->
 
     <!-- Assessment Summary -->
-    <div class="card p-3">
+    <div class="card p-3" *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN') || currentUser.authorities.includes('AUTHOR') || currentUser.authorities.includes('MODERATOR') || currentUser.authorities.includes('EXAMINER')">
       <!-- title -->
       <div class="row align-items-end">
         <div class="col-lg-6">
@@ -547,7 +547,7 @@
 
       <!-- Exam Calendar class="col-xl-4" -->
       <div class="col-sm-12 col-lg-4"
-        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('PROCTOR_ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
+        *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('MONITOR') || currentUser.authorities.includes('EXAMINER') || currentUser.authorities.includes('GROUP_ADMIN')">
         <div class="premium-card">
           <div class="d-flex justify-content-between align-items-center mb-2">
             <!-- <h5 class="mb-0 text-primary font-weight-bold">Exam Calender</h5> -->
@@ -816,8 +816,8 @@
                     <div *ngFor="let exam of getExamsForSlot(day, slot)"
                       class="exam-card p-1 rounded border-start border-4 shadow-xs" [ngClass]="{
                                       'bg-primary-light border-primary': exam.status === 'PUBLISHED',
-                                      'border-warning': exam.status === 'DRAFT'
-                                    }" [ngStyle]="{'background-color': exam.status === 'DRAFT' ? '#FFF8E6' : ''}">
+                                      'border-warning bg-soft-warning': exam.status === 'DRAFT'
+                                    }">
                       <div class="exam-title text-truncate fw-bold" style="cursor: pointer;" placement="top"
                         [ngbTooltip]="examTooltip" container="body">
                         {{ exam.exam_name }}
@@ -947,7 +947,6 @@
                     <option value="">ALL</option>
                     <option value="PUBLISHED">PUBLISHED</option>
                     <option value="DRAFT">DRAFT</option>
-                    <option value="CLOSED">CLOSED</option>
                   </select>
                 </div>
 

@@ -127,14 +127,17 @@ export class NewDashboardComponent implements OnInit {
     this.breadCrumbItems = [{ label: "dashboard", active: true }];
 
     // Role-based routing guard (preserving from main.component.ts)
-    if (this.currentUser.authorities[0] == Role.MONITOR) {
-      this.router.navigateByUrl("/examalpha/monitor");
-    } else if (this.currentUser.authorities[0] == Role.ANALYTIC) {
+    // if (this.currentUser.authorities[0] == Role.MONITOR) {
+    //   this.router.navigateByUrl("/examalpha/monitor");
+    // } else 
+    if (this.currentUser.authorities[0] == Role.ANALYTIC) {
       this.router.navigateByUrl("/examalpha/result");
-    } else if (this.currentUser.authorities[0] == Role.PROCTOR_ADMIN) {
-      this.router.navigateByUrl("/examalpha/schedule");
-      return;
-    } else if (this.currentUser.authorities[0] == Role.MARKER) {
+    } 
+    // else if (this.currentUser.authorities[0] == Role.PROCTOR_ADMIN) {
+    //   this.router.navigateByUrl("/examalpha/schedule");
+    //   return;
+    // } 
+    else if (this.currentUser.authorities[0] == Role.MARKER) {
       this.router.navigateByUrl("/examalpha/exams");
       return;
     }
@@ -177,128 +180,155 @@ export class NewDashboardComponent implements OnInit {
     // Initialize Dashboard data
     this.fetchDashboardData();
 
-    this.isLoadingQuestionsOverview = true;
-    this.dashboardService.fetchDashboardData().subscribe(
-      (value) => {
-        this.dashboardData = value;
-        this.isLoadingQuestionsOverview = false;
-        console.log("TAGS GRAPH: ", this.dashboardData);
+    if (!this.currentUser.authorities.includes("PROCTOR_ADMIN")) {
+      this.isLoadingQuestionsOverview = true;
+      this.dashboardService.fetchDashboardData().subscribe(
+        (value) => {
+          this.dashboardData = value;
+          this.isLoadingQuestionsOverview = false;
+          console.log("TAGS GRAPH: ", this.dashboardData);
 
-        this.rowOne = [
-          {
-            title: "Total Subjects",
-            icon: "folder-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalSubjects ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Questions",
-            icon: "stack-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalQuestions ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Passages",
-            icon: "article-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalPassages ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Questions In-recycle",
-            icon: "recycle-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalInRecycle ?? 0,
-            roles: ["ADMIN", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Published Questions",
-            icon: "upload-cloud-2-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalPublished ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Awaiting Moderation",
-            icon: "arrow-left-right-line",
-            count:
-              this.dashboardData.questionsModerationCard
-                ?.totalAwaitingModeration ?? 0,
-            roles: ["ADMIN", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Approved Questions",
-            icon: "check-double-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalApproved ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Draft Questions",
-            icon: "draft-line",
-            count: this.dashboardData.questionsModerationCard?.totalDrafts ?? 0,
-            roles: ["ADMIN", "AUTHOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Rejected Questions",
-            icon: "feedback-line",
-            count:
-              this.dashboardData.questionsModerationCard?.totalRejected ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-          {
-            title: "Total Used Questions",
-            icon: "eye-2-line",
-            count: this.dashboardData.questionsModerationCard?.totalUsed ?? 0,
-            roles: ["ADMIN", "AUTHOR", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
-          },
-        ];
-
-        this.totalUsersCount = value.usersCard && value.usersCard.totalUsers;
-
-        this.userChartOptions = {
-          series: [
-            value.usersCard && value.usersCard.totalActiveUsers,
-            value.usersCard && value.usersCard.totalInActiveUsers,
-          ],
-          labels: ["Active Users", "Inactive Users"],
-          chart: {
-            type: "donut",
-            height: 350,
-          },
-          dataLabels: {
-            enabled: false, // Removes percentages inside slices
-          },
-          plotOptions: {
-            pie: {
-              donut: {
-                size: "75%", // Manages thickness
-              },
-            },
-          },
-          legend: {
-            position: "bottom",
-          },
-          responsive: [
+          this.rowOne = [
             {
-              breakpoint: 480,
-              options: {
-                chart: { width: 300 },
-                legend: { position: "bottom" },
+              title: "Total Subjects",
+              icon: "folder-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalSubjects ?? 0,
+              roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Questions",
+              icon: "stack-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalQuestions ?? 0,
+              roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Passages",
+              icon: "article-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalPassages ?? 0,
+              roles: ["ADMIN", "AUTHOR", "MODERATOR", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Questions In-recycle",
+              icon: "recycle-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalInRecycle ?? 0,
+              roles: ["ADMIN", "EXAMINER", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Published Questions",
+              icon: "upload-cloud-2-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalPublished ?? 0,
+              roles: [
+                "ADMIN",
+                "AUTHOR",
+                "MODERATOR",
+                "EXAMINER",
+                "GROUP_ADMIN",
+              ],
+            },
+            {
+              title: "Awaiting Moderation",
+              icon: "arrow-left-right-line",
+              count:
+                this.dashboardData.questionsModerationCard
+                  ?.totalAwaitingModeration ?? 0,
+              roles: ["ADMIN", "MODERATOR", "EXAMINER", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Approved Questions",
+              icon: "check-double-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalApproved ?? 0,
+              roles: [
+                "ADMIN",
+                "AUTHOR",
+                "MODERATOR",
+                "EXAMINER",
+                "GROUP_ADMIN",
+              ],
+            },
+            {
+              title: "Total Draft Questions",
+              icon: "draft-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalDrafts ?? 0,
+              roles: ["ADMIN", "AUTHOR", "EXAMINER", "GROUP_ADMIN"],
+            },
+            {
+              title: "Total Rejected Questions",
+              icon: "feedback-line",
+              count:
+                this.dashboardData.questionsModerationCard?.totalRejected ?? 0,
+              roles: [
+                "ADMIN",
+                "AUTHOR",
+                "MODERATOR",
+                "EXAMINER",
+                "GROUP_ADMIN",
+              ],
+            },
+            {
+              title: "Total Used Questions",
+              icon: "eye-2-line",
+              count: this.dashboardData.questionsModerationCard?.totalUsed ?? 0,
+              roles: [
+                "ADMIN",
+                "AUTHOR",
+                "MODERATOR",
+                "EXAMINER",
+                "GROUP_ADMIN",
+              ],
+            },
+          ];
+
+          this.totalUsersCount = value.usersCard && value.usersCard.totalUsers;
+
+          this.userChartOptions = {
+            series: [
+              value.usersCard && value.usersCard.totalActiveUsers,
+              value.usersCard && value.usersCard.totalInActiveUsers,
+            ],
+            labels: ["Active Users", "Inactive Users"],
+            chart: {
+              type: "donut",
+              height: 350,
+            },
+            dataLabels: {
+              enabled: false, // Removes percentages inside slices
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  size: "75%", // Manages thickness
+                },
               },
             },
-          ],
-        };
+            legend: {
+              position: "bottom",
+            },
+            responsive: [
+              {
+                breakpoint: 480,
+                options: {
+                  chart: { width: 300 },
+                  legend: { position: "bottom" },
+                },
+              },
+            ],
+          };
 
-        this.isUserChartLoaded = true;
-      },
-      (error: HttpErrorResponse) => {
-        this.isLoadingQuestionsOverview = false;
-        this.notifierService.notify("error", `${error.error?.message}`);
-      },
-    );
+          this.isUserChartLoaded = true;
+        },
+        (error: HttpErrorResponse) => {
+          this.isLoadingQuestionsOverview = false;
+          this.notifierService.notify("error", `${error.error?.message}`);
+        },
+      );
+    }
 
     this.generateCalendarGrid();
   }
