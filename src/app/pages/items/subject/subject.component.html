@@ -50,7 +50,7 @@
             </select> -->
           </div>
 
-          <div *ngIf="!currentUser.authorities.includes('MODERATOR')">
+          <!-- <div *ngIf="!currentUser.authorities.includes('MODERATOR')">
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-muted fw-medium text-uppercase fs-12">Total Questions</span>
               <span class="badge bg-soft-primary text-primary fs-12 px-2 py-1">{{ totalItems || 0 }}</span>
@@ -59,7 +59,20 @@
               class="btn btn-primary btn-label waves-effect right waves-light w-100">
               <i title="NEW TOPIC" *ngIf="
                   (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock
-                " class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
+                " class="ri-add-line label-icon align-middle fs-11 ms-2"></i> -->
+              <!-- {{ subject.subjectName.toUpperCase() }} -->
+              <!-- Add Topic
+            </button>
+          </div> -->
+
+          <div>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted fw-medium text-uppercase fs-12">Total Questions</span>
+              <span class="badge bg-soft-primary text-primary fs-12 px-2 py-1">{{ totalItems || 0 }}</span>
+            </div>
+            <button *ngIf="(currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock" (click)="openNewTopicModal(newTopicModal)" type="button"
+              class="btn btn-primary btn-label waves-effect right waves-light w-100">
+              <i title="NEW TOPIC"  class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               <!-- {{ subject.subjectName.toUpperCase() }} -->
               Add Topic
             </button>
@@ -142,10 +155,8 @@
       <div class="card">
         <div class="card-header border-bottom-dashed">
           <div>
-            <button type="button" class="btn btn-primary btn-label waves-effect right waves-light w-100">
-              <i title="NEW TOPIC" *ngIf="
-                  (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock
-                " (click)="openNewTopicModal(newTopicModal)"
+            <button type="button" *ngIf="(currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')) && !_currentBlock" class="btn btn-primary btn-label waves-effect right waves-light w-100">
+              <i title="NEW TOPIC" (click)="openNewTopicModal(newTopicModal)"
                 class="ri-add-line label-icon align-middle fs-11 ms-2"></i>
               {{ subject && subject.subjectName.toUpperCase() }}
             </button>
@@ -378,11 +389,11 @@
               -->
 
               <div class="dropdown" ngbDropdown *ngIf="!assessmentActive">
-                <button class="btn btn-primary" type="button" id="manageDropdown" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
+                <button class="btn btn-primary" type="button" id="manageDropdown" *ngIf="!currentUser.authorities.includes('MODERATOR')" data-bs-toggle="dropdown" aria-expanded="false" ngbDropdownToggle>
                   <i class="ri-settings-4-line align-middle me-1"></i> Actions
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="manageDropdown" ngbDropdownMenu>
-                  <li *ngIf="!currentUser.authorities.includes('MODERATOR')">
+                  <li>
                     <button class="dropdown-item" (click)="sendData()">
                       <i class="ri-add-line align-middle me-2 text-primary"></i> New Question
                     </button>
@@ -887,9 +898,7 @@
                 </a>
               </div>
 
-              <div class="p-2" *ngIf="
-                  !loading_items && itemsPage && itemsPage.content.length < 1
-                ">
+              <div class="p-2" *ngIf="!loading_items && itemsPage && itemsPage.content.length < 1 && !currentUser.authorities.includes('MODERATOR')">
                 <div class="d-flex flex-column justify-content-between align-items-center">
                   <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold my-2">
@@ -908,7 +917,7 @@
                 </p> -->
               </div>
 
-              <div class="p-2" *ngIf="!loading_items && subject?.topics?.length < 1">
+              <div class="p-2" *ngIf="!loading_items && subject?.topics?.length < 1 && (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN'))">
                 <div class="d-flex flex-column justify-content-between align-items-center">
                   <img src="assets/images/blank_pages/empty-state.png" width="200" height="200" class="" />
                   <h4 class="text-secondary fw-bold">No Topic(s) Found!</h4>
