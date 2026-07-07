@@ -64,6 +64,8 @@ export class EditUserComponent implements OnInit {
 
   allEditInputFieldIsRequired: boolean = false;
 
+  isUsernameEdittable: boolean = false;
+
   // currentUser: Account = this.userService2.getCurrentUser();
   currentUser = this.userService2.getCurrentUser()
     ? this.userService2.getCurrentUser()
@@ -84,6 +86,7 @@ export class EditUserComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     if (this.currentUser.authorities.includes("ADMIN") || this.currentUser.authorities.includes("GROUP_ADMIN")) {
       this.fetchAdminUserDetail(this.userId);
       this.itemService.fetchAllSubjectsDropdown().subscribe((value) => {
@@ -107,7 +110,16 @@ export class EditUserComponent implements OnInit {
       (value) => {
         // console.log(value);
         this.userDetail = value;
-        console.log('USER DETAIL: ', this.userDetail);
+
+        Object.keys(this.userDetail).forEach((key) => {
+          if (this.userDetail[key] === null) {
+            this.userDetail[key] = "";
+          }
+        });
+
+        this.isUsernameEdittable = this.userDetail.id === this.userService2.getCurrentUser().id;
+
+        console.log('ADMIN USER DETAIL: ', this.userDetail);
         this.userDetail.userSubjectsDTOS.forEach((subject) => {
           this.userDefaultSubjects.push(subject);
         });
@@ -129,6 +141,16 @@ export class EditUserComponent implements OnInit {
       (value) => {
         // console.log(value);
         this.userDetail = value;
+
+        Object.keys(this.userDetail).forEach((key) => {
+          if (this.userDetail[key] === null) {
+            this.userDetail[key] = "";
+          }
+        });
+
+        this.isUsernameEdittable = this.userDetail.id === this.userService2.getCurrentUser().id;
+        
+        console.log('SINGLE USER DETAIL: ', this.userDetail);
         /* this.userDetail.userSubjectsDTOS.forEach((subject) => {
           this.userDefaultSubjects.push(subject);
         }); */
@@ -165,7 +187,7 @@ export class EditUserComponent implements OnInit {
 
   updateUserDetails(updateDetailForm: NgForm) {
 
-    if (this.userDetail.firstName.trim() === "" || this.userDetail.lastName.trim() === "" || this.userDetail.phone.trim() === "" || this.userDetail.email.trim() === "") {
+    if (this.userDetail.firstName.trim() === "" || this.userDetail.lastName.trim() === "" || this.userDetail.phone.trim() === "" || this.userDetail.email.trim() === "" || (this.isUsernameEdittable && this.userDetail.username.trim() === "")) {
 
       this.allEditInputFieldIsRequired = true;
 
@@ -178,14 +200,6 @@ export class EditUserComponent implements OnInit {
       return;
     }
 
-    if ((this.currentUser.authorities?.includes('ADMIN') || this.currentUser.authorities?.includes('GROUP_ADMIN')) && this.userDetail.username.trim() === "") {
-
-      this.allEditInputFieldIsRequired = true;
-
-      console.log('USERNAME IS REQUIRED FOR ADMIN: ', this.userDetail);
-      return;
-    }
-
     this.updating = true;
     //console.log(updateDetailForm.value);
     this.newUserDetails.firstName = this.userDetail.firstName.trim();
@@ -194,6 +208,10 @@ export class EditUserComponent implements OnInit {
     this.newUserDetails.email = this.userDetail.email.trim();
     this.newUserDetails.role = this.userDetail.userRolesDTOList[0].roleId;
     this.newUserDetails.id = this.userDetail.id;
+
+    if (this.isUsernameEdittable) {
+      this.newUserDetails.username = this.userDetail.username.trim();
+    }
 
     console.log('USER DETAIL FOR SUBMISSION: ', this.newUserDetails);
 
