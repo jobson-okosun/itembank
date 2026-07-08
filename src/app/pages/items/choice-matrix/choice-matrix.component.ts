@@ -526,17 +526,15 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.subjectModerationStatusEnabled) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    } else {
-      item.itemStatus = ItemStatusEnum.PUBLISHED;
-    }
-
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.subjectModerationStatusEnabled
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
+    } else {
+      item.itemStatus = ItemStatusEnum.PUBLISHED;
     }
 
     this.publishingItem = true;
@@ -617,7 +615,12 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
 
     this.publishingItem = true;
 
-    if (this.subjectModerationStatusEnabled) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatusEnabled
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -722,7 +725,12 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.subjectModerationStatusEnabled) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatusEnabled
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -815,10 +823,11 @@ export class ChoiceMatrixComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'save':
         if (
-          (!this.currentUser.authorities.includes('MODERATOR') &&
-            !this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN')) || // Both roles are missing
-          this.subjectModerationStatusEnabled ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.subjectModerationStatusEnabled ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {

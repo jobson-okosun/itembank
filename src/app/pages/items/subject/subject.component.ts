@@ -58,6 +58,7 @@ export class SubjectComponent implements OnInit, OnChanges {
   @Input() _currentBlock: any;
   @Input() _noOfItems: number;
   @Input() _sectionId: string;
+  @Input() _sectionType: string;
   @Input() _assessmentId: string;
   @Input() _existingItemIds: string[] = [];
   @Input() _loadingExistingItemIds: boolean = false;
@@ -1249,16 +1250,24 @@ export class SubjectComponent implements OnInit, OnChanges {
   }
 
   openNewRandomSelectionFilterModal(randomFilterModal: any) {
-    if (
-      this.subject.topics[0].topicId !== '00000000-0000-0000-0000-000000000000'
-    ) {
+    if (this.subject.topics[0].topicId !== '00000000-0000-0000-0000-000000000000') {
       this.subject.topics.unshift({
         topicName: 'ALL-TOPIC(S)',
         topicId: '00000000-0000-0000-0000-000000000000',
         totalItems: this.itemService.totalItemsInCurrentSubject,
       }); //add all-topics to topic list
     }
+
     this.assessmentFilter.totalQuestions = this._currentBlock.totalQuestions;
+    
+    if (this._sectionType === 'THEORY') {
+      this.itemType = [ItemTypes.DRAW_WRITING];
+      this.assessmentFilter.itemType = ItemTypes.DRAW_WRITING;
+    } else {
+      this.itemType = Object.values(ItemTypes);
+      this.assessmentFilter.itemType = null;
+    }
+    
     this.modalReference = this.modal.open(randomFilterModal, {
       centered: true,
       size: 'md',

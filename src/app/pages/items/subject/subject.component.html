@@ -1703,8 +1703,8 @@
             <div class="col-6">
               <label for="questionType">Question Type<!--  <span class="text-danger">*</span> --></label>
               <select class="form-select" name="questionType" #itemTypeRef
-                (change)="onQuestionTypeChange(itemTypeRef.value)">
-                <option value="any" selected="true">ANY</option>
+                (change)="onQuestionTypeChange(itemTypeRef.value)" [value]="assessmentFilter.itemType || 'any'">
+                <option *ngIf="_sectionType !== 'THEORY'" value="any">ANY</option>
                 <option value="{{ type }}" *ngFor="let type of itemType">
                   {{ type }}
                 </option>

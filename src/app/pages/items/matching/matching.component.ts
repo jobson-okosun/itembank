@@ -438,13 +438,11 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.publishLoader();
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.subjectModerationStatusEnabled
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-
-    if (this.subjectModerationStatusEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -462,7 +460,12 @@ export class MatchingComponent implements OnInit, OnDestroy {
     }
     this.publishingItem = true;
 
-    if (this.subjectModerationStatusEnabled) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatusEnabled
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -497,7 +500,12 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.subjectModerationStatusEnabled) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatusEnabled
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;

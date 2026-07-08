@@ -16,7 +16,7 @@
       "
       class="col-xxl-12 col-lg-12 col-md-12 col-sm-12"
     >
-      <div [innerHTML]="previewData.itemPassage"></div>
+      <div [innerHTML]="previewData.itemPassage  | safeHtml "></div>
       <hr />
     </div>
 
@@ -53,7 +53,7 @@
           class="p-3 mb-3 bg-white rounded border"
           style="position: relative;"
         >
-          <div [innerHTML]="stem"></div>
+          <div [innerHTML]="stem  | safeHtml"></div>
 
           <!-- connector circle -->
           <span class="d-flex justify-content-center align-items-center" style="position: absolute;top: 0; right: 0;height: 100%;width: max-content;">
@@ -81,7 +81,7 @@
               <ng-container *ngIf="item; else emptyBox">
 
                 <div cdkDrag [cdkDragData]="item" class="cursor-move">
-                  <span [innerHTML]="item.label"></span>
+                  <span [innerHTML]="item.label  | safeHtml"></span>
                 </div> 
 
               </ng-container>
@@ -105,7 +105,7 @@
             class="p-3 mb-3 bg-white rounded"
             style="position: relative;min-height: 70px;">
                 <div class="cursor-move">
-                  <span [innerHTML]="previewData.options[i].label"></span>
+                  <span [innerHTML]="previewData.options[i].label  | safeHtml "></span>
                 </div> 
 
                 <!-- connector circle -->
@@ -141,7 +141,7 @@
         [cdkDragData]="opt"
         class="px-3 py-2 bg-white rounded border cursor-move"
       >
-        <span [innerHTML]="opt.label"></span>
+        <span [innerHTML]="opt.label  | safeHtml "></span>
       </div>
 
     </div>

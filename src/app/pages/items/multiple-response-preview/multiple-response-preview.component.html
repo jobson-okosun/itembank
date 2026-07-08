@@ -38,7 +38,7 @@
             [checked]="showAnswer && answers.includes(i + '')"
             (change)="selection(i)"
           />
-          <span [innerHTML]="option.label"></span>
+          <span [innerHTML]="option.label | safeHtml"></span>
         </div>
       </div>
     </div>

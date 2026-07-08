@@ -101,6 +101,11 @@ export class NewItemComponent implements OnInit, OnDestroy {
       this.itemUtil.currentItemTrail ?? this.itemUtil.getSavedItemTrail();
     // console.log(this.itemTrailInformation);
     /* console.log(this.itemId); */
+
+    const moderationEnabled = localStorage.getItem('currentSubjectModerationEnabled')
+    if (moderationEnabled) {
+      this._itemService.currentSubjectModerationEnabled = moderationEnabled === 'true'
+    }
   }
 
   setItemType(value: string) {

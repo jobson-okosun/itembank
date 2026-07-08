@@ -442,13 +442,11 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.subjectModerationStatus
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-
-    if (this.subjectModerationStatus) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -493,7 +491,12 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.subjectModerationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -522,7 +525,12 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
 
     this.publishingItem = true;
 
-    if (this.subjectModerationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -623,11 +631,11 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'save':
         if (
-          (!this.currentUser.authorities.includes('MODERATOR') &&
-            !this.currentUser.authorities.includes('ADMIN') &&
-            !this.currentUser.authorities.includes('GROUP_ADMIN')) || // Both roles are missing
-          this.subjectModerationStatus ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.subjectModerationStatus ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {

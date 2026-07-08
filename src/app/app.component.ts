@@ -20,9 +20,7 @@ export class AppComponent {
     private assessmentService: AssessmentsService,
     private itemUtil: ItemUtilitiesService,
     private itemService: ItemHttpService,
-  ) {}
-
-  ngOnInit() {
+  ) {
     if (!this.itembankAssessmentService.schedulerAssessmentId) {
       const id = localStorage.getItem('assessmentId')
       if (id) {
@@ -47,11 +45,12 @@ export class AppComponent {
       }
     }
 
-    if (!this.itemService.currentSubjectModerationEnabled) {
-      const moderationEnabled = localStorage.getItem('currentSubjectModerationEnabled')
-      if (moderationEnabled) {
-        this.itemService.currentSubjectModerationEnabled = moderationEnabled === 'true'
-      }
+    const moderationEnabled = localStorage.getItem('currentSubjectModerationEnabled')
+    if (moderationEnabled) {
+      this.itemService.currentSubjectModerationEnabled = moderationEnabled === 'true'
     }
+  }
+
+  ngOnInit() {
   }
 }

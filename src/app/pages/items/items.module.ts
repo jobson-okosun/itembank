@@ -91,6 +91,7 @@ import { DrawingAndWritingComponent } from './drawing-and-writing/drawing-and-wr
 import { DrawingAndWritingPreviewComponent } from './drawing-and-writing-preview/drawing-and-writing-preview.component';
 import { ClozeRadioSelectComponent } from './cloze-radio-select/cloze-radio-select.component';
 import { ClozeRadioSelectPreviewComponent } from './cloze-radio-select-preview/cloze-radio-select-preview.component'; 
+import { SafeHtmlPipe } from "../pipes/safe-html.pipe";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
   url: "https://httpbin.org/post",
@@ -150,7 +151,8 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     DrawingAndWritingComponent,
     DrawingAndWritingPreviewComponent,
     ClozeRadioSelectComponent,
-    ClozeRadioSelectPreviewComponent
+    ClozeRadioSelectPreviewComponent,
+    SafeHtmlPipe
   ],
   imports: [
     CommonModule,

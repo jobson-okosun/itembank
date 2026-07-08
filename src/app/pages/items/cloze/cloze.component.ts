@@ -128,6 +128,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
     private passageService: AllPassagesService,
   ) {
     this.moderationStatus = this.itemService.currentSubjectModerationEnabled;
+    // console.log('s', this.moderationStatus)
     this.uploader = new FileUploader({
       url: '//post',
       disableMultipart: false,
@@ -141,8 +142,8 @@ export class ClozeComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
 
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
@@ -206,6 +207,7 @@ export class ClozeComponent implements OnInit, OnDestroy {
       this.defaultItemProperties.difficultyLevel = 1;
       this.defaultItemProperties.scoringOption.ignoreLeadingAndTrailingSpaces = true;
     }
+
   }
 
   onStimulusChange(value: string): void {
@@ -884,7 +886,9 @@ export class ClozeComponent implements OnInit, OnDestroy {
     // Set the item status based on user role
     if (
       !this.currentUser.authorities.includes('MODERATOR') &&
-      !this.currentUser.authorities.includes('ADMIN') && !this.currentUser.authorities.includes('GROUP_ADMIN')
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.moderationStatus
     ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {

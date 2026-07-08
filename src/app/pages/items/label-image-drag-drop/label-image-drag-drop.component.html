@@ -809,9 +809,9 @@
                     <select class="form-select" data-choices data-choices-search-false id="choices-privacy-status-input"
                       name="scoringType" [(ngModel)]="
                         defaultItemProperties.scoringOption.scoringType
-                      " disabled>
+                      " >
                       <option *ngFor="let scoreType of scoringType" value="{{ scoreType }}"
-                        selected=" defaultItemProperties.scoringOption.scoringType === scoreType" disabled>
+                        >
                         {{ scoreType }}
                       </option>
                     </select>
@@ -1200,8 +1200,7 @@
 
     <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'"
       class="alert alert-info">
-      <strong>Partial Match:</strong> Each correct option will carry a fraction of the total mark (e.g. if there are 4
-      options, each correct option carries 1/4 of the marks).
+      <strong>Partial Match:</strong> Each correct option would carry {{ dropdownLabels.length ? (defaultItemProperties.scoringOption.score / dropdownLabels.length | number:'1.0-2') : 0 }} mark(s) (e.g. if the candidate scores 2 options correctly, the candidate would be graded {{ dropdownLabels.length ? ((defaultItemProperties.scoringOption.score / dropdownLabels.length) * 2 | number:'1.0-2') : 0 }}/{{ defaultItemProperties.scoringOption.score || 0 }}).
     </div>
 
     <!-- <div *ngIf="defaultItemProperties.scoringOption.matchingRule === 'EXACT_MATCH'" class="alert alert-warning">

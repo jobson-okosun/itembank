@@ -196,13 +196,8 @@ export class LabelImageDropdownPreviewComponent
       this.previewData.scoringOption.answers.forEach(
         (answer: string, index: number) => {
           const dropdown = dropdowns[index] as HTMLSelectElement;
-          if (dropdown) {
-            const possibleResponses =
-              this.previewData.possibleResponses[index]?.responses || [];
-            const correctAnswer = possibleResponses[parseInt(answer)];
-            if (correctAnswer) {
-              dropdown.value = correctAnswer;
-            }
+          if (dropdown && answer) {
+            dropdown.value = answer;
           }
         }
       );
