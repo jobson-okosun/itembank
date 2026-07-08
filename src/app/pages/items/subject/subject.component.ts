@@ -681,6 +681,7 @@ export class SubjectComponent implements OnInit, OnChanges {
       // console.log("asseement is active");
       /* console.log(this.itemService.topicId, 'topicId');
       console.log(this.itemService.subtopicId, 'subtopicId'); */
+      
       this.itemService
         .fetchAllAssessmentItems(
           this._assessmentId,
@@ -695,7 +696,8 @@ export class SubjectComponent implements OnInit, OnChanges {
           (value) => {
             this.itemsPage = value;
             // console.log('FETCH ASSESSMENT ITEMS: ', this.itemsPage);
-            this.itemsPage.content.forEach(
+            
+            this.itemsPage && this.itemsPage.content.forEach(
               (item) => (item.showFullItem = false),
             );
             this.itemService.topicId = '';
@@ -704,6 +706,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           },
           (error: HttpErrorResponse) => {
             // console.log(error);
+            console.log('THIS ITEMPAGE ERROR: ', error);
           },
         );
     }
@@ -820,7 +823,6 @@ export class SubjectComponent implements OnInit, OnChanges {
           (value) => {
             this.subject = value;
             this.subjectId = this.itemService.subjectId;
-            console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
             // console.log(value);
 
             if (!this.subject.topics[0]) {
@@ -832,7 +834,6 @@ export class SubjectComponent implements OnInit, OnChanges {
             }
 
             const savedTrail = this.itemUtil.getSavedItemTrail();
-            console.log('SAVED TRAIL: ', savedTrail);
             let selectedTopic = this.subject.topics[0];
             if (savedTrail && savedTrail.topicId) {
               const matchedTopic = this.subject.topics.find(
@@ -1735,7 +1736,6 @@ export class SubjectComponent implements OnInit, OnChanges {
     // console.log(tags);
     this.tags = tags;
     // console.log('logging selected tag:', this.tags);
-    console.log('ASSIGNED TAGS: ', this.tags);
   }
 
   recieveTags(tags: any) {
@@ -1746,9 +1746,6 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   preview(item: any, i: number) {
     item.showingPreviewLoader = true;
-
-    console.log('PREVIEW ITEMSSS: ', item);
-    console.log('I: ', i);
 
     if (this.previewData) {
       this.itemsPage.content[this.activePreviewItem].showFullItem = false;
@@ -2214,14 +2211,9 @@ export class SubjectComponent implements OnInit, OnChanges {
   clearFilter() {
     //this.showFilter = !this.showFilter;
     if (this.selectedSubtopicId) {
-      console.log('SUBTOPIC SELECTED');
-      console.log('CURRENT TOPIC: ', this.currentTopic);
-      console.log('CURRENT TOPIC: ', this.selectedSubtopicId);
       // reload the questions list after filter options are cleared
       this.fetchItems(this.currentTopic, this.selectedSubtopicId);
     } else {
-      console.log('SUBTOPIC NOT SELECTED');
-      console.log('CURRENT TOPIC: ', this.currentTopic);
       // reload the questions list after filter options are cleared
       this.fetchItems(this.clickedTopic);
     }
