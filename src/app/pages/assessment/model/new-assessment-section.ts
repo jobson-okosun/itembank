@@ -4,4 +4,10 @@ export class NewAssessmentSection {
   assessmentId: string;
   totalQuestions: number;
   totalQuestionsPerStudent: number;
+  sectionType: SectionType = SectionType.OBJECTIVE
+}
+
+export enum SectionType {
+  OBJECTIVE='OBJECTIVE',
+  THEORY='THEORY'
 }

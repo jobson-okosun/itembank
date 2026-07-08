@@ -81,16 +81,7 @@
       </div>
       <div class="mb-3">
         <label>Passage</label>
-        <editor name="stimulus" #stimulus="ngModel" [(ngModel)]="passage.stimulus" [init]="{
-            base_url: '/tinymce',
-            height: 200,
-            menubar: true,
-            plugins: ['table quickbars lists autoresize charmap'],
-            quickbars_insert_toolbars: false,
-            branding: false,
-            toolbar:
-              'undo redo | formatselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent table quickimage quicklink | superscript subscript charmap'
-          }"></editor>
+        <editor name="stimulus" #stimulus="ngModel" [(ngModel)]="passage.stimulus" [init]="option"></editor>
       </div>
 
       <div class="row gy-4">

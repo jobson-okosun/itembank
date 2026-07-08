@@ -1,3 +1,5 @@
+import { SectionType } from "./new-assessment-section";
+
 export class SectionSettings {
   durationInMinutes: number;
   shuffleItems: boolean;
@@ -16,4 +18,5 @@ export class AssessmentSections {
   totalQuestionsPerCandidate: number;
   createdAt: string;
   sectionSettings: SectionSettings = new SectionSettings();
+  sectionType: SectionType = SectionType.OBJECTIVE
 }

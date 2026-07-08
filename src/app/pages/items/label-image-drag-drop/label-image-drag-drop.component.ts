@@ -657,7 +657,7 @@ export class LabelImageDragDropComponent
         this.image.width = img.width;
         this.image.height = img.height;
         this.image.url = dataURL;
-        this.defaultItemProperties.images.push(this.image);
+        this.defaultItemProperties.images = [this.image];
 
         this.cdRef.detectChanges();
         this.modalService.dismissAll();

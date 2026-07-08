@@ -14,6 +14,25 @@
     <div class="small" [innerHTML]="previewData.stimulus"></div>
   </div>
 
+  <div *ngIf="previewData?.subQuestions?.length > 0" class="rounded p-3 border mt-3">
+    <h6 class="mb-3">Sub Questions</h6>
+    <div *ngFor="let sq of previewData.subQuestions; let i = index" class="border rounded p-3 mb-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0 text-primary">Question {{i + 1}} <span class="text-muted fw-normal ms-2">({{ sq.score || 0 }} pts)</span></h6>
+      </div>
+      <div class="small mb-3" [innerHTML]="sq.stimulus"></div>
+      
+      <div *ngIf="sq.children?.length > 0" class="ms-4 mt-2">
+        <div *ngFor="let child of sq.children; let j = index" class="border rounded p-3 mb-2 bg-white">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="fw-bold text-secondary">({{ getRomanNumeral(j + 1) }}) <span class="text-muted fw-normal ms-2">({{ child.score || 0 }} pts)</span></span>
+          </div>
+          <div class="small" [innerHTML]="child.stimulus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- <div [style.maxHeight.px]="containerSize" style="overflow-y: hidden;" class="position-relative mt-3 border">
     <div id="canvas" [style.minHeight.px]="contentScrollHeight"></div>
   </div> -->

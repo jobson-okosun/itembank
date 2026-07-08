@@ -596,7 +596,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.newBlock.totalQuestions;
     this.newBlock.blockType = BlockTypesEnum.SINGLE_QUESTIONS
     // console.log(section, 'section');
-    this.modalService.open(newBlockModal, { centered: true, size: 'md' });
+    this.modalService.open(newBlockModal, { centered: true, size: 'lg' });
   }
 
   openManualItemSelectionModal(manualItemSelectionModal: any) {
@@ -623,10 +623,10 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     });
   }
 
-  openEditBlockModal(editBlockModal: any, block?: any) {
+  openEditBlockModal(editBlockModal: any, block: any) {
     this.editBlock = block;
     this.editBlock.name = block.blockName;
-    this.modalService.open(editBlockModal, { centered: true, size: 'md' });
+    this.modalService.open(editBlockModal, { centered: true, size: 'lg' });
   }
 
   openNewAssessmentTemplateModal(newAssessmentTemplateModal: any) {
@@ -782,7 +782,15 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
     if (!validated) {
       this.submitted = false;
-      return;
+      // return;
+    }
+
+    if (this.selectedSection.sectionType === 'OBJECTIVE') {
+      this.newBlock.attemptRule = null;
+      this.newBlock.itemsToAttempt = 0;
+      this.newBlock.instruction = '';
+    } else if (this.newBlock.attemptRule === 'ATTEMPT_ALL') {
+      this.newBlock.itemsToAttempt = 0;
     }
 
     this.assessmentService
@@ -903,6 +911,14 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     this.editBlock.sectionId = this.selectedSection.sectionId;
     this.editBlock.assessmentId = this.assessmentId;
     this.editBlock.subjectId = this.selectedSection.subjectId;
+
+    if (this.selectedSection.sectionType === 'OBJECTIVE') {
+      this.editBlock.attemptRule = null;
+      this.editBlock.itemsToAttempt = 0;
+      this.editBlock.instruction = '';
+    } else if (this.editBlock.attemptRule === 'ATTEMPT_ALL') {
+      this.editBlock.itemsToAttempt = 0;
+    }
 
     this.assessmentService
       .updateBlock(

@@ -124,6 +124,9 @@
           <th pSortableColumn="subjectName">
             SECTION(S) <p-sortIcon field="subjectName"></p-sortIcon>
           </th>
+          <th pSortableColumn="sectionType">
+            TYPE <p-sortIcon field="sectionType"></p-sortIcon>
+          </th>
           <th pSortableColumn="sectionName">
             DISPLAY NAME <p-sortIcon field="sectionName"></p-sortIcon>
           </th>
@@ -144,6 +147,7 @@
       <ng-template pTemplate="body" let-rowIndex="rowIndex" let-section>
         <tr>
           <td>{{ section.subjectName | uppercase }}</td>
+          <td>{{ section.sectionType }}</td>
           <td>{{ section.sectionName | uppercase }}</td>
           <td>
             <ng-container *ngIf="section.blockDetailsDTOS.length > 0">
@@ -156,11 +160,36 @@
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                           data-bs-target="#gen-ques-collapseOne" aria-expanded="false"
                           aria-controls="gen-ques-collapseOne">
-                          {{ block.blockName }} - {{ block.blockType }} ({{
-                          block.blockType !== "SINGLE_QUESTIONS"
-                          ? block.totalFound + "/" + block.totalQuestions
-                          : block.totalFound + "/" + block.totalQuestions
-                          }})
+                          
+                          <div class="d-flex flex-column text-start w-100 me-3">
+                            <div class="fw-medium mb-1">
+                              {{ block.blockName }}
+                            </div>
+                            
+                            <div class="d-flex justify-content-between gap-3 fw-medium text-nowrap">
+                              <span>{{ block.blockType }}: </span>
+                              <span>({{
+                              block.blockType !== "SINGLE_QUESTIONS"
+                              ? block.totalFound + "/" + block.totalQuestions
+                              : block.totalFound + "/" + block.totalQuestions
+                              }})</span>
+                            </div>
+
+                            <div *ngIf="block.attemptRule" class="mt-1 d-flex flex-column text-uppercase" style="font-size: 13px; opacity: 0.85;">
+                              <div class="d-flex justify-content-between">
+                                <span>Block type:</span>
+                                <span>{{ block.attemptRule }}</span>
+                              </div>
+                              <div class="d-flex justify-content-between">
+                                <span>Attempts:</span>
+                                <span >
+                                  <ng-container *ngIf="block.attemptRule === 'ATTEMPT_ANY'"> ANY {{ block.itemsToAttempt }}</ng-container>
+                                  <ng-container *ngIf="block.attemptRule === 'ATTEMPT_ALL'"> ALL - {{ block.totalQuestions }}</ng-container>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
                         </button>
                       </h2>
                     </ng-template>
@@ -1041,7 +1070,7 @@
     <form #sectionSettingForm="ngForm" (ngSubmit)="saveSectionSettings(sectionSettingForm)">
       <div>
         <div class="row mb-2">
-          <div class="col-6">
+          <div class="col-12">
             <label class="form-label" for="name"> Display Name </label>
             <!-- <ng-select
               [items]="assessment.sectionDetails"
@@ -1062,6 +1091,14 @@
               disabled />
           </div>
           <div class="col-6">
+              <label class="form-label" for="name">Section type <span class="text-danger">*</span></label>
+              <select class="form-select" name="sectionType"  [(ngModel)]="editSection.sectionType">
+                <option>-- select section type</option>
+                <option value="OBJECTIVE">OBJECTIVE</option>
+                <option value="THEORY">THEORY</option>
+              </select>
+        </div>
+          <div class="col-6">
             <label class="form-label" for="name">
               Questions in section <span class="text-danger">*</span></label>
             <input #totalQuestionInSection class="form-control" type="number" name="totalQuestions" placeholder="10"
@@ -1076,7 +1113,7 @@
           </div>
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3"> 
           <label class="form-label" for="section-instruction">Section Instruction</label>
           <div>
             <editor name="section-instruction" initialValue="Give a description of the exam or instructions..." [init]="{
@@ -1225,6 +1262,15 @@
         </div>
       </div>
 
+      <div class="col-12 mt-2">
+          <label class="form-label" for="name">Section type <span class="text-danger">*</span></label>
+          <select class="form-select" name="sectionType"  [(ngModel)]="newSection.sectionType">
+            <option>-- select section type</option>
+            <option value="OBJECTIVE">OBJECTIVE</option>
+            <option value="THEORY">THEORY</option>
+          </select>
+      </div>
+
       <div class="row mb-2">
         <div class="col-12">
           <label class="form-label" for="name">
@@ -1232,7 +1278,7 @@
           <i style="cursor: pointer" class="ri-question-fill text-info" placement="top" data-bs-container="body"
             data-bs-toggle="popover" [ngbPopover]="totalQuestionInfoPopOver" triggers="mouseenter:mouseleave"
             popoverClass="popOverClass"></i>
-
+ 
           <ng-template #totalQuestionInfoPopOver>
             <ul>
               <li>
@@ -1326,6 +1372,44 @@
           </div>
         </div>
 
+      <div class="row mb-3" *ngIf="selectedSection?.sectionType == 'THEORY'">
+          <div [ngClass]="newBlock.attemptRule === 'ATTEMPT_ANY' ? 'col-6' : 'col-12'">
+            <label class="form-label" for="attemptRule">Block Attempts <span class="text-danger">*</span></label>
+            <select name="attemptRule" class="form-select" [(ngModel)]="newBlock.attemptRule">
+              <option [ngValue]="null" selected> -- Select Block Attempts --</option>
+              <option value="ATTEMPT_ALL">ATTEMPT ALL</option>
+              <option value="ATTEMPT_ANY">ATTEMPT ANY</option>
+            </select>
+            <small *ngIf="newBlock.attemptRule === 'ATTEMPT_ALL' || !newBlock.attemptRule" class="text-muted">Candidates must attempt all the questions in this block.</small>
+            <small *ngIf="newBlock.attemptRule === 'ATTEMPT_ANY'" class="text-muted">Candidates must attempt the specified number of questions in this block.</small>
+          </div>
+
+          <div class="col-6" *ngIf="newBlock.attemptRule === 'ATTEMPT_ANY'">
+            <label class="form-label" for="itemsToAttempt">Number of questions to attempt <span class="text-danger">*</span></label>
+            <input type="number" min="1" class="form-control" name="itemsToAttempt" [(ngModel)]="newBlock.itemsToAttempt">
+          </div>
+        </div>
+
+        <div class="row mb-3" *ngIf="selectedSection?.sectionType == 'THEORY'">
+          <div class="col-12">
+            <label class="form-label" for="newBlockInstruction">Block Instruction </label>
+            <editor name="newBlockInstruction"
+              initialValue="Give a description of the block or instruction on what candidate need to do"
+              id="new_block_instruction" #new_block_instruction="ngModel"
+              [init]="{
+                height: 200,
+                branding: false,
+                menubar: true,
+                base_url: '/tinymce',
+                suffix: '.min',
+                plugins: 'table quickbars lists autoresize',
+                quickbars_insert_toolbars: false,
+                toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+              }"
+              [(ngModel)]="newBlock.instruction"></editor>
+          </div>
+        </div>
+
         <div class="row mb-2">
           <div class="">
             <label class="form-label" for="duration">
@@ -1340,7 +1424,7 @@
         </div>
 
         <div *ngIf="newBlock.blockType" class="row mb-2">
-          <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+          <div class="col-6 mb-2">
             <label class="form-label" for="totalQuestions">
               {{
               newBlock.blockType === "SINGLE_QUESTIONS"
@@ -1348,26 +1432,12 @@
               : "Total Passage(s) in the block"
               }}<span class="text-danger">*</span>
             </label>
-            <div class="col-xl-3 col-md-2 col-sm-2">
-              <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
-                [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)"
-                (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
-            </div>
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
+              [(ngModel)]="newBlock.totalQuestions" (change)="setTotalQuestionsPerStudent(newBlock.totalQuestions)"
+              (keydown)="onKeyDown($event)" (wheel)="$event.preventDefault()" />
           </div>
 
-          <div *ngIf="newBlock.blockType === 'PASSAGES'" class="d-flex flex-wrap gap-2 align-items-center mb-2">
-            <label class="form-label" for="totalQuestionsPerCandidate">
-              Total Question(s) in Passage
-              <span class="text-danger">*</span>
-            </label>
-            <div class="col-xl-3 col-md-2 col-sm-3">
-              <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
-                [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)"
-                (wheel)="$event.preventDefault()" />
-            </div>
-          </div>
-
-          <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+          <div class="col-6 mb-2">
             <label class="form-label" for="totalQuestionsPerCandidate">
               {{
               newBlock.blockType === "SINGLE_QUESTIONS"
@@ -1376,11 +1446,19 @@
               }}
               <span class="text-danger">*</span>
             </label>
-            <div class="col-xl-3 col-md-2 col-sm-3">
-              <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
-                [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)"
-                (wheel)="$event.preventDefault()" />
-            </div>
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
+              [(ngModel)]="newBlock.totalQuestionsPerCandidate" (keydown)="onKeyDown($event)"
+              (wheel)="$event.preventDefault()" />
+          </div>
+
+          <div *ngIf="newBlock.blockType === 'PASSAGES'" class="col-6 mb-2">
+            <label class="form-label" for="totalQuestionsInPassage">
+              Total Question(s) in Passage
+              <span class="text-danger">*</span>
+            </label>
+            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
+              [(ngModel)]="newBlock.numberOfItemsInPassage" (keydown)="onKeyDown($event)"
+              (wheel)="$event.preventDefault()" />
           </div>
         </div>
 
@@ -1399,7 +1477,7 @@
           </select>
         </div>
 
-        <div class="my-3">
+        <div class="mb-3">
           <div class="form-check">
             <input class="form-check-input" id="shuffle_items" type="checkbox" name="shuffleItems"
               [(ngModel)]="newBlock.shuffleItems">
@@ -1412,10 +1490,10 @@
     <div class="card-footer">
       <div class="d-flex justify-content-end gap-2">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
-          (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true;">
+          (click)="modal.close('Close click'); newBlockForm.reset(); newBlock.shuffleItems = true; newBlock.attemptRule = null; newBlock.itemsToAttempt = 0;">
           <i class="ri-close-line me-2 align-middle"></i>Close
         </button>
-        <button [disabled]="!newBlock.selectionType || submitted" type="button" (click)="saveBlock()"
+        <button [disabled]="!newBlock.selectionType || !newBlock.blockType || (selectedSection?.sectionType === 'THEORY' && !newBlock.attemptRule) || (newBlock.attemptRule === 'ATTEMPT_ANY' && (!newBlock.itemsToAttempt || newBlock.itemsToAttempt >= newBlock.totalQuestions)) || submitted" type="button" (click)="saveBlock()"
           class="btn btn-primary" *ngIf="!submitted">
           <i class="ri-save-line me-2 align-middle"></i>Save
         </button>
@@ -1451,27 +1529,44 @@
         </div>
       </div>
 
+      <div class="row mb-3" *ngIf="selectedSection.sectionType === 'THEORY'" >
+        <div class="col-12">
+          <label class="form-label" for="editBlockInstruction">Block Instruction</label>
+          <editor name="editBlockInstruction"
+            initialValue="Give a description of the block or instruction on what candidate need to do"
+            id="edit_block_instruction" #edit_block_instruction="ngModel"
+            [init]="{
+              height: 200,
+              branding: false,
+              menubar: true,
+              base_url: '/tinymce',
+              suffix: '.min',
+              plugins: 'table quickbars lists autoresize',
+              quickbars_insert_toolbars: false,
+              toolbar: 'undo redo | formatselect | bold italic | alignleft aligncenter alignright alignjustify'
+            }"
+            [(ngModel)]="editBlock.instruction"></editor>
+        </div>
+      </div>
+
       <div class="row mb-2">
-        <div class="">
-          <label class="form-label" for="duration"> Question Type </label>
+        <div class="col-6">
+          <label class="form-label" for="questionType"> Question Type </label>
           <select name="questionType" class="form-select" [disabled]="true" [(ngModel)]="editBlock.blockType">
             <option *ngFor="let type of blockTypes" value="{{ type }}">
               {{ type }}
             </option>
           </select>
         </div>
-      </div>
-
-      <div class="row mb-2">
-        <div class="">
-          <label class="form-label" for="duration">Block Position</label>
+        <div class="col-6">
+          <label class="form-label" for="blockIndex">Block Position</label>
           <input type="number" min="0" placeholder="60" class="form-control" name="blockIndex"
             [(ngModel)]="editBlock.index" (keydown)="onKeyDown($event)" />
         </div>
       </div>
 
       <div *ngIf="editBlock.blockType" class="row mb-2">
-        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="col-6 mb-2">
           <label class="form-label" for="totalQuestions">
             {{
             editBlock.blockType === "SINGLE_QUESTIONS"
@@ -1479,13 +1574,11 @@
             : "Total Passage(s) in the block"
             }}
           </label>
-          <div class="col-xl-3 col-md-2 col-sm-2">
-            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
-              [(ngModel)]="editBlock.totalQuestions" (keydown)="onKeyDown($event)" disabled />
-          </div>
+          <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestions"
+            [(ngModel)]="editBlock.totalQuestions" (keydown)="onKeyDown($event)" disabled />
         </div>
 
-        <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="col-6 mb-2">
           <label class="form-label" for="totalQuestionsPerStudent">
             {{
             editBlock.blockType === "SINGLE_QUESTIONS"
@@ -1493,21 +1586,17 @@
             : "Total Passage(s) per candidate"
             }}
           </label>
-          <div class="col-xl-3 col-md-2 col-sm-3">
-            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
-              [(ngModel)]="editBlock.totalQuestionsPerStudent" (keydown)="onKeyDown($event)" disabled />
-          </div>
+          <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsPerCandidate"
+            [(ngModel)]="editBlock.totalQuestionsPerStudent" (keydown)="onKeyDown($event)" disabled />
         </div>
 
-        <div *ngIf="editBlock.blockType === 'PASSAGES'" class="d-flex flex-wrap gap-2 align-items-center mb-2">
-          <label class="form-label" for="totalQuestionsPerCandidate">
+        <div *ngIf="editBlock.blockType === 'PASSAGES'" class="col-6 mb-2">
+          <label class="form-label" for="totalQuestionsInPassage">
             Total Question(s) in Passage
             <span class="text-danger">*</span>
           </label>
-          <div class="col-xl-3 col-md-2 col-sm-3">
-            <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
-              [(ngModel)]="editBlock.totalQuestionsInPassage" (keydown)="onKeyDown($event)" disabled />
-          </div>
+          <input type="number" min="0" placeholder="60" class="form-control" name="totalQuestionsInPassage"
+            [(ngModel)]="editBlock.totalQuestionsInPassage" (keydown)="onKeyDown($event)" disabled />
         </div>
       </div>
 
@@ -1518,8 +1607,26 @@
 
       <div class="my-3">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="shuffleItems" [(ngModel)]="editBlock.shuffleItems">
-          <label class="form-check-label">Shuffle items?</label>
+          <input class="form-check-input" type="checkbox" id="edit_shuffle_items" name="shuffleItems" [(ngModel)]="editBlock.shuffleItems">
+          <label class="form-check-label" for="edit_shuffle_items">Shuffle items?</label>
+        </div>
+      </div>
+
+      <div class="row mb-3" *ngIf="selectedSection?.sectionType === 'THEORY'">
+        <div [ngClass]="editBlock.attemptRule === 'ATTEMPT_ANY' ? 'col-6' : 'col-12'">
+          <label class="form-label" for="attemptRule">Block Attempts <span class="text-danger">*</span></label>
+          <select name="attemptRule" class="form-select" [(ngModel)]="editBlock.attemptRule">
+            <option [ngValue]="null" selected> -- Select Block Attempts --</option>
+            <option value="ATTEMPT_ALL">ATTEMPT ALL</option>
+            <option value="ATTEMPT_ANY">ATTEMPT ANY</option>
+          </select>
+          <small *ngIf="editBlock.attemptRule === 'ATTEMPT_ALL' || !editBlock.attemptRule" class="text-muted">Candidates must attempt all the questions in this block.</small>
+          <small *ngIf="editBlock.attemptRule === 'ATTEMPT_ANY'" class="text-muted">Candidates must attempt the specified number of questions in this block.</small>
+        </div>
+
+        <div class="col-6" *ngIf="editBlock.attemptRule === 'ATTEMPT_ANY'">
+          <label class="form-label" for="itemsToAttempt">Number of questions to attempt <span class="text-danger">*</span></label>
+          <input type="number" min="1" class="form-control" name="itemsToAttempt" [(ngModel)]="editBlock.itemsToAttempt">
         </div>
       </div>
 
@@ -1530,7 +1637,7 @@
       <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" (click)="modal.close('Close click')">
         <i class="ri-close-line me-2 align-middle"></i>Close
       </button>
-      <button type="button" (click)="updateBlock(editBlockForm)" class="btn btn-primary">
+      <button type="button" [disabled]="!editBlock.selectionType || !editBlock.blockType || (selectedSection?.sectionType === 'THEORY' && !editBlock.attemptRule) || (editBlock.attemptRule === 'ATTEMPT_ANY' && (!editBlock.itemsToAttempt || editBlock.itemsToAttempt >= editBlock.totalQuestions))" (click)="updateBlock(editBlockForm)" class="btn btn-primary">
         <i class="ri-save-line me-2 align-middle"></i>Save
       </button>
     </div>
@@ -2210,7 +2317,7 @@
   <div class="modal-body px-5">
     <div>
       <label for="template_name">Select Template</label>
-      <ng-select [items]="assessment_templates.content" name="template_name" bindLabel="name" bindValue="id"
+      <ng-select [items]="assessment_templates?.content ?? []" name="template_name" bindLabel="name" bindValue="id"
         [(ngModel)]="templateImport.templateId"></ng-select>
     </div>
   </div>

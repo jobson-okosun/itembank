@@ -1485,6 +1485,9 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
           if (options[j].selected) {
             item.scoringOption.answers.push(optionLabel);
+            options[j].setAttribute('selected', 'selected');
+          } else {
+            options[j].removeAttribute('selected');
           }
         }
 
@@ -1506,7 +1509,9 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // Store the original select elements state
     this.content = collection;
 
+    // Update the editor's raw HTML back to our ngModel so that selected options survive editor recreation
     let content = tinymce.activeEditor.getContent();
+    this.defaultItemProperties.stimulus = content;
     let openingTagIndex = content.indexOf('<select');
 
     while (openingTagIndex != -1) {

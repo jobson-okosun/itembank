@@ -646,7 +646,7 @@ export class LabelImageDropdownComponent
         this.image.width = img.width;
         this.image.height = img.height;
         this.image.url = dataURL;
-        this.defaultItemProperties.images.push(this.image);
+        this.defaultItemProperties.images = [this.image];
         this.createOption();
 
         this.modalService.dismissAll();
@@ -716,17 +716,16 @@ export class LabelImageDropdownComponent
 
     this.dropdownLabels.forEach((label, index) => {
       const responsePosition = { x: label.x, y: label.y, direction: label.direction || 'RIGHT' };
-      const correctAnswerIndex =
-        label.correctAnswerIndex !== null &&
-          label.correctAnswerIndex !== undefined
-          ? label.correctAnswerIndex.toString()
+      const correctAnswerValue =
+        label.correctAnswerIndex !== null && label.correctAnswerIndex !== undefined && label.options[label.correctAnswerIndex]
+          ? label.options[label.correctAnswerIndex].toString()
           : '';
 
       item.possibleResponses[index] = { responses: label.options };
       item.responsePositions.push(responsePosition);
 
-      if (correctAnswerIndex) {
-        item.scoringOption.answers[index] = correctAnswerIndex;
+      if (correctAnswerValue) {
+        item.scoringOption.answers[index] = correctAnswerValue;
       }
     });
 
@@ -734,6 +733,8 @@ export class LabelImageDropdownComponent
     // console.log(item);
     return item;
   }
+
+  // each cloze should send the value in the answers and not index
 
   closePreview(event: any) {
     this.preview = false;

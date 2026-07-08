@@ -33,6 +33,21 @@ import katex from 'katex';
 
 declare var tinymce: any;
 
+export interface SubQuestionChildUI {
+  id: string;
+  content: string;
+  score: number;
+  backgroundType: string;
+}
+
+export interface SubQuestionUI {
+  id: string;
+  content: string;
+  children: SubQuestionChildUI[];
+  score: number;
+  backgroundType: string;
+}
+
 @Component({
   selector: 'app-drawing-and-writing',
   templateUrl: './drawing-and-writing.component.html',
@@ -95,6 +110,92 @@ export class DrawingAndWritingComponent implements OnInit {
 
   splitMode: string = 'SPLIT'
   layoutModes: DRAWING_AND_WRITING_SPLIT_MODE[] 
+
+  subQuestions: SubQuestionUI[] = [];
+
+  generateUUID(): string {
+      if ((crypto as any)?.randomUUID) {
+          return (crypto as any).randomUUID();
+      }
+
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+      const hex = [...bytes].map(b => b.toString(16).padStart(2, '0'));
+
+      return [
+          hex.slice(0, 4).join(''),
+          hex.slice(4, 6).join(''),
+          hex.slice(6, 8).join(''),
+          hex.slice(8, 10).join(''),
+          hex.slice(10, 16).join('')
+      ].join('-');
+  }
+
+  getRomanNumeral(num: number): string {
+    const roman = [
+      { key: 'm', value: 1000 }, { key: 'cm', value: 900 }, { key: 'd', value: 500 }, { key: 'cd', value: 400 },
+      { key: 'c', value: 100 }, { key: 'xc', value: 90 }, { key: 'l', value: 50 }, { key: 'xl', value: 40 },
+      { key: 'x', value: 10 }, { key: 'ix', value: 9 }, { key: 'v', value: 5 }, { key: 'iv', value: 4 },
+      { key: 'i', value: 1 }
+    ];
+    let str = '';
+    for (let i = 0; i < roman.length; i++) {
+      let q = Math.floor(num / roman[i].value);
+      num -= q * roman[i].value;
+      str += roman[i].key.repeat(q);
+    }
+    return str;
+  }
+
+  addSubQuestion() {
+    this.subQuestions.push({
+      id: this.generateUUID(),
+      content: '',
+      children: [],
+      score: 0,
+      backgroundType: Background.None
+    });
+    this.notifier.notify('success', 'Sub question added successfully');
+  }
+
+  deleteSubQuestion(index: number) {
+    this.subQuestions.splice(index, 1);
+    this.notifier.notify('success', 'Sub question removed successfully');
+  }
+
+  addChildQuestion(question: SubQuestionUI) {
+    const newChildId = this.generateUUID();
+    question.children.push({
+      id: newChildId,
+      content: '',
+      score: 0,
+      backgroundType: Background.None
+    });
+    this.notifier.notify('success', 'Child question added successfully');
+
+    setTimeout(() => {
+      const el = document.getElementById('child-' + newChildId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }, 100);
+  }
+
+  deleteChildQuestion(question: SubQuestionUI, childIndex: number) {
+    question.children.splice(childIndex, 1);
+    this.notifier.notify('success', 'Child question removed successfully');
+  }
+
+  getSubQuestionTotalScore(q: SubQuestionUI): number {
+    if (!q.children || q.children.length === 0) {
+      return q.score || 0;
+    }
+    return q.children.reduce((total, child) => total + (child.score || 0), 0);
+  }
 
   constructor(
     private itemService: ItemHttpService,
@@ -194,6 +295,21 @@ export class DrawingAndWritingComponent implements OnInit {
       this.background = this.editData.backgroundType;
       this.splitMode = this.editData?.splitType 
       // (document.querySelector('[name="background"]') as HTMLInputElement)!.value = this.editData.backgroundType
+
+      if (this.editData.subQuestions && this.editData.subQuestions.length > 0) {
+        this.subQuestions = this.editData.subQuestions.map((sq: any) => ({
+          id: sq.id,
+          content: sq.stimulus,
+          score: sq.score,
+          backgroundType: sq.backgroundType || Background.None,
+          children: sq.children ? sq.children.map((child: any) => ({
+            id: child.id,
+            content: child.stimulus,
+            score: child.score,
+            backgroundType: child.backgroundType || Background.None
+          })) : []
+        }));
+      }
 
       this.defaultItemProperties = { ...this.defaultItemProperties, ...this.editData}
       // console.log({ ...this.updatedDefaultItemsProperties })
@@ -356,6 +472,7 @@ export class DrawingAndWritingComponent implements OnInit {
     let item: DrawAndWritingModel = new DrawAndWritingModel();
     item.stimulus = this.defaultItemProperties.stimulus;
     item.scoringOption = this.defaultItemProperties.scoringOption;
+    // item.shuffleOptions = this.defaultItemProperties.shuffleOptions;
     item.reference = this.defaultItemProperties.reference;
     // item.allowCopy = this.defaultItemProperties.allowCopy;
     // item.allowCut = this.defaultItemProperties.allowCut;
@@ -365,7 +482,7 @@ export class DrawingAndWritingComponent implements OnInit {
     item.topicId = this.itemUtil.currentItemTrail.topicId;
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId
       ? this.itemUtil.currentItemTrail.subtopicId
-      : '';
+      : null;
     // item.maxWords = this.defaultItemProperties.maxWords;
     item.itemTagsDTOS = this.tags.map((tag) => {
       return { tagId: tag.tagId };
@@ -384,7 +501,19 @@ export class DrawingAndWritingComponent implements OnInit {
     // return confirm(this.background) ? true : false
     item.backgroundType = this.background
     item.splitType = this.splitMode
-    // console.log({ item })
+    item.subQuestions = this.subQuestions.map(sq => ({
+      id: sq.id,
+      stimulus: sq.content,
+      score: (sq.children && sq.children.length > 0) ? sq.children.reduce((total, child) => total + (child.score || 0), 0) : (sq.score || 0),
+      backgroundType: sq.backgroundType,
+      children: sq.children ? sq.children.map(child => ({
+        id: child.id,
+        stimulus: child.content,
+        score: child.score,
+        backgroundType: child.backgroundType
+      })) : []
+    }));
+
     return item;
   }
 

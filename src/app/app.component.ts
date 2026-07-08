@@ -3,6 +3,8 @@ import { MathfieldElement } from 'mathlive';
 import { AssessmentsService } from './pages/assessment/service/assessments.service';
 import { ItemUtilitiesService } from './pages/items/item-utilities.service';
 import { ItemHttpService } from './pages/items/item-http.service';
+
+MathfieldElement.soundsDirectory = null;
 export const mfe = new MathfieldElement();
 
 @Component({

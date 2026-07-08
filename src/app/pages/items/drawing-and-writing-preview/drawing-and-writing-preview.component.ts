@@ -43,6 +43,22 @@ export class DrawingAndWritingPreviewComponent
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
+  getRomanNumeral(num: number): string {
+    const roman = [
+      { key: 'm', value: 1000 }, { key: 'cm', value: 900 }, { key: 'd', value: 500 }, { key: 'cd', value: 400 },
+      { key: 'c', value: 100 }, { key: 'xc', value: 90 }, { key: 'l', value: 50 }, { key: 'xl', value: 40 },
+      { key: 'x', value: 10 }, { key: 'ix', value: 9 }, { key: 'v', value: 5 }, { key: 'iv', value: 4 },
+      { key: 'i', value: 1 }
+    ];
+    let str = '';
+    for (let i = 0; i < roman.length; i++) {
+      let q = Math.floor(num / roman[i].value);
+      num -= q * roman[i].value;
+      str += roman[i].key.repeat(q);
+    }
+    return str;
+  }
+
   private recycleService: RecycleService;
   currentUser: Account;
   assessmentActive: boolean = false;

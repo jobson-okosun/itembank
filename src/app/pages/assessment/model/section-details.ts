@@ -13,7 +13,10 @@ export class BlockDetails {
   selectionType: string;
   totalFound?: number;
   totalQuestionsInPassage: number;
-  shuffleItems: boolean = true
+  shuffleItems: boolean = true;
+  attemptRule: string | null;
+  itemsToAttempt: number = 1;
+  instruction: string = '';
 }
 
 export class SectionDetails {
@@ -21,6 +24,7 @@ export class SectionDetails {
   subjectName: string;
   sectionId: string;
   subjectId: string;
+  sectionType?: string;
   blockCount: number;
   blockDetailsDTOS: BlockDetails[] = [];
   totalQuestions: number;

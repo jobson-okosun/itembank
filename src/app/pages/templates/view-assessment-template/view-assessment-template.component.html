@@ -39,10 +39,13 @@
       <ng-template pTemplate="header">
         <tr>
           <th pSortableColumn="code">
-            Display Name <p-sortIcon field="code"></p-sortIcon>
+            Section Name <p-sortIcon field="code"></p-sortIcon>
+          </th>
+          <th>
+            Section Type
           </th>
           <th pSortableColumn="name">
-            Section <p-sortIcon field="name"></p-sortIcon>
+            Display Name <p-sortIcon field="name"></p-sortIcon>
           </th>
           <th pSortableColumn="category">
             Question Groups
@@ -55,8 +58,9 @@
       </ng-template>
       <ng-template pTemplate="body" let-rowIndex="rowIndex" let-section>
         <tr>
-          <td>{{ section.sectionName | uppercase }}</td>
           <td>{{ section.subjectName | uppercase }}</td>
+          <td>{{ section.sectionType }}</td>
+          <td>{{ section.sectionName | uppercase }}</td>
           <td>
             <ng-container *ngIf="section.blockDetailsDTOS.length > 0">
               <div
@@ -107,6 +111,20 @@
                             >
                               NO OF PASSAGES:
                               {{ block.totalQuestions }}
+                            </span>
+                            <span
+                              *ngIf="block.attemptRule"
+                              class="badge badge-soft-dark"
+                            >
+                              BLOCK TYPE: {{ block.attemptRule }}
+                            </span>
+                            <span
+                              *ngIf="block.attemptRule"
+                              class="badge badge-soft-dark"
+                            >
+                              ATTEMPTS:
+                              <ng-container *ngIf="block.attemptRule === 'ATTEMPT_ANY'">ANY {{ block.itemsToAttempt }}</ng-container>
+                              <ng-container *ngIf="block.attemptRule === 'ATTEMPT_ALL'">ALL - {{ block.itemsToAttempt }}</ng-container>
                             </span>
                           </div>
                         </div>

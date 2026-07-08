@@ -23,5 +23,7 @@ export class DrawAndWritingModel {
   // maxWords: number;
   moderation_status: string = null;
   backgroundType: string;
-  splitType: string
+  splitType: string;
+  subQuestions: any[] = [];
+  
 }

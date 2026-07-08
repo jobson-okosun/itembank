@@ -9,5 +9,8 @@ export class NewSectionBlock {
   selectionType: string;
   index: number;
   numberOfItemsInPassage: number;
-  shuffleItems: boolean = true
+  shuffleItems: boolean = true;
+  attemptRule: string | null = null;
+  itemsToAttempt: number = 0;
+  instruction: string = '';
 }
