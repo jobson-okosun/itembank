@@ -820,7 +820,7 @@ export class SubjectComponent implements OnInit, OnChanges {
           (value) => {
             this.subject = value;
             this.subjectId = this.itemService.subjectId;
-            // console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
+            console.log('SUBJECT TOPICS TREE ADMIN: ', this.subject);
             // console.log(value);
 
             if (!this.subject.topics[0]) {
@@ -832,6 +832,7 @@ export class SubjectComponent implements OnInit, OnChanges {
             }
 
             const savedTrail = this.itemUtil.getSavedItemTrail();
+            console.log('SAVED TRAIL: ', savedTrail);
             let selectedTopic = this.subject.topics[0];
             if (savedTrail && savedTrail.topicId) {
               const matchedTopic = this.subject.topics.find(

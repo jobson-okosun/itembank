@@ -80,7 +80,7 @@
         </div>
 
         <!-- OTP screen (hidden by default based on *ngIf="false") -->
-        <div class="mt-2" *ngIf="http.provideOtpToProceed">
+        <form class="mt-2" *ngIf="http.provideOtpToProceed" (ngSubmit)="submitOtpForm()">
           
           <div class="d-flex flex-column gap-2 mb-4 justify-content-between">
             <!-- <div class="d-flex flex-column gap-2 justify-content-between align-items-center"> -->
@@ -118,7 +118,7 @@
             </div>
 
             <div class="mt-2">
-            <button class="btn w-100 btn-lg shadow-sm text-white" style="background-color: #1f6673; border-color: #1f6673;" type="button" [disabled]="isSubmittingOtp" (click)="submitOtpForm()">
+            <button class="btn w-100 btn-lg shadow-sm text-white" style="background-color: #1f6673; border-color: #1f6673;" type="submit" [disabled]="isSubmittingOtp">
               {{ isSubmittingOtp === false ? "Submit" : "Submitting..." }}
             </button>
             </div>
@@ -138,7 +138,7 @@
                 Sign up</a>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </div>
 

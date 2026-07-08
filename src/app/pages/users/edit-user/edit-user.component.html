@@ -102,11 +102,9 @@
                         <label for="email" class="form-label">Username <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" name="username" id="username"
                           placeholder="Enter username" value="{{ userDetail?.username }}"
-                          [(ngModel)]="userDetail.username" [disabled]="!currentUser?.authorities?.includes('ADMIN') && !currentUser?.authorities?.includes('GROUP_ADMIN')" />
-                        <span
-                          *ngIf="!userDetail.username.trim() && (currentUser?.authorities?.includes('ADMIN') || currentUser?.authorities?.includes('GROUP_ADMIN')) && allEditInputFieldIsRequired"
-                          class="text-danger">Username is
-                          required</span>
+                          [(ngModel)]="userDetail.username" [disabled]="!isUsernameEdittable" />
+                          <span *ngIf="!userDetail.username.trim() && allEditInputFieldIsRequired && isUsernameEdittable"
+                          class="text-danger">Username is required</span>
                       </div>
                     </div>
                     <div class="col-lg-6">
@@ -196,7 +194,7 @@
                       <div class="hstack gap-2 justify-content-end">
                         <!-- <button *ngIf="!updating" type="button" (click)="updateUserDetails()" class="btn btn-primary"> -->
                         <button *ngIf="!updating" type="submit" class="btn btn-primary"
-                          [disabled]="emailCtrl.errors?.['invalidEmailFormat'] || !userDetail.phone.trim() || !userDetail.lastName.trim() || !userDetail.firstName.trim() || (!userDetail.username.trim() && currentUser?.authorities?.includes('ADMIN')) || (!userDetail.username.trim() && currentUser?.authorities?.includes('GROUP_ADMIN'))">
+                          [disabled]="emailCtrl.errors?.['invalidEmailFormat'] || !userDetail.phone.trim() || !userDetail.lastName.trim() || !userDetail.firstName.trim() || (!userDetail.username.trim() && isUsernameEdittable)">
                           Update
                         </button>
                         <button *ngIf="updating" class="btn btn-outline-primary btn-load" [disabled]="updating">
@@ -295,7 +293,7 @@
                 </form>
               </ng-template>
             </li> -->
-            <li *ngIf="['ADMIN', 'GROUP_ADMIN'].includes(currentUser.authority) && !['ADMIN', 'GROUP_ADMIN'].includes(userDetail.role)" [ngbNavItem]="2" class="nav-item">
+            <li *ngIf="['ADMIN', 'GROUP_ADMIN'].includes(currentUser.authority) && !['ADMIN'].includes(userDetail.role)" [ngbNavItem]="2" class="nav-item">
               <a ngbNavLink class="nav-link" data-bs-toggle="tab" role="tab">
                 <i class="far fa-envelope"></i>
                 Subjects
