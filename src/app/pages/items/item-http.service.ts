@@ -2,7 +2,7 @@ import { ListPassageTopics } from './../passages/model/list-passage-topics.model
 import { NotifierService } from 'angular-notifier';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { SingleChoiceModel } from './single-response/model/single-response-model.model';
 import { environment } from '../../../environments/environment';
 import { ResourceCreated } from '../../shared/model/resource-created';
@@ -44,7 +44,7 @@ import { RejectItemRequest } from '../assessment/model/reject-item';
 import { DrawAndWritingModel } from './drawing-and-writing/model/drawing-and-writing..model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ItemHttpService {
   assessmentActive: boolean = false;
@@ -57,43 +57,46 @@ export class ItemHttpService {
   subtopicName: string;
   currentSubjectModerationEnabled: boolean = false;
   totalItemsInCurrentSubject: number;
-  duplicateItem: any = new BehaviorSubject('');
+  duplicateItem: any = new BehaviorSubject("");
   itemTrail: ItemDetails;
 
   public duplicateFound$ = this.duplicateItem.asObservable();
 
-  constructor(private http: HttpClient, private notifier: NotifierService) {
+  constructor(
+    private http: HttpClient,
+    private notifier: NotifierService,
+  ) {
     DOMPurify.setConfig({
       ALLOWED_TAGS: [
-        'b',
-        'i',
-        'em',
-        'strong',
-        'p',
-        'div',
-        'span',
-        'ul',
-        'ol',
-        'li',
-        'a',
-        'br',
-        'img',
-        'table',
-        'tbody',
-        'thead',
-        'tr',
-        'th',
-        'td',
-        'h1',
-        'h2',
-        'h3',
-        'h4',
-        'h5',
-        'h6',
+        "b",
+        "i",
+        "em",
+        "strong",
+        "p",
+        "div",
+        "span",
+        "ul",
+        "ol",
+        "li",
+        "a",
+        "br",
+        "img",
+        "table",
+        "tbody",
+        "thead",
+        "tr",
+        "th",
+        "td",
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
       ],
-      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'style'], // Allow only safe attributes
-      FORBID_ATTR: ['onclick', 'onerror', 'onload'], // Block any inline JS
-      FORBID_TAGS: ['script', 'iframe'], // Block any script or iframe tags
+      ALLOWED_ATTR: ["href", "src", "alt", "title", "style"], // Allow only safe attributes
+      FORBID_ATTR: ["onclick", "onerror", "onload"], // Block any inline JS
+      FORBID_TAGS: ["script", "iframe"], // Block any script or iframe tags
     });
   }
 
@@ -103,19 +106,19 @@ export class ItemHttpService {
 
   validateItem(item: any): boolean {
     // console.log('=>', {item});
-    if (item.stimulus == '') {
-      this.notifier.notify('error', `Please compose a question!`);
+    if (item.stimulus == "") {
+      this.notifier.notify("error", `Please compose a question!`);
       return false;
     }
 
     if (
-      item.stimulus.trim() === '' ||
-      item.stimulus.trim() === '<p></p>' ||
-      item.stimulus.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === ''
+      item.stimulus.trim() === "" ||
+      item.stimulus.trim() === "<p></p>" ||
+      item.stimulus.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === ""
     ) {
       this.notifier.notify(
-        'error',
-        'You can not create a question with only empty space(s)'
+        "error",
+        "You can not create a question with only empty space(s)",
       );
       return false;
     }
@@ -124,12 +127,12 @@ export class ItemHttpService {
       if (
         item.scoringOption.answers.some(
           (answer) =>
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '' ||
-            answer.trim() === '' ||
-            answer.trim() === '<p></p>'
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "" ||
+            answer.trim() === "" ||
+            answer.trim() === "<p></p>",
         )
       ) {
-        this.notifier.notify('error', 'Label found without a selected answer');
+        this.notifier.notify("error", "Label found without a selected answer");
         return false;
       }
     }
@@ -138,13 +141,13 @@ export class ItemHttpService {
       item.options &&
       item.options.some(
         (option) =>
-          option.label.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() ===
-            '' ||
-          item.stimulus.trim() === '' ||
-          item.stimulus.trim() === '<p></p>'
+          option.label.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() ===
+            "" ||
+          item.stimulus.trim() === "" ||
+          item.stimulus.trim() === "<p></p>",
       )
     ) {
-      this.notifier.notify('error', 'Found Option with empty space(s)');
+      this.notifier.notify("error", "Found Option with empty space(s)");
       return false;
     }
 
@@ -162,8 +165,8 @@ export class ItemHttpService {
       item.scoringOption.answers.length !== item.stems.length
     ) {
       this.notifier.notify(
-        'error',
-        'Please ensure you have provided answers to all questions!'
+        "error",
+        "Please ensure you have provided answers to all questions!",
       );
       return false;
     }
@@ -179,10 +182,10 @@ export class ItemHttpService {
     ) {
       // console.log(item.itemType);
       for (let i = 0; i < item.options.length; i++) {
-        if (item.options[i].label == '') {
+        if (item.options[i].label == "") {
           this.notifier.notify(
-            'error',
-            `Please provide a valid response for option ${i + 1}`
+            "error",
+            `Please provide a valid response for option ${i + 1}`,
           );
           return false;
         }
@@ -199,38 +202,38 @@ export class ItemHttpService {
     if (item.itemType === ItemTypes.ORDER_LIST) {
       if (item.options.length < 2) {
         this.notifier.notify(
-          'error',
-          `Order list cannot have less than 2 options!`
+          "error",
+          `Order list cannot have less than 2 options!`,
         );
         return false;
       }
     }
-    console.log(item + 'negative score');
+    console.log(item + "negative score");
 
     if (item.itemType === ItemTypes.CLOZE_TEXT) {
-      if (item.options.some((option) => option.label.trim() === '')) {
-        this.notifier.notify('error', `Please provide answer in input box!`);
+      if (item.options.some((option) => option.label.trim() === "")) {
+        this.notifier.notify("error", `Please provide answer in input box!`);
         return false;
       }
 
-      if (item.scoringOption.answers.some((answer) => answer.trim() === '')) {
-        this.notifier.notify('error', `Please provide answer in input box!`);
+      if (item.scoringOption.answers.some((answer) => answer.trim() === "")) {
+        this.notifier.notify("error", `Please provide answer in input box!`);
         return false;
       }
     }
 
     if (item.scoringOption.score < 0) {
       this.notifier.notify(
-        'error',
-        `Please ensure the score is not a negative value!`
+        "error",
+        `Please ensure the score is not a negative value!`,
       );
       return false;
     }
 
     if (!Number.isInteger(item.scoringOption.score)) {
       this.notifier.notify(
-        'error',
-        `Please ensure the score is an integer value!`
+        "error",
+        `Please ensure the score is an integer value!`,
       );
       return false;
     }
@@ -240,51 +243,51 @@ export class ItemHttpService {
       item.scoringOption.answers.length < 2
     ) {
       this.notifier.notify(
-        'error',
-        'kindly, provide at least two correct responses to the question!'
+        "error",
+        "kindly, provide at least two correct responses to the question!",
       );
       return false;
     }
 
     if (
-      item.scoringOption.score === '' ||
+      item.scoringOption.score === "" ||
       item.scoringOption.score === undefined
     ) {
-      this.notifier.notify('error', `Please ensure the score is not empty!`);
+      this.notifier.notify("error", `Please ensure the score is not empty!`);
       return false;
     }
 
     if (item.itemType === ItemTypes.MCQ) {
       if (item.options.length < 2) {
         this.notifier.notify(
-          'error',
-          `Please ensure the options is two or more!`
+          "error",
+          `Please ensure the options is two or more!`,
         );
         return false;
       }
     }
     console.log(item.scoringOption.penalty);
-    console.log(item, 'here');
+    console.log(item, "here");
     if (item.scoringOption.penalty < 0) {
       this.notifier.notify(
-        'error',
-        `Please ensure the penalty is not a negative value!`
+        "error",
+        `Please ensure the penalty is not a negative value!`,
       );
       return false;
     }
 
     if (item.scoringOption.minimumScoreIfAttempted < 0) {
       this.notifier.notify(
-        'error',
-        `Please ensure the minimum Score on attempt is not a negative value!`
+        "error",
+        `Please ensure the minimum Score on attempt is not a negative value!`,
       );
       return false;
     }
 
     if (item.itemType === ItemTypes.SHORT_TEXT && item.maxLength < 0) {
       this.notifier.notify(
-        'error',
-        `Please ensure the max length  is not a negative value!`
+        "error",
+        `Please ensure the max length  is not a negative value!`,
       );
       return false;
     }
@@ -292,14 +295,14 @@ export class ItemHttpService {
     if (item.ItemType === ItemTypes.SHORT_TEXT) {
       if (
         item.scoringOption.answers[0]
-          .replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '')
-          .trim() == '' ||
-        item.scoringOption.answers[0].trim() === '' ||
-        item.scoringOption.answers[0].trim() === '<p></p>'
+          .replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "")
+          .trim() == "" ||
+        item.scoringOption.answers[0].trim() === "" ||
+        item.scoringOption.answers[0].trim() === "<p></p>"
       ) {
         this.notifier.notify(
-          'error',
-          `Please ensure you provide an answer to question!`
+          "error",
+          `Please ensure you provide an answer to question!`,
         );
         return false;
       }
@@ -317,20 +320,20 @@ export class ItemHttpService {
         item.scoringOption.answers &&
         item.scoringOption.answers.some(
           (answer) =>
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '' ||
-            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, '').trim() === '--'
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "" ||
+            answer.replace(/(&nbsp;|\s|\n|\r|<[^>]+>)/g, "").trim() === "--",
         )
       ) {
         this.notifier.notify(
-          'error',
-          `Please ensure you provide an answer to question!`
+          "error",
+          `Please ensure you provide an answer to question!`,
         );
         return false;
       }
     }
 
     if (!Number.isInteger(item.scoringOption.penalty)) {
-      this.notifier.notify('error', `Please ensure the penalty is an integer!`);
+      this.notifier.notify("error", `Please ensure the penalty is an integer!`);
       return false;
     }
 
@@ -346,11 +349,11 @@ export class ItemHttpService {
   }
 
   fetchAuthorModerationNotifications(
-    userId: string
+    userId: string,
   ): Observable<AuthorModerationNotification> {
     return this.http.get<AuthorModerationNotification>(
       `${environment.developmentIP}/itembank/notifications/moderation/${userId}/author_moderator`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -371,7 +374,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/subjects`,
       subject,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -379,7 +382,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/subjectsss`,
       payload,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -387,18 +390,18 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/choice-matrix`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editChoiceMatrixItem(
     itemId: string,
-    item: ChoiceMatrix
+    item: ChoiceMatrix,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/choice-matrix`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -406,7 +409,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/association`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -414,7 +417,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-text`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -422,7 +425,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-dropdown`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -430,7 +433,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-radio`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -438,7 +441,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/order_list`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -446,7 +449,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-text-image`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -454,47 +457,47 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${item.itemId}/item/IMAGE_CLOZE_TEXT`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createClozeDropdownImageItem(
-    item: LabelImageDropdown
+    item: LabelImageDropdown,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/cloze-dropdown-image`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editClozeDropdownImageItem(
-    item: LabelImageDropdown
+    item: LabelImageDropdown,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${item.itemId}/item/CLOZE_DROPDOWN_IMAGE`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createClozeDragDropImageItem(
-    item: LabelImageDragDrop
+    item: LabelImageDragDrop,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/drag-and-drop-image`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editClozeDragDropImageItem(
-    item: LabelImageDragDrop
+    item: LabelImageDragDrop,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${item.itemId}/item/IMAGE_DRAG_DROP`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -502,7 +505,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/subjects/topic`,
       topic,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -510,55 +513,55 @@ export class ItemHttpService {
     return this.http.post(
       `${environment.developmentIP}/itembank/admin/subjects/subtopic`,
       subtopic,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteSubTopic(
     subjectId: string,
     topicId: string,
-    subtopicId: string
+    subtopicId: string,
   ): Observable<ResourceCreated> {
     return this.http.delete<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/${topicId}/${subtopicId}/delete_subtopic`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteTopic(subjectId: string, topicId: string): Observable<ResourceCreated> {
     return this.http.delete<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/${topicId}/delete_subtopic`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createMultipleChoiceItem(
-    newMultipleChoiceItem: SingleChoiceModel
+    newMultipleChoiceItem: SingleChoiceModel,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/mcq`,
       newMultipleChoiceItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createMultipleResponseItem(
-    newMultipleResponseItem: MultipleResponseModel
+    newMultipleResponseItem: MultipleResponseModel,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/mrq`,
       newMultipleResponseItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createTrueOrFalseItem(
-    newTrueOrFalseItem: TrueOrFalseModel
+    newTrueOrFalseItem: TrueOrFalseModel,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/trueorfalse`,
       newTrueOrFalseItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -566,7 +569,7 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/yesorno`,
       newYesOrNoItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -574,37 +577,37 @@ export class ItemHttpService {
     return this.http.post(
       `${environment.developmentIP}/itembank/items/essay`,
       newEssayItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createDrawWritingItem(
-    newDrawWritingItem: DrawAndWritingModel
+    newDrawWritingItem: DrawAndWritingModel,
   ): Observable<ResourceCreated> {
     return this.http.post(
       `${environment.developmentIP}/itembank/items/draw_write`,
       newDrawWritingItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   editDrawWritingItem(
-    newDrawWritingItem: DrawAndWritingModel
+    newDrawWritingItem: DrawAndWritingModel,
   ): Observable<ResourceCreated> {
     return this.http.put(
       `${environment.developmentIP}/itembank/items/${newDrawWritingItem.itemId}/item/draw-write`,
       newDrawWritingItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   createShortTextItem(
-    newShortTextItem: ShortText
+    newShortTextItem: ShortText,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/short-text`,
       newShortTextItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -612,16 +615,16 @@ export class ItemHttpService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/passage`,
       newPassage,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSubjectPassages(
-    subjectId: string
+    subjectId: string,
   ): Observable<AllPassagesResponseModel> {
     return this.http.get<AllPassagesResponseModel>(
       `${environment.developmentIP}/itembank/items/passage/${subjectId}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -629,18 +632,18 @@ export class ItemHttpService {
     subjectId: string,
     topicId: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<AllPassagesResponseModel> {
     return this.http.get<AllPassagesResponseModel>(
       `${environment.developmentIP}/itembank/items/passage/${subjectId}/${topicId}?page=${page}&size=${size}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSinglePassage(passageId: string): Observable<SinglePassageModel> {
     return this.http.get<SinglePassageModel>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -653,62 +656,62 @@ export class ItemHttpService {
 
   fetchAssessmentPassageTopicsTree(
     subjectId: string,
-    itemsCount?: number
+    itemsCount?: number,
   ): Observable<ListPassageTopics[]> {
     return this.http.get<ListPassageTopics[]>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/passage_topics_tree/assessment/items/${itemsCount}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessmentPassageTopicsTreeWithPassageCount(
-    itemsInPassage: number
+    itemsInPassage: number,
   ): Observable<any> {
     return this.http.post<any>(
       ///items/assessment/passage-filter/items_in_passage/{itemsInPassage}
       `${environment.developmentIP}/itembank/items/assessment/passage-filter/assessment/items_in_passage/${itemsInPassage}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchPassageItem(passageId: string): Observable<SinglePassageItems> {
     return this.http.get<SinglePassageItems>(
       `${environment.developmentIP}/itembank/items/${passageId}/passage-items`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchPassageTopicTreeAdmin(
-    subjectId: string
+    subjectId: string,
   ): Observable<ListPassageTopics[]> {
     return this.http.get<ListPassageTopics[]>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/passage_topics_tree`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchPassageTopicTreeModerator(
-    subjectId: string
+    subjectId: string,
   ): Observable<ListPassageTopics[]> {
     return this.http.get<ListPassageTopics[]>(
       `${environment.developmentIP}/itembank/user/subjects/${subjectId}/passage_topics_tree`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchPassageTopicTreeAuthor(
-    subjectId: string
+    subjectId: string,
   ): Observable<ListPassageTopics[]> {
     return this.http.get<ListPassageTopics[]>(
       `${environment.developmentIP}/itembank/user/subjects/${subjectId}/passage_topics_tree`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchIndividualItem(itemId: string): Observable<IndividualItem> {
     return this.http.get<IndividualItem>(
       `${environment.developmentIP}/itembank/items/${itemId}/item`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -717,17 +720,17 @@ export class ItemHttpService {
     topicId?: string,
     subtopicId?: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ListAllItemsPage> {
     if (subtopicId) {
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/items/?subjectId=${subjectId}&topicId=${topicId}&subtopicId=${subtopicId}&page=${page}&size=${size}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
     } else {
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/items/?subjectId=${subjectId}&topicId=${topicId}&page=${page}&size=${size}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
     }
   }
@@ -737,7 +740,7 @@ export class ItemHttpService {
       `${environment.developmentIP}/itembank/items/${itemId}/usages`,
       {
         withCredentials: true,
-      }
+      },
     );
   }
 
@@ -748,36 +751,50 @@ export class ItemHttpService {
     topicId?: string,
     subtopicId?: string,
     page?: number,
-    size?: number
+    size?: number,
   ): Observable<ListAllItemsPage> {
     if (subtopicId) {
+      if (
+        !assessmentId ||
+        !sectionId ||
+        !subjectId ||
+        !topicId ||
+        !subtopicId
+      ) {
+        return of(null);
+      }
+
       return this.http.get<ListAllItemsPage>(
         /** former endpoint ==> /items/assessment/ */
         `${environment.developmentIP}/itembank/items/assessment/${assessmentId}/section/${sectionId}?subjectId=${subjectId}&topicId=${topicId}&subtopicId=${subtopicId}&page=${page}&size=${size}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
     } else {
+      if (!assessmentId || !sectionId) {
+        return of(null);
+      }
+
       let queryParams = new HttpParams();
       queryParams = queryParams
-        .append('subjectId', subjectId)
-        .append('topicId', topicId)
-        .append('page', page)
-        .append('size', size);
+        .append("subjectId", subjectId)
+        .append("topicId", topicId)
+        .append("page", page)
+        .append("size", size);
 
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/items/assessment/${assessmentId}/section/${sectionId}`, //?subjectId=${subjectId}&topicId=${topicId}`,
-        { params: queryParams, withCredentials: true }
+        { params: queryParams, withCredentials: true },
       );
     }
   }
 
   fetchManualSelectedItemsInAssessment(
     assessmentId: string,
-    sectionId: string
+    sectionId: string,
   ): Observable<ExistingItemsAndPasaagesInExamBlock> {
     return this.http.get<ExistingItemsAndPasaagesInExamBlock>(
       `${environment.developmentIP}/itembank/assessments/${assessmentId}/section/${sectionId}/manual/selected_items`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -786,17 +803,17 @@ export class ItemHttpService {
     topicId?: string,
     page?: number,
     pageSize?: number,
-    subtopicId?: string
+    subtopicId?: string,
   ): Observable<ListAllItemsPage> {
     if (subtopicId) {
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/recycle/in-recycle?subjectId=${subjectId}&topicId=${topicId}&subtopicId=${subtopicId}&page=${page}&size=${pageSize}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
     } else {
       return this.http.get<ListAllItemsPage>(
         `${environment.developmentIP}/itembank/recycle/in-recycle?subjectId=${subjectId}&topicId=${topicId}&page=${page}&size=${pageSize}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
     }
   }
@@ -804,72 +821,72 @@ export class ItemHttpService {
   fetchAllSubjectsNonAdmin(): Observable<ListAllSubjects[]> {
     return this.http.get<ListAllSubjects[]>(
       `${environment.developmentIP}/itembank/user/subjects`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAllSubjectsItems(): Observable<ListAllSubjects[]> {
     return this.http.get<ListAllSubjects[]>(
       `${environment.developmentIP}/itembank/admin/subjects/items`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAllSubjectsDropdown(): Observable<DropdownSubjectList[]> {
     return this.http.get<DropdownSubjectList[]>(
       `${environment.developmentIP}/itembank/admin/subjects`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAllSubjectsDropdownForAssessment(): Observable<DropdownSubjectList[]> {
     return this.http.get<DropdownSubjectList[]>(
       `${environment.developmentIP}/itembank/admin/subjects/assessment`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSubjectTopicsTreeAuthor(
-    subjectId: string
+    subjectId: string,
   ): Observable<SubjectTopicsTree> {
     return this.http.get<SubjectTopicsTree>(
       `${environment.developmentIP}/itembank/user/subjects/${subjectId}/topics_tree_author`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSubjectTopicsTreeAdmin(
-    subjectId: string
+    subjectId: string,
   ): Observable<SubjectTopicsTree> {
     return this.http.get<SubjectTopicsTree>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/topics_tree`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchSubjectTopicsTreeUser(subjectId: string): Observable<SubjectTopicsTree> {
     return this.http.get<SubjectTopicsTree>(
       `${environment.developmentIP}/itembank/user/subjects/${subjectId}/topics_tree`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchAssessmentSubjectTopicsTree(
-    subjectId: string
+    subjectId: string,
   ): Observable<SubjectTopicsTree> {
     return this.http.get<SubjectTopicsTree>(
       `${environment.developmentIP}/itembank/admin/subjects/${subjectId}/topics_tree/assessment`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   fetchItemsAwaitingModerationTopicsTree(
     subjectId: string,
-    itemStatus: string
+    itemStatus: string,
   ): Observable<SubjectTopicsTree> {
     return this.http.get<SubjectTopicsTree>(
       `${environment.developmentIP}/itembank/user/subjects/${subjectId}/topics_tree_moderation/item_status/${itemStatus}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -877,52 +894,52 @@ export class ItemHttpService {
     return this.http.post<ListAllItemsPage>(
       `${environment.developmentIP}/itembank/items/item-filter`,
       filterInformation,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   filterAssessmentItems(
     assessmentId,
     sectionId,
-    filterInformation: FilterItems
+    filterInformation: FilterItems,
   ): Observable<ListAllItemsPage> {
     return this.http.post<ListAllItemsPage>(
       /** former endpoint ===> /items/item-filter_assessment */
       `${environment.developmentIP}/itembank/items/assessment/${assessmentId}/section/${sectionId}/item-filter_assessment`,
       filterInformation,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   rejectItem(
-    rejectItemRequest: RejectItemRequest
+    rejectItemRequest: RejectItemRequest,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/reject-item/${rejectItemRequest.itemId}`,
       rejectItemRequest,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   copyItem(
     itemId: string,
-    copiedItem: CopyMoveItems
+    copiedItem: CopyMoveItems,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/copy`,
       copiedItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   moveItem(
     itemId: string,
-    movedItem: CopyMoveItems
+    movedItem: CopyMoveItems,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/move`,
       movedItem,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -930,7 +947,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/MCQ`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -938,7 +955,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/shortText`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -946,7 +963,7 @@ export class ItemHttpService {
     return this.http.put(
       `${environment.developmentIP}/itembank/items/${itemId}/item/essay`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -954,7 +971,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/YES_NO`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -962,7 +979,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/TRUE_FALSE`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -970,7 +987,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/ORDER_LIST`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -978,7 +995,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/MRQ`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -986,7 +1003,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/ASSOCIATION`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -994,7 +1011,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_TEXT`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -1002,7 +1019,7 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_DROPDOWN`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -1010,14 +1027,14 @@ export class ItemHttpService {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item/CLOZE_RADIO`,
       item,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   deleteItem(itemId: string): Observable<ResourceCreated> {
     return this.http.delete<ResourceCreated>(
       `${environment.developmentIP}/itembank/items/${itemId}/item`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 }
