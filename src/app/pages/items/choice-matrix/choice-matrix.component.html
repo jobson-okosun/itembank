@@ -181,7 +181,7 @@
 
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
         <label class="form-label" for="autoSizingInputGroup">Passage</label>
-        <div class="border p-4" [innerHTML]="editData.itemPassage"></div>
+        <div class="border p-4" [innerHTML]="editData.itemPassage | safeHtml "></div>
       </div>
 
       <div class="mb-3">
@@ -295,14 +295,14 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th scope="col" *ngFor="let option of options; let i = index" [innerHTML]="option.label">
+                    <th scope="col" *ngFor="let option of options; let i = index" [innerHTML]="option.label | safeHtml ">
                       {{ option.label }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let stem of stems; let i = index">
-                    <td class="fw-medium" [innerHTML]="stem.stem"></td>
+                    <td class="fw-medium" [innerHTML]="stem.stem | safeHtml"></td>
                     <td *ngFor="let option of options; let j = index">
                       <input class="form-check-input" id="form-radio-right5" type="radio" name="stem_{{ i }}"
                         (change)="selectedAnswer(stem, option.value)" [checked]="stem.selectedAnswer === j + ''" />

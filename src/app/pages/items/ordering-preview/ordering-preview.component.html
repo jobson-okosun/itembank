@@ -38,7 +38,7 @@
 
     <div cdkDropList [cdkDropListData]="showAnswer ? ans : opts" (cdkDropListDropped)="onDrop($event)" class="options-list p-3 bg-light">
       <div class="option-item" *ngFor="let option of showAnswer ? ans : opts" cdkDrag>
-        <div class="option-content" [innerHTML]="option  | safeHtml "></div>
+        <div class="option-content" [innerHTML]="option  | safeHtml"></div>
       </div>
   </div>
 

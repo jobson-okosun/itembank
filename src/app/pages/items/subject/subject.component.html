@@ -1030,7 +1030,7 @@
                         [innerHTML]="item.stimulusSafeHtml"></div>
 
                       <ng-template #preview>
-                        <div class="list-text mb-0" [innerHTML]="item.stimulus"></div>
+                        <div class="list-text mb-0" [innerHTML]="item.stimulus | safeHtml"></div>
                       </ng-template>
 
                       <div class="d-flex flex-wrap justify-content-between mt-3">
@@ -2276,7 +2276,7 @@
     <h4 class="text-center mb-4 text-uppercase">Reason for Rejection</h4>
     <div class="row mb-2">
       <span class="text-decoration-underline text-uppercase fw-bold">reason</span>
-      <span [innerHTML]="rejectionReasonForSelectedQuestion"></span>
+      <span [innerHTML]="rejectionReasonForSelectedQuestion | safeHtml"></span>
     </div>
     <div class="d-flex justify-content-end gap-2 mt-2">
       <div class="d-flex gap-2 float-end mt-4">

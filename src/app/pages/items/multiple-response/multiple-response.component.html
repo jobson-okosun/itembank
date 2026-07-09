@@ -204,7 +204,7 @@
 
       <div *ngIf="editData && editData.itemPassage" class="mb-3">
         <label class="form-label" for="autoSizingInputGroup">Passage</label>
-        <div class="border p-4" [innerHTML]="editData.itemPassage"></div>
+        <div class="border p-4" [innerHTML]="editData.itemPassage | safeHtml"></div>
       </div>
 
       <div class="mb-3">

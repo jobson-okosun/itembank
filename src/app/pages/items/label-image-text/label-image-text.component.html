@@ -291,7 +291,7 @@
       </div>
 
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
-        <div [innerHTML]="editData.itemPassage"></div>
+        <div [innerHTML]="editData.itemPassage | safeHtml "></div>
       </div>
       <div class="mb-3">
         <label>Compose Question</label>

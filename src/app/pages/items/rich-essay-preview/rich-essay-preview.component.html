@@ -57,7 +57,7 @@
             previewData.itemType == ItemTypes.ESSAY_PLAIN_TEXT
           "
           class="card border rounded p-5"
-          [innerHTML]="answer"
+          [innerHTML]="answer | safeHtml"
         ></div>
       </div>
     </div>
