@@ -310,6 +310,12 @@ export class ListPassagesComponent implements OnInit {
     this.passageService.subjectId = subjectId;
     this.subjectId = subjectId;
 
+    const foundSubject = this.allSubjects.find(
+      (subject) => subject.subjectId === subjectId,
+    );
+
+    console.log(foundSubject)
+
     this.subjectName = this.allSubjects.find(
       (subject) => subject.subjectId === subjectId,
     ).name;
@@ -326,6 +332,12 @@ export class ListPassagesComponent implements OnInit {
       };
       this.itemUtil.saveCurrentItemTrail(itemTrail);
     }
+
+    this.itemService.currentSubjectModerationEnabled = foundSubject.moderationId
+      ? true
+      : false;
+
+    this.setModerationStatus()
 
     if (this.currentUser.authorities.includes('ADMIN') || this.currentUser.authorities.includes('GROUP_ADMIN')) {
       this.itemService
@@ -390,6 +402,10 @@ export class ListPassagesComponent implements OnInit {
           },
         );
     }
+  }
+
+  setModerationStatus() {
+    localStorage.setItem('currentSubjectModerationEnabled', this.itemService.currentSubjectModerationEnabled.toString());
   }
 
   openNewTopicModal(newTopicModal: any) {
@@ -815,25 +831,13 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         this.allSubjects = value;
         this.loadingAllSubjects = false;
-        this.subjectName = value[this.passageService.selectedPassageIndex].name;
 
-        // this.subjectId =
-        //   this.activatedRoute.snapshot.params['subjectId'] === 'passages'
-        //     ? value[0].subjectId
-        //     : this.activatedRoute.snapshot.params['subjectId'];
-
-        this.subjectId =
+        let initialSubjectId =
           this.activatedRoute.snapshot.params['subjectId'] === 'passages'
             ? value[this.passageService.selectedPassageIndex].subjectId
             : this.activatedRoute.snapshot.params['subjectId'];
 
-        this.passageService.subjectId = this.subjectId;
-
-        // console.log('all sub', this.allSubjects);
-
-        this.fetchTopicTree(this.passageService.subjectId);
-
-        // console.log(this.allSubjects);
+        this.selectSubject(initialSubjectId);
       },
       (error: HttpErrorResponse) => {
         //console.log(error);
@@ -848,20 +852,13 @@ export class ListPassagesComponent implements OnInit {
       (value) => {
         this.allSubjects = value;
         this.loadingAllSubjects = false;
-        this.subjectName = value[this.passageService.selectedPassageIndex].name;
 
-        this.subjectId =
+        let initialSubjectId =
           this.activatedRoute.snapshot.params['subjectId'] === 'passages'
             ? value[this.passageService.selectedPassageIndex].subjectId
             : this.activatedRoute.snapshot.params['subjectId'];
 
-        this.passageService.subjectId = this.subjectId;
-
-        // console.log('all sub', this.allSubjects);
-
-        this.fetchTopicTree(this.passageService.subjectId);
-
-        // console.log(this.allSubjects);
+        this.selectSubject(initialSubjectId);
       },
       (error: HttpErrorResponse) => {
         //console.log(error);
