@@ -8,25 +8,25 @@
         </div>
 
         <!-- Cloze text + options -->
-        <div style="max-height: 250px; overflow-y: auto;" class="text-justify d-flex flex-wrap gap-2 cloze">
-            <div *ngFor="let item of clozeRenderArray; let i = index" class="d-flex align-items-center gap-2">
+        <div style="max-height: 250px; overflow-y: auto;" class="text-justify lh-lg cloze">
+            <ng-container *ngFor="let item of clozeRenderArray; let i = index">
                 <!-- Plain text -->
-                <span [innerHTML]="item.text" class="d-flex align-items-center"></span>
+                <span [innerHTML]="item.text | safeHtml" class="align-middle"></span>
 
                 <!-- Radio buttons -->
                 <ng-container *ngIf="item.responses.length">
-                    <div class="d-inline-flex flex-wrap gap-2 bg-light p-2 rounded-pill">
+                    <span class="d-inline-flex flex-wrap gap-2 bg-light p-1 rounded-pill align-middle mx-2 my-1">
                         <span *ngFor="let resp of item.responses; let respIndex = index" type="button"
-                            class="d-flex align-items-center gap-2 rounded-pill bg-white py-2 px-3">
+                            class="d-inline-flex align-items-center gap-1 rounded-pill bg-white py-1 px-2">
                             <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp"
                                 [checked]="previewData.scoringOption.answers[i] === resp" />
 
                             <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp" />
                             <span>{{ resp }}</span>
                         </span>
-                    </div>
+                    </span>
                 </ng-container>
-            </div>
+            </ng-container>
         </div>
 
         <hr />

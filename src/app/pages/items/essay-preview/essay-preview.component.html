@@ -16,7 +16,7 @@
 
     <div class="row">
       <div class="col-xxl-12 col-lg-12 col-md-12 col-sm-12">
-        <h4 [innerHTML]="previewData.stimulus">{{ previewData.stimulus }}</h4>
+        <h4 [innerHTML]="previewData.stimulus | safeHtml "></h4>
       </div>
     </div>
 

@@ -145,8 +145,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.passageId = this.ar.snapshot.params['passageId'];
 
-    console.log('PASS ID: ', this.passageId);
-    console.log('SHOW PASS: ', this.showPassage);
+    // console.log('PASS ID: ', this.passageId);
+    // console.log('SHOW PASS: ', this.showPassage);
 
     if (this.passageId) {
       this.passageService.fetchSinglePassage(this.passageId).subscribe({
@@ -186,6 +186,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.subjectModerationStatus =
       this.itemService.currentSubjectModerationEnabled;
+          // console.log(this.subjectModerationStatus, 'local', localStorage.getItem('currentSubjectModerationEnabled') )
 
     // if (this.editDataStatus) {
     //   this.editData.stimulus = "<p>{{response}} are to {{response}}</p>";
@@ -202,7 +203,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // }
 
     if (this.editData) {
-      console.log('here i am');
+      // console.log('here i am');
       //this.defaultItemProperties.stimulus = this.editData.stimulus;
       this.defaultItemProperties.scoringOption.answers =
         this.editData.scoringOption.answers;
@@ -646,10 +647,39 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
             primary: true,
           },
         ],
-        onSubmit: function (api) {
-          // console.log(api.getData().option_data);
+        onSubmit: (api: any) => {
+          let optionData = api.getData().option_data || '';
+
+          if (!optionData.trim()) {
+            Swal.fire({
+              icon: 'error',
+              html: '<span style="color: red;">Option cannot be empty</span>',
+              didOpen: () => {
+                const swalContainer = document.querySelector('.swal2-container') as HTMLElement;
+                if (swalContainer) {
+                  swalContainer.style.zIndex = '999999';
+                }
+              }
+            });
+            return;
+          }
+
+          if (optionData !== optionData.trim()) {
+            Swal.fire({
+              icon: 'error',
+              html: '<span style="color: red;">Option cannot have leading or trailing spaces</span>',
+              didOpen: () => {
+                const swalContainer = document.querySelector('.swal2-container') as HTMLElement;
+                if (swalContainer) {
+                  swalContainer.style.zIndex = '999999';
+                }
+              }
+            });
+            return;
+          }
+
           let option = document.createElement('option');
-          option.label = api.getData().option_data;
+          option.label = optionData;
           option.value = Math.random() + '';
 
           v.select.add(option);
@@ -945,13 +975,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.itemService.currentSubjectModerationEnabled
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-
-    if (this.itemService.currentSubjectModerationEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -1297,13 +1325,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     }
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.itemService.currentSubjectModerationEnabled
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-
-    if (this.itemService.currentSubjectModerationEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -1645,18 +1671,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (
-      this.currentUser.authorities.includes('AUTHOR') &&
-      this.itemService.currentSubjectModerationEnabled
-    ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
 
-    if (this.itemService.currentSubjectModerationEnabled) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    } else {
-      item.itemStatus = ItemStatusEnum.PUBLISHED;
-    }
     // console.log(original_content, 'original');
     // console.log(item.stimulus);
 
@@ -1673,8 +1688,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'save':
         if (
-          this.subjectModerationStatus ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.subjectModerationStatus ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {

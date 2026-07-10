@@ -732,11 +732,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     item.stimulus = payload.stimulus;
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.itemService.currentSubjectModerationEnabled
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    } else if (this.itemService.currentSubjectModerationEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -793,11 +793,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     item.itemStatus = ItemStatusEnum.DRAFT;
 
     if (
-      this.currentUser.authorities.includes("AUTHOR") &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.itemService.currentSubjectModerationEnabled
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    } else if (this.itemService.currentSubjectModerationEnabled) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -981,18 +981,7 @@ export class ClozeRadioSelectComponent implements OnInit {
     const validated = this.itemService.validateItem(item);
     if (!validated) return;
 
-    if (
-      this.currentUser.authorities.includes("AUTHOR") &&
-      this.itemService.currentSubjectModerationEnabled
-    ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
 
-    if (this.itemService.currentSubjectModerationEnabled) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    } else {
-      item.itemStatus = ItemStatusEnum.PUBLISHED;
-    }
 
     this.publishingItem = true;
     this.publishLoader('Updating your question, Please Wait...');
@@ -1000,8 +989,11 @@ export class ClozeRadioSelectComponent implements OnInit {
     switch (status) {
       case "save":
         if (
-          this.subjectModerationStatus ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.subjectModerationStatus ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {

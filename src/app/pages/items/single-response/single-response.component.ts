@@ -579,13 +579,11 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     } */
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.moderationStatus
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-
-    if (this.moderationStatus) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -637,7 +635,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
 
     this.publishingItem = true;
 
-    if (this.moderationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.moderationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -723,7 +726,12 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.moderationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.moderationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -766,8 +774,11 @@ export class SingleResponseComponent implements OnInit, OnDestroy {
     switch (status) {
       case 'save':
         if (
-          this.moderationStatus ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.moderationStatus ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {

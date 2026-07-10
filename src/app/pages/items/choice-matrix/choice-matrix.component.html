@@ -181,7 +181,7 @@
 
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
         <label class="form-label" for="autoSizingInputGroup">Passage</label>
-        <div class="border p-4" [innerHTML]="editData.itemPassage"></div>
+        <div class="border p-4" [innerHTML]="editData.itemPassage | safeHtml "></div>
       </div>
 
       <div class="mb-3">
@@ -295,14 +295,14 @@
                 <thead>
                   <tr>
                     <th></th>
-                    <th scope="col" *ngFor="let option of options; let i = index" [innerHTML]="option.label">
+                    <th scope="col" *ngFor="let option of options; let i = index" [innerHTML]="option.label | safeHtml ">
                       {{ option.label }}
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let stem of stems; let i = index">
-                    <td class="fw-medium" [innerHTML]="stem.stem"></td>
+                    <td class="fw-medium" [innerHTML]="stem.stem | safeHtml"></td>
                     <td *ngFor="let option of options; let j = index">
                       <input class="form-check-input" id="form-radio-right5" type="radio" name="stem_{{ i }}"
                         (change)="selectedAnswer(stem, option.value)" [checked]="stem.selectedAnswer === j + ''" />
@@ -586,7 +586,7 @@
     </div>
     
     <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'" class="alert alert-info">
-      <strong>Partial Match:</strong> Each correct option will carry a fraction of the total mark (e.g. if there are 4 options, each correct option carries 1/4 of the marks).
+      <strong>Partial Match:</strong> Each correct option would carry {{ stems.length ? (defaultItemProperties.scoringOption.score / stems.length | number:'1.0-2') : 0 }} mark(s) (e.g. if the candidate scores 2 options correctly, the candidate would be graded {{ stems.length ? ((defaultItemProperties.scoringOption.score / stems.length) * 2 | number:'1.0-2') : 0 }}/{{ defaultItemProperties.scoringOption.score || 0 }}).
     </div>
 
     <p class="mt-3 mb-0">Do you agree with this scoring condition?</p>

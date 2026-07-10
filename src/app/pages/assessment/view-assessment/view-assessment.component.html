@@ -1666,8 +1666,9 @@
     ">
     <app-subject #subjectComponent [_noOfItems]="selectedBlock.totalQuestions" [_currentTab]="currentTab"
       [_currentBlock]="selectedBlock" [_subjectId]="itemService.subjectId" [_subjectName]="itemService.subjectName"
-      [_assessmentId]="assessmentId" [_sectionId]="selectedSection.sectionId" [_existingItemIds]="existingItemIds"
-      [_loadingExistingItems]="loadingExistingItemIds" (addItemToAssessment)="saveItemsToAssessment($event)"
+      [_assessmentId]="assessmentId" [_sectionId]="selectedSection.sectionId" [_sectionType]="selectedSection?.sectionType"
+      [_existingItemIds]="existingItemIds" [_loadingExistingItems]="loadingExistingItemIds"
+      (addItemToAssessment)="saveItemsToAssessment($event)"
       (removeItemFromAssessment)="removeAssessmentItem($event)"></app-subject>
   </div>
   <div class="card-footer">

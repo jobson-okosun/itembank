@@ -176,7 +176,7 @@
       </div>
       <div *ngIf="editData && editData.itemPassage" class="mb-2">
         <label class="form-label" for="autoSizingInputGroup">Passage</label>
-        <div class="border p-4" [innerHTML]="editData.itemPassage"></div>
+        <div class="border p-4" [innerHTML]="editData.itemPassage | safeHtml "></div>
       </div>
       <div class="mb-3">
         <label>Compose Question</label>
@@ -213,7 +213,7 @@
           <div *ngIf="!q.children || q.children.length === 0" class="row mt-3">
             <div class="col-md-6">
               <label>Score</label>
-              <input type="number" min="0" class="form-control" [name]="'score_lvl1_' + q.id" [ngModelOptions]="{standalone: true}" [(ngModel)]="q.score">
+              <input type="number" min="0" class="form-control" [name]="'score_lvl1_' + q.id" [ngModelOptions]="{standalone: true}" [(ngModel)]="q.score" (ngModelChange)="updateTotalScore()">
             </div>
             <div class="col-md-6">
               <label>Background Type</label>
@@ -236,7 +236,7 @@
               <div class="row mt-3">
                 <div class="col-md-6">
                   <label>Score</label>
-                  <input type="number" min="0" class="form-control" [name]="'score_lvl2_' + child.id" [ngModelOptions]="{standalone: true}" [(ngModel)]="child.score">
+                  <input type="number" min="0" class="form-control" [name]="'score_lvl2_' + child.id" [ngModelOptions]="{standalone: true}" [(ngModel)]="child.score" (ngModelChange)="updateTotalScore()">
                 </div>
                 <div class="col-md-6">
                   <label>Background Type</label>

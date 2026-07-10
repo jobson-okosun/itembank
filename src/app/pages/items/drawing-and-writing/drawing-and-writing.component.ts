@@ -164,6 +164,7 @@ export class DrawingAndWritingComponent implements OnInit {
 
   deleteSubQuestion(index: number) {
     this.subQuestions.splice(index, 1);
+    this.updateTotalScore();
     this.notifier.notify('success', 'Sub question removed successfully');
   }
 
@@ -187,7 +188,24 @@ export class DrawingAndWritingComponent implements OnInit {
 
   deleteChildQuestion(question: SubQuestionUI, childIndex: number) {
     question.children.splice(childIndex, 1);
+    this.updateTotalScore();
     this.notifier.notify('success', 'Child question removed successfully');
+  }
+
+  updateTotalScore() {
+    let totalSubQuestionsScore = 0;
+    if (this.subQuestions && this.subQuestions.length > 0) {
+      for (const sq of this.subQuestions) {
+        if (sq.children && sq.children.length > 0) {
+          for (const child of sq.children) {
+            totalSubQuestionsScore += Number(child.score || 0);
+          }
+        } else {
+          totalSubQuestionsScore += Number(sq.score || 0);
+        }
+      }
+    }
+    this.defaultItemProperties.scoringOption.score = totalSubQuestionsScore;
   }
 
   getSubQuestionTotalScore(q: SubQuestionUI): number {
@@ -252,7 +270,7 @@ export class DrawingAndWritingComponent implements OnInit {
     this.itemUtil.setSelectedTags(this.tags);
 
     if (this.editData) {
-      // console.log({ edit: this.editData })
+      console.log({ edit: this.editData })
       
       this.defaultItemProperties.reference = this.editData.reference;
       this.defaultItemProperties.difficultyLevel = this.editData.difficultyLevel;
@@ -317,6 +335,7 @@ export class DrawingAndWritingComponent implements OnInit {
       this.itemUtil.setSelectedTags(this.tags);
     } else {
       this.defaultItemProperties.scoringOption.matchingRule = 'EXACT_MATCH';
+      this.defaultItemProperties.difficultyLevel = 1
     }
   }
 
@@ -504,12 +523,12 @@ export class DrawingAndWritingComponent implements OnInit {
     item.subQuestions = this.subQuestions.map(sq => ({
       id: sq.id,
       stimulus: sq.content,
-      score: (sq.children && sq.children.length > 0) ? sq.children.reduce((total, child) => total + (child.score || 0), 0) : (sq.score || 0),
+      score: (sq.children && sq.children.length > 0) ? sq.children.reduce((total, child) => total + Number(child.score || 0), 0) : Number(sq.score || 0),
       backgroundType: sq.backgroundType,
       children: sq.children ? sq.children.map(child => ({
         id: child.id,
         stimulus: child.content,
-        score: child.score,
+        score: Number(child.score || 0),
         backgroundType: child.backgroundType
       })) : []
     }));
@@ -517,7 +536,34 @@ export class DrawingAndWritingComponent implements OnInit {
     return item;
   }
 
+  validateSubQuestions(): boolean {
+    if (this.subQuestions && this.subQuestions.length > 0) {
+      let totalSubQuestionsScore = 0;
+      for (const sq of this.subQuestions) {
+        if (sq.children && sq.children.length > 0) {
+          for (const child of sq.children) {
+            if (!child.score || Number(child.score) <= 0) {
+              this.notifier.notify('error', 'Each sub-question or child must have a score greater than 0.');
+              return false;
+            }
+            totalSubQuestionsScore += Number(child.score);
+          }
+        } else {
+          if (!sq.score || Number(sq.score) <= 0) {
+            this.notifier.notify('error', 'Each sub-question must have a score greater than 0.');
+            return false;
+          }
+          totalSubQuestionsScore += Number(sq.score);
+        }
+      }
+
+      this.defaultItemProperties.scoringOption.score = totalSubQuestionsScore;
+    }
+    return true;
+  }
+
   saveItem(itemForm: any) {
+    if (!this.validateSubQuestions()) return;
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -529,12 +575,11 @@ export class DrawingAndWritingComponent implements OnInit {
     this.publishLoader();
 
     if (
-      this.currentUser.authorities.includes('AUTHOR') &&
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
       this.subjectModerationStatus
     ) {
-      item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
-    }
-    if (this.subjectModerationStatus) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -544,6 +589,7 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   saveToDraft(itemForm: any) {
+    if (!this.validateSubQuestions()) return;
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -560,6 +606,7 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   saveAndNewItem(itemForm: any) {
+    if (!this.validateSubQuestions()) return;
     // console.log('i was called');
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
@@ -571,7 +618,12 @@ export class DrawingAndWritingComponent implements OnInit {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.subjectModerationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -581,6 +633,7 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   saveItemToPassage(itemForm: any) {
+    if (!this.validateSubQuestions()) return;
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -591,7 +644,12 @@ export class DrawingAndWritingComponent implements OnInit {
     this.publishingItem = true;
     this.publishLoader();
 
-    if (this.subjectModerationStatus) {
+    if (
+      !this.currentUser.authorities.includes('MODERATOR') &&
+      !this.currentUser.authorities.includes('ADMIN') && 
+      !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+      this.subjectModerationStatus
+    ) {
       item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
     } else {
       item.itemStatus = ItemStatusEnum.PUBLISHED;
@@ -664,6 +722,7 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   updateItem(itemForm?: any, status?: string) {
+    if (!this.validateSubQuestions()) return;
     let item = this.buildItem();
     item.itemId = this.editData.id;
     let validated = this.itemService.validateItem(item);
@@ -689,11 +748,11 @@ export class DrawingAndWritingComponent implements OnInit {
     switch (status) {
       case 'save':
         if (
-          (!this.currentUser.authorities.includes('MODERATOR') &&
-            !this.currentUser.authorities.includes('ADMIN') &&
-            !this.currentUser.authorities.includes('GROUP_ADMIN')) || // Both roles are missing
-          this.subjectModerationStatus ||
-          item.itemStatus === ItemStatusEnum.AWAITING_MODERATION //
+          !this.currentUser.authorities.includes('MODERATOR') &&
+          !this.currentUser.authorities.includes('ADMIN') && 
+          !this.currentUser.authorities.includes('GROUP_ADMIN') &&
+          (this.subjectModerationStatus ||
+            item.itemStatus === ItemStatusEnum.AWAITING_MODERATION)
         ) {
           item.itemStatus = ItemStatusEnum.AWAITING_MODERATION;
         } else {
@@ -750,6 +809,7 @@ export class DrawingAndWritingComponent implements OnInit {
   }
 
   doPreview(itemForm: any) {
+    if (!this.validateSubQuestions()) return;
 
     if (!this.defaultItemProperties.stimulus) {
       this.notifier.notify('error', 'Please compose a question to preview');
