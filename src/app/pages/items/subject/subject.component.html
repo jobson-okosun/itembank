@@ -1941,14 +1941,27 @@
         </button>
       </div>
       <div class="px-5 modal-body">
-        <form #questionMoveForm (ngSubmit)="moveQuestion(questionMoveForm)">
-          <div class="py-2">
+        <form #questionMoveForm (ngSubmit)="moveQuestion(questionMoveForm)">   
+
+
+          <div class="py-2" *ngIf="currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN')">
             <label for="subjectName">Subject Name</label>
             <ng-select class="custom" [items]="subjects" bindLabel="subjectName" bindValue="subjectId"
               name="subjectName" dropdownPosition="bottom" [(ngModel)]="movedItems.subjectId"
               (ngModelChange)="getTopicsTreeToMoveItem()">
               <ng-template ng-optgroup-tmp let-i="index" let-item="item">
                 {{ item[i].subjectName | uppercase }}
+              </ng-template>
+            </ng-select>
+          </div>
+
+          <div class="py-2" *ngIf="!currentUser.authorities.includes('ADMIN') && !currentUser.authorities.includes('GROUP_ADMIN')">
+            <label for="subjectName">Subject Name</label>
+            <ng-select class="custom" [items]="allSubjects" bindLabel="name" bindValue="subjectId"
+              name="name" dropdownPosition="bottom" [(ngModel)]="movedItems.subjectId"
+              (ngModelChange)="getTopicsTreeToMoveItem()">
+              <ng-template ng-optgroup-tmp let-i="index" let-item="item">
+                {{ item[i].name | uppercase }}
               </ng-template>
             </ng-select>
           </div>

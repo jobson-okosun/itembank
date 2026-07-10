@@ -770,6 +770,7 @@ export class ItemHttpService {
         { withCredentials: true },
       );
     } else {
+      
       if (!assessmentId || !sectionId) {
         return of(null);
       }
