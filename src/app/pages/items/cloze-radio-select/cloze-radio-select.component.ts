@@ -675,20 +675,18 @@ export class ClozeRadioSelectComponent implements OnInit {
       possibleResponses.push(pr);
     });
 
-    const html = tinymce.activeEditor.getDoc().querySelector('#tinymce')!.firstElementChild;
+    const rawHtml = tinymce.activeEditor.getContent();
 
     const parser = new DOMParser();
-    const docEL = parser.parseFromString(html.outerHTML, 'text/html');
+    const docEL = parser.parseFromString(rawHtml, 'text/html');
 
-    const content = docEL.body.firstChild as HTMLElement;
-
-    const q = content.querySelectorAll(".cloze-radio-container");
+    const q = docEL.querySelectorAll(".cloze-radio-container");
     q.forEach(el => {
       const placeholder = document.createTextNode("{{response}}");
       el.parentNode?.replaceChild(placeholder, el);
     });
 
-    const stimulus = content.outerHTML;
+    const stimulus = docEL.body.innerHTML;
 
     return {
       stimulus,
