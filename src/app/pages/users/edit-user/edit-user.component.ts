@@ -216,6 +216,35 @@ export class EditUserComponent implements OnInit {
     console.log('USER DETAIL FOR SUBMISSION: ', this.newUserDetails);
 
     //console.log(this.newUserDetails);
+
+    if (
+      !this.currentUser.authorities.includes("ADMIN") &&
+      !this.currentUser.authorities.includes("GROUP_ADMIN")
+    ) {
+      this.userService
+        .updateUserDetailsForNonAdmin(this.newUserDetails)
+        .subscribe(
+          (value) => {
+            //console.log(value);
+            this.updating = false;
+            Swal.fire({
+              icon: "success",
+              html: "User information has been updated successfully.",
+            });
+          },
+          (error: HttpErrorResponse) => {
+            //console.log(error);
+            this.updating = false;
+            Swal.fire({
+              icon: "error",
+              html: `${error.error}`,
+            });
+          },
+        );
+
+      return;
+    }
+
     this.userService.updateUserDetails(this.newUserDetails).subscribe(
       (value) => {
         //console.log(value);

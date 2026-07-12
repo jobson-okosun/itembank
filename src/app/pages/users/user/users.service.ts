@@ -19,7 +19,7 @@ import { ActivityListPage } from '../model/activity-list-page';
 import { UserActivityFilter } from '../model/user-activity-filter';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UsersService {
   constructor(private http: HttpClient) {}
@@ -27,52 +27,55 @@ export class UsersService {
   listAllUsers(): Observable<ListUsersModel[]> {
     return this.http.get<ListUsersModel[]>(
       `${environment.developmentIP}/itembank/admin/users`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   listRoles(): Observable<AppRoleModel[]> {
     return this.http
-      .get<AppRoleModel[]>(
-        `${environment.developmentIP}/itembank/admin/users/roles`,
-        { withCredentials: true }
-      )
+      .get<
+        AppRoleModel[]
+      >(`${environment.developmentIP}/itembank/admin/users/roles`, { withCredentials: true })
       .pipe(
         map((results) => {
           results.sort((a, b) => a.role.localeCompare(b.role));
-          return results.filter(r => r.role !== 'ANALYTIC');
-        })
+          return results.filter((r) => r.role !== "ANALYTIC");
+        }),
       );
   }
 
   fetchActivityListAdmin(
-    activityFilter: UserActivityFilter, page: number, size: number
+    activityFilter: UserActivityFilter,
+    page: number,
+    size: number,
   ): Observable<ActivityListPage> {
     let queryParams = new HttpParams();
-    queryParams = queryParams
-    .append('page', page)
-    .append('size', size)
+    queryParams = queryParams.append("page", page).append("size", size);
     return this.http.post<ActivityListPage>(
-      `${environment.developmentIP}/itembank/admin/users/activityList`, activityFilter,
-      { params: queryParams, withCredentials: true }
+      `${environment.developmentIP}/itembank/admin/users/activityList`,
+      activityFilter,
+      { params: queryParams, withCredentials: true },
     );
   }
 
-  fetchSingleUserActivityList(activityFilter: UserActivityFilter, page: number, size: number): Observable<ActivityListPage> {
+  fetchSingleUserActivityList(
+    activityFilter: UserActivityFilter,
+    page: number,
+    size: number,
+  ): Observable<ActivityListPage> {
     let queryParams = new HttpParams();
-    queryParams = queryParams
-      .append('page', page)
-      .append('size', size)
+    queryParams = queryParams.append("page", page).append("size", size);
     return this.http.post<ActivityListPage>(
-      `${environment.developmentIP}/itembank/o_users/activityList`, activityFilter,
-      { params: queryParams, withCredentials: true }
+      `${environment.developmentIP}/itembank/o_users/activityList`,
+      activityFilter,
+      { params: queryParams, withCredentials: true },
     );
   }
 
   searchTags(text: string): Observable<any> {
     return this.http.get(
       `${environment.developmentIP}/itembank/admin/tags/searchtag?text=${text}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -80,7 +83,7 @@ export class UsersService {
     return this.http.post(
       `${environment.developmentIP}/itembank/admin/users`,
       newUser,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -88,94 +91,104 @@ export class UsersService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/subject_add`,
       newSubject,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   addremoveSubjectFromUser(
-    newSubject: AddSubjectToUser
+    newSubject: AddSubjectToUser,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/subject`,
       newSubject,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   getUserDetail(id: string): Observable<UserDetail> {
     return this.http.get<UserDetail>(
       `${environment.developmentIP}/itembank/admin/users/${id}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   getSingleUserDetails(userId: string): Observable<UserDetail> {
     return this.http.get<UserDetail>(
       `${environment.developmentIP}/itembank/o_users/${userId}`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   getSingleItemAnalysisNonAdmin(userId: string): Observable<ItemAnalysis[]> {
     return this.http.get<ItemAnalysis[]>(
       `${environment.developmentIP}/itembank/o_users/${userId}/items-analysis`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   ChangeUserPassword(
-    newPassword: ChangeUserPassword
+    newPassword: ChangeUserPassword,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/user-password`,
       newPassword,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   updateUserDetails(
-    newUserDetail: ChangeUserDetails
+    newUserDetail: ChangeUserDetails,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/user-details`,
       newUserDetail,
-      { withCredentials: true }
+      { withCredentials: true },
+    );
+  }
+
+  updateUserDetailsForNonAdmin(
+    newUserDetail: ChangeUserDetails,
+  ): Observable<ResourceCreated> {
+    return this.http.put<ResourceCreated>(
+      `${environment.developmentIP}/itembank/o_users/user-details`,
+      newUserDetail,
+      { withCredentials: true },
     );
   }
 
   getUserItemAnalysis(userId: string): Observable<ItemAnalysis[]> {
     return this.http.get<ItemAnalysis[]>(
       `${environment.developmentIP}/itembank/admin/users/${userId}/items-analysis`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   activateDeactivateUser(
     userId: string,
-    status: any
+    status: any,
   ): Observable<ResourceCreated> {
     return this.http.put<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/${userId}/enable-disableUser`,
       status,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   getAuthorItems(userId: string): Observable<AuthorItems[]> {
     return this.http.get<AuthorItems[]>(
       `${environment.developmentIP}/itembank/admin/users/${userId}/items-analysis`,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   activateDeactivateMultipleUsers(
     users: string[],
-    flag: boolean
+    flag: boolean,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/bulk_activate_deactivate/${flag}`,
       users,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -183,7 +196,7 @@ export class UsersService {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/upload`,
       file,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
@@ -191,32 +204,32 @@ export class UsersService {
     return this.http.post<any[]>(
       `${environment.developmentIP}/itembank/admin/users/filter`,
       filter,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   resendEmailVerification(
     userId: string,
-    data: ResourceCreated
+    data: ResourceCreated,
   ): Observable<ResourceCreated> {
     return this.http.post<ResourceCreated>(
       `${environment.developmentIP}/itembank/admin/users/${userId}/resend-email-verification`,
       data,
-      { withCredentials: true }
+      { withCredentials: true },
     );
   }
 
   downloadUsersTemplate(): Observable<any> {
     return this.http.get<any>(
       `${environment.developmentIP}/itembank/admin/users/download/users_template`,
-      { responseType: 'blob' as 'json', withCredentials: true }
+      { responseType: "blob" as "json", withCredentials: true },
     );
   }
 
   downloadAllUsersFile(): Observable<any> {
     return this.http.get<any>(
       `${environment.developmentIP}/itembank/admin/users/download/all_users_file`,
-      { responseType: 'blob' as 'json', withCredentials: true }
+      { responseType: "blob" as "json", withCredentials: true },
     );
   }
 }
