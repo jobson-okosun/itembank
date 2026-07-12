@@ -37,6 +37,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   @ViewChild('previewImage') previewImage!: ElementRef;
   @Input() component!: string;
   @Output() reload = new EventEmitter();
+  @Input() previewQuestionOnDialog: boolean = false;
 
   currentUser: Account;
   assessmentActive: boolean;
@@ -62,7 +63,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   subjectName: string;
   hiddenAnswers: Array<string> = [];
   labels: any[] = [];
-  dropZones: any[] = []; 
+  dropZones: any[] = [];
   connectedDropLists: string[] = [];
 
 
@@ -109,30 +110,44 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
 
   // }
 
-ngOnInit(): void {
-  this.currentUser = this.userService.getCurrentUser();
-  this.labels = this.getCombinedLabels();
+  ngOnInit(): void {
+    this.currentUser = this.userService.getCurrentUser();
+    this.labels = this.getCombinedLabels();
 
-  this.dropZones = this.previewData.responsePositions.map(() => []);
+    this.dropZones = this.previewData.responsePositions.map(() => []);
 
-  // 🔥 Build list of ALL drop list IDs
-  this.connectedDropLists = [
-    'labelsList',
-    ...this.previewData.responsePositions.map((_, i) => `zone-${i}`)
-  ];
+    // 🔥 Build list of ALL drop list IDs
+    this.connectedDropLists = [
+      'labelsList',
+      ...this.previewData.responsePositions.map((_, i) => `zone-${i}`)
+    ];
 
-  this.recycleComponentActive = this.recycleService.recycleActive;
-  this.isEditPreview = this.router.url.includes("edit-item");
-  this.subjectName = this.itemService.subjectName;
+    this.recycleComponentActive = this.recycleService.recycleActive;
+    this.isEditPreview = this.router.url.includes("edit-item");
+    this.subjectName = this.itemService.subjectName;
 
-  this.hiddenAnswers = new Array(
-    this.previewData.scoringOption.answers.length
-  ).fill('');
-}
+    this.hiddenAnswers = new Array(
+      this.previewData.scoringOption.answers.length
+    ).fill('');
+  }
 
 
-  review(){
-    
+  review() {
+    if (this.previewData.id) {
+      //this.returnPreviewData.emit(this.previewData);
+
+      this.router.navigate(
+        ['/examalpha/subjects/' + this.previewData.subjectId + '/edit-item'],
+        {
+          queryParams: {
+            type: `${this.previewData.type}`,
+            id: `${this.previewData.id}`,
+          },
+        },
+      );
+    } else {
+      this.returnPreviewData.emit(this.previewData);
+    }
   }
 
   backToEdit() {

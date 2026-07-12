@@ -34,6 +34,7 @@ export class LabelImageDropdownPreviewComponent
   @Output() returnPreviewData = new EventEmitter();
   @ViewChild('previewImage') previewImage!: ElementRef;
   @Output() reload = new EventEmitter();
+  @Input() previewQuestionOnDialog: boolean = false;
   recycleComponentActive: boolean = this.recycleService.recycleActive;
 
   currentUser: Account;

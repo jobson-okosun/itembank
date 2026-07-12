@@ -288,17 +288,19 @@ export class LabelImageDragDropComponent
       this.defaultItemProperties.scoringOption.autoScore =
         this.editData.scoringOption.autoScore;
 
-      this.image.url = this.editData.images[0].url;
-      this.image.width = this.editData.images[0].width;
-      this.image.height = this.editData.images[0].height;
-      this.defaultItemProperties.images[0] = {
-        height: this.editData.images[0].height,
-        url: this.editData.images[0].url,
-        width: this.editData.images[0].width,
-        altText: '',
-        hoverText: '',
-        label: '',
-      };
+      if (this.editData.images && this.editData.images.length > 0) {
+        this.image.url = this.editData.images[0].url;
+        this.image.width = this.editData.images[0].width;
+        this.image.height = this.editData.images[0].height;
+        this.defaultItemProperties.images[0] = {
+          height: this.editData.images[0].height,
+          url: this.editData.images[0].url,
+          width: this.editData.images[0].width,
+          altText: '',
+          hoverText: '',
+          label: '',
+        };
+      }
 
       // this.dropdownLabels = this.dropdownLabels.map((label, index) => ({
       //   ...label,
@@ -308,23 +310,31 @@ export class LabelImageDragDropComponent
       //   id: index.toString(),
       // }));
 
-      this.dropdownLabels = this.editData.responsePositions.map(
-        (position, index) => ({
-          x: position.x || 50, // Default to 50 if not provided
-          y: position.y || 50, // Default to 50 if not provided
+      this.dropdownLabels = this.editData.responsePositions ? this.editData.responsePositions.map(
+        (position, index) => {
+          const optionLabel = this.editData.options && this.editData.options[index] ? this.editData.options[index].label : '';
+          return {
+            x: position.x || 50, // Default to 50 if not provided
+            y: position.y || 50, // Default to 50 if not provided
+            inputValue: optionLabel,
+            id: index.toString(),
+            item: optionLabel,
+            selectedOptionIndex: null,
+            direction: position.direction || 'RIGHT',
+          };
+        }
+      ) : [];
 
-          inputValue: this.editData.options[index].label || '',
-          id: index.toString(),
-          item: this.editData.options[index].label || '',
-          selectedOptionIndex: null,
-          direction: position.direction || 'RIGHT',
-        }),
-      );
+      if (this.editData.distractors) {
+        this.distractors = this.editData.distractors.map(d => ({ value: d.label || d.value || '' }));
+      }
 
-      this.tags = this.editData.itemTagsDTOS;
+      this.tags = this.editData.itemTagsDTOS || [];
       this.itemUtil.setSelectedTags(this.tags);
 
-      this.editData.scoringOption.answers; //Setting the right answer
+      if (this.editData.scoringOption && this.editData.scoringOption.answers) {
+        this.editData.scoringOption.answers; //Setting the right answer
+      }
       /* this.options.forEach((option, index) => {
             if(this.editData.scoringOption.answers.includes(option.value)){
               this.selectedAnswers.add(index);
