@@ -18,11 +18,11 @@
                     <span class="d-inline-flex flex-wrap gap-2 bg-light p-1 rounded-pill align-middle mx-2 my-1">
                         <span *ngFor="let resp of item.responses; let respIndex = index" type="button"
                             class="d-inline-flex align-items-center gap-1 rounded-pill bg-white py-1 px-2">
-                            <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp"
-                                [checked]="previewData.scoringOption.answers[i] === resp" />
+                            <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp.value !== undefined ? resp.value : resp"
+                                [checked]="previewData.scoringOption.answers[i] === (resp.label !== undefined ? resp.label : resp)" />
 
-                            <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp" />
-                            <span>{{ resp }}</span>
+                            <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp.value !== undefined ? resp.value : resp" />
+                            <span>{{ resp.label !== undefined ? resp.label : resp }}</span>
                         </span>
                     </span>
                 </ng-container>

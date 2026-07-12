@@ -314,18 +314,31 @@ export class LabelImageDropdownComponent
 
       // this.editData.possibleResponses[index].responses[0]
       this.dropdownLabels = this.editData.responsePositions.map(
-        (position, index) => ({
-          options: this.editData.possibleResponses[index]?.responses || [],
-          x: position.x || 50, // Default to 50 if not provided
-          y: position.y || 50, // Default to 50 if not provided
-          inputValue: '',
-          selectedOptionIndex: this.editData.scoringOption.answers[index] ? parseInt(this.editData.scoringOption.answers[index]) : null,
-          correctAnswerIndex:
-            this.editData.scoringOption.answers[index] !== undefined && this.editData.scoringOption.answers[index] !== null ? parseInt(this.editData.scoringOption.answers[index]) : null,
-          id: index.toString(),
-          direction: position.direction || 'RIGHT',
-          showEnterOptionInput: false
-        }),
+        (position: any, index: number) => {
+          const incomingOptions = this.editData.possibleResponses[index]?.responses || [];
+          const stringifiedOptions = incomingOptions.map((opt: any) => opt.label !== undefined ? opt.label : opt);
+
+          const resolvedIndex = (() => {
+            const ans = this.editData.scoringOption.answers[index];
+            if (ans === undefined || ans === null) return null;
+            const labelIdx = stringifiedOptions.indexOf(ans);
+            if (labelIdx !== -1) return labelIdx;
+            const parsed = parseInt(ans);
+            return !isNaN(parsed) ? parsed : null;
+          })();
+
+          return {
+            options: stringifiedOptions,
+            x: position.x || 50, // Default to 50 if not provided
+            y: position.y || 50, // Default to 50 if not provided
+            inputValue: resolvedIndex !== null ? stringifiedOptions[resolvedIndex] : '',
+            selectedOptionIndex: resolvedIndex,
+            correctAnswerIndex: resolvedIndex,
+            id: index.toString(),
+            direction: position.direction || 'RIGHT',
+            showEnterOptionInput: false
+          };
+        }
       );
       // console.log();
       this.defaultItemProperties.possibleResponses =
@@ -717,14 +730,16 @@ export class LabelImageDropdownComponent
     this.dropdownLabels.forEach((label, index) => {
       const responsePosition = { x: label.x, y: label.y, direction: label.direction || 'RIGHT' };
       const correctAnswerValue =
-        label.correctAnswerIndex !== null && label.correctAnswerIndex !== undefined && label.options[label.correctAnswerIndex]
-          ? label.options[label.correctAnswerIndex].toString()
+        label.correctAnswerIndex !== null && label.correctAnswerIndex !== undefined
+          ? label.correctAnswerIndex.toString()
           : '';
 
-      item.possibleResponses[index] = { responses: label.options };
+      const objectOptions = label.options.map((optLabel, idx) => ({ label: optLabel, value: String(idx) }));
+
+      item.possibleResponses[index] = { responses: objectOptions };
       item.responsePositions.push(responsePosition);
 
-      if (correctAnswerValue) {
+      if (correctAnswerValue !== '') {
         item.scoringOption.answers[index] = correctAnswerValue;
       }
     });

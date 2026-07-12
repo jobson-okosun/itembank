@@ -401,9 +401,9 @@
                           </div>
                         </div>
                         
-                        <select #selectEl class="form-select mb-2" (change)="selectAnwser(i, $event)" [value]="label.correctAnswerIndex !== null && label.correctAnswerIndex !== undefined ? label.correctAnswerIndex : ''">
-                          <option value="" [selected]="label.correctAnswerIndex === null || label.correctAnswerIndex === undefined">Select correct answer</option>
-                          <option *ngFor="let option of label.options; let j = index" [value]="j" [selected]="label.correctAnswerIndex == j">{{ option }}</option>
+                        <select #selectEl class="form-select mb-2" (change)="selectAnwser(i, $event)" [(ngModel)]="label.correctAnswerIndex" [ngModelOptions]="{standalone: true}">
+                          <option [ngValue]="null" disabled selected>Select correct answer</option>
+                          <option *ngFor="let option of label.options; let j = index" [value]="j">{{ option }}</option>
                         </select>
                         
                         <!-- Direction Select -->
@@ -725,7 +725,8 @@
               bottom: 186px;
             " ngbTooltip="REMOVE" class="d-flex align-items- justify-content-end" (click)="deleteLabel(i)"><i
               style="color: #fff" class="ri-close-line align-middle me-2"></i></span>
-          <select class="form-select form-select-sm" (change)="onSelectOption(i, $event)">
+          <select class="form-select form-select-sm" (change)="onSelectOption(i, $event)" [(ngModel)]="label.selectedOptionIndex" [ngModelOptions]="{standalone: true}">
+            <option [ngValue]="null" disabled selected>Select an option</option>
             <option *ngFor="let option of label.options; let j = index" [value]="j">
               {{ option }}
             </option>

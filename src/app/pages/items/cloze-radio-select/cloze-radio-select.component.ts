@@ -147,6 +147,21 @@ export class ClozeRadioSelectComponent implements OnInit {
     this.subjectModerationStatus = this.itemService.currentSubjectModerationEnabled;
 
     if (this.editData) {
+      // Normalize old possibleResponses string array to objects
+      if (this.editData.possibleResponses) {
+        this.editData.possibleResponses = this.editData.possibleResponses.map((pr: any) => {
+          if (pr.responses) {
+            pr.responses = pr.responses.map((resp: any, idx: number) => {
+              if (typeof resp === 'string') {
+                return { label: resp, value: String(idx) };
+              }
+              return resp;
+            });
+          }
+          return pr;
+        });
+      }
+
       this.defaultItemProperties.scoringOption.answers =
         this.editData.scoringOption.answers;
       this.defaultItemProperties.reference = this.editData.reference;
@@ -218,7 +233,9 @@ export class ClozeRadioSelectComponent implements OnInit {
         const responses = this.editData.possibleResponses[i].responses;
         const correctAnswer = this.editData.scoringOption.answers[i];
 
-        responses.forEach((response, j) => {
+        responses.forEach((response: any, j: number) => {
+          const responseLabel = response.label !== undefined ? response.label : response;
+          const responseValue = response.value !== undefined ? response.value : String(j);
 
           let option = tinymce.activeEditor.dom.create("span", {
             class: "option",
@@ -232,12 +249,12 @@ export class ClozeRadioSelectComponent implements OnInit {
             name: groupName,
           });
 
-          input.checked = response === correctAnswer
+          input.checked = responseLabel === correctAnswer
 
           let label = tinymce.activeEditor.dom.create(
             "label",
             { for: `${containerId}-option-${j}` },
-            response
+            responseLabel
           );
 
           option.appendChild(input);
@@ -652,7 +669,7 @@ export class ClozeRadioSelectComponent implements OnInit {
 
       const optionNodes = container.querySelectorAll<HTMLElement>(".option");
 
-      const options: string[] = [];
+      const options: any[] = [];
       let correctAnswer = "";
 
       optionNodes.forEach(opt => {
@@ -661,10 +678,13 @@ export class ClozeRadioSelectComponent implements OnInit {
 
         if (!label) return;
 
-        options.push(label);
+        options.push({
+          label: label,
+          value: String(options.length)
+        });
 
         if (radio?.checked) {
-          correctAnswer = label;
+          correctAnswer = String(options.length - 1);
         }
       });
 

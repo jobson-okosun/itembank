@@ -1,3 +1,3 @@
 export class Responses {
-  responses: string[];
+  responses: any[];
 }

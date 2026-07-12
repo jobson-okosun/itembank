@@ -38,7 +38,7 @@ export class LabelImageDropdown {
     dimension: string;
   };
   possibleResponses: Array<{
-    responses: Array<string>;
+    responses: Array<any>;
   }> = [];
   responsePositions: Array<{
     x: number;

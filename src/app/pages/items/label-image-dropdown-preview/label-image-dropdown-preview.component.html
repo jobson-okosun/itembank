@@ -17,7 +17,7 @@
 
                     <select class="form-select form-select-sm" name="" id="" style="width: 100px">
                       <option disabled selected>Select correct answer</option>
-                      <option *ngFor="let response of previewData.possibleResponses[i].responses">{{ response }}</option>
+                      <option *ngFor="let response of previewData.possibleResponses[i].responses" [value]="response.value !== undefined ? response.value : response">{{ response.label !== undefined ? response.label : response }}</option>
                     </select>
                   </div>
                 </div>
@@ -147,9 +147,9 @@
     <div>
       <select class="form-select form-select-sm" name="" id="">
         <option
-          *ngFor="let response of previewData.possibleResponses[i].responses"
+          *ngFor="let response of previewData.possibleResponses[i].responses" [value]="response.value !== undefined ? response.value : response"
         >
-          {{ response }}
+          {{ response.label !== undefined ? response.label : response }}
         </option>
       </select>
     </div>

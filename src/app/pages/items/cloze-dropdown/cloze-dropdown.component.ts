@@ -203,6 +203,21 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // }
 
     if (this.editData) {
+      // Normalize old possibleResponses string array to objects
+      if (this.editData.possibleResponses) {
+        this.editData.possibleResponses = this.editData.possibleResponses.map((pr: any) => {
+          if (pr.responses) {
+            pr.responses = pr.responses.map((resp: any, idx: number) => {
+              if (typeof resp === 'string') {
+                return { label: resp, value: String(idx) };
+              }
+              return resp;
+            });
+          }
+          return pr;
+        });
+      }
+
       // console.log('here i am');
       //this.defaultItemProperties.stimulus = this.editData.stimulus;
       this.defaultItemProperties.scoringOption.answers =
@@ -288,14 +303,14 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
         // Add dynamic response options
         const responses = this.editData.possibleResponses[i].responses;
-        responses.forEach((response, j) => {
+        responses.forEach((response: any, j: number) => {
           let new_option = document.createElement('option');
-          new_option.label = response;
-          new_option.value = j + '';
+          new_option.label = response.label !== undefined ? response.label : response;
+          new_option.value = response.value !== undefined ? response.value : (j + '');
           // Check if option already exists, avoid duplicates
           if (
             !Array.from(selectBox.options).some(
-              (option) => option.value === j + '',
+              (option) => option.value === new_option.value,
             )
           ) {
             selectBox.options.add(new_option);
@@ -313,7 +328,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
         const correctAnswer = this.editData.scoringOption.answers[i]; // Correct answer for this selectBox
         for (let k = 0; k < selectBox.options.length; k++) {
           const optionLabel = selectBox.options[k].label; // Current option's label
-          if (optionLabel === correctAnswer) {
+          const optionValue = selectBox.options[k].value; // Current option's value
+          if (optionLabel === correctAnswer || optionValue === correctAnswer) {
             selectBox.options[k].selected = true; // Set as selected
             console.log(`Answer set for selectBox ${i}: ${correctAnswer}`);
             break;
@@ -845,17 +861,20 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.content = tinymce.get('abc').getDoc().getElementsByTagName('select');
     for (let i = 0; i < this.content.length; i++) {
+      let ansIndex = this.content[i].selectedIndex - 2;
       item.scoringOption.answers.push(
-        this.content[i].selectedOptions[0].label.trim(),
+        ansIndex >= 0 ? String(ansIndex) : ""
       );
     }
     for (let i = 0; i < this.content.length; i++) {
       let possibleResponse: Responses = new Responses();
-      let options: string[] = [];
+      let options: any[] = [];
       for (let j = 2; j < this.content[i].options.length; j++) {
-        options.push(this.content[i].options[j].label.trim());
+        options.push({
+          label: this.content[i].options[j].label.trim(),
+          value: String(j - 2)
+        });
       }
-      possibleResponse.responses = options.map((option) => option.trim());
       possibleResponse.responses = options;
       this.responses.push(possibleResponse);
     }
@@ -958,7 +977,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     const isAnswerArrElementValid = item.scoringOption.answers.every(
       (value: string, index: number) => {
-        if (!item.possibleResponses[index].responses.includes(value)) {
+        if (!item.possibleResponses[index].responses.some((r: any, idx: number) => String(idx) === value || (r.label !== undefined ? r.label : r) === value)) {
           answerIndex = index + 1;
           return false;
         }
@@ -1033,13 +1052,17 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.content = tinymce.get('abc').getDoc().getElementsByTagName('select');
     for (let i = 0; i < this.content.length; i++) {
-      item.scoringOption.answers.push(this.content[i].selectedOptions[0].label);
+      let ansIndex = this.content[i].selectedIndex - 2;
+      item.scoringOption.answers.push(ansIndex >= 0 ? String(ansIndex) : "");
     }
     for (let i = 0; i < this.content.length; i++) {
       let possibleResponse: Responses = new Responses();
-      let options: string[] = [];
+      let options: any[] = [];
       for (let j = 2; j < this.content[i].options.length; j++) {
-        options.push(this.content[i].options[j].label);
+        options.push({
+          label: this.content[i].options[j].label.trim(),
+          value: String(j - 2)
+        });
       }
       possibleResponse.responses = options;
 
@@ -1145,7 +1168,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     const isAnswerArrElementValid = item.scoringOption.answers.every(
       (value: string, index: number) => {
-        if (!item.possibleResponses[index].responses.includes(value)) {
+        if (!item.possibleResponses[index].responses.some((r: any, idx: number) => String(idx) === value || (r.label !== undefined ? r.label : r) === value)) {
           answerIndex = index + 1;
           return false;
         }
@@ -1197,13 +1220,17 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.content = tinymce.get('abc').getDoc().getElementsByTagName('select');
     for (let i = 0; i < this.content.length; i++) {
-      item.scoringOption.answers.push(this.content[i].selectedOptions[0].label);
+      let ansIndex = this.content[i].selectedIndex - 2;
+      item.scoringOption.answers.push(ansIndex >= 0 ? String(ansIndex) : "");
     }
     for (let i = 0; i < this.content.length; i++) {
       let possibleResponse: Responses = new Responses();
-      let options: string[] = [];
+      let options: any[] = [];
       for (let j = 2; j < this.content[i].options.length; j++) {
-        options.push(this.content[i].options[j].label);
+        options.push({
+          label: this.content[i].options[j].label.trim(),
+          value: String(j - 2)
+        });
       }
       possibleResponse.responses = options;
       this.responses.push(possibleResponse);
@@ -1308,11 +1335,11 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     const isAnswerArrElementValid = item.scoringOption.answers.every(
       (value: string, index: number) => {
-        if (!item.possibleResponses[index].responses.includes(value)) {
+        if (!item.possibleResponses[index].responses.some((r: any, idx: number) => String(idx) === value || (r.label !== undefined ? r.label : r) === value)) {
           answerIndex = index + 1;
           return false;
         }
-        return true;
+        return true; 
       },
     );
 
@@ -1495,7 +1522,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     for (let i = 0; i < collection.length; i++) {
       let options = collection[i].options;
       let possibleResponse: Responses = new Responses();
-      let itemOptions: string[] = [];
+      let itemOptions: any[] = [];
+      let optIndex = 0;
 
       if (options.length > 2) {
         for (let j = 0; j < options.length; j++) {
@@ -1507,14 +1535,18 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
           }
 
           const optionLabel = options[j].label.trim();
-          itemOptions.push(optionLabel);
+          itemOptions.push({
+            label: optionLabel,
+            value: String(optIndex)
+          });
 
           if (options[j].selected) {
-            item.scoringOption.answers.push(optionLabel);
+            item.scoringOption.answers.push(String(optIndex));
             options[j].setAttribute('selected', 'selected');
           } else {
             options[j].removeAttribute('selected');
           }
+          optIndex++;
         }
 
         possibleResponse.responses = itemOptions;
@@ -1524,7 +1556,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
          * be appearing in the first position of the array and when the 'show answer'
          * checkbox is clicked the correct answer is showned.
          */
-        possibleResponse.responses.unshift('--');
+        possibleResponse.responses.unshift({ label: '--', value: 'blank' });
 
         this.responses.push(possibleResponse);
       }
@@ -1637,17 +1669,20 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
     this.content = tinymce.get('abc').getDoc().getElementsByTagName('select');
     for (let i = 0; i < this.content.length; i++) {
+      let ansIndex = this.content[i].selectedIndex - 2;
       item.scoringOption.answers.push(
-        this.content[i].selectedOptions[0].label.trim(),
+        ansIndex >= 0 ? String(ansIndex) : ""
       );
     }
     for (let i = 0; i < this.content.length; i++) {
       let possibleResponse: Responses = new Responses();
-      let options: string[] = [];
+      let options: any[] = [];
       for (let j = 2; j < this.content[i].options.length; j++) {
-        options.push(this.content[i].options[j].label.trim());
+        options.push({
+          label: this.content[i].options[j].label.trim(),
+          value: String(j - 2)
+        });
       }
-      possibleResponse.responses = options.map((option) => option.trim());
       possibleResponse.responses = options;
       this.responses.push(possibleResponse);
     }

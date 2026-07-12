@@ -72,6 +72,22 @@ export class ClozeDropdownPreviewComponent implements OnInit {
     // console.log(this.previewData.stimulus);
     // console.log(this.previewData.scoringOption.answers);
     this.isEditPreview = this.router.url.includes('edit-item');
+
+    // Normalize old possibleResponses string array to objects
+    if (this.previewData && this.previewData.possibleResponses) {
+      this.previewData.possibleResponses = this.previewData.possibleResponses.map((pr: any) => {
+        if (pr.responses) {
+          pr.responses = pr.responses.map((resp: any, idx: number) => {
+            if (typeof resp === 'string') {
+              return { label: resp, value: String(idx) };
+            }
+            return resp;
+          });
+        }
+        return pr;
+      });
+    }
+
     // this.getCurrentQuestion();
     this.renderContent();
     //this.checkCloze(this.expectedCloze);
@@ -154,8 +170,9 @@ export class ClozeDropdownPreviewComponent implements OnInit {
       selectHtml += `<option selected>${selectedAnswer ? selectedAnswer : 'No Answer'}</option>`;
     } else {
       // When not showing answer, show all options without selection
-      options.forEach((option: string) => {
-        selectHtml += `<option>${option}</option>`;
+      options.forEach((option: any) => {
+        const label = option.label !== undefined ? option.label : option;
+        selectHtml += `<option>${label}</option>`;
       });
     }
 
