@@ -17,6 +17,7 @@ export class CandidateBehaviourProfileComponent implements OnInit {
 
   isLoading: boolean = false;
   participantId: string = '';
+  candidateName: string = '';
   
   profileData: BehaviourAnalysisCandidate | null = null;
   eventsData: BehaviourEventData[] = [];
@@ -36,8 +37,9 @@ export class CandidateBehaviourProfileComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  openProfile(participantId: string) { 
+  openProfile(participantId: string, candidateName?: string) { 
     this.participantId = participantId;
+    this.candidateName = candidateName || '';
     this.activeTab = 'overview'; // reset tab on open
     this.fetchData();
     this.modalService.open(this.candidateProfileModal, { size: 'xl', centered: true, scrollable: true });

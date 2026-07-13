@@ -1,7 +1,9 @@
 <ng-template #candidateProfileModal let-modal>
     <div class="modal-header bg-light border-bottom p-3 d-flex align-items-center">
         <div>
-            <h5 class="modal-title fw-bold mb-1">Candidate Behaviour Profile</h5>
+            <h5 class="modal-title fw-bold mb-1">
+                {{ candidateName ? (candidateName | titlecase) + "'s Behaviour Profile" : 'Candidate Behaviour Profile' }}
+            </h5>
         </div>
         <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
     </div>
@@ -389,14 +391,25 @@
                         <ul class="list-group list-group-flush shadow-sm">
                             <li *ngFor="let event of eventsData" class="list-group-item py-3">
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <div>
+                                    <div class="w-100 me-3">
                                         <h6 class="mb-1 fw-bold">{{ event.event_type.replace('_', ' ') }}</h6>
-                                        <div class="small text-muted">
-                                            <span class="me-3"><i class="ri-time-line align-middle"></i> Elapsed: {{ (event.elapsed_ms / 1000).toFixed(1) }}s</span>
-                                            <span *ngIf="event.duration_ms"><i class="ri-timer-line align-middle"></i> Duration: {{ (event.duration_ms / 1000).toFixed(1) }}s</span>
+                                        <div class="small text-muted mb-2">
+                                            <span class="me-3" title="Event ID">ID: {{ event.event_id }}</span>
+                                            <span class="me-3" title="Elapsed Time"><i class="ri-time-line align-middle"></i> Elapsed: {{ (event.elapsed_ms / 1000).toFixed(1) }}s</span>
+                                            <span *ngIf="event.duration_ms" class="me-3" title="Duration"><i class="ri-timer-line align-middle"></i> Duration: {{ (event.duration_ms / 1000).toFixed(1) }}s</span>
+                                            <span *ngIf="event.battery_level !== null" title="Battery Level"><i class="ri-battery-2-charge-line align-middle"></i> Battery: {{ event.battery_level }}%</span>
+                                        </div>
+                                        <div class="small bg-white p-2 rounded border" *ngIf="event.item_id || event.section_id || event.answer !== null || event.answer !== undefined || event.old_answer !== null || event.old_answer !== undefined || event.navigation_method">
+                                            <div class="row g-2">
+                                                <div class="col-6 text-truncate" *ngIf="event.section_id" title="{{ event.section_id }}"><strong>Section:</strong> {{ event.section_id }}</div>
+                                                <div class="col-6 text-truncate" *ngIf="event.item_id" title="{{ event.item_id }}"><strong>Item ID:</strong> {{ event.item_id }}</div>
+                                                <div class="col-6 text-truncate" *ngIf="event.navigation_method" title="{{ event.navigation_method }}"><strong>Nav Method:</strong> {{ event.navigation_method }}</div>
+                                                <div class="col-12" *ngIf="event.answer !== null && event.answer !== undefined"><strong>Answer:</strong> {{ event.answer | json }}</div>
+                                                <div class="col-12" *ngIf="event.old_answer !== null && event.old_answer !== undefined"><strong>Old Answer:</strong> {{ event.old_answer | json }}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <button class="btn btn-sm btn-light border" (click)="openEventDetails(event, eventDetailsModal)">
+                                    <button class="btn btn-sm btn-light border flex-shrink-0" (click)="openEventDetails(event, eventDetailsModal)">
                                         Details
                                     </button>
                                 </div>

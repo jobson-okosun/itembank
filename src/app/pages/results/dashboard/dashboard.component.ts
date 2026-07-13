@@ -1470,9 +1470,9 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  viewCandidateProfile(participantId: string) {
+  viewCandidateProfile(participantId: string, candidateName?: string) {
     if (this.candidateProfileComponent) {
-      this.candidateProfileComponent.openProfile(participantId);
+      this.candidateProfileComponent.openProfile(participantId, candidateName);
     }
   }
 
