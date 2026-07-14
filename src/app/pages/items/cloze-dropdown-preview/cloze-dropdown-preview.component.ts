@@ -167,7 +167,17 @@ export class ClozeDropdownPreviewComponent implements OnInit {
 
     if (this.showAnswer) {
       // When showing answer, only display the correct answer
-      selectHtml += `<option selected>${selectedAnswer ? selectedAnswer : 'No Answer'}</option>`;
+      let answerLabel = 'No Answer';
+      if (selectedAnswer !== undefined && selectedAnswer !== null) {
+        const foundOption = options.find((opt: any) => String(opt.value) === String(selectedAnswer));
+        if (foundOption) {
+          answerLabel = foundOption.label;
+        } else {
+          // Fallback in case the answer was saved directly as text in older records
+          answerLabel = selectedAnswer;
+        }
+      }
+      selectHtml += `<option selected>${answerLabel}</option>`;
     } else {
       // When not showing answer, show all options without selection
       options.forEach((option: any) => {

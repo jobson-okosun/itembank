@@ -233,35 +233,40 @@ export class ClozeRadioSelectComponent implements OnInit {
         const responses = this.editData.possibleResponses[i].responses;
         const correctAnswer = this.editData.scoringOption.answers[i];
 
-        responses.forEach((response: any, j: number) => {
-          const responseLabel = response.label !== undefined ? response.label : response;
-          const responseValue = response.value !== undefined ? response.value : String(j);
+        const optionsWrapper = container.querySelector('.options-wrapper');
 
-          let option = tinymce.activeEditor.dom.create("span", {
-            class: "option",
-            style: "display:inline-flex; align-items:center; gap:3px; border:1px dashed #ccc;",
-            contenteditable: "false"
+        if (optionsWrapper && optionsWrapper.children.length === 0) {
+          responses.forEach((response: any, j: number) => {
+            const responseLabel = response.label !== undefined ? response.label : response;
+            const responseValue = response.value !== undefined ? response.value : String(j);
+
+            let option = tinymce.activeEditor.dom.create("span", {
+              class: "option",
+              style: "display:inline-flex; align-items:center; gap:3px; border:1px dashed #ccc;",
+              contenteditable: "false"
+            });
+
+            let input = tinymce.activeEditor.dom.create("input", {
+              type: "radio",
+              contenteditable: "true",
+              name: groupName,
+              value: responseValue
+            });
+
+            input.checked = String(responseValue) === String(correctAnswer)
+
+            let label = tinymce.activeEditor.dom.create(
+              "label",
+              { for: `${containerId}-option-${j}` },
+              responseLabel
+            );
+
+            option.appendChild(input);
+            option.appendChild(label);
+
+            optionsWrapper.appendChild(option)
           });
-
-          let input = tinymce.activeEditor.dom.create("input", {
-            type: "radio",
-            contenteditable: "true",
-            name: groupName,
-          });
-
-          input.checked = responseLabel === correctAnswer
-
-          let label = tinymce.activeEditor.dom.create(
-            "label",
-            { for: `${containerId}-option-${j}` },
-            responseLabel
-          );
-
-          option.appendChild(input);
-          option.appendChild(label);
-
-          container.querySelector('.options-wrapper').appendChild(option)
-        });
+        }
 
         // Insert space after the last select box if it's the last one
         if (i === selectContainers.length - 1) {
@@ -953,11 +958,10 @@ export class ClozeRadioSelectComponent implements OnInit {
 
         for (let i = 0; i < Array.from(options).length; i++) {
           const option = Array.from(options)[i];
-          const optionLabel = option.querySelector('label')
           const optionInput = option.querySelector('input[type="radio"]') as HTMLInputElement
 
-          if (optionLabel.textContent.trim() === correctAnswer) {
-            optionInput.checked = true
+          if (optionInput.value === String(correctAnswer) || optionInput.getAttribute('value') === String(correctAnswer)) {
+            optionInput.checked = true;
             break;
           }
         }

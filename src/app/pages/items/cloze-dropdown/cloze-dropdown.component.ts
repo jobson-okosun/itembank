@@ -278,127 +278,114 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
   }
 
   logEditor(event: any) {
-    if (this.editData) {
-      let selectBoxes: HTMLSelectElement[] = tinymce
-        .get('abc')
-        .getDoc()
-        .querySelectorAll('select');
-      console.log('These are the select boxes', selectBoxes);
-      this.selectBoxesLength = selectBoxes.length;
-      selectBoxes.forEach((selectBox, i) => {
-        selectBox.setAttribute('id', i + '');
-        console.log(selectBoxes.length, 'select box length');
+    let selectBoxes: HTMLSelectElement[] = tinymce
+      .get('abc')
+      .getDoc()
+      .querySelectorAll('select');
+    console.log('These are the select boxes', selectBoxes);
+    this.selectBoxesLength = selectBoxes.length;
+    selectBoxes.forEach((selectBox, i) => {
+      selectBox.setAttribute('id', i + '');
+      console.log(selectBoxes.length, 'select box length');
 
-        // Add default options if not present
-        if (selectBox.options.length === 0) {
-          let option1 = document.createElement('option');
-          let option2 = document.createElement('option');
-          option1.label = '--';
-          option1.value = 'blank';
-          option2.label = 'click to add / remove';
-          option2.value = 'addRemove';
-          selectBox.options.add(option1);
-          selectBox.options.add(option2);
-        }
+      // Add default options if not present
+      if (selectBox.options.length === 0) {
+        let option1 = document.createElement('option');
+        let option2 = document.createElement('option');
+        option1.label = '--';
+        option1.value = 'blank';
+        option2.label = 'click to add / remove';
+        option2.value = 'addRemove';
+        selectBox.options.add(option1);
+        selectBox.options.add(option2);
+      }
 
-        // Add dynamic response options
-        const responses = this.editData.possibleResponses[i].responses;
-        responses.forEach((response: any, j: number) => {
-          let new_option = document.createElement('option');
-          new_option.label = response.label !== undefined ? response.label : response;
-          new_option.value = response.value !== undefined ? response.value : (j + '');
-          // Check if option already exists, avoid duplicates
-          if (
-            !Array.from(selectBox.options).some(
-              (option) => option.value === new_option.value,
-            )
-          ) {
-            selectBox.options.add(new_option);
+      if (this.editData) {
+        // Add dynamic response options ONLY if there are no real options yet
+        if (selectBox.options.length <= 2) {
+          const possibleResponse = this.editData.possibleResponses[i];
+          if (possibleResponse && possibleResponse.responses) {
+            const responses = possibleResponse.responses;
+            responses.forEach((response: any, j: number) => {
+              let new_option = document.createElement('option');
+              new_option.label = response.label !== undefined ? response.label : response;
+              new_option.value = response.value !== undefined ? response.value : (j + '');
+              // Check if option already exists, avoid duplicates
+              if (
+                !Array.from(selectBox.options).some(
+                  (option) => option.value === new_option.value,
+                )
+              ) {
+                selectBox.options.add(new_option);
+              }
+            });
           }
-        });
-
-        // Insert space after the last select box if it's the last one
-        if (i === selectBoxes.length - 1) {
-          let p = document.createElement('p');
-          p.innerHTML = '&nbsp;';
-          tinymce.activeEditor.getDoc().body.appendChild(p);
         }
 
         // Set the selected answer
-        const correctAnswer = this.editData.scoringOption.answers[i]; // Correct answer for this selectBox
-        for (let k = 0; k < selectBox.options.length; k++) {
-          const optionLabel = selectBox.options[k].label; // Current option's label
-          const optionValue = selectBox.options[k].value; // Current option's value
-          if (optionLabel === correctAnswer || optionValue === correctAnswer) {
-            selectBox.options[k].selected = true; // Set as selected
-            console.log(`Answer set for selectBox ${i}: ${correctAnswer}`);
-            break;
+        const correctAnswer = this.editData.scoringOption?.answers?.[i]; // Correct answer for this selectBox
+        if (correctAnswer !== undefined) {
+          for (let k = 0; k < selectBox.options.length; k++) {
+            const optionLabel = selectBox.options[k].label; // Current option's label
+            const optionValue = selectBox.options[k].value; // Current option's value
+            if (optionLabel === correctAnswer || optionValue === correctAnswer) {
+              selectBox.options[k].selected = true; // Set as selected
+              console.log(`Answer set for selectBox ${i}: ${correctAnswer}`);
+              break;
+            }
           }
         }
+      }
 
-        // Add event listener for handling "add/remove"
-        selectBox.addEventListener('change', (event) => {
-          console.log('change event added for', i);
-          let selectElement = event.currentTarget as HTMLSelectElement; // Cast to HTMLSelectElement
+      // Insert space after the last select box if it's the last one
+      if (i === selectBoxes.length - 1) {
+        let p = document.createElement('p');
+        p.innerHTML = '&nbsp;';
+        tinymce.activeEditor.getDoc().body.appendChild(p);
+      }
 
-          // Skip if "add/remove" is not clicked
+      // Add event listener for handling "add/remove"
+      selectBox.addEventListener('change', (event) => {
+        console.log('change event added for', i);
+        let selectElement = event.currentTarget as HTMLSelectElement; // Cast to HTMLSelectElement
+
+        // Skip if "add/remove" is not clicked
+        if (
+          selectElement.options[selectElement.selectedIndex].value !==
+          'addRemove'
+        ) {
+          return;
+        }
+
+        // Build the options array for add/remove functionality
+        let optionsArray = [
+          { value: 'selectOption', text: 'Select option to delete' },
+        ];
+
+        for (let j = 0; j < selectElement.options.length; j++) {
           if (
-            selectElement.options[selectElement.selectedIndex].value !==
-            'addRemove'
+            selectElement.options[j].value === 'blank' ||
+            selectElement.options[j].value === 'addRemove'
           ) {
-            return;
+            continue;
           }
-
-          // Build the options array for add/remove functionality
-          let optionsArray = [
-            { value: 'selectOption', text: 'Select option to delete' },
-          ];
-
-          for (let j = 0; j < selectElement.options.length; j++) {
-            if (
-              selectElement.options[j].value === 'blank' ||
-              selectElement.options[j].value === 'addRemove'
-            ) {
-              continue;
-            }
-            optionsArray.push({
-              value: selectElement.options[j].value,
-              text: selectElement.options[j].label,
-            });
-          }
-
-          // Execute the TinyMCE command for add/remove functionality
-          tinymce.activeEditor.execCommand('addRemoveClozeOption', false, {
-            select: event.currentTarget,
-            options: optionsArray,
+          optionsArray.push({
+            value: selectElement.options[j].value,
+            text: selectElement.options[j].label,
           });
+        }
 
-          selectElement.selectedIndex = 0; // Reset selection
+        // Execute the TinyMCE command for add/remove functionality
+        tinymce.activeEditor.execCommand('addRemoveClozeOption', false, {
+          select: event.currentTarget,
+          options: optionsArray,
         });
 
-        console.log(`SelectBox ${i} initialized in TinyMCE.`);
+        selectElement.selectedIndex = 0; // Reset selection
       });
 
-      /* selectBoxes.forEach((selectBox, i) => {
-            let options: HTMLOptionElement[] = [];
-            for (let j = 0; j < selectBox.options.length; j++) {
-              //selectBox.options((option) => {
-    
-              if (
-                selectBox.options[j].value === 'blank' ||
-                selectBox.options[j].value === 'addRemove'
-              ) {
-                continue;
-              } else {
-                if (j - 2 == +this.previewData.scoringOption.answers[i]) {
-                  selectBox.options[j].selected = true;
-                  console.log('answer found');
-                }
-              }
-              //})
-            }
-          }); */
-    }
+      console.log(`SelectBox ${i} initialized in TinyMCE.`);
+    });
     // if (this.previewData) {
     //   let selectedBoxes: HTMLSelectElement[] = tinymce
     //     .get("abc")
@@ -1006,6 +993,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     console.log(original_content, 'original');
     console.log(item.stimulus);
 
+    this.publishingItem = true;
+    this.publishLoader();
     this.saveFunction(item, 'save');
     return;
     this.itemService.createClozeDropdownItem(item).subscribe(
@@ -1199,6 +1188,8 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
     // console.log(original_content, 'original');
     // console.log(item.stimulus);
 
+    this.publishingItem = true;
+    this.publishLoader();
     this.saveFunction(item, 'draft');
   }
 
@@ -1625,8 +1616,7 @@ export class ClozeDropdownComponent implements OnInit, OnDestroy {
 
           // Find and select the correct answer
           for (let i = 2; i < selectBox.options.length; i++) {
-            const option = selectBox.options[i];
-            if (option.label.trim() === correctAnswer) {
+            if (String(i - 2) === String(correctAnswer)) {
               selectBox.selectedIndex = i;
               break;
             }

@@ -98,6 +98,7 @@ export function newClozeRadioContainer(editor: any, count: number) {
     type: "radio",
     contenteditable: "true",
     name: groupName,
+    value: "0"
   });
 
   let label = tinymce.activeEditor.dom.create(
@@ -229,6 +230,7 @@ export function openClozeOptionsModal(container: HTMLElement, groupName: string)
     if (existingOptions.length === 0) {
       container.remove();
       modal.remove();
+      tinymce.activeEditor.fire('change');
       return;
     }
 
@@ -237,7 +239,7 @@ export function openClozeOptionsModal(container: HTMLElement, groupName: string)
     // Clear options but keep wrapper alive
     optionsWrapper.innerHTML = '';
 
-    existingOptions.forEach((opt) => {
+    existingOptions.forEach((opt, idx) => {
       const optionDiv = document.createElement('span');
       optionDiv.className = 'd-flex option align-items-center gap-2 border p-1';
       optionDiv.style.border = "1px dashed #ccc";
@@ -247,6 +249,7 @@ export function openClozeOptionsModal(container: HTMLElement, groupName: string)
       radio.type = 'radio';
       radio.name = groupName;
       radio.id = opt.id;
+      radio.value = String(idx);
 
       if (opt.checked) {
         radio.checked = true;
@@ -263,6 +266,7 @@ export function openClozeOptionsModal(container: HTMLElement, groupName: string)
     });
 
     modal.remove();
+    tinymce.activeEditor.fire('change');
   });
 
 

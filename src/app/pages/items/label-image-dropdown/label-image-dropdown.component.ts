@@ -321,10 +321,22 @@ export class LabelImageDropdownComponent
           const resolvedIndex = (() => {
             const ans = this.editData.scoringOption.answers[index];
             if (ans === undefined || ans === null) return null;
+
+            // 1. Check against the option's value first (since value stores the index)
+            const valIdx = incomingOptions.findIndex((opt: any) => opt.value !== undefined && String(opt.value) === String(ans));
+            if (valIdx !== -1) return valIdx;
+
+            // 2. If no match by value, fallback to parsing it as an integer index
+            const parsed = parseInt(ans);
+            if (!isNaN(parsed) && parsed >= 0 && parsed < stringifiedOptions.length) {
+              return parsed;
+            }
+
+            // 3. Fallback for legacy items that might have saved the label itself
             const labelIdx = stringifiedOptions.indexOf(ans);
             if (labelIdx !== -1) return labelIdx;
-            const parsed = parseInt(ans);
-            return !isNaN(parsed) ? parsed : null;
+
+            return null;
           })();
 
           return {
