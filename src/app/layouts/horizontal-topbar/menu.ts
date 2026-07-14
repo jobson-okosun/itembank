@@ -121,13 +121,13 @@ export const MENU: MenuItem[] = [
     role: ['ADMIN', 'EXAMINER', 'MARKER', 'GROUP_ADMIN'],
     icon: 'monitor',
   },
-  {
-    id: 18,
-    label: 'MENUITEMS.SCHEDULE.TEXT',
-    link: '/examalpha/schedule',
-    role: ['EXAMINER', 'ADMIN', 'PROCTOR_ADMIN', 'GROUP_ADMIN'],
-    icon: 'calendar',
-  },
+  // {
+  //   id: 18,
+  //   label: 'MENUITEMS.SCHEDULE.TEXT',
+  //   link: '/examalpha/schedule',
+  //   role: ['EXAMINER', 'ADMIN', 'PROCTOR_ADMIN', 'GROUP_ADMIN'],
+  //   icon: 'calendar',
+  // },
   {
     id: 19,
     label: "MENUITEMS.RESULT.TEXT",

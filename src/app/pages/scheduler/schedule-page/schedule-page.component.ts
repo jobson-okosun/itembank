@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit } from "@angular/core";
 import { AssessmentsService } from "../../assessment/service/assessments.service";
 import { AssessmentDeliveryEnum } from "../../assessment/model/assessment-delivery-enum";
+import { ItemServiceService } from "../../../shared/item-services/item-service.service";
 
 @Component({
   selector: "app-schedule-page",
@@ -12,7 +13,10 @@ export class SchedulePageComponent implements OnInit, AfterViewInit, OnDestroy {
   currentAssessment: string;
   deliveryMethod: string;
   deliveryMethods = AssessmentDeliveryEnum
-  constructor(private assessmentService: AssessmentsService) { }
+  constructor(
+    private assessmentService: AssessmentsService,
+    private itemService: ItemServiceService
+  ) { }
 
   ngOnInit(): void {
     this.breadCrumbItems = [
@@ -39,28 +43,13 @@ export class SchedulePageComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getAssessmemtDetails() {
-    // console.log( this.assessmentService.activeAssessmentDeliveryMethod)
-    this.currentAssessment = this.assessmentService.activeAssessment
-    this.deliveryMethod = this.assessmentService.activeAssessmentDeliveryMethod
-
-    // if (this.deliveryMethod) {
-    //   localStorage.setItem('deliveryMethod', this.deliveryMethod)
-    // } else {
-    //   const medthod = localStorage.getItem('deliveryMethod')
-    //   if (medthod) {
-    //     this.deliveryMethod = medthod
-    //   }
-    // }
-
+    this.currentAssessment = this.assessmentService.activeAssessment ?? this.itemService.getItem('activeAssessment');
+    this.deliveryMethod = this.assessmentService.activeAssessmentDeliveryMethod ?? this.itemService.getItem('activeAssessmentDeliveryMethod');
   }
 
   ngOnDestroy(): void {
     if(!!localStorage.getItem('abandon-reset')) {
       return
     }
-
-    localStorage.removeItem('deliveryMethod')
-    localStorage.removeItem('assessmentId')
-    localStorage.removeItem('assessmentName')
   }
 }

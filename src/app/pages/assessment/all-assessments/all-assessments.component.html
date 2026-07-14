@@ -166,7 +166,7 @@
       <div class="card">
         <div class="card-header d-flex mb-0 align-items-center">
           <h6 class="fs-15 text-truncate flex-grow-1">
-            <a (click)="setCurrentAssessment(assessment)" routerLink="/examalpha/exams/{{ assessment.bank_id }}">{{
+            <a (click)="setCurrentAssessment(assessment)" routerLink="/examalpha/exams/manage/{{ assessment.bank_id }}/{{ assessment.id }}/structure">{{
               assessment.name?.toUpperCase() }}</a>
           </h6>
           <div class="dropdown" ngbDropdown>
@@ -176,7 +176,7 @@
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink1" ngbDropdownMenu>
               <li *ngIf="!isCurrentUserMarker">
                 <a class="dropdown-item" (click)="setCurrentAssessment(assessment)"
-                  routerLink="/examalpha/exams/{{ assessment.bank_id }}"><i
+                  routerLink="/examalpha/exams/manage/{{ assessment.bank_id }}/{{ assessment.id }}/structure"><i
                     class="bx bxs-edit align-bottom me-2 text-muted"></i>
                   Manage Exam</a>
               </li>

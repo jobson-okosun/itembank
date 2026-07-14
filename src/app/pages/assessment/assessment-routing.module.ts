@@ -11,6 +11,7 @@ import { CandidateResultComponent } from '../results/candidate-result/candidate-
 import { TranscriptViewComponent } from '../results/transcript-view/transcript-view.component';
 import { AssessmentSectionsComponent } from './marking-guide/assessment-sections/assessment-sections.component';
 import { SectionComponent } from './marking-guide/section/section.component';
+import { ExamManagerComponent } from './exam-manager/exam-manager.component';
 
 const routes: Routes = [
   { path: '', component: AllAssessmentsComponent },
@@ -56,9 +57,21 @@ const routes: Routes = [
     path: ':assessmentId/grading/:participantId/grade',
     component: GradeComponent,
   },
-  {
+  /* {
     path: ':assessmentId',
     component: ViewAssessmentComponent,
+  }, */
+  {
+    path: 'manage/:bank_id/:schedule_id',
+    component: ExamManagerComponent,
+    children: [
+      { path: '', redirectTo: 'structure', pathMatch: 'full' },
+      { path: 'structure', component: ViewAssessmentComponent },
+      { 
+        path: 'schedule', 
+        loadChildren: () => import('../scheduler/scheduler.module').then((m) => m.SchedulerModule) 
+      }
+    ]
   },
   {
     path: ':assessmentId/marking-guide/sections',

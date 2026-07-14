@@ -195,7 +195,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     private sanitizer: DomSanitizer,
     private examPreviewService: ExamPreviewService,
   ) {
-    this.assessmentId = this.ar.snapshot.params['assessmentId'];
+    this.assessmentId = this.ar.parent?.snapshot.params['bank_id'] || this.ar.snapshot.params['assessmentId'];
     this.currentAssessment = this.assessmentService.activeAssessment ?? this._itemService.getItem('activeAssessment');
     this.currentAssessmentDeliveryMethod =
       this.assessmentService.activeAssessmentDeliveryMethod ?? this._itemService.getItem('activeAssessmentDeliveryMethod');
@@ -1533,8 +1533,6 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.itemService.assessmentActive = false;
-    this._itemService.clearItem('activeAssessmentDeliveryMethod');
-    this._itemService.clearItem('activeAssessment');
     window.removeEventListener('message', this.onMessageReceived);
   }
 

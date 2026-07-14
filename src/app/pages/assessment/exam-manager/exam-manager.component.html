@@ -1,0 +1,19 @@
+<div class="card bg-white mt-0 shadow-none border-0">
+  <div class="card-header bg-light border-bottom-0 p-0">
+    <ul class="nav nav-tabs px-4 pt-3 border-bottom-0" role="tablist">
+      <li class="nav-item cursor-pointer" (click)="setActiveTab('structure')">
+        <a class="nav-link fw-medium d-block w-100 h-100" [class.active]="activeTab === 'structure'" style="cursor: pointer;">
+          <i class="ri-list-settings-line me-1"></i> Exam Structure & Items
+        </a>
+      </li>
+      <li class="nav-item cursor-pointer" (click)="setActiveTab('schedule')">
+        <a class="nav-link fw-medium d-block w-100 h-100" [class.active]="activeTab === 'schedule'" style="cursor: pointer;">
+          <i class="ri-calendar-event-line me-1"></i> Schedule & Delivery
+        </a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body p-0 mt-0 pt-3" style="min-height: 400px;">
+    <router-outlet></router-outlet>
+  </div>
+</div>

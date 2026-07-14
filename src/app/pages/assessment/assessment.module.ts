@@ -43,6 +43,7 @@ import { SectionComponent } from './marking-guide/section/section.component';
 import {TabMenuModule} from 'primeng/tabmenu';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DisableScrollWheelDirective } from "src/app/shared/scrollspy.directive";
+import { ExamManagerComponent } from './exam-manager/exam-manager.component';
 // import { AssessmentPreviewComponent } from './assessment-preview/assessment-preview.component';
 
 @NgModule({
@@ -53,6 +54,7 @@ import { DisableScrollWheelDirective } from "src/app/shared/scrollspy.directive"
     AssessmentSectionsComponent,
     SectionComponent,
     DisableScrollWheelDirective,
+    ExamManagerComponent,
     // ExamPageComponent
     // AssessmentPreviewComponent,
   ],
