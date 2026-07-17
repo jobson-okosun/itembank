@@ -99,7 +99,7 @@ export class RegFieldSettingsComponent implements OnInit {
           error: (err: HttpErrorResponse) => {
             this.processingDelete = false;
 
-            this.notifierService.notify("error", err.error.message);
+            this.notifierService.notify("error", err.error?.error ?? err.error.message);
           },
         });
     }
@@ -430,7 +430,7 @@ export class RegFieldSettingsComponent implements OnInit {
           this.fetchRegFieldSettings();
         },
         error: (err: HttpErrorResponse) => {
-          this.notifierService.notify("error", err.error.message);
+          this.notifierService.notify("error", err.error?.message ?? err.error?.error);
         },
       });
   }

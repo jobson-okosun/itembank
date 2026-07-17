@@ -36,6 +36,8 @@ export class LabelImageDragDrop {
     x: number;
     y: number;
     direction?: string;
+    width?: number;
+    height?: number;
   }> = [];
   distractors: Array<{
     label: string; //text

@@ -113,6 +113,7 @@ export class LabelImageDragDropComponent
   currentUser: Account;
   preview: boolean = false;
   image: Images = new Images();
+  imageDescription: string = '';
   tags: ItemTagsDtos[] = [];
   defaultItemProperties: DefaultItemProperties = new DefaultItemProperties();
   scoringType: string[] = [];
@@ -141,6 +142,8 @@ export class LabelImageDragDropComponent
     id: string;
     item: any;
     direction?: string;
+    width?: number;
+    height?: number;
   }> = [
       {
         x: 0,
@@ -221,9 +224,9 @@ export class LabelImageDragDropComponent
 
   ngAfterViewInit() {
     // Capture the initial size of the image after the view is initialized
-    this.imageWidth = this.imageElement.nativeElement.offsetWidth;
-    this.imageHeight = this.imageElement.nativeElement.offsetHeight;
-    const rect = this.imageElement.nativeElement.getBoundingClientRect();
+    this.imageWidth = this.imageElement?.nativeElement?.offsetWidth;
+    this.imageHeight = this.imageElement?.nativeElement?.offsetHeight;
+    const rect = this.imageElement?.nativeElement?.getBoundingClientRect();
     // console.log("Image Dimensions:", rect.width, rect.height);
   }
 
@@ -292,11 +295,12 @@ export class LabelImageDragDropComponent
         this.image.url = this.editData.images[0].url;
         this.image.width = this.editData.images[0].width;
         this.image.height = this.editData.images[0].height;
+        this.image.altText = this.editData.imageData?.altText || this.editData.images[0].altText || '';
         this.defaultItemProperties.images[0] = {
           height: this.editData.images[0].height,
           url: this.editData.images[0].url,
           width: this.editData.images[0].width,
-          altText: '',
+          altText: this.image.altText,
           hoverText: '',
           label: '',
         };
@@ -321,6 +325,8 @@ export class LabelImageDragDropComponent
             item: optionLabel,
             selectedOptionIndex: null,
             direction: position.direction || 'RIGHT',
+            width: position.width || 120,
+            height: position.height || 30,
           };
         }
       ) : [];
@@ -725,7 +731,7 @@ export class LabelImageDragDropComponent
     item.subtopicId = this.itemUtil.currentItemTrail.subtopicId;
 
     item.imageData = {
-      altText: this.image.altText,
+      altText: this.imageDescription ? `${this.imageDescription} ${this.image.altText || ''}`.trim() : this.image.altText,
       dimension: '',
       height: imageRect.height,
       image: item.images[0].url,
@@ -742,10 +748,14 @@ export class LabelImageDragDropComponent
         x: number;
         y: number;
         direction: string;
+        width?: number;
+        height?: number;
       } = {
         x: option.x,
         y: option.y,
         direction: option.direction || 'RIGHT',
+        width: option.width || 120,
+        height: option.height || 30
       };
 
       item.responsePositions.push(reponsePosition);
@@ -1175,14 +1185,54 @@ export class LabelImageDragDropComponent
 
   //new implementation
   onMouseDown(event: MouseEvent, index: number) {
-    // console.log('i am down');
-    // console.log(index);
     this.isDragging = true;
     this.currentLabelIndex = index;
     this.offsetX = event.clientX - this.imageElement.nativeElement.offsetLeft;
     this.offsetY = event.clientY - this.imageElement.nativeElement.offsetTop;
     document.addEventListener('mousemove', this.boundMouseMove);
     document.addEventListener('mouseup', this.boundMouseUp);
+  }
+
+  // --- Resize logic ---
+  isResizing = false;
+  startResizeWidth = 0;
+  startResizeHeight = 0;
+  startResizeX = 0;
+  startResizeY = 0;
+
+  private boundResizeMouseMove = this.onResizeMouseMove.bind(this);
+  private boundResizeMouseUp = this.onResizeMouseUp.bind(this);
+
+  onResizeMouseDown(event: MouseEvent, index: number) {
+    event.stopPropagation(); // Stop from triggering move drag
+    this.isResizing = true;
+    this.currentLabelIndex = index;
+    const label = this.dropdownLabels[index];
+    this.startResizeWidth = label.width || 120;
+    this.startResizeHeight = label.height || 30;
+    this.startResizeX = event.clientX;
+    this.startResizeY = event.clientY;
+    document.addEventListener('mousemove', this.boundResizeMouseMove);
+    document.addEventListener('mouseup', this.boundResizeMouseUp);
+  }
+
+  onResizeMouseMove(event: MouseEvent) {
+    if (this.isResizing) {
+      const dx = event.clientX - this.startResizeX;
+      const dy = event.clientY - this.startResizeY;
+      
+      const newWidth = Math.max(50, this.startResizeWidth + dx);
+      const newHeight = Math.max(30, this.startResizeHeight + dy);
+      
+      this.dropdownLabels[this.currentLabelIndex].width = newWidth;
+      this.dropdownLabels[this.currentLabelIndex].height = newHeight;
+    }
+  }
+
+  onResizeMouseUp() {
+    this.isResizing = false;
+    document.removeEventListener('mousemove', this.boundResizeMouseMove);
+    document.removeEventListener('mouseup', this.boundResizeMouseUp);
   }
 
   // While dragging
@@ -1230,14 +1280,14 @@ export class LabelImageDragDropComponent
   addDropdownLabel() {
     const newLabel = {
       id: `label${this.dropdownLabels.length + 1}`,
-      // x: Math.random() * 80, // Random position within bounds
-      // y: Math.random() * 80,
       x: 0,
       y: 0,
       item: null, // Initially no item is associated
       inputValue: '',
       selectedOptionIndex: 1,
       direction: 'RIGHT',
+      width: 120,
+      height: 30
     };
 
 

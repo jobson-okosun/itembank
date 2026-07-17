@@ -499,7 +499,7 @@
             <div class="container">
               <div [style.width.px]="image.width > 600 ? 600 : image.width" *ngIf="image.url"
                 style="position: relative;">
-                <img *ngIf="image.url" [src]="image.url" alt="" alt="Image" class="image" />
+                <img *ngIf="image.url" [src]="image.url" [alt]="image.altText || 'Label Image'" class="image" />
 
                 <div style="width: 100%; height: 100%; position: absolute; top: 0;left: 0;"
                   class="border-2 border-dashed border-primary">
@@ -513,9 +513,27 @@
                       </button> -->
 
                       <!-- New Drop Position Structure -->
-                      <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" style="position: relative; min-width: 120px; height: 40px; border-style: dashed !important; cursor: move;">
+                      <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" 
+                           [style.width.px]="label.width || 120"
+                           [style.height.px]="label.height || 30"
+                           style="position: relative; border-style: dashed !important; cursor: move; padding: 4px; user-select: none; -webkit-user-select: none;">
+                        
+                        <!-- Rich Text Content (Preview) -->
+                        <div class="label-preview-content" style="width: 100%; height: 100%; overflow: hidden; display: flex; align-items: center; justify-content: center; pointer-events: none;">
+                          <div *ngIf="label.item" [innerHTML]="label.item | safeHtml" class="w-100 text-center" style="font-size: 14px;"></div>
+                        </div>
+                        
+                        <!-- Badge -->
                         <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="position: absolute; top: -12px; height: 24px; width: 24px; z-index: 10;" [style.left.px]="label.direction === 'LEFT' ? null : -12" [style.right.px]="label.direction === 'LEFT' ? -12 : null">
                           <span style="font-size: 12px;">{{ i + 1 }}</span>
+                        </span>
+
+                        <!-- Resize Handle (Bottom Right) -->
+                        <span 
+                          class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center shadow-sm"
+                          style="position: absolute; bottom: -10px; right: -10px; width: 20px; height: 20px; cursor: se-resize; z-index: 10;"
+                          (mousedown)="onResizeMouseDown($event, i)">
+                          <i class="ri-arrow-left-right-line" style="font-size: 10px; transform: rotate(45deg);"></i>
                         </span>
                       </div>
                     </div>
@@ -1029,8 +1047,16 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
   </div>
 
-  <div class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+  <div class="modal-body d-flex flex-column px-5 pt-3"
     style="min-height: 350px; max-height: 480px; overflow-y: auto;">
+    
+    <!-- Image Description Field -->
+    <div class="mb-4 w-100">
+      <label class="form-label fw-medium text-dark">Image Description (Alt Text)</label>
+      <input type="text" class="form-control" [(ngModel)]="imageDescription" name="imageDescription" placeholder="Briefly describe the image for accessibility">
+      <small class="text-muted mt-1 d-block">This text helps screen readers describe the image to visually impaired users.</small>
+    </div>
+
     <div #loadingTemplate style="display: none; width: 100%;" class="p-3">
       <p class="text-center text-primary">
         Please wait, file is uploading...
@@ -1063,8 +1089,16 @@
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
   </div>
 
-  <div class="modal-body d-flex flex-column align-items-center justify-content-center px-5 pt-3"
+  <div class="modal-body d-flex flex-column px-5 pt-3"
     style="min-height: 350px; max-height: 480px; overflow-y: auto;">
+    
+    <!-- Image Description Field -->
+    <div class="mb-4 w-100">
+      <label class="form-label fw-medium text-dark">Image Description (Alt Text)</label>
+      <input type="text" class="form-control" [(ngModel)]="imageDescription" name="imageDescription" placeholder="Briefly describe the image for accessibility">
+      <small class="text-muted mt-1 d-block">This text helps screen readers describe the image to visually impaired users.</small>
+    </div>
+
     <!-- Local Drag & Drop Area -->
     <div
       class="custom-dropzone w-100 d-flex flex-column align-items-center justify-content-center border border-2 border-dashed rounded-3 p-5"

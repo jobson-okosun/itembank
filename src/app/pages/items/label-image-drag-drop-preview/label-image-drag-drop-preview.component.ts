@@ -65,6 +65,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
   labels: any[] = [];
   dropZones: any[] = [];
   connectedDropLists: string[] = [];
+  expandedLabels: { [index: number]: boolean } = {};
 
 
   constructor(
@@ -89,6 +90,10 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
     this.previewData.responsePositions.forEach((position, index) => {
       // console.log(`Label ${index}:`, position.x, position.y);
     });
+  }
+
+  toggleLabelExpand(index: number) {
+    this.expandedLabels[index] = !this.expandedLabels[index];
   }
   // ngOnInit(): void {
   //   this.currentUser = this.userService.getCurrentUser();

@@ -1,14 +1,25 @@
 <div class="card bg-white mt-0 shadow-none border-0">
-  <div class="card-header bg-light border-bottom-0 p-0">
+  <div class="card-header bg-primary border-bottom-0 p-0">
     <ul class="nav nav-tabs px-4 pt-3 border-bottom-0" role="tablist">
       <li class="nav-item cursor-pointer" (click)="setActiveTab('structure')">
-        <a class="nav-link fw-medium d-block w-100 h-100" [class.active]="activeTab === 'structure'" style="cursor: pointer;">
-          <i class="ri-list-settings-line me-1"></i> Exam Structure & Items
+        <a 
+          class="nav-link fw-bold d-block w-100 h-100" 
+          [class.active]="activeTab === 'structure'" 
+          [class.text-dark]="activeTab == 'structure'" 
+          [class.text-white]="activeTab !== 'structure'" 
+          style="cursor: pointer;">
+          <i class="ri-list-settings-line me-1"></i> Exam sections & items
         </a>
       </li>
       <li class="nav-item cursor-pointer" (click)="setActiveTab('schedule')">
-        <a class="nav-link fw-medium d-block w-100 h-100" [class.active]="activeTab === 'schedule'" style="cursor: pointer;">
-          <i class="ri-calendar-event-line me-1"></i> Schedule & Delivery
+        <a 
+          class="nav-link fw-bold d-block w-100 h-100" 
+          [class.active]="activeTab === 'schedule'" 
+          [class.text-dark]="activeTab == 'schedule'" 
+          [class.text-white]="activeTab !== 'schedule'" 
+          style="cursor: pointer;"
+          >
+          <i class="ri-calendar-event-line me-1"></i> Schedule
         </a>
       </li>
     </ul>

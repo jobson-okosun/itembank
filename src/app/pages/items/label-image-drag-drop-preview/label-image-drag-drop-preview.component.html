@@ -67,26 +67,43 @@
                           </div> -->
 
                           <!-- New Drop Position Structure -->
-                          <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white" style="position: relative; min-width: 120px; min-height: 40px; border-style: dashed !important;">
-                            <!-- <span class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center fw-bold shadow-sm" style="position: absolute; top: -12px; left: -12px; height: 24px; width: 24px; z-index: 10;">
-                              <span style="font-size: 12px;">{{ i + 1 }}</span>
-                            </span> -->
+                          <div class="d-flex align-items-center justify-content-center border border-2 border-primary bg-white label-preview-content"
+                               [style.width.px]="expandedLabels[i] ? null : (position.width || 120)"
+                               [style.height.px]="expandedLabels[i] ? null : (position.height || 30)"
+                               [style.min-width.px]="position.width || 120"
+                               [style.min-height.px]="position.height || 30"
+                               [style.z-index]="expandedLabels[i] ? 100 : 1"
+                               [class.shadow-lg]="expandedLabels[i]"
+                               [class.expanded-label-overlay]="expandedLabels[i]"
+                               style="position: relative; border-style: dashed !important; transition: all 0.2s ease;">
+
+                            <!-- Expand Toggle Button -->
+                            <button 
+                              class="btn btn-sm btn-icon btn-primary rounded-circle shadow-sm"
+                              style="position: absolute; top: -12px; right: -12px; height: 24px; width: 24px; z-index: 101; padding: 0;"
+                              (click)="toggleLabelExpand(i)">
+                              <i class="fs-12" [ngClass]="expandedLabels[i] ? 'ri-fullscreen-exit-line' : 'ri-fullscreen-line'"></i>
+                            </button>
 
                             <!-- DROP TARGET -->
                             <ng-container *ngIf="!showAnswer">
-                              <div style="width: 100%; height: 100%; min-height: 36px; padding: 4px;" 
-                                cdkDropList
-                                #zone="cdkDropList"
-                                [id]="'zone-' + i"
-                                [cdkDropListData]="dropZones[i]"
-                                [cdkDropListConnectedTo]="connectedDropLists"
-                                (cdkDropListDropped)="drop($event)">
-                                <div *ngFor="let item of dropZones[i]" cdkDrag [innerHTML]="item.label  | safeHtml " class="w-100 text-center" style="cursor: grab;"></div>
+                              <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"
+                                   [style.overflow]="expandedLabels[i] ? 'auto' : 'hidden'">
+                                <div style="width: 100%; height: 100%; padding: 4px;" 
+                                  cdkDropList
+                                  #zone="cdkDropList"
+                                  [id]="'zone-' + i"
+                                  [cdkDropListData]="dropZones[i]"
+                                  [cdkDropListConnectedTo]="connectedDropLists"
+                                  (cdkDropListDropped)="drop($event)">
+                                  <div *ngFor="let item of dropZones[i]" cdkDrag [innerHTML]="item.label  | safeHtml " class="w-100 text-center" style="cursor: grab;"></div>
+                                </div>
                               </div>
                             </ng-container>
 
                             <ng-container *ngIf="showAnswer">
-                              <div style="width: 100%; height: 100%; min-height: 36px; padding: 4px;" class="d-flex align-items-center justify-content-center text-center">
+                              <div style="width: 100%; height: 100%; padding: 4px; display: flex; align-items: center; justify-content: center; text-center;"
+                                   [style.overflow]="expandedLabels[i] ? 'auto' : 'hidden'">
                                 <div [innerHTML]="this.previewData.options[i].label  | safeHtml "></div>
                               </div>
                             </ng-container>
