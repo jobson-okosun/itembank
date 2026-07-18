@@ -604,7 +604,7 @@ export class LabelImageDragDropComponent
     this.image.width = event[0].width;
     this.image.height = event[0].height;
     this.image.url = event[0].dataURL;
-    this.defaultItemProperties.images.push(this.image);
+    this.defaultItemProperties.images = [this.image];
     // console.log(this.defaultItemProperties.images[0]);
 
     this.cdRef.detectChanges();

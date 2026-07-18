@@ -42,6 +42,8 @@ export class RichEssayComponent implements OnInit, OnDestroy {
   @Output() savedItem = new EventEmitter();
   @Output() stimulus = new EventEmitter<string>();
   @ViewChild("tagRef") tagRef: ItemTagComponent;
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
 
   breadCrumbItems!: Array<{}>;
 
@@ -369,7 +371,27 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  saveItem(itemForm: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -399,7 +421,11 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "save");
   }
 
-  saveToDraft(itemForm: any) {
+  saveToDraft(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -419,7 +445,11 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "draft");
   }
 
-  saveAndNewItem(itemForm: any) {
+  saveAndNewItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNewItem(itemForm, true));
+      return;
+    }
     // console.log("i was called");
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
@@ -444,7 +474,11 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     this.saveFunction(item, "save_and_new");
   }
 
-  saveItemToPassage(itemForm: any) {
+  saveItemToPassage(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -528,7 +562,11 @@ export class RichEssayComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem();
     item.itemId = this.editData.id;
     let validated = this.itemService.validateItem(item);

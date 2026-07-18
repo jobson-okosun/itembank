@@ -10,7 +10,7 @@ export const environment = {
   //  developmentIP: 'https://7d2a3d029e24.ngrok.app/examalpha/api/v1',
   // developmentIP: 'https://55f199aa0150.ngrok.app/examalpha/api/v1',
   // developmentIP: "http://" + location.hostname + ":8081/examalpha/api/v1",
-  //developmentIP: 'http://192.168.101.141:8081',
+  //developmentIP: 'http://192.168.101.141:8081', 
   //developmentIP: 'http://192.168.177.141:8081',
   //schedulerIP: 'http://192.168.177.141:3201',
   //schedulerIP: 'http://35.178.141.73:3201',

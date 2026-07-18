@@ -496,3 +496,46 @@
     </form>
   </div>
 </ng-template>
+
+<ng-template #scoringConfirmationModal let-modal>
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm Scoring Type </h3>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="modal.close('Close click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body px-4">
+    <!-- <h5 class="mb-3">You have selected <strong>{{ defaultItemProperties.scoringOption.scoringType }}</strong>.</h5> -->
+    
+    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'EXACT_MATCH'" class="alert alert-info">
+      <strong>Exact Match:</strong> The candidate must tick <strong>all</strong> the correct answers in the option before they can score the {{ defaultItemProperties.scoringOption.score || 1 }} mark(s).
+    </div>
+    
+    <div *ngIf="defaultItemProperties.scoringOption.scoringType === 'PARTIAL_MATCH_PER_RESPONSE'" class="alert alert-info">
+      <strong>Partial Match:</strong> Each correct option would carry {{ options.length ? (defaultItemProperties.scoringOption.score / options.length | number:'1.0-2') : 0 }} mark(s) (e.g. if the candidate scores 2 options correctly, the candidate would be graded {{ options.length ? ((defaultItemProperties.scoringOption.score / options.length) * 2 | number:'1.0-2') : 0 }}/{{ defaultItemProperties.scoringOption.score || 0 }}).
+    </div>
+
+    <div *ngIf="defaultItemProperties.scoringOption.matchingRule === 'EXACT_MATCH'" class="alert alert-warning">
+      <strong>Matching Rule - Exact Match:</strong> The value the candidate provides has to be exactly what was set in the response.
+    </div>
+
+    <div *ngIf="defaultItemProperties.scoringOption.matchingRule === 'CONTAINS'" class="alert alert-warning">
+      <strong>Matching Rule - Contains:</strong> The value the candidate provides has to contain the exact text set in the response.
+    </div>
+
+    <p class="mt-3 mb-0">Do you agree with this scoring condition?</p>
+  </div>
+  <div class="card-footer">
+    <div class="d-flex gap-2 float-end">
+      <button type="button" class="btn btn-danger d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="modal.close('Close click')">
+        <i class="ri-edit-line"></i>Cancel & Edit
+      </button>
+
+      <button type="button" class="btn btn-primary d-flex gap-1 align-items-center" data-bs-dismiss="modal"
+        (click)="proceedWithSave()">
+        <i class="ri-save-line"></i>Yes, Save
+      </button>
+    </div>
+  </div>
+</ng-template>

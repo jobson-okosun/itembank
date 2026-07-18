@@ -46,6 +46,8 @@ export class MatchingComponent implements OnInit, OnDestroy {
   @Input() editData!: any;
   @Output() stimulus = new EventEmitter<string>();
   @ViewChild('tagRef') tagRef: ItemTagComponent;
+  @ViewChild('scoringConfirmationModal') scoringConfirmationModal: any;
+  pendingSaveAction: any;
 
   preview: boolean = false;
 
@@ -426,7 +428,27 @@ export class MatchingComponent implements OnInit, OnDestroy {
     return item;
   }
 
-  saveItem(itemForm: any) {
+  confirmScoringAndSave(action: () => void) {
+    // TO DISABLE SCORING CONFIRMATION, UNCOMMENT THE LINE BELOW AND COMMENT THE REST:
+    // action(); return;
+
+    this.pendingSaveAction = action;
+    this.modalService.open(this.scoringConfirmationModal, { centered: true });
+  }
+
+  proceedWithSave() {
+    this.modalService.dismissAll();
+    if (this.pendingSaveAction) {
+      this.pendingSaveAction();
+      this.pendingSaveAction = null;
+    }
+  }
+
+  saveItem(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItem(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -451,7 +473,11 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'save');
   }
 
-  saveAndNew(itemForm: any) {
+  saveAndNew(itemForm: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveAndNew(itemForm, true));
+      return;
+    }
     let item = this.buildItem();
     let result = this.itemService.validateItem(item);
 
@@ -474,7 +500,11 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'save_and_new');
   }
 
-  saveToDraft(form: any) {
+  saveToDraft(form: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveToDraft(form, true));
+      return;
+    }
     let item = this.buildItem(form);
     let validated = this.itemService.validateItem(item);
 
@@ -489,7 +519,11 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'draft');
   }
 
-  saveItemToPassage(itemForm?: any) {
+  saveItemToPassage(itemForm?: any, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.saveItemToPassage(itemForm, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     let validated = this.itemService.validateItem(item);
 
@@ -516,7 +550,11 @@ export class MatchingComponent implements OnInit, OnDestroy {
     this.saveFunction(item, 'passage-item');
   }
 
-  updateItem(itemForm?: any, status?: string) {
+  updateItem(itemForm?: any, status?: string, skipScoringCheck: boolean = false) {
+    if (!skipScoringCheck) {
+      this.confirmScoringAndSave(() => this.updateItem(itemForm, status, true));
+      return;
+    }
     let item = this.buildItem(itemForm);
     item.itemId = this.editData.id;
 
