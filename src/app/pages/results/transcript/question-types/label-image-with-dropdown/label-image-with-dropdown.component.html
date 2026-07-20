@@ -43,14 +43,14 @@
               }"
               style="width: 140px;"
             >
-              <option selected>{{ currentQuestion.item_score.graded_response?.[i] || 'No Selection' }}</option>
+              <option selected>{{ getLabel(i, currentQuestion.item_score.graded_response?.[i])?.label || 'No Selection' }}</option>
             </select>
             
             <div 
               class="badge bg-success mt-1 text-wrap" 
               style="font-size: 0.75em; width: 140px; text-align: left;"
             >
-              Correct: {{ currentQuestion.item.scoringOption.answers[i] || 'N/A' }}
+              Correct: {{ getLabel(i, currentQuestion.item.scoringOption.answers[i])?.label }}
             </div>
           </div>
         </div>

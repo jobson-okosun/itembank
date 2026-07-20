@@ -44,16 +44,16 @@ export class ClozeRadioComponent implements OnInit {
 
     const optionHTML = options.map((item, itemIndex) => {
       const option = item
-      const isChecked = this.currentQuestion.item.scoringOption.answers[index] === option
+      const isChecked = this.currentQuestion.item.scoringOption.answers[index] === option.value
 
       return `
           <span style="width:auto; display:inline-block">
             <span class="d-flex flex-column gap-1" >
-              ${ correctAnswer == option
+              ${ correctAnswer == option.value
                 ? '<span style="font-size: 0.7em;"  class="badge rounded-pill bg-secondary ng-star-inserted">Correct Answer</span>'
                 : ''
               }
-              ${ selectedAnswer == option
+              ${ selectedAnswer == option.value
                 ? `<span style="font-size: 0.7em;"  class="badge rounded-pill bg-secondary ng-star-inserted bg-${ isCorrect ? 'success' : 'danger' }">Selected</span>`
                 : ''
               }

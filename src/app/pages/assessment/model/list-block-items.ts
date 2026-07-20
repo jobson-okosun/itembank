@@ -30,4 +30,6 @@ export class ListBlockItems {
     passageReference: string;
   };
   score: number;
+  scoringType: string;
+  matchingRule: string
 }

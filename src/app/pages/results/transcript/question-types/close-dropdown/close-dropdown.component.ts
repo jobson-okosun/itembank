@@ -47,7 +47,7 @@ export class CloseDropdownComponent{
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-secondary ng-star-inserted" style="font-size: 0.7em;">Correct Answer</span>
               <select class="form-select" style="width:auto; display:inline-block">
-                <option selected>${correctAnswer}</option>
+                <option selected>${this.getLabel(index, correctAnswer)?.label}</option>
               </select>
             </span>
           </span>
@@ -55,7 +55,7 @@ export class CloseDropdownComponent{
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-${ isCorrect ? 'success': 'danger' } ng-star-inserted" style="font-size: 0.7em;">Selected</span>
               <span readonly class="border border-${ isCorrect ? 'success': 'danger' } " style="width:max-content; display:inline-block; padding: 6px;min-width: 100px">
-                ${ selectedAnswer }
+                ${ this.getLabel(index, selectedAnswer)?.label ?? '' }
               </span>
             </span>
           </span> 
@@ -65,7 +65,10 @@ export class CloseDropdownComponent{
       return selectHtml;
   }
 
-  
+  getLabel(containerIndex: number, answerIndex: string): {value: string, label: string} | null {
+    return this.currentQuestion?.item?.possibleResponses?.[containerIndex]?.responses?.[answerIndex]
+  }
+
   viewAnswer(){
     this.showAnswer = !this.showAnswer
     this.renderContent();

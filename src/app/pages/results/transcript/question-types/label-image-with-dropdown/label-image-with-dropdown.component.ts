@@ -22,4 +22,8 @@ export class LabelImageWithDropdownComponent implements OnInit {
     return candidateAnswer === correctAnswer;
   }
 
+  getLabel(containerIndex: number, answerIndex: string): {value: string, label: string} | null {
+    return this.currentQuestion?.item?.possibleResponses?.[containerIndex]?.responses?.[answerIndex]
+  }
+
 }

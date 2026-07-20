@@ -81,11 +81,11 @@ export class RevisitButtonComponent implements OnInit, OnDestroy {
     const currentQuestion = this.itemService.getCurrentQuestion();
     const answers = currentQuestion.answers;
 
-    currentQuestion.responses = answers.map((answer, index) => {
-      const possibleResponsesForThisPosition =
-        currentQuestion.possible_responses[index].responses;
-      return possibleResponsesForThisPosition[parseInt(answer)];
-    });
+    // currentQuestion.responses = answers.map((answer, index) => {
+    //   const possibleResponsesForThisPosition =
+    //     currentQuestion.possible_responses[index].responses;
+    //   return possibleResponsesForThisPosition[parseInt(answer)];
+    // });
   }
 
   handleOrderingAndAssociation() {

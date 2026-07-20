@@ -629,6 +629,10 @@ export class CreateItemComponent implements OnInit, OnDestroy {
       case "approve":
         item.itemStatus = ItemStatusEnum.PUBLISHED;
         item.moderation_status = "accepted";
+
+        if (this.currentUser.authorities.includes('MODERATOR') && this.editData && this.editData.passageId) {
+          item.passageId = this.editData.passageId;
+        }
         break;
 
       default:

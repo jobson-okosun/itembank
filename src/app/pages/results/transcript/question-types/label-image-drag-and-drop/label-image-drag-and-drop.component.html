@@ -52,8 +52,9 @@
             <div 
               class="badge bg-success mt-1 text-wrap" 
               style="font-size: 0.75em; width: 140px; text-align: left;"
+              [innerHTML]="'Correct: ' + getCorrectLabel(i)"
             >
-              Correct: {{ getCorrectLabel(i) }}
+             
             </div>
           </div>
         </div>

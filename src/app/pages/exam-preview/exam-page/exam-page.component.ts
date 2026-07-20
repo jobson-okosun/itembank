@@ -278,160 +278,158 @@ export class ExamPageComponent implements OnInit, OnDestroy {
 
     console.log(this.currentSectionData, 'current section data');
 
-    this.candidateService.candidateData = {
-      assessment_data: {
-        allow_end_exam_after_xquestions: 10,
-        // value.assessmentSettings.allowEndExamAfterXQuestions,
-        auto_save_sec: 4000,
-        // value.assessmentSettings.autoSaveSec,
-        compensatory_time_value:
-          this.assessmentPreviewDetails.assessmentSettings.compensatoryTimeMins,
-        display_all_sections_at_once:
-          this.assessmentPreviewDetails.assessmentSettings
-            .displayAllSectionsAtOnce,
-        duration_minutes:
-          this.assessmentPreviewDetails.assessmentSettings.durationMinutes,
-        end_exam_confirmation:
-          this.assessmentPreviewDetails.assessmentSettings.endExamConfirmation,
-        font_size: this.assessmentPreviewDetails.assessmentSettings
-          .fontSize as any,
-        inactivity_waring_sec:
-          this.assessmentPreviewDetails.assessmentSettings.inactivityWaringSec,
-        instruction_read_time_sec:
-          this.assessmentPreviewDetails.assessmentSettings
-            .instructionReadTimeSec,
-        name: this.assessmentPreviewDetails.name,
-        preserve_section_order:
-          this.assessmentPreviewDetails.assessmentSettings.preserveSectionOrder,
-        warn_end_of_reading_time_sec:
-          this.assessmentPreviewDetails.assessmentSettings
-            .warnEndOfReadingTimeSec,
-        warn_unattempted_questions:
-          this.assessmentPreviewDetails.assessmentSettings
-            .warnUnattemptedQuestions,
-        end_exam_instruction:
-          this.assessmentPreviewDetails.assessmentSettings.endExamInstruction,
-        start_exam_instruction:
-          this.assessmentPreviewDetails.assessmentSettings.startExamInstruction,
-      },
-      candidate_data: {
-        id: '123456',
-        login_field_value: 'previewcandiate@gmail.com',
-        login_times: [],
-        minutes_left: 1000,
-        name: 'Test Candidate',
-        passport: '',
-        seconds_left: 100,
-        section_ids: this.assessmentPreviewDetails.assessmentSections.map(
-          (section) => section.id,
-        ),
-      },
-      sections_overview: this.assessmentPreviewDetails.assessmentSections.map(
-        (section) => {
-          return {
-            duration: section.sectionSettings.durationInMinutes,
-            name: section.name,
-            total_questions: section.totalQuestions,
-          };
-        },
-      ),
+    // this.candidateService.candidateData = {
+    //   assessment_data: {
+    //     allow_end_exam_after_xquestions: 10,
+    //     auto_save_sec: 4000,
+    //     compensatory_time_value:
+    //       this.assessmentPreviewDetails.assessmentSettings.compensatoryTimeMins,
+    //     display_all_sections_at_once:
+    //       this.assessmentPreviewDetails.assessmentSettings
+    //         .displayAllSectionsAtOnce,
+    //     duration_minutes:
+    //       this.assessmentPreviewDetails.assessmentSettings.durationMinutes,
+    //     end_exam_confirmation:
+    //       this.assessmentPreviewDetails.assessmentSettings.endExamConfirmation,
+    //     font_size: this.assessmentPreviewDetails.assessmentSettings
+    //       .fontSize as any,
+    //     inactivity_waring_sec:
+    //       this.assessmentPreviewDetails.assessmentSettings.inactivityWaringSec,
+    //     instruction_read_time_sec:
+    //       this.assessmentPreviewDetails.assessmentSettings
+    //         .instructionReadTimeSec,
+    //     name: this.assessmentPreviewDetails.name,
+    //     preserve_section_order:
+    //       this.assessmentPreviewDetails.assessmentSettings.preserveSectionOrder,
+    //     warn_end_of_reading_time_sec:
+    //       this.assessmentPreviewDetails.assessmentSettings
+    //         .warnEndOfReadingTimeSec,
+    //     warn_unattempted_questions:
+    //       this.assessmentPreviewDetails.assessmentSettings
+    //         .warnUnattemptedQuestions,
+    //     end_exam_instruction:
+    //       this.assessmentPreviewDetails.assessmentSettings.endExamInstruction,
+    //     start_exam_instruction:
+    //       this.assessmentPreviewDetails.assessmentSettings.startExamInstruction,
+    //   },
+    //   candidate_data: {
+    //     id: '123456',
+    //     login_field_value: 'previewcandiate@gmail.com',
+    //     login_times: [],
+    //     minutes_left: 1000,
+    //     name: 'Test Candidate',
+    //     passport: '',
+    //     seconds_left: 100,
+    //     section_ids: this.assessmentPreviewDetails.assessmentSections.map(
+    //       (section) => section.id,
+    //     ),
+    //   },
+    //   sections_overview: this.assessmentPreviewDetails.assessmentSections.map(
+    //     (section) => {
+    //       return {
+    //         duration: section.sectionSettings.durationInMinutes,
+    //         name: section.name,
+    //         total_questions: section.totalQuestions,
+    //       };
+    //     },
+    //   ),
 
-      sections_questions: this.assessmentPreviewDetails.assessmentSections.map(
-        (section) => {
-          return {
-            id: section.id,
-            name: section.name,
-            section_settings: {
-              allow_calculator: section.sectionSettings.allowCalculator,
-              duration_in_minutes: section.sectionSettings.durationInMinutes,
-              minutes_left: 100,
-              prevent_navigation_to_attempted_items:
-                section.sectionSettings.preventNavigationToAttemptedItems,
-              seconds_left: 100,
-              shuffle_blocks: section.sectionSettings.shuffleBlocks,
-              shuffle_items: section.sectionSettings.shuffleItems,
-              shuffle_options: section.sectionSettings.shuffleOptions,
-              section_instruction: section.sectionSettings.sectionInstruction,
-            },
-            question_blocks: this.currentSectionData.blocks.map((block) => {
-              return {
-                id: block.id,
-                total_questions: block.totalQuestions,
-                index: block.index,
-                block_type: block.blockType as BlockType,
-                items: block.items.map((item) => {
-                  return {
-                    id: item.id,
-                    passage_stimulus: item.passageStimulus,
-                    stimulus: item.stimulus,
-                    options: item.options,
-                    stems: item.stems,
-                    possible_responses: item.possibleResponses,
-                    response_positions: item.responsePositions,
-                    item_type: item.itemType,
-                    numerical: item.numerical,
-                    case_sensitive: item.caseSensitive,
-                    shuffle_options: item.shuffleOptions,
-                    multiple_response: item.multipleResponse,
-                    max_words: item.maxWords,
-                    max_length: item.maxLength,
-                    allow_paste: item.allowPaste,
-                    allow_copy: item.allowCopy,
-                    allow_cut: item.allowCut,
-                    plain_text: item.plainText,
-                    responses: [],
-                    selectedResponse: '',
-                    block_id: block.id,
-                    revisit: false,
-                    max_responses: item.maxWords,
-                    image_data: item.images,
+    //   // sections_questions: this.assessmentPreviewDetails.assessmentSections.map(
+    //   //   (section) => {
+    //   //     return {
+    //   //       id: section.id,
+    //   //       name: section.name,
+    //   //       section_settings: {
+    //   //         allow_calculator: section.sectionSettings.allowCalculator,
+    //   //         duration_in_minutes: section.sectionSettings.durationInMinutes,
+    //   //         minutes_left: 100,
+    //   //         prevent_navigation_to_attempted_items:
+    //   //           section.sectionSettings.preventNavigationToAttemptedItems,
+    //   //         seconds_left: 100,
+    //   //         shuffle_blocks: section.sectionSettings.shuffleBlocks,
+    //   //         shuffle_items: section.sectionSettings.shuffleItems,
+    //   //         shuffle_options: section.sectionSettings.shuffleOptions,
+    //   //         section_instruction: section.sectionSettings.sectionInstruction,
+    //   //       },
+    //   //       question_blocks: this.currentSectionData.blocks.map((block) => {
+    //   //         return {
+    //   //           id: block.id,
+    //   //           total_questions: block.totalQuestions,
+    //   //           index: block.index,
+    //   //           block_type: block.blockType as BlockType,
+    //   //           items: block.items.map((item) => {
+    //   //             return {
+    //   //               id: item.id,
+    //   //               passage_stimulus: item.passageStimulus,
+    //   //               stimulus: item.stimulus,
+    //   //               options: item.options,
+    //   //               stems: item.stems,
+    //   //               possible_responses: item.possibleResponses,
+    //   //               response_positions: item.responsePositions,
+    //   //               item_type: item.itemType,
+    //   //               numerical: item.numerical,
+    //   //               case_sensitive: item.caseSensitive,
+    //   //               shuffle_options: item.shuffleOptions,
+    //   //               multiple_response: item.multipleResponse,
+    //   //               max_words: item.maxWords,
+    //   //               max_length: item.maxLength,
+    //   //               allow_paste: item.allowPaste,
+    //   //               allow_copy: item.allowCopy,
+    //   //               allow_cut: item.allowCut,
+    //   //               plain_text: item.plainText,
+    //   //               responses: [],
+    //   //               selectedResponse: '',
+    //   //               block_id: block.id,
+    //   //               revisit: false,
+    //   //               max_responses: item.maxWords,
+    //   //               image_data: item.images,
 
-                    answers: item.scoringOption.answers,
-                    showAnswer: false,
-                  };
-                }),
-                passages: block.passages.map((passage) => {
-                  return {
-                    id: passage.id,
-                    stimulus: passage.stimulus,
-                    items: passage.items.map((item) => {
-                      return {
-                        id: item.id,
-                        passage_stimulus: item.passageStimulus,
-                        stimulus: item.stimulus,
-                        options: item.options,
-                        stems: item.stems,
-                        possible_responses: item.possibleResponses,
-                        response_positions: item.responsePositions,
-                        item_type: item.itemType as ItemType,
-                        numerical: item.numerical,
-                        case_sensitive: item.caseSensitive,
-                        shuffle_options: item.shuffleOptions,
-                        multiple_response: item.multipleResponse,
-                        max_words: item.maxWords,
-                        max_length: item.maxLength,
-                        allow_paste: item.allowPaste,
-                        allow_copy: item.allowCopy,
-                        allow_cut: item.allowCut,
-                        plain_text: item.plainText,
-                        responses: [],
-                        selectedResponse: '',
-                        block_id: block.id,
-                        revisit: false,
-                        max_responses: item.maxWords,
-                        image_data: item.images,
-                        answers: item.scoringOption.answers,
-                        showAnswer: false,
-                      };
-                    }),
-                  };
-                }),
-              };
-            }),
-          };
-        },
-      ),
-    };
+    //   //               answers: item.scoringOption.answers,
+    //   //               showAnswer: false,
+    //   //             };
+    //   //           }),
+    //   //           passages: block.passages.map((passage) => {
+    //   //             return {
+    //   //               id: passage.id,
+    //   //               stimulus: passage.stimulus,
+    //   //               items: passage.items.map((item) => {
+    //   //                 return {
+    //   //                   id: item.id,
+    //   //                   passage_stimulus: item.passageStimulus,
+    //   //                   stimulus: item.stimulus,
+    //   //                   options: item.options,
+    //   //                   stems: item.stems,
+    //   //                   possible_responses: item.possibleResponses,
+    //   //                   response_positions: item.responsePositions,
+    //   //                   item_type: item.itemType as ItemType,
+    //   //                   numerical: item.numerical,
+    //   //                   case_sensitive: item.caseSensitive,
+    //   //                   shuffle_options: item.shuffleOptions,
+    //   //                   multiple_response: item.multipleResponse,
+    //   //                   max_words: item.maxWords,
+    //   //                   max_length: item.maxLength,
+    //   //                   allow_paste: item.allowPaste,
+    //   //                   allow_copy: item.allowCopy,
+    //   //                   allow_cut: item.allowCut,
+    //   //                   plain_text: item.plainText,
+    //   //                   responses: [],
+    //   //                   selectedResponse: '',
+    //   //                   block_id: block.id,
+    //   //                   revisit: false,
+    //   //                   max_responses: item.maxWords,
+    //   //                   image_data: item.images,
+    //   //                   answers: item.scoringOption.answers,
+    //   //                   showAnswer: false,
+    //   //                 };
+    //   //               }),
+    //   //             };
+    //   //           }),
+    //   //         };
+    //   //       }),
+    //   //     };
+    //   //   },
+    //   // ),
+    // };
 
     console.log(this.candidateService.candidateData, 'candidate data');
   }

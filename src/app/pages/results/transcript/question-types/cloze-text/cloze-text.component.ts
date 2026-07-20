@@ -52,7 +52,7 @@ export class ClozeTextComponent implements OnInit {
           <span style="width:auto; display:inline-block"> 
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-${isCorrect ? 'success' : 'danger'} ng-star-inserted" style="font-size: 0.7em;">Answer</span>
-              <span class="border border-${isCorrect ? 'success' : 'danger'} " style="width:max-content; display:inline-block; padding: 6px; font-size: 0.7em;"> ${selectedAnswer}</span>
+              <span class="border border-${isCorrect ? 'success' : 'danger'} " style="width:max-content; display:inline-block; padding: 6px; font-size: 0.7em;"> ${selectedAnswer ?? ''}</span>
             </span>
           </span> 
         </span>

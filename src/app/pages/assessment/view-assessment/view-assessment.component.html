@@ -1906,6 +1906,16 @@
                         {{ item.score }} Mark(s)
                       </div>
                     </span>
+                    <span title="SCORING TYPE" class="d-flex align-items-center" style="cursor: pointer">
+                      <div class="badge badge-soft-secondary fs-10">
+                        SCORING TYPE: {{ item.scoringType }}
+                      </div>
+                    </span>
+                    <span title="SCORING TYPE" class="d-flex align-items-center" style="cursor: pointer">
+                      <div class="badge badge-soft-secondary fs-10">
+                        MATCHING RULE: {{ item.matchingRule }}
+                      </div>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1950,6 +1960,9 @@
 
                 <app-drawing-and-writing-preview *ngIf="item.type === 'DRAWING_AND_WRITING'" [previewData]="previewData"
                   [itemTrailInfo]="itemProps"></app-drawing-and-writing-preview>
+
+                <app-cloze-radio-select-preview *ngIf="item.type === 'CLOZERADIO'" [previewData]="previewData"
+                  [itemTrailInfo]="itemProps"></app-cloze-radio-select-preview>
               </div>
             </div>
           </a>

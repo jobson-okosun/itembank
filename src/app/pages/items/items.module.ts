@@ -90,7 +90,7 @@ import { ExamPreviewModule } from "../exam-preview/exam-preview.module";
 import { DrawingAndWritingComponent } from './drawing-and-writing/drawing-and-writing.component';
 import { DrawingAndWritingPreviewComponent } from './drawing-and-writing-preview/drawing-and-writing-preview.component';
 import { ClozeRadioSelectComponent } from './cloze-radio-select/cloze-radio-select.component';
-import { ClozeRadioSelectPreviewComponent } from './cloze-radio-select-preview/cloze-radio-select-preview.component'; 
+import { ClozeRadioSelectPreviewComponent } from './cloze-radio-select-preview/cloze-radio-select-preview.component';
 import { SafeHtmlPipe } from "../pipes/safe-html.pipe";
 
 const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
@@ -223,9 +223,10 @@ const DEFAULT_DROPZONE_CONFIG: DropzoneConfigInterface = {
     LabelImageTextPreviewComponent,
     LabelImageDropdownPreviewComponent,
     LabelImageDragDropPreviewComponent,
-    DrawingAndWritingPreviewComponent
+    DrawingAndWritingPreviewComponent,
+    ClozeRadioSelectComponent,
+    ClozeRadioSelectPreviewComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class ItemsModule {}
- 
+export class ItemsModule { }

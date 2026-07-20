@@ -34,6 +34,10 @@ export class MatchingComponent implements OnInit {
   }
 
   updateLines() {
+    if(this.currentQuestion.item_score.graded_response.length == 0){
+      return
+    }
+    
     if (!this.wrapper?.nativeElement) return;
     const wrapperRect = this.wrapper.nativeElement.getBoundingClientRect();
 

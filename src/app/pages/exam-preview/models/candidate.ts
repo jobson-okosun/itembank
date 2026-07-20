@@ -113,7 +113,8 @@ export interface IOptionDTO {
   value: string;
 }
 export interface IPossibleResponse {
-  responses: Array<string>;
+  // responses: Array<string>;
+  responses: Array<{value: string, label: string}>;
 }
 export interface IResponsePosition {
   x: number;
