@@ -272,7 +272,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         this.assessment_templates = value;
       },
       (error: HttpErrorResponse) => {
-        this.notifier.notify('error', `${error.message} A`);
+        this.notifier.notify('error', `${error.error.message} A`);
       },
     );
 
@@ -816,7 +816,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
         },
       );
   }
@@ -844,7 +844,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify(`error`, `${error.message}`);
+          this.notifier.notify(`error`, `${error.error.message}`);
         },
       );
   }
@@ -900,7 +900,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           //console.log(this.assessment);
         },
         (error: HttpErrorResponse) => {
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.loading = false;
         },
       );
@@ -1029,7 +1029,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
         },
       );
   }
@@ -1249,7 +1249,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
         },
       );
   }
@@ -1325,7 +1325,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.itemService.setDuplicateStatus(error.error.message);
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
           this.savingManualSelectedPassageItems = false;
         },
       );
@@ -1358,7 +1358,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           },
           (error: HttpErrorResponse) => {
             this.submitted = false;
-            this.notifier.notify('error', `${error.message}`);
+            this.notifier.notify('error', `${error.error.message}`);
           },
         );
     } else {
@@ -1477,7 +1477,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
         },
       );
   }
@@ -1508,7 +1508,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
         },
         (error: HttpErrorResponse) => {
           this.submitted = false;
-          this.notifier.notify('error', `${error.message}`);
+          this.notifier.notify('error', `${error.error.message}`);
         },
       );
   }
@@ -1573,7 +1573,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
           (error: HttpErrorResponse) => {
             this.submitted = false;
             Swal.close();
-            this.notifier.notify('error', `${error.message}`);
+            this.notifier.notify('error', `${error.error.message}`);
           },
         );
     }

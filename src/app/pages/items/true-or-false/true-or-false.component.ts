@@ -677,7 +677,7 @@ export class TrueOrFalseComponent implements OnInit, OnDestroy {
       (error: HttpErrorResponse) => {
         this.publishingItem = false;
         Swal.close();
-        this.notifier.notify('error', `${error.message}`);
+        this.notifier.notify('error', `${error.error.message}`);
         this.processingApprove = false;
       }
     );
