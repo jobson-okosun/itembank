@@ -278,7 +278,7 @@ export class UserComponent implements OnInit {
     },
     error: (error: HttpErrorResponse) => {
       this.loading = false;
-      this.notifier.notify("error", `${error.message}`);
+      this.notifier.notify("error", `${error.error.message}`);
     }
     });
   }
