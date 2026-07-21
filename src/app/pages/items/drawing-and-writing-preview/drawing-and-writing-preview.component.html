@@ -141,14 +141,19 @@
       >
         <i class="ri-edit-fill label-icon align-middle fs-16 me-2"></i>Edit
       </button>
-      <!-- <button *ngIf="
-      currentUser.authorities.includes('MODERATOR') && 
-      !assessmentActive &&
-      previewData.itemStatus !== 'REJECTED' &&
-      previewData.itemStatus !== 'PUBLISHED'
-    " type="button" class="btn btn-outline-danger btn-sm" (click)="review()">
-        <i class="ri-edit-fill align-middle fs-14"></i>Review
-      </button> -->
+        <button
+        *ngIf="
+          currentUser.authorities.includes('MODERATOR') && 
+          !assessmentActive &&
+          previewData.itemStatus !== 'REJECTED' &&
+          previewData.itemStatus !== 'PUBLISHED'
+        "
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          (click)="edit()"
+        >
+          <!-- <i class="ri-edit-fill align-middle fs-14"></i> -->Review
+        </button>
     </div>
   </div>
 </div>
