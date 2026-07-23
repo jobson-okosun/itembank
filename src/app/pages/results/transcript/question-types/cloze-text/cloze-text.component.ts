@@ -38,7 +38,7 @@ export class ClozeTextComponent implements OnInit {
 
   createInputElement(index: number): string {
     const correctAnswer = this.currentQuestion.item.scoringOption.answers[index];
-    const selectedAnswer = this.currentQuestion.item_score.graded_response[index]
+    const selectedAnswer = this.currentQuestion.item_score?.graded_response?.[index]
     const isCorrect = correctAnswer?.trim() == selectedAnswer?.trim()
 
     let inputs = `
@@ -49,14 +49,19 @@ export class ClozeTextComponent implements OnInit {
               <span class="border borer-secondary" style="width:max-content; display:inline-block; padding: 6px; font-size: 0.7em;">${correctAnswer}</span>
             </span>
           </span>
+    `;
+
+    if (this.currentQuestion.item_score) {
+       inputs += `
           <span style="width:auto; display:inline-block"> 
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-${isCorrect ? 'success' : 'danger'} ng-star-inserted" style="font-size: 0.7em;">Answer</span>
               <span class="border border-${isCorrect ? 'success' : 'danger'} " style="width:max-content; display:inline-block; padding: 6px; font-size: 0.7em;"> ${selectedAnswer ?? ''}</span>
             </span>
           </span> 
-        </span>
-      `
+       `;
+    }
+    inputs += `</span>`;
 
     return inputs;
   }

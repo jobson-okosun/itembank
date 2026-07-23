@@ -14,7 +14,7 @@
   ></div>
 
   <div class="row my-4">
-    <div class="col-sm-6">
+    <div class="col-sm-6" *ngIf="currentQuestion.item_score">
         <div class="p-3">
             <div class="card">
                 <div class="fs-6 fw-bold">Your answer: </div>
@@ -62,7 +62,7 @@
         </div>
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-sm-6" [ngClass]="{'col-sm-12': !currentQuestion.item_score}">
         <div class="p-3">
             <div class="p-3">
                 <div class="fs-6 fw-bold">Correct answer: </div>
@@ -86,14 +86,16 @@
     <div>
       Question Score: <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
     </div>
-    <div>
-      Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
-    </div>
-    <div>
-      Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
-    </div>
-    <div>
-      Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
-    </div>
+    <ng-container *ngIf="currentQuestion.item_score">
+      <div>
+        Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
+      </div>
+      <div>
+        Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
+      </div>
+      <div>
+        Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
+      </div>
+    </ng-container>
   </div>
 </div>

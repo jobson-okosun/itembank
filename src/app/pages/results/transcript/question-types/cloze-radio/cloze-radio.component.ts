@@ -39,12 +39,19 @@ export class ClozeRadioComponent implements OnInit {
   createSelectBlock(index: number): string {
     const options = this.currentQuestion.item.possibleResponses[index].responses;
     const correctAnswer = this.currentQuestion.item.scoringOption.answers[index];
-    const selectedAnswer = this.currentQuestion.item_score.graded_response[index]
+    const selectedAnswer = this.currentQuestion.item_score?.graded_response?.[index]
     const isCorrect = correctAnswer?.trim() == selectedAnswer?.trim()
 
     const optionHTML = options.map((item, itemIndex) => {
       const option = item
       const isChecked = this.currentQuestion.item.scoringOption.answers[index] === option.value
+
+      let selectedBadge = '';
+      if (this.currentQuestion.item_score) {
+          selectedBadge = selectedAnswer == option.value
+                ? `<span style="font-size: 0.7em;"  class="badge rounded-pill bg-secondary ng-star-inserted bg-${ isCorrect ? 'success' : 'danger' }">Selected</span>`
+                : ''
+      }
 
       return `
           <span style="width:auto; display:inline-block">
@@ -53,10 +60,7 @@ export class ClozeRadioComponent implements OnInit {
                 ? '<span style="font-size: 0.7em;"  class="badge rounded-pill bg-secondary ng-star-inserted">Correct Answer</span>'
                 : ''
               }
-              ${ selectedAnswer == option.value
-                ? `<span style="font-size: 0.7em;"  class="badge rounded-pill bg-secondary ng-star-inserted bg-${ isCorrect ? 'success' : 'danger' }">Selected</span>`
-                : ''
-              }
+              ${ selectedBadge }
               <span class="d-flex align-items-center gap-2 rounded-pill bg-white py-2 px-3">
                   ${ isChecked 
                     ? `<input checked type="radio" name="option_${index}" value="${ option.value }" />`

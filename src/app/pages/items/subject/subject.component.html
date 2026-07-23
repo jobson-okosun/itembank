@@ -398,6 +398,11 @@
                       <i class="ri-add-line align-middle me-2 text-primary"></i> New Question
                     </button>
                   </li>
+                  <li *ngIf="clickedTopic || currentTopic">
+                    <button class="dropdown-item" (click)="openPrintPreviewModal(printPreviewModal)">
+                      <i class="ri-printer-line align-middle me-2 text-primary"></i> Print Preview
+                    </button>
+                  </li>
                   <ng-container *ngIf="clickedTopic && (currentUser.authorities.includes('ADMIN') || currentUser.authorities.includes('GROUP_ADMIN'))">
                     <li *ngIf="!clickedTopic.subtopicName">
                       <button class="dropdown-item" (click)="openNewSubTopicModal(newSubTopicModal, clickedTopic)">
@@ -2299,5 +2304,63 @@
         </button>
       </div>
     </div>
+  </div>
+</ng-template>
+
+<ng-template #printPreviewModal let-modal>
+  <div class="modal-header bg-light p-3">
+    <h5 class="modal-title">Print Preview</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+      (click)="modal.close('Close click')"></button>
+  </div>
+  <div class="modal-body p-4 bg-light">
+    <div *ngIf="isPrintPreviewLoading" class="d-flex justify-content-center align-items-center" style="height: 300px">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    
+    <div *ngIf="!isPrintPreviewLoading && printPreviewItems.length === 0" class="text-center p-5">
+      <h5 class="text-muted">No items available for print preview.</h5>
+    </div>
+
+    <div *ngIf="!isPrintPreviewLoading && printPreviewItems.length > 0">
+      <div *ngFor="let item of printPreviewItems; let i = index" class="mb-4">
+        <!-- Render transcript components based on item type -->
+        <ng-container [ngSwitch]="item.item.itemType">
+          <app-mcq *ngSwitchCase="'MCQ'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-mcq>
+          <app-yes-or-no *ngSwitchCase="'YES_NO'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-yes-or-no>
+          <app-true-or-false *ngSwitchCase="'TRUE_FALSE'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-true-or-false>
+          <app-short-text *ngSwitchCase="'SHORT_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-short-text>
+          <app-ordering *ngSwitchCase="'ORDERING'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-ordering>
+          <app-mrq *ngSwitchCase="'MRQ'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-mrq>
+          <app-matching *ngSwitchCase="'MATCHING'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-matching>
+          <app-label-image-with-text *ngSwitchCase="'LABEL_IMAGE_WITH_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-with-text>
+          <app-label-image-with-dropdown *ngSwitchCase="'LABEL_IMAGE_WITH_DROPDOWN'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-with-dropdown>
+          <app-label-image-drag-and-drop *ngSwitchCase="'LABEL_IMAGE_DRAG_AND_DROP'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-drag-and-drop>
+          <app-essay *ngSwitchCase="'ESSAY'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-essay>
+          <app-cloze-text *ngSwitchCase="'CLOZE_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-cloze-text>
+          <app-cloze-radio *ngSwitchCase="'CLOZE_RADIO'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-cloze-radio>
+          <app-close-dropdown *ngSwitchCase="'CLOZE_DROPDOWN'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-close-dropdown>
+          <app-choice-matrix *ngSwitchCase="'CHOICE_MATRIX'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-choice-matrix>
+        </ng-container>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-end mt-4">
+        <ngb-pagination 
+          [collectionSize]="printPreviewTotalItems" 
+          [(page)]="printPreviewPage" 
+          [pageSize]="400" 
+          (pageChange)="onPrintPreviewPageChange($event)"
+          [maxSize]="5" 
+          [rotate]="true" 
+          [boundaryLinks]="true">
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
   </div>
 </ng-template>

@@ -1932,7 +1932,7 @@
                   [itemTrailInfo]="itemProps"></app-rich-essay-preview>
                 <app-multiple-response-preview *ngIf="item.type === 'MRQ'" [previewData]="previewData"
                   [itemTrailInfo]="itemProps"></app-multiple-response-preview>
-                <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [previewData]="previewData"
+                <app-short-text-preview *ngIf="item.type === 'SHORT_TEXT'" [isNumericAnswerType]="isNumeric(previewData.scoringOption.answers[0])" [previewData]="previewData"
                   [itemTrailInfo]="itemProps"></app-short-text-preview>
                 <app-yes-or-no-preview *ngIf="item.type === 'YES_NO'" [previewData]="previewData"
                   [itemTrailInfo]="itemProps"></app-yes-or-no-preview>

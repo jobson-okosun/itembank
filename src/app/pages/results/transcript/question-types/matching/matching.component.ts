@@ -34,7 +34,7 @@ export class MatchingComponent implements OnInit {
   }
 
   updateLines() {
-    if(this.currentQuestion.item_score.graded_response.length == 0){
+    if(!this.currentQuestion?.item_score?.graded_response || this.currentQuestion.item_score.graded_response.length == 0){
       return
     }
     

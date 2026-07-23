@@ -16,21 +16,23 @@
             Question Score:
             <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
         </div>
-        <div>
-            Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks)
-            </b>
-        </div>
-        <div>
-            Penalty Applied?
-            <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }}
-                ({{currentQuestion.item.scoringOption.penalty }} MKs)</b>
-        </div>
-        <div>
-            Pass or Failed:?
-            <b
-                [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{
-                currentQuestion.item_score.pass_fail_status }}
-            </b>
-        </div>
+        <ng-container *ngIf="currentQuestion.item_score">
+            <div>
+                Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks)
+                </b>
+            </div>
+            <div>
+                Penalty Applied?
+                <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }}
+                    ({{currentQuestion.item.scoringOption.penalty }} MKs)</b>
+            </div>
+            <div>
+                Pass or Failed:?
+                <b
+                    [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{
+                    currentQuestion.item_score.pass_fail_status }}
+                </b>
+            </div>
+        </ng-container>
     </div>
 </div>

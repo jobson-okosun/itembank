@@ -102,6 +102,7 @@ export class AssessmentParticipantsComponent implements OnInit {
   checkingGroupMembership: boolean = false;
   belongsToGroup: boolean = false;
   groupName: string = "";
+  groupId: string = "";
 
   constructor(
     private schedulerService: SchedulerService,
@@ -133,6 +134,7 @@ export class AssessmentParticipantsComponent implements OnInit {
         if (res) {
           this.belongsToGroup = res.belongs_to_group;
           this.groupName = res.group_name || "";
+          this.groupId = res.group_id || "";
         }
       }
     });
@@ -240,18 +242,34 @@ export class AssessmentParticipantsComponent implements OnInit {
 
   downloadRegFieldTemplate() {
     this.processingTemplateDownload = true;
-    this.schedulerService
-      .downloadRegFieldTemplate(this.assessmentId)
-      .subscribe({
-        next: (blob) => {
-          saveAs(blob, "file");
-          this.processingTemplateDownload = false;
-        },
-        error: (err: HttpErrorResponse) => {
-          this.notifierService.notify("error", err.error.message);
-          this.processingTemplateDownload = false;
-        },
-      });
+    
+    if (this.belongsToGroup && this.groupId) {
+      this.schedulerService
+        .downloadGroupRegFieldTemplate(this.groupId)
+        .subscribe({
+          next: (blob) => {
+            saveAs(blob, "file");
+            this.processingTemplateDownload = false;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.notifierService.notify("error", err.error.message);
+            this.processingTemplateDownload = false;
+          },
+        });
+    } else {
+      this.schedulerService
+        .downloadRegFieldTemplate(this.assessmentId)
+        .subscribe({
+          next: (blob) => {
+            saveAs(blob, "file");
+            this.processingTemplateDownload = false;
+          },
+          error: (err: HttpErrorResponse) => {
+            this.notifierService.notify("error", err.error.message);
+            this.processingTemplateDownload = false;
+          },
+        });
+    }
   }
   addParticipant() {
     this.processingAddParticipant = true;

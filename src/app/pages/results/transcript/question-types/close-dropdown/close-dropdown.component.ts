@@ -38,7 +38,7 @@ export class CloseDropdownComponent{
 
   createSelectElement(index: number): string {
       const correctAnswer = this.currentQuestion.item.scoringOption.answers[index];
-      const selectedAnswer = this.currentQuestion.item_score.graded_response[index]
+      const selectedAnswer = this.currentQuestion.item_score?.graded_response?.[index]
       const isCorrect = correctAnswer?.trim() == selectedAnswer?.trim()
       
       let selectHtml = `
@@ -51,6 +51,10 @@ export class CloseDropdownComponent{
               </select>
             </span>
           </span>
+      `;
+      
+      if (this.currentQuestion.item_score) {
+         selectHtml += `
           <span style="width:auto; display:inline-block"> 
             <span class="d-flex flex-column gap-1" >
               <span class="badge rounded-pill bg-${ isCorrect ? 'success': 'danger' } ng-star-inserted" style="font-size: 0.7em;">Selected</span>
@@ -59,8 +63,9 @@ export class CloseDropdownComponent{
               </span>
             </span>
           </span> 
-        </span>
-      `
+         `;
+      }
+      selectHtml += `</span>`;
     
       return selectHtml;
   }

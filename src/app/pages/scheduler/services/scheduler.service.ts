@@ -172,6 +172,13 @@ export class SchedulerService {
     );
   }
 
+  downloadGroupRegFieldTemplate(groupId: string): Observable<Blob> {
+    return this.http.get(
+      `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/exam_groups/${groupId}/prf/download_template`,
+      { withCredentials: true, responseType: "blob" },
+    );
+  }
+
   downloadTemplateForAdminUpload(): Observable<Blob> {
     return this.http.get(
       `${environment.schedulerIP}/examalpha/api/v1/sch_mon_grd/schedule/assessment/centers/admins/download_template`,

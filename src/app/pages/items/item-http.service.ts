@@ -357,6 +357,32 @@ export class ItemHttpService {
     );
   }
 
+  getItemsForExportPublish(
+    subjectId: string,
+    topicId: string | null,
+    subtopicId: string | null,
+    page: number = 1,
+    perPage: number = 400
+  ): Observable<any> {
+    // API appears to expect 0-indexed page, size, subjectId, topicId, subtopicId
+    let params = new HttpParams()
+      .set('subjectId', subjectId)
+      .set('page', (page - 1).toString()) // converting 1-indexed to 0-indexed for backend
+      .set('size', perPage.toString());
+
+    if (topicId) {
+      params = params.set('topicId', topicId.toString());
+    }
+    if (subtopicId) {
+      params = params.set('subtopicId', subtopicId.toString());
+    }
+
+    return this.http.get<any>(
+      `${environment.developmentIP}/itembank/items/export_publish`,
+      { params, withCredentials: true }
+    );
+  }
+
   setSubjectId(subjectId: string) {
     this.subjectId = subjectId;
   }

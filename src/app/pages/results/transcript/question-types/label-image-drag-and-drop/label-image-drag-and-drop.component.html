@@ -39,6 +39,7 @@
           <div class="d-flex flex-column align-items-start" style="z-index: 10;">
             <!-- Candidate answer box -->
             <div 
+              *ngIf="currentQuestion.item_score"
               class="form-control form-control-sm bg-white text-center d-flex align-items-center justify-content-center" 
               style="width: 140px; height: 32px; border-style: dashed; font-size: 0.85em;"
               [ngClass]="{
@@ -68,14 +69,16 @@
     <div>
       Question Score: <b>{{ currentQuestion.item.scoringOption.score }} (Mks) </b>
     </div>
-    <div>
-      Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
-    </div>
-    <div>
-      Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
-    </div>
-    <div>
-      Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
-    </div>
+    <ng-container *ngIf="currentQuestion.item_score">
+      <div>
+        Candidate Score: <b>{{ currentQuestion.item_score.score }} (Mks) </b>
+      </div>
+      <div>
+        Penalty Applied? <b>{{ currentQuestion.item_score.has_penalty ? 'Yes' : 'No' }} ({{ currentQuestion.item.scoringOption.penalty }} MKs)</b>
+      </div>
+      <div>
+        Pass or Failed:? <b [ngClass]="{'text-success': currentQuestion.item_score.pass_fail_status == 'PASS', 'text-danger': currentQuestion.item_score.pass_fail_status == 'FAIL'}">{{ currentQuestion.item_score.pass_fail_status  }}</b>
+      </div>
+    </ng-container>
   </div>
 </div>

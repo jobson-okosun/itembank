@@ -1622,7 +1622,7 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
   }
 
   handleDispayAllSectionOption(value: string) {
-    
+
     if (value === 'allAtOnce') {
       this.assessmentSettings.displayAllSectionsAtOnce = true;
     } else {
@@ -1630,12 +1630,20 @@ export class ViewAssessmentComponent implements OnInit, OnDestroy {
     }
   }
 
-    handleSessionNavigation(value: string) {    
-   this.assessmentSettings.sectionNavigation = value;
-   console.log('SELECTED: ', this.assessmentSettings.sectionNavigation);
+  handleSessionNavigation(value: string) {
+    this.assessmentSettings.sectionNavigation = value;
+    console.log('SELECTED: ', this.assessmentSettings.sectionNavigation);
   }
 
   back(): void {
     history.back();
+  }
+
+  isNumeric(data: any) {
+    if (typeof data === "number") {
+      return true;
+    }
+
+    return false;
   }
 }

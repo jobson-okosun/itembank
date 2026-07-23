@@ -201,6 +201,11 @@ export class SubjectComponent implements OnInit, OnChanges {
 
   moving: boolean = false;
 
+  printPreviewItems: any[] = [];
+  printPreviewPage: number = 1;
+  printPreviewTotalItems: number = 0;
+  isPrintPreviewLoading: boolean = false;
+
   manuallySelectedItemsAndPassages: ExistingItemsAndPasaagesInExamBlock =
     new ExistingItemsAndPasaagesInExamBlock();
 
@@ -2679,5 +2684,38 @@ export class SubjectComponent implements OnInit, OnChanges {
     }
 
     return false;
+  }
+
+  openPrintPreviewModal(content: any) {
+    this.printPreviewPage = 1;
+    this.fetchPrintPreviewItems();
+    this.modalReference = this.modalService.open(content, { size: 'xl', scrollable: true });
+  }
+
+  fetchPrintPreviewItems() {
+    const topicId = this.selectedTopic?.topicId || this.clickedTopic?.topic?.topicId || this.clickedTopic?.topicId || this.currentTopic?.topicId;
+    const subtopicId = this.selectedSubtopicId || (this.clickedTopic?.subtopicName ? this.clickedTopic?.topicId : null);
+    const subjectId = this.itemService.subjectId || this.subjectId || this.subject_id;
+
+    if (!topicId && !subtopicId) return;
+    if (!subjectId) return;
+
+    this.isPrintPreviewLoading = true;
+    this.itemService.getItemsForExportPublish(subjectId, topicId, subtopicId, this.printPreviewPage, 400).subscribe({
+      next: (res: any) => {
+        this.printPreviewItems = res.content || res.data?.items || res.data || [];
+        this.printPreviewTotalItems = res.totalElements ?? res.data?.meta?.total ?? this.printPreviewItems.length;
+        this.isPrintPreviewLoading = false;
+      },
+      error: (err) => {
+        this.notifier.notify('error', 'Failed to load print preview items');
+        this.isPrintPreviewLoading = false;
+      }
+    });
+  }
+
+  onPrintPreviewPageChange(page: number) {
+    this.printPreviewPage = page;
+    this.fetchPrintPreviewItems();
   }
 }
