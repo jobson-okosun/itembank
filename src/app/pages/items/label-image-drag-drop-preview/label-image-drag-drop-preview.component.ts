@@ -41,7 +41,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
 
   currentUser: Account;
   assessmentActive: boolean;
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   options: Option[] = [
     { label: 'option A', value: '0' },
     { label: 'option B', value: '1' },
@@ -252,7 +252,7 @@ export class LabelImageDragDropPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

@@ -84,7 +84,7 @@ export class RichEssayPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

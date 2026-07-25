@@ -39,7 +39,7 @@
             class="form-check-input"
             id="form-radio-right5"
             type="radio"
-            name="label"
+            name="label_{{ previewData?.id }}"
             value="{{ i }}"
             [checked]="answer === i + '' && showAnswer"
             (change)="selection(i + '')"
@@ -55,7 +55,7 @@
         <input
           class="form-check-input"
           type="checkbox"
-          name="showAnswer"
+          name="showAnswer" [checked]="showAnswer"
           (change)="check()"
         />
         <label class="form-check-label"> Show Answer </label>

@@ -39,7 +39,7 @@ export class LabelImageDropdownPreviewComponent
 
   currentUser: Account;
   assessmentActive: boolean;
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   previewImageWidth: any;
   previewImageHeight: any;
   processing_delete: boolean = false;
@@ -156,7 +156,7 @@ export class LabelImageDropdownPreviewComponent
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

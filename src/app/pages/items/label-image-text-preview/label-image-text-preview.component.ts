@@ -38,7 +38,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
 
   currentUser: Account;
   assessmentActive: boolean;
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   subjectName: string = '';
   subjectId: string = this.itemService.subjectId;
   recycleComponentActive: boolean = this.recycleService.recycleActive;
@@ -103,7 +103,7 @@ export class LabelImageTextPreviewComponent implements OnInit, AfterViewInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

@@ -18,10 +18,10 @@
                     <span class="d-inline-flex flex-wrap gap-2 bg-light p-1 rounded-pill align-middle mx-2 my-1">
                         <span *ngFor="let resp of item.responses; let respIndex = index" type="button"
                             class="d-inline-flex align-items-center gap-1 rounded-pill bg-white py-1 px-2">
-                            <input *ngIf="showAnswer" type="radio" [name]="'option'+i" [value]="resp.value !== undefined ? resp.value : resp"
+                            <input *ngIf="showAnswer" type="radio" [name]="'option_' + previewData?.id + '_' + i" [value]="resp.value !== undefined ? resp.value : resp"
                                 [checked]="previewData.scoringOption.answers[i] == (resp.value !== undefined ? resp.value : resp)" />
 
-                            <input *ngIf="!showAnswer" type="radio" [name]="'option'+i" [value]="resp.value !== undefined ? resp.value : resp" />
+                            <input *ngIf="!showAnswer" type="radio" [name]="'option_' + previewData?.id + '_' + i" [value]="resp.value !== undefined ? resp.value : resp" />
                             <span>{{ resp.label !== undefined ? resp.label : resp }}</span>
                         </span>
                     </span>
@@ -34,7 +34,7 @@
         <!-- Show answer toggle -->
         <div class="text-primary d-flex justify-content-between">
             <div class="form-check mt-1">
-                <input class="form-check-input" type="checkbox" name="showAnswer" (change)="check()" />
+                <input class="form-check-input" type="checkbox" name="showAnswer" [checked]="showAnswer" (change)="check()" />
                 <label class="form-check-label">
                     Show Answer
                     <span *ngIf="previewData.scoringOption.answers.length < 1" class="text-danger">incomplete answers

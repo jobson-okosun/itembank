@@ -51,7 +51,7 @@
           [disabled]="previewData.scoringOption.answers.length < 1"
           class="form-check-input"
           type="checkbox"
-          name="showAnswer"
+          name="showAnswer" [checked]="showAnswer"
           (change)="check()"
         />
         <label class="form-check-label">

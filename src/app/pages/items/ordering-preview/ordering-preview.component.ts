@@ -30,7 +30,7 @@ export class OrderingPreviewComponent implements OnInit {
   @Output() returnPreviewData = new EventEmitter();
   @Output() reload = new EventEmitter();
 
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   subjectName: string;
   currentUser: Account;
   assessmentActive: boolean = false;
@@ -80,7 +80,7 @@ export class OrderingPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

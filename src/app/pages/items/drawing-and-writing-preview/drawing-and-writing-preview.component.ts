@@ -145,7 +145,7 @@ export class DrawingAndWritingPreviewComponent
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

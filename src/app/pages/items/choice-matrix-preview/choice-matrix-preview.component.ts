@@ -32,7 +32,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
   processing_delete: boolean = false;
   modalRef: any;
   assessmentActive: boolean = this.itemService.assessmentActive;
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   recycleComponentActive: boolean = this.recycleService.recycleActive;
   currentUser: Account;
   subjectId: string = this.itemService.subjectId;
@@ -72,7 +72,7 @@ export class ChoiceMatrixPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

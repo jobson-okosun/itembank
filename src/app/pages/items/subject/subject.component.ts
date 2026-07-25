@@ -17,7 +17,7 @@ import { ListAllItemsPage } from '../models/list-all-items-page.model';
 import { ItemStatusEnum } from '../models/item-status-enum';
 import { ItemTypes } from '../models/item-types';
 import { FilterItems, ItemUsed } from '../models/filter-items.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart, Event } from '@angular/router';
 import { ItemUtilitiesService } from '../item-utilities.service';
 import { NewSubTopic } from '../models/new-sub-topic.model';
 import { SubjectTopicsTree } from '../models/subject-topics-tree.model';
@@ -41,6 +41,8 @@ import { ListAllSubjects } from '../models/list-all-subjects.model';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Observable, Subscription } from 'rxjs';
 
+import { QUESTION_TYPES } from '../models/result';
+
 export interface RenameTopicModel {
   name: string;
 }
@@ -51,6 +53,7 @@ export interface RenameTopicModel {
   styleUrls: ["./subject.component.scss"],
 })
 export class SubjectComponent implements OnInit, OnChanges {
+  transcriptQuestionTypes = QUESTION_TYPES;
   @Input() _subjectName: string;
   @Input() _subjectId: string;
   @Input() _assessmentItemsList: any[];
@@ -491,6 +494,13 @@ export class SubjectComponent implements OnInit, OnChanges {
     private modalService: NgbModal,
   ) {
     this.currentUser = this.userService.getCurrentUser();
+
+    // Close modals automatically when navigating away
+    this.router.events.subscribe((event: Event) => {
+      if (event instanceof NavigationStart) {
+        this.modalService.dismissAll();
+      }
+    });
 
     this.assessmentFilter.totalQuestions -= this.totalFilterSelections;
 
@@ -2690,6 +2700,20 @@ export class SubjectComponent implements OnInit, OnChanges {
     this.printPreviewPage = 1;
     this.fetchPrintPreviewItems();
     this.modalReference = this.modalService.open(content, { size: 'xl', scrollable: true });
+    
+    // Reset data when the modal is closed or dismissed
+    this.modalReference.result.then(
+      () => {
+        this.printPreviewItems = [];
+        this.printPreviewPage = 1;
+        this.printPreviewTotalItems = 0;
+      },
+      () => {
+        this.printPreviewItems = [];
+        this.printPreviewPage = 1;
+        this.printPreviewTotalItems = 0;
+      }
+    );
   }
 
   fetchPrintPreviewItems() {

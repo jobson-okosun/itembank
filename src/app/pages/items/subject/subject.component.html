@@ -2325,42 +2325,76 @@
     </div>
 
     <div *ngIf="!isPrintPreviewLoading && printPreviewItems.length > 0">
-      <div *ngFor="let item of printPreviewItems; let i = index" class="mb-4">
-        <!-- Render transcript components based on item type -->
-        <ng-container [ngSwitch]="item.item.itemType">
-          <app-mcq *ngSwitchCase="'MCQ'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-mcq>
-          <app-yes-or-no *ngSwitchCase="'YES_NO'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-yes-or-no>
-          <app-true-or-false *ngSwitchCase="'TRUE_FALSE'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-true-or-false>
-          <app-short-text *ngSwitchCase="'SHORT_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-short-text>
-          <app-ordering *ngSwitchCase="'ORDERING'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-ordering>
-          <app-mrq *ngSwitchCase="'MRQ'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-mrq>
-          <app-matching *ngSwitchCase="'MATCHING'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-matching>
-          <app-label-image-with-text *ngSwitchCase="'LABEL_IMAGE_WITH_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-with-text>
-          <app-label-image-with-dropdown *ngSwitchCase="'LABEL_IMAGE_WITH_DROPDOWN'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-with-dropdown>
-          <app-label-image-drag-and-drop *ngSwitchCase="'LABEL_IMAGE_DRAG_AND_DROP'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-label-image-drag-and-drop>
-          <app-essay *ngSwitchCase="'ESSAY'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-essay>
-          <app-cloze-text *ngSwitchCase="'CLOZE_TEXT'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-cloze-text>
-          <app-cloze-radio *ngSwitchCase="'CLOZE_RADIO'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-cloze-radio>
-          <app-close-dropdown *ngSwitchCase="'CLOZE_DROPDOWN'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-close-dropdown>
-          <app-choice-matrix *ngSwitchCase="'CHOICE_MATRIX'" [currentQuestion]="item" [currentQuestionIndex]="(printPreviewPage - 1) * 400 + i + 1"></app-choice-matrix>
+      <div *ngFor="let item of printPreviewItems; let i = index" class="mb-4 p-3 border rounded bg-white">
+        <!-- Manually number the questions -->
+        <h5 class="mb-3 border-bottom pb-2">Question {{ (printPreviewPage - 1) * 400 + i + 1 }}</h5>
+        
+        <!-- Render transcript components based on item type using ItemsModule preview components -->
+        <ng-container>
+          <app-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.MCQ || item.item?.itemType === 'MCQ'" 
+            [previewData]="item.item" [showAnswer]="true"></app-preview>
+          
+          <app-yes-or-no-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.YES_NO || item.item?.itemType === 'YES_NO'" 
+            [previewData]="item.item" [showAnswer]="true"></app-yes-or-no-preview>
+          
+          <app-true-or-false-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.TRUE_FALSE || item.item?.itemType === 'TRUE_FALSE'" 
+            [previewData]="item.item" [showAnswer]="true"></app-true-or-false-preview>
+          
+          <app-short-text-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.SHORT_TEXT || item.item?.itemType === 'SHORT_TEXT'" 
+            [previewData]="item.item" [showAnswer]="true"></app-short-text-preview>
+          
+          <app-ordering-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.ORDER_LIST || item.item?.itemType === 'ORDERING'" 
+            [previewData]="item.item" [showAnswer]="true"></app-ordering-preview>
+          
+          <app-multiple-response-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.MRQ || item.item?.itemType === 'MRQ'" 
+            [previewData]="item.item" [showAnswer]="true"></app-multiple-response-preview>
+          
+          <app-matching-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.ASSOCIATION || item.item?.itemType === 'MATCHING'" 
+            [previewData]="item.item" [showAnswer]="true"></app-matching-preview>
+          
+          <app-label-image-text-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CLOZE_TEXT_IMAGE || item.item?.itemType === 'LABEL_IMAGE_WITH_TEXT'" 
+            [previewData]="item.item" [showAnswer]="true"></app-label-image-text-preview>
+          
+          <app-label-image-dropdown-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CLOZE_DROPDOWN_IMAGE || item.item?.itemType === 'LABEL_IMAGE_WITH_DROPDOWN'" 
+            [previewData]="item.item" [showAnswer]="true"></app-label-image-dropdown-preview>
+          
+          <app-label-image-drag-drop-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.IMAGE_DRAG_AND_DROP || item.item?.itemType === 'LABEL_IMAGE_DRAG_AND_DROP'" 
+            [previewData]="item.item" [showAnswer]="true"></app-label-image-drag-drop-preview>
+          
+          <app-essay-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.ESSAY_PLAIN_TEXT || item.item?.itemType === transcriptQuestionTypes.ESSAY_RICH_TEXT || item.item?.itemType === 'ESSAY'" 
+            [previewData]="item.item" [showAnswer]="true"></app-essay-preview>
+          
+          <app-cloze-text-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CLOZE_TEXT || item.item?.itemType === 'CLOZE_TEXT'" 
+            [previewData]="item.item" [showAnswer]="true"></app-cloze-text-preview>
+          
+          <app-cloze-radio-select-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CLOZE_RADIO || item.item?.itemType === 'CLOZE_RADIO'" 
+            [previewData]="item.item" [showAnswer]="true"></app-cloze-radio-select-preview>
+          
+          <app-cloze-dropdown-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CLOZE_DROPDOWN || item.item?.itemType === 'CLOZE_DROPDOWN'" 
+            [previewData]="item.item" [showAnswer]="true"></app-cloze-dropdown-preview>
+          
+          <app-choice-matrix-preview *ngIf="item.item?.itemType === transcriptQuestionTypes.CHOICE_MATRIX || item.item?.itemType === 'CHOICE_MATRIX'" 
+            [previewData]="item.item" [showAnswer]="true"></app-choice-matrix-preview>
         </ng-container>
-      </div>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-end mt-4">
-        <ngb-pagination 
-          [collectionSize]="printPreviewTotalItems" 
-          [(page)]="printPreviewPage" 
-          [pageSize]="400" 
-          (pageChange)="onPrintPreviewPageChange($event)"
-          [maxSize]="5" 
-          [rotate]="true" 
-          [boundaryLinks]="true">
-        </ngb-pagination>
       </div>
     </div>
   </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" (click)="modal.close('Close click')">Close</button>
+  
+  <div class="modal-footer d-flex justify-content-between align-items-center bg-light">
+    <!-- Paginator in the footer -->
+    <div>
+      <p-paginator
+        *ngIf="!isPrintPreviewLoading && printPreviewItems.length > 0"
+        [first]="(printPreviewPage - 1) * 400"
+        [rows]="400"
+        [totalRecords]="printPreviewTotalItems"
+        (onPageChange)="onPrintPreviewPageChange($event)"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries">
+      </p-paginator>
+    </div>
+
+    <!-- Red close button -->
+    <button type="button" class="btn btn-danger" (click)="modal.close('Close click')">Close</button>
   </div>
 </ng-template>

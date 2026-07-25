@@ -45,7 +45,7 @@ export class ClozeTextPreviewComponent implements OnInit {
 
   answers: string;
 
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
 
   assessmentActive: boolean = false;
 
@@ -136,7 +136,7 @@ export class ClozeTextPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

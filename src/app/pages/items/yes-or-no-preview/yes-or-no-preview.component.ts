@@ -32,7 +32,7 @@ export class YesOrNoPreviewComponent implements OnInit {
 
   //options: Option[] = this.previewData.options;
   currentUser: Account;
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   answer: string;
   selected: string;
   assessmentActive: boolean;
@@ -82,7 +82,7 @@ export class YesOrNoPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

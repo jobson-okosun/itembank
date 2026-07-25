@@ -36,7 +36,7 @@ export class PreviewComponent implements OnInit {
 
   answer: string;
 
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
 
   currentUser: Account;
 
@@ -133,13 +133,15 @@ export class PreviewComponent implements OnInit {
     this.itemUtil.previewItem = false;
     this.hidePreview.emit(true);
     //let data = this.previewData
+    console.log(this.previewData)
+
     if (this.previewData.id) {
       //this.returnPreviewData.emit(this.previewData);
       this.router.navigate(
         ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         },

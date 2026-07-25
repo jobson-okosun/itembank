@@ -46,7 +46,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
   processing_delete: boolean = false;
   opts: any[] = [];
   ans: string[] = [];
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   // matched: any[] = [];
   itemTrailInformation: ItemDetails;
   currentUser: Account;
@@ -289,7 +289,7 @@ export class MatchingPreviewComponent implements OnInit, AfterViewInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

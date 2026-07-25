@@ -35,7 +35,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
   extractedTexts: Array<any> = [];
   extractedOptions: any;
   expectedCloze: any = [];
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   subjectName: string = '';
   preview: boolean = false;
   assessmentActive: boolean = false;
@@ -218,7 +218,7 @@ export class ClozeDropdownPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectId + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         },

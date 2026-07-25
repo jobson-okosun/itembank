@@ -31,7 +31,7 @@ export class ShortTextPreviewComponent implements OnInit {
 
   answer: string;
 
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
 
   subjectName: string = '';
 
@@ -85,7 +85,7 @@ export class ShortTextPreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type  ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

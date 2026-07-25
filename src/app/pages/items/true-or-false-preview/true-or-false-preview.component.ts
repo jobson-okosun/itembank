@@ -36,7 +36,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
   currentUser: Account;
   subjectName!: string;
   optionLabels: string[] = ['A', 'B'];
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
   assessmentActive: boolean = false;
   selectedItemId!: string;
   processing_delete: boolean = false;
@@ -81,7 +81,7 @@ export class TrueOrFalsePreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type  ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }

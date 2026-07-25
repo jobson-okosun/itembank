@@ -30,7 +30,7 @@ export class MultipleResponsePreviewComponent implements OnInit {
 
   answers: string[];
 
-  showAnswer: boolean = false;
+  @Input() showAnswer: boolean = false;
 
   selected = new Set<string>();
 
@@ -98,7 +98,7 @@ export class MultipleResponsePreviewComponent implements OnInit {
         ['/examalpha/subjects/' + this.subjectName + '/edit-item'],
         {
           queryParams: {
-            type: `${this.previewData.type}`,
+            type: `${this.previewData.type ?? this.previewData.itemType}`,
             id: `${this.previewData.id}`,
           },
         }
